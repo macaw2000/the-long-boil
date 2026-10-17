@@ -1,6 +1,6 @@
 # The Long Boil: Game Design Document
 
-Oct 16, 2026 · @Jeremy
+Oct 16, 2026 · Jeremy Rule
 
 *A steampunk idle game*
 
