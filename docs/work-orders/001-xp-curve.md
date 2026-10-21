@@ -1,7 +1,7 @@
 # Work order 001: propose the XP curve
 
 **Agent:** `draftsman`
-**Status:** ready to run
+**Status:** ready to run (revision 2)
 **Blocks:** every pacing number the assayer reports, and therefore every later tuning step.
 
 ## Why this one first
@@ -31,6 +31,7 @@ Produce one file, `content/tuning/xp-curve.json`, holding:
 1. **Total XP to reach each level, 1 to 100.** A formula with its constants, plus the resolved table. A formula alone is not enough; the table is what the engine and the sim read.
 2. **One reference action yield.** Pick a single early action named in the GDD, smelting a Brass Ingot, and give the XP it grants. Without this the curve cannot be tested against time. Mark it clearly as a reference value for pacing work, not the start of an action table.
 3. **The band checkpoints.** Where levels 20, 45 and 70 fall on the curve, since those are the zone boundaries in section 6.
+4. **Per-band XP rate targets.** The XP per hour an action in each band (1 to 20, 20 to 45, 45 to 70) must pay, as a multiple of the reference action, for that band to take about two weeks. These are targets for the later action-table work order, not action yields.
 
 Nothing else. No stats, no drop rates, no calibration odds, no prices. Those are later work orders.
 
@@ -42,7 +43,20 @@ Jeremy set these on 21 October 2026. They are now in `docs/gdd.md`, section 6. D
 - **Logarithmic.** Each level costs more experience than the last, so early levels come quickly and late ones do not.
 - **Offline counts.** Progress earned offline counts toward level exactly as time at the keyboard does. A zone's two weeks are two weeks of a player's life, not two weeks of their attention, so your band arithmetic includes the 12 offline hours per check-in.
 
-One thing his wording leaves open, and you should ask rather than assume: "logarithmic" describes how levelling feels, and the usual way to build it is total experience rising geometrically with level, so each level costs a fixed multiple of the one before. If that is what you implement, say so plainly in your report in one line, so he can correct it in one word if he meant something else.
+Revision 2 adds three more, also set by Jeremy on 21 October 2026 after the first draft, and also recorded in section 6:
+
+- **Geometric growth, confirmed.** Each level costs a fixed multiple of the one before, as the first draft built it.
+- **A cheaper bottom.** The first levels cost less than the geometric rule gives, so section 7's "By day 2 Ada's total level passes 50" holds. The curve is a hybrid: a cheap opening stretch, then geometric growth. Choose where the opening stretch ends and how it joins the geometric part, and show that day 2 passes total level 50 at the stated rhythm.
+- **Harder actions pay more XP per hour.** Do not hold every band to the reference rate. Each band is measured at its own XP rate, and the curve is judged by whether those rates are a sensible climb (say so if a multiplier looks unreasonable), not by whether one rate fits all three bands.
+
+Two more, set the same day:
+
+- **Combat XP goes mostly to the main combat skill.** A fight's XP goes mostly to the combat skill the player's loadout is built around, with the rest spread across the other combat skills. A zone's level band refers to that main combat skill. Propose the split as an assumption.
+- **Keep the curve above level 70.** It runs on to level 100 unchanged, even though no capstone content needs those levels. Do not flatten or cap it.
+
+The section 7 timeline has been corrected to match two weeks per zone: Scrapjaw (level 20) falls around day 14, and the Lightning Baron (level 70) around week six.
+
+The first draft is in `content/tuning/xp-curve.json`. Revise it in place.
 
 ## Constraints
 
@@ -55,9 +69,10 @@ One thing his wording leaves open, and you should ask rather than assume: "logar
 
 - The file, with the formula, the table, and the constants.
 - A derivation per constant, each citing its GDD line.
-- The three band checkpoints as elapsed days, against the two-week target, with the gap.
+- The three band checkpoints as elapsed days, each at its band's own XP rate, against the two-week target, with the gap.
+- The per-band XP rate multipliers, and the day-2 total level at the stated rhythm.
 - Every assumption, in a table, each marked as an assumption.
-- Open questions. The three big shape questions are settled above, so expect these instead, and add any others: which skill a zone's level band refers to, whether total level across all sixteen skills gates anything beyond the level 50 trading unlock, and what the curve does above level 70, which no capstone content reaches.
+- Open questions. The shape questions, the band skill and the curve above 70 are settled above, so expect these instead, and add any others: whether total level across all sixteen skills gates anything beyond the level 50 trading unlock.
 - The new ids, handed to the `registrar` for rows at `drafted`.
 
 ## Then

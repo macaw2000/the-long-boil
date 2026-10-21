@@ -1,4 +1,53 @@
 {
   "schema": "provenance/1",
-  "rows": []
+  "rows": [
+    {
+      "id": "tuning.global.xp_curve",
+      "type": "tuning",
+      "path": "content/tuning/xp-curve.json",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "waived",
+        "run": null,
+        "checks": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-21T21:50:15Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ]
+    },
+    {
+      "id": "tuning.global.xp_reference_smelt_brass_ingot",
+      "type": "tuning",
+      "path": "content/tuning/xp-curve.json",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "waived",
+        "run": null,
+        "checks": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-21T21:50:15Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ]
+    }
+  ]
 }

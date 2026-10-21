@@ -370,6 +370,8 @@ Sixteen skills, each levelled 1 to 100, feed the loop. Each one is also a story 
 
 Alchemy arrives after the capstone as the seventeenth skill.
 
+All sixteen skills share one XP curve; no skill is cheaper to level than another. The curve is logarithmic in feel: each level costs more than the last, so early levels come quickly and late ones do not. The first few levels are cheaper still, so a new Tinker's total level passes 50 within two days. Offline progress counts exactly as time at the keyboard does, so a zone's two weeks are two weeks of a player's life, not of their attention. Harder actions pay more XP per hour than early ones, which is what keeps each zone's level band near two weeks even as levels grow dearer. Combat XP goes mostly to the main combat skill a loadout is built around, and a zone's level band refers to that skill. The curve runs unchanged to level 100, past anything the capstone needs.
+
 ### Offline play: the Boiler
 
 Logging off leaves 12 hours of steam, shown as a pressure gauge; at zero your Tinker stops until you return. The queue holds two actions ("smelt 400 ingots, then tinker 50 spanners"), and a While You Were Away ledger greets you on return. In the story, the Boiler is a Board steam licence, which is why its hours can be upgraded and why the Board can, in Season 2, threaten to revoke them.
@@ -456,11 +458,11 @@ By the end of the week she is about level 12 in Rustmoor, halfway through Act I,
 
 ### The first month
 
-Around day 12 she beats Scrapjaw on her second attempt and reads Ledger Page 1. She gives it to Mrs. Inkwell rather than Lord Gauntlett, takes the Lantern Ambition, and walks into the Cinderworks on a Stokers' token. Act II's Whistle storylets push her Haze to 6, and she learns to keep a calming tea in her loadout. She is in the Foundry when her guild takes the Stokers' charter for Season 1.
+Around day 14 she beats Scrapjaw on her second attempt and reads Ledger Page 1. She gives it to Mrs. Inkwell rather than Lord Gauntlett, takes the Lantern Ambition, and walks into the Cinderworks on a Stokers' token. Act II's Whistle storylets push her Haze to 6, and she learns to keep a calming tea in her loadout. She is in the Foundry when her guild takes the Stokers' charter for Season 1.
 
 ### Month three
 
-Ada has beaten the Lightning Baron and read the last capsule. Her day now has three kinds of goals. Calibrating her Coil Staff toward +10 is a long Crown sink and a leaderboard. The Lantern Ambition's middle chapters ask for Scavenging levels she has neglected, and she has deliberately redlined Haze once to learn a notation in the Quiet Rooms. Her guild is fighting for the Stokers' side in the Reckoning, and the Gazette prints the standings every morning.
+Ada beat the Lightning Baron around week six and has read the last capsule. Her day now has three kinds of goals. Calibrating her Coil Staff toward +10 is a long Crown sink and a leaderboard. The Lantern Ambition's middle chapters ask for Scavenging levels she has neglected, and she has deliberately redlined Haze once to learn a notation in the Quiet Rooms. Her guild is fighting for the Stokers' side in the Reckoning, and the Gazette prints the standings every morning.
 
 She is waiting for Act IV the way Fallen London players wait for a new season: impatiently, but still logging in.
 

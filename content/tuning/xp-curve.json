@@ -1,0 +1,622 @@
+{
+ "schema": "tuning.xp_curve/0",
+ "id": "tuning.global.xp_curve",
+ "revision": 2,
+ "status": "drafted",
+ "validators": "none, waived by work order 001",
+ "source": "docs/work-orders/001-xp-curve.md (revision 2); docs/gdd.md sections 1, 6, 7; docs/targets.md Pacing",
+ "applies_to": "all sixteen skills (GDD section 6: 'All sixteen skills share one XP curve; no skill is cheaper to level than another.')",
+ "assumptions": {
+  "_note": "Assumptions, not canon. The assayer reports these as assumed.",
+  "CHECKINS_PER_DAY": 3,
+  "ONLINE_MINUTES_PER_CHECKIN": 4,
+  "OFFLINE_HOURS_PER_CHECKIN": 12,
+  "OFFLINE_HOURS_USED_PER_DAY": 23.8,
+  "WORK_HOURS_PER_DAY": 24,
+  "BAND_SKILL_QUEUE_HOURS_PER_DAY": 12,
+  "MAIN_COMBAT_SKILL_SHARE": 0.7,
+  "OTHER_COMBAT_SKILLS_SHARE_EACH": 0.05,
+  "MAIN_COMBAT_SKILL_HOURS_EQUIVALENT_PER_DAY": 8.4,
+  "REFERENCE_ACTIONS_PER_HOUR": 66.6667,
+  "REFERENCE_XP_PER_HOUR": 666.67,
+  "BAND_1_RATE_MULTIPLIER": 1.0,
+  "DAY2_NONCOMBAT_SKILLS_ROTATED": 3,
+  "DAY2_HORIZON_HOURS": 48,
+  "GEOMETRIC_RATIO_KEPT_FROM_DRAFT_1": 1.035,
+  "XP_UNIT_SCALE_NOTE": "The reference yield of 10 XP sets the unit. Scaling it and every table value by the same factor changes no pacing."
+ },
+ "formula": {
+  "shape": "hybrid: a cheap opening stretch (levels 1 to 5) that ramps up cubically into geometric growth from level 6 on",
+  "level_cost": "cost(L -> L+1) = round(BASE * RATIO^(L-1) * min(1, (L/OPENING_END)^OPENING_POWER)), for L = 1..99",
+  "total_xp": "total_xp(L) = sum of cost(k) for k = 1..L-1; total_xp(1) = 0",
+  "join": "At L = OPENING_END the ramp factor reaches 1, so cost(6) is the plain geometric cost and the curve is geometric from there to level 100, uncapped.",
+  "BASE": 3537,
+  "RATIO": 1.035,
+  "OPENING_END": 6,
+  "OPENING_POWER": 3,
+  "derived": true,
+  "_derivation": "BASE is solved so total_xp(20) = 14 days x 8.4 main-skill hours/day x 666.67 XP/h = 78,400 XP (resolved table gives 78,397 after rounding). RATIO is kept from draft 1 (confirmed shape, value is an assumption). OPENING_END = 6 and OPENING_POWER = 3 are chosen so total level passes 50 within 48 hours while day 7 stays near level 12."
+ },
+ "reference_action": {
+  "id": "tuning.global.xp_reference_smelt_brass_ingot",
+  "action": "smelt one Brass Ingot",
+  "skill": "smithing",
+  "xp": 10,
+  "seconds_per_action": 54,
+  "purpose": "Reference value for pacing work only. This is not the first row of an action table.",
+  "derived": true
+ },
+ "band_checkpoints": {
+  "_note": "Elapsed days for the main combat skill, each band at its own XP rate. Main combat skill earns 12 h/day x 0.70 share = 8.4 h/day-equivalent; at the reference rate that is 5,600 XP/day. Target: about two weeks per zone (docs/targets.md Pacing).",
+  "main_skill_xp_per_day_at_reference_rate": 5600,
+  "checkpoints": [
+   {
+    "level": 20,
+    "total_xp": 78397,
+    "band": "1 to 20",
+    "band_xp": 78397,
+    "band_rate_multiplier": 1.0,
+    "band_days_at_own_rate": 14.0,
+    "target_band_days": 14,
+    "gap_days": 0.0,
+    "elapsed_days": 14.0,
+    "target_elapsed_days": 14,
+    "gap_elapsed_days": 0.0,
+    "elapsed_days_if_held_at_reference_rate": 14.0
+   },
+   {
+    "level": 45,
+    "total_xp": 343252,
+    "band": "20 to 45",
+    "band_xp": 264855,
+    "band_rate_multiplier": 3.38,
+    "band_days_at_own_rate": 13.99,
+    "target_band_days": 14,
+    "gap_days": -0.01,
+    "elapsed_days": 27.99,
+    "target_elapsed_days": 28,
+    "gap_elapsed_days": -0.01,
+    "elapsed_days_if_held_at_reference_rate": 61.3
+   },
+   {
+    "level": 70,
+    "total_xp": 969168,
+    "band": "45 to 70",
+    "band_xp": 625916,
+    "band_rate_multiplier": 7.98,
+    "band_days_at_own_rate": 14.01,
+    "target_band_days": 14,
+    "gap_days": 0.01,
+    "elapsed_days": 42.0,
+    "target_elapsed_days": 42,
+    "gap_elapsed_days": 0.0,
+    "elapsed_days_if_held_at_reference_rate": 173.1
+   }
+  ]
+ },
+ "band_xp_rate_targets": {
+  "_note": "Targets for the later action-table work order, not action yields. Multiple of the reference rate (666.67 XP/h). Solved from the curve, so the band gaps are rounding only; the real test is whether the action table can deliver them.",
+  "band_1_to_20": 1.0,
+  "band_20_to_45": 3.38,
+  "band_45_to_70": 7.98
+ },
+ "day2_check": {
+  "_note": "GDD section 6: 'a new Tinker's total level passes 50 within two days'. 48 work hours: 24 h combat (main skill 70%, six others 5% each) and 24 h split evenly across three non-combat skills (Prospecting, Smithing, Tinkering, the first-session chain in section 7), all at the reference rate. Six skills untouched at level 1.",
+  "noncombat_xp_each": 5333,
+  "noncombat_level_each": 6,
+  "main_combat_xp": 11200,
+  "main_combat_level": 7,
+  "other_combat_xp_each": 800,
+  "other_combat_level_each": 4,
+  "untouched_skills_at_level_1": 6,
+  "total_level_at_48h": 55,
+  "passes_50": true
+ },
+ "day7_check": {
+  "_note": "GDD section 7: 'By the end of the week she is about level 12 in Rustmoor.'",
+  "main_combat_level_at_day_7": 13.45,
+  "gap_levels": 1.45
+ },
+ "table": [
+  {
+   "level": 1,
+   "cost_to_next": 16,
+   "total_xp": 0
+  },
+  {
+   "level": 2,
+   "cost_to_next": 136,
+   "total_xp": 16
+  },
+  {
+   "level": 3,
+   "cost_to_next": 474,
+   "total_xp": 152
+  },
+  {
+   "level": 4,
+   "cost_to_next": 1162,
+   "total_xp": 626
+  },
+  {
+   "level": 5,
+   "cost_to_next": 2349,
+   "total_xp": 1788
+  },
+  {
+   "level": 6,
+   "cost_to_next": 4201,
+   "total_xp": 4137
+  },
+  {
+   "level": 7,
+   "cost_to_next": 4348,
+   "total_xp": 8338
+  },
+  {
+   "level": 8,
+   "cost_to_next": 4500,
+   "total_xp": 12686
+  },
+  {
+   "level": 9,
+   "cost_to_next": 4658,
+   "total_xp": 17186
+  },
+  {
+   "level": 10,
+   "cost_to_next": 4821,
+   "total_xp": 21844
+  },
+  {
+   "level": 11,
+   "cost_to_next": 4989,
+   "total_xp": 26665
+  },
+  {
+   "level": 12,
+   "cost_to_next": 5164,
+   "total_xp": 31654
+  },
+  {
+   "level": 13,
+   "cost_to_next": 5345,
+   "total_xp": 36818
+  },
+  {
+   "level": 14,
+   "cost_to_next": 5532,
+   "total_xp": 42163
+  },
+  {
+   "level": 15,
+   "cost_to_next": 5725,
+   "total_xp": 47695
+  },
+  {
+   "level": 16,
+   "cost_to_next": 5926,
+   "total_xp": 53420
+  },
+  {
+   "level": 17,
+   "cost_to_next": 6133,
+   "total_xp": 59346
+  },
+  {
+   "level": 18,
+   "cost_to_next": 6348,
+   "total_xp": 65479
+  },
+  {
+   "level": 19,
+   "cost_to_next": 6570,
+   "total_xp": 71827
+  },
+  {
+   "level": 20,
+   "cost_to_next": 6800,
+   "total_xp": 78397
+  },
+  {
+   "level": 21,
+   "cost_to_next": 7038,
+   "total_xp": 85197
+  },
+  {
+   "level": 22,
+   "cost_to_next": 7284,
+   "total_xp": 92235
+  },
+  {
+   "level": 23,
+   "cost_to_next": 7539,
+   "total_xp": 99519
+  },
+  {
+   "level": 24,
+   "cost_to_next": 7803,
+   "total_xp": 107058
+  },
+  {
+   "level": 25,
+   "cost_to_next": 8076,
+   "total_xp": 114861
+  },
+  {
+   "level": 26,
+   "cost_to_next": 8359,
+   "total_xp": 122937
+  },
+  {
+   "level": 27,
+   "cost_to_next": 8651,
+   "total_xp": 131296
+  },
+  {
+   "level": 28,
+   "cost_to_next": 8954,
+   "total_xp": 139947
+  },
+  {
+   "level": 29,
+   "cost_to_next": 9268,
+   "total_xp": 148901
+  },
+  {
+   "level": 30,
+   "cost_to_next": 9592,
+   "total_xp": 158169
+  },
+  {
+   "level": 31,
+   "cost_to_next": 9928,
+   "total_xp": 167761
+  },
+  {
+   "level": 32,
+   "cost_to_next": 10275,
+   "total_xp": 177689
+  },
+  {
+   "level": 33,
+   "cost_to_next": 10635,
+   "total_xp": 187964
+  },
+  {
+   "level": 34,
+   "cost_to_next": 11007,
+   "total_xp": 198599
+  },
+  {
+   "level": 35,
+   "cost_to_next": 11392,
+   "total_xp": 209606
+  },
+  {
+   "level": 36,
+   "cost_to_next": 11791,
+   "total_xp": 220998
+  },
+  {
+   "level": 37,
+   "cost_to_next": 12204,
+   "total_xp": 232789
+  },
+  {
+   "level": 38,
+   "cost_to_next": 12631,
+   "total_xp": 244993
+  },
+  {
+   "level": 39,
+   "cost_to_next": 13073,
+   "total_xp": 257624
+  },
+  {
+   "level": 40,
+   "cost_to_next": 13530,
+   "total_xp": 270697
+  },
+  {
+   "level": 41,
+   "cost_to_next": 14004,
+   "total_xp": 284227
+  },
+  {
+   "level": 42,
+   "cost_to_next": 14494,
+   "total_xp": 298231
+  },
+  {
+   "level": 43,
+   "cost_to_next": 15001,
+   "total_xp": 312725
+  },
+  {
+   "level": 44,
+   "cost_to_next": 15526,
+   "total_xp": 327726
+  },
+  {
+   "level": 45,
+   "cost_to_next": 16070,
+   "total_xp": 343252
+  },
+  {
+   "level": 46,
+   "cost_to_next": 16632,
+   "total_xp": 359322
+  },
+  {
+   "level": 47,
+   "cost_to_next": 17214,
+   "total_xp": 375954
+  },
+  {
+   "level": 48,
+   "cost_to_next": 17817,
+   "total_xp": 393168
+  },
+  {
+   "level": 49,
+   "cost_to_next": 18440,
+   "total_xp": 410985
+  },
+  {
+   "level": 50,
+   "cost_to_next": 19086,
+   "total_xp": 429425
+  },
+  {
+   "level": 51,
+   "cost_to_next": 19754,
+   "total_xp": 448511
+  },
+  {
+   "level": 52,
+   "cost_to_next": 20445,
+   "total_xp": 468265
+  },
+  {
+   "level": 53,
+   "cost_to_next": 21161,
+   "total_xp": 488710
+  },
+  {
+   "level": 54,
+   "cost_to_next": 21901,
+   "total_xp": 509871
+  },
+  {
+   "level": 55,
+   "cost_to_next": 22668,
+   "total_xp": 531772
+  },
+  {
+   "level": 56,
+   "cost_to_next": 23461,
+   "total_xp": 554440
+  },
+  {
+   "level": 57,
+   "cost_to_next": 24283,
+   "total_xp": 577901
+  },
+  {
+   "level": 58,
+   "cost_to_next": 25132,
+   "total_xp": 602184
+  },
+  {
+   "level": 59,
+   "cost_to_next": 26012,
+   "total_xp": 627316
+  },
+  {
+   "level": 60,
+   "cost_to_next": 26923,
+   "total_xp": 653328
+  },
+  {
+   "level": 61,
+   "cost_to_next": 27865,
+   "total_xp": 680251
+  },
+  {
+   "level": 62,
+   "cost_to_next": 28840,
+   "total_xp": 708116
+  },
+  {
+   "level": 63,
+   "cost_to_next": 29849,
+   "total_xp": 736956
+  },
+  {
+   "level": 64,
+   "cost_to_next": 30894,
+   "total_xp": 766805
+  },
+  {
+   "level": 65,
+   "cost_to_next": 31976,
+   "total_xp": 797699
+  },
+  {
+   "level": 66,
+   "cost_to_next": 33095,
+   "total_xp": 829675
+  },
+  {
+   "level": 67,
+   "cost_to_next": 34253,
+   "total_xp": 862770
+  },
+  {
+   "level": 68,
+   "cost_to_next": 35452,
+   "total_xp": 897023
+  },
+  {
+   "level": 69,
+   "cost_to_next": 36693,
+   "total_xp": 932475
+  },
+  {
+   "level": 70,
+   "cost_to_next": 37977,
+   "total_xp": 969168
+  },
+  {
+   "level": 71,
+   "cost_to_next": 39306,
+   "total_xp": 1007145
+  },
+  {
+   "level": 72,
+   "cost_to_next": 40682,
+   "total_xp": 1046451
+  },
+  {
+   "level": 73,
+   "cost_to_next": 42106,
+   "total_xp": 1087133
+  },
+  {
+   "level": 74,
+   "cost_to_next": 43579,
+   "total_xp": 1129239
+  },
+  {
+   "level": 75,
+   "cost_to_next": 45105,
+   "total_xp": 1172818
+  },
+  {
+   "level": 76,
+   "cost_to_next": 46683,
+   "total_xp": 1217923
+  },
+  {
+   "level": 77,
+   "cost_to_next": 48317,
+   "total_xp": 1264606
+  },
+  {
+   "level": 78,
+   "cost_to_next": 50008,
+   "total_xp": 1312923
+  },
+  {
+   "level": 79,
+   "cost_to_next": 51759,
+   "total_xp": 1362931
+  },
+  {
+   "level": 80,
+   "cost_to_next": 53570,
+   "total_xp": 1414690
+  },
+  {
+   "level": 81,
+   "cost_to_next": 55445,
+   "total_xp": 1468260
+  },
+  {
+   "level": 82,
+   "cost_to_next": 57386,
+   "total_xp": 1523705
+  },
+  {
+   "level": 83,
+   "cost_to_next": 59394,
+   "total_xp": 1581091
+  },
+  {
+   "level": 84,
+   "cost_to_next": 61473,
+   "total_xp": 1640485
+  },
+  {
+   "level": 85,
+   "cost_to_next": 63625,
+   "total_xp": 1701958
+  },
+  {
+   "level": 86,
+   "cost_to_next": 65851,
+   "total_xp": 1765583
+  },
+  {
+   "level": 87,
+   "cost_to_next": 68156,
+   "total_xp": 1831434
+  },
+  {
+   "level": 88,
+   "cost_to_next": 70542,
+   "total_xp": 1899590
+  },
+  {
+   "level": 89,
+   "cost_to_next": 73011,
+   "total_xp": 1970132
+  },
+  {
+   "level": 90,
+   "cost_to_next": 75566,
+   "total_xp": 2043143
+  },
+  {
+   "level": 91,
+   "cost_to_next": 78211,
+   "total_xp": 2118709
+  },
+  {
+   "level": 92,
+   "cost_to_next": 80948,
+   "total_xp": 2196920
+  },
+  {
+   "level": 93,
+   "cost_to_next": 83781,
+   "total_xp": 2277868
+  },
+  {
+   "level": 94,
+   "cost_to_next": 86714,
+   "total_xp": 2361649
+  },
+  {
+   "level": 95,
+   "cost_to_next": 89749,
+   "total_xp": 2448363
+  },
+  {
+   "level": 96,
+   "cost_to_next": 92890,
+   "total_xp": 2538112
+  },
+  {
+   "level": 97,
+   "cost_to_next": 96141,
+   "total_xp": 2631002
+  },
+  {
+   "level": 98,
+   "cost_to_next": 99506,
+   "total_xp": 2727143
+  },
+  {
+   "level": 99,
+   "cost_to_next": 102989,
+   "total_xp": 2826649
+  },
+  {
+   "level": 100,
+   "cost_to_next": null,
+   "total_xp": 2929638
+  }
+ ]
+}
