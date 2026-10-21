@@ -78,3 +78,13 @@ The first draft is in `content/tuning/xp-curve.json`. Revise it in place.
 ## Then
 
 Jeremy reads the gaps and the assumptions, and either approves the curve or sets the constants himself. Nothing moves past `drafted` until he does.
+
+## Carried forward to the action-table work order
+
+Set by Jeremy on 21 October 2026, after the inspector's review of revision 2:
+
+- **Each band's average XP rate is fixed by the curve:** 1x, 3.38x and 7.98x the Brass Ingot reference for bands 1 to 20, 20 to 45 and 45 to 70. Actions within a band climb, but the band's average must hold. In Rustmoor, the first actions pay slightly under the reference and later ones slightly over, so the zone averages 1x and Scrapjaw stays near day 14. This also softens the slow stretch around levels 15 to 20.
+- **Two weeks per zone is for a balanced player** who splits the queue between combat and crafting. A player who fights around the clock moves about twice as fast, and that is accepted.
+- **The 70/30 combat split is provisional** until combat stats exist. Secondary combat skills, Vitality and Fortitude among them, sit near level 18 when the main skill reaches 70.
+- **Story skill checks must allow for crafting skills lagging the zone bands.**
+- **Open:** whether §4's "Prologue (levels 1 to 5, the first session)" means skill levels. A 20-minute first session reaches about level 3 at the reference rate.

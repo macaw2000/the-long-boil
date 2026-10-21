@@ -370,7 +370,7 @@ Sixteen skills, each levelled 1 to 100, feed the loop. Each one is also a story 
 
 Alchemy arrives after the capstone as the seventeenth skill.
 
-All sixteen skills share one XP curve; no skill is cheaper to level than another. The curve is logarithmic in feel: each level costs more than the last, so early levels come quickly and late ones do not. The first few levels are cheaper still, so a new Tinker's total level passes 50 within two days. Offline progress counts exactly as time at the keyboard does, so a zone's two weeks are two weeks of a player's life, not of their attention. Harder actions pay more XP per hour than early ones, which is what keeps each zone's level band near two weeks even as levels grow dearer. Combat XP goes mostly to the main combat skill a loadout is built around, and a zone's level band refers to that skill. The curve runs unchanged to level 100, past anything the capstone needs.
+All sixteen skills share one XP curve; no skill is cheaper to level than another. The curve is logarithmic in feel: each level costs more than the last, so early levels come quickly and late ones do not. The first few levels are cheaper still, so a new Tinker's total level passes 50 within two days. Offline progress counts exactly as time at the keyboard does, so a zone's two weeks are two weeks of a player's life, not of their attention. Harder actions pay more XP per hour than early ones, which is what keeps each zone's level band near two weeks even as levels grow dearer. Combat XP goes mostly to the main combat skill a loadout is built around, and a zone's level band refers to that skill. The curve runs unchanged to level 100, past anything the capstone needs. Two weeks per zone is the pace of a balanced player who splits the queue between combat and crafting; a player who fights around the clock moves about twice as fast, and that is fine. Within a zone, later actions pay a little more XP per hour than early ones while the zone's average holds: in Rustmoor, the first actions pay slightly under a Brass Ingot's rate and the later ones slightly over.
 
 ### Offline play: the Boiler
 
@@ -399,7 +399,7 @@ An order book: sellers list, buyers post standing bids, and matches fill at once
 
 ### Guilds, Work Orders, and Favour
 
-A guild costs 500,000 Crowns and gets chat, a contribution roster, a Workshop, and 5 weekly Guild Contracts such as "Smelt 50,000 Brass Ingots", whose tiers pay upgrades and tokens. Solo players get a new Work Order every 8 hours. Work Orders and trading unlock at total level 50, so throwaway alt accounts cannot farm them.
+A guild costs 500,000 Crowns and gets chat, a contribution roster, a Workshop, and 5 weekly Guild Contracts such as "Smelt 50,000 Brass Ingots", whose tiers pay upgrades and tokens. Solo players get a new Work Order every 8 hours. Work Orders and trading unlock at total level 50 on an account at least two days old, so throwaway alt accounts cannot farm them. The cheap early levels make total level 50 a matter of hours, so the account's age does the real gating.
 
 This edition adds one thing: every Work Order and Guild Contract carries a faction's seal. Completing it earns that faction Favour, and during a Reckoning it counts as a pledge to that faction's side. Players choose which seals to take, so the daily grind becomes a quiet vote on the city's future.
 
@@ -776,7 +776,7 @@ At about 400 words a storylet, that is roughly 76,000 words. I write about 13,00
 | Credits run out before launch | Medium | High | Founders in week 1, a Portfolio provider before beta | The four cost levers, then delay launch |
 | Story pace outruns zone pace | Medium | Medium | Level-gated act beats; the Assayer reports story pace | Add repeatable district scenes between beats |
 | An agent leaks a secret early | Low | High | Need-to-know canon, the reveal guard, the Inspector | Roll the storylet back through AppConfig within minutes |
-| Alt accounts swing a Reckoning | Medium | Medium | Total level 50 gate, per-player pledge cap | Weight pledges by account age |
+| Alt accounts swing a Reckoning | Medium | Medium | Total level 50 and two-day account age gate, per-player pledge cap | Weight pledges by account age |
 | Discord sign-in through Cognito fails | Medium | Low | Test in week 1 | Lambda shim, or Google only for the capstone |
 | Bedrock quotas or features lag | Low | Medium | Request quota increases in week 1 | Point the same prompts at the first-party Claude API |
 | CloudFront's flat-rate plan does not suit the WebSocket origin | Low | Medium | Test in week 1 | Pay-as-you-go CloudFront with a separate WAF web ACL |

@@ -35,7 +35,7 @@
    "opening_power": 3
   },
   "derived": true,
-  "_derivation": "base is solved so total_xp(20) = 14 days x 8.4 main-skill hours/day x 666.67 XP/h = 78,400 XP (resolved table gives 78,397 after rounding). ratio is kept from draft 1 (confirmed shape, value is an assumption). opening_end = 6 and opening_power = 3 are chosen so total level passes 50 within 48 hours while day 7 stays near level 12."
+  "_derivation": "base is solved so total_xp(20) = 14 days x 8.4 main-skill hours/day x 666.67 XP/h = 78,400 XP (resolved table gives 78,397 after rounding). ratio is kept from draft 1 (confirmed shape, value is an assumption). opening_end = 6 and opening_power = 3 are chosen so total level passes 50 within 48 hours. With them, day 7 lands at main combat level 13.45, 1.45 levels over section 7's 'about level 12'; that gap is reported in day7_check, not hit."
  },
  "reference_action": {
   "id": "tuning.global.xp_reference_smelt_brass_ingot",
@@ -43,8 +43,8 @@
   "skill": "smithing",
   "xp": 10,
   "seconds_per_action": 54,
-  "purpose": "Reference value for pacing work only. This is not the first row of an action table.",
-  "derived": true
+  "purpose": "Reference value for pacing work only. This is not the first row of an action table. xp = 10 is a unit choice (see assumptions.XP_UNIT_SCALE_NOTE). seconds_per_action = 54 is an inferred upper bound, an assumption, not derived: section 7 gives '400 Brass Ingots smelted' at the 0:00 check-in and 'Nothing in the game needs her for 6 hours' after it; 6 h / 400 = 54 s. The GDD never says the 400 ingots took 6 hours, and that 6-hour queue also held Rust Rat kills, so the true time per ingot is at most 54 s.",
+  "derived": false
  },
  "band_checkpoints": {
   "_note": "Elapsed days for the main combat skill, each band at its own XP rate. Main combat skill earns 12 h/day x 0.70 share = 8.4 h/day-equivalent; at the reference rate that is 5,600 XP/day. Target: about two weeks per zone (docs/targets.md Pacing).",
@@ -101,7 +101,7 @@
   "band_45_to_70": 7.98
  },
  "day2_check": {
-  "_note": "GDD section 6: 'a new Tinker's total level passes 50 within two days'. 48 work hours: 24 h combat (main skill 70%, six others 5% each) and 24 h split evenly across three non-combat skills (Prospecting, Smithing, Tinkering, the first-session chain in section 7), all at the reference rate. Six skills untouched at level 1.",
+  "_note": "GDD section 6: 'a new Tinker's total level passes 50 within two days'. 48 work hours: 24 h combat (main skill 70%, six others 5% each) and 24 h split evenly across three non-combat skills (Prospecting, Smithing, Tinkering, the first-session chain in section 7), all at the reference rate. Six skills untouched at level 1. The pass depends on spreading XP: with the same 24 non-combat hours in one non-combat skill the total is 47; split across two it is exactly 50, which does not pass; and at an 80/20 or 90/10 combat split (main skill / six others) even three non-combat skills give exactly 50.",
   "noncombat_xp_each": 5333,
   "noncombat_level_each": 6,
   "main_combat_xp": 11200,

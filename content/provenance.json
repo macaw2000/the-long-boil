@@ -8,13 +8,13 @@
       "pointer": null,
       "revision": 2,
       "work_order": "docs/work-orders/001-xp-curve.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-21T23:48:26Z",
+        "run": "2026-10-21T23:55:00Z",
         "checks": [
           "schema",
           "provenance",
@@ -22,7 +22,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: fits GDD pacing; open design calls carried forward in work order 001 (band-1 rate climb, balanced-player target, 70/30 split provisional)."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -35,6 +39,11 @@
           "at": "2026-10-21T23:48:26Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-10-21T23:55:00Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ]
     },
@@ -45,13 +54,13 @@
       "pointer": "/reference_action",
       "revision": 2,
       "work_order": "docs/work-orders/001-xp-curve.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-21T23:48:26Z",
+        "run": "2026-10-21T23:55:00Z",
         "checks": [
           "schema",
           "provenance",
@@ -59,7 +68,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: 54 s per smelt marked as an inferred upper bound, not derived; 10 XP is a unit choice."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -72,6 +85,11 @@
           "at": "2026-10-21T23:48:26Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-10-21T23:55:00Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ]
     }
