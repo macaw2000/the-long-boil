@@ -1,9 +1,7 @@
 {
- "schema": "tuning.xp_curve/0",
+ "schema": "tuning.xp_curve/1",
  "id": "tuning.global.xp_curve",
  "revision": 2,
- "status": "drafted",
- "validators": "none, waived by work order 001",
  "source": "docs/work-orders/001-xp-curve.md (revision 2); docs/gdd.md sections 1, 6, 7; docs/targets.md Pacing",
  "applies_to": "all sixteen skills (GDD section 6: 'All sixteen skills share one XP curve; no skill is cheaper to level than another.')",
  "assumptions": {
@@ -27,15 +25,17 @@
  },
  "formula": {
   "shape": "hybrid: a cheap opening stretch (levels 1 to 5) that ramps up cubically into geometric growth from level 6 on",
-  "level_cost": "cost(L -> L+1) = round(BASE * RATIO^(L-1) * min(1, (L/OPENING_END)^OPENING_POWER)), for L = 1..99",
+  "level_cost": "cost(L -> L+1) = round_half_up(base * ratio^(L-1) * min(1, (L/opening_end)^opening_power)), for L = 1..99",
   "total_xp": "total_xp(L) = sum of cost(k) for k = 1..L-1; total_xp(1) = 0",
-  "join": "At L = OPENING_END the ramp factor reaches 1, so cost(6) is the plain geometric cost and the curve is geometric from there to level 100, uncapped.",
-  "BASE": 3537,
-  "RATIO": 1.035,
-  "OPENING_END": 6,
-  "OPENING_POWER": 3,
+  "join": "At L = opening_end the ramp factor reaches 1, so cost(6) is the plain geometric cost and the curve is geometric from there to level 100, uncapped.",
+  "constants": {
+   "base": 3537,
+   "ratio": 1.035,
+   "opening_end": 6,
+   "opening_power": 3
+  },
   "derived": true,
-  "_derivation": "BASE is solved so total_xp(20) = 14 days x 8.4 main-skill hours/day x 666.67 XP/h = 78,400 XP (resolved table gives 78,397 after rounding). RATIO is kept from draft 1 (confirmed shape, value is an assumption). OPENING_END = 6 and OPENING_POWER = 3 are chosen so total level passes 50 within 48 hours while day 7 stays near level 12."
+  "_derivation": "base is solved so total_xp(20) = 14 days x 8.4 main-skill hours/day x 666.67 XP/h = 78,400 XP (resolved table gives 78,397 after rounding). ratio is kept from draft 1 (confirmed shape, value is an assumption). opening_end = 6 and opening_power = 3 are chosen so total level passes 50 within 48 hours while day 7 stays near level 12."
  },
  "reference_action": {
   "id": "tuning.global.xp_reference_smelt_brass_ingot",

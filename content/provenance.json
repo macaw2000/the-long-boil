@@ -1,18 +1,26 @@
 {
-  "schema": "provenance/1",
+  "schema": "provenance/2",
   "rows": [
     {
       "id": "tuning.global.xp_curve",
       "type": "tuning",
       "path": "content/tuning/xp-curve.json",
-      "status": "drafted",
+      "pointer": null,
+      "revision": 2,
+      "work_order": "docs/work-orders/001-xp-curve.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "waived",
-        "run": null,
-        "checks": null
+        "result": "pass",
+        "run": "2026-10-21T23:48:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve"
+        ],
+        "waiver": null
       },
       "review": null,
       "approved_by": null,
@@ -22,6 +30,11 @@
           "at": "2026-10-21T21:50:15Z",
           "status": "drafted",
           "by": "draftsman"
+        },
+        {
+          "at": "2026-10-21T23:48:26Z",
+          "status": "validated",
+          "by": "validators"
         }
       ]
     },
@@ -29,14 +42,22 @@
       "id": "tuning.global.xp_reference_smelt_brass_ingot",
       "type": "tuning",
       "path": "content/tuning/xp-curve.json",
-      "status": "drafted",
+      "pointer": "/reference_action",
+      "revision": 2,
+      "work_order": "docs/work-orders/001-xp-curve.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "waived",
-        "run": null,
-        "checks": null
+        "result": "pass",
+        "run": "2026-10-21T23:48:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve"
+        ],
+        "waiver": null
       },
       "review": null,
       "approved_by": null,
@@ -46,6 +67,11 @@
           "at": "2026-10-21T21:50:15Z",
           "status": "drafted",
           "by": "draftsman"
+        },
+        {
+          "at": "2026-10-21T23:48:26Z",
+          "status": "validated",
+          "by": "validators"
         }
       ]
     }

@@ -1,0 +1,10 @@
+FAIL provenance/bad-result content/provenance.json#/rows/0 id=fixture.fail.curve : validators.result is 'skipped'; must be pass, fail, waived or null
+FAIL provenance/many-rows content/tuning/twice.json id=fixture.fail.twice : content id has 2 rows in the register (rows 2, 3)
+FAIL provenance/missing-file content/provenance.json#/rows/4 id=fixture.fail.ghost : path 'content/tuning/missing.json' does not exist
+FAIL provenance/no-row content/tuning/orphan.json id=fixture.fail.orphan : content id has no row in the register
+FAIL provenance/pointer-unresolvable content/provenance.json#/rows/1 id=fixture.fail.curve_ref : pointer '/nowhere' does not resolve inside content/tuning/curve.json
+FAIL provenance/revision-mismatch content/provenance.json#/rows/5 id=fixture.fail.revised : row revision is 2; the content at content/tuning/revised.json has revision 3
+FAIL provenance/revision-mismatch content/provenance.json#/rows/6 id=fixture.fail.revised_part : row revision is 3; the content at content/tuning/revised.json#/part has revision 5
+FAIL provenance/shared-path-null-pointer content/tuning/twice.json : 2 rows point at this whole file with a null pointer: fixture.fail.twice (row 2), fixture.fail.twice (row 3)
+FAIL provenance/waived-without-waiver content/provenance.json#/rows/1 id=fixture.fail.curve_ref : validators.result is "waived" but validators.waiver is null or missing
+FAIL provenance/waiver-without-waived content/provenance.json#/rows/2 id=fixture.fail.twice : validators.waiver is set but validators.result is 'pass'

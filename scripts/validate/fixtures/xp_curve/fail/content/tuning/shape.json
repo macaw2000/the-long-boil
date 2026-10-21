@@ -1,0 +1,101 @@
+{
+ "schema": "tuning.xp_curve/1",
+ "id": "fixture.fail.shape",
+ "revision": 1,
+ "source": "Validator fixture. Not game content.",
+ "applies_to": "Validator fixture.",
+ "assumptions": {
+  "_note": "Fixture values.",
+  "CHECKINS_PER_DAY": 3
+ },
+ "formula": {
+  "shape": "fixture hybrid",
+  "level_cost": "cost(L) = round_half_up(base * ratio^(L-1) * min(1, (L/opening_end)^opening_power))",
+  "total_xp": "sum of cost(k) for k < L",
+  "join": "fixture",
+  "constants": {
+   "base": 2000,
+   "ratio": 1.04,
+   "opening_end": 5,
+   "opening_power": 2
+  },
+  "derived": true,
+  "_derivation": "Fixture constants, chosen to differ from the real curve."
+ },
+ "reference_action": {
+  "id": "fixture.fail.shape_ref",
+  "action": "fixture action",
+  "skill": "smithing",
+  "xp": 10,
+  "seconds_per_action": 60,
+  "purpose": "Fixture.",
+  "derived": true
+ },
+ "band_checkpoints": {
+  "main_skill_xp_per_day_at_reference_rate": 5000,
+  "checkpoints": [
+   {
+    "level": 20,
+    "total_xp": 49482,
+    "band": "1 to 20",
+    "band_xp": 49482,
+    "band_rate_multiplier": 0.71,
+    "band_days_at_own_rate": 13.94,
+    "target_band_days": 14,
+    "gap_days": -0.06,
+    "elapsed_days": 13.94,
+    "target_elapsed_days": 14,
+    "gap_elapsed_days": -0.06,
+    "elapsed_days_if_held_at_reference_rate": 9.9
+   },
+   {
+    "level": 45,
+    "total_xp": 224967,
+    "band": "20 to 45",
+    "band_xp": 175485,
+    "band_rate_multiplier": 2.5,
+    "band_days_at_own_rate": 14.04,
+    "target_band_days": 14,
+    "gap_days": 0.04,
+    "elapsed_days": 27.98,
+    "target_elapsed_days": 28,
+    "gap_elapsed_days": -0.02,
+    "elapsed_days_if_held_at_reference_rate": 45.0
+   },
+   {
+    "level": 70,
+    "total_xp": 692776,
+    "band": "45 to 70",
+    "band_xp": 467809,
+    "band_rate_multiplier": 6.7,
+    "band_days_at_own_rate": 13.96,
+    "target_band_days": 14,
+    "gap_days": -0.04,
+    "elapsed_days": 41.94,
+    "target_elapsed_days": 42,
+    "gap_elapsed_days": -0.06,
+    "elapsed_days_if_held_at_reference_rate": 138.6
+   }
+  ]
+ },
+ "band_xp_rate_targets": {
+  "band_1_to_20": 0.71,
+  "band_20_to_45": 2.5,
+  "band_45_to_70": 6.7
+ },
+ "day2_check": {
+  "noncombat_xp_each": 1,
+  "noncombat_level_each": 1,
+  "main_combat_xp": 1,
+  "main_combat_level": 1,
+  "other_combat_xp_each": 1,
+  "other_combat_level_each": 1,
+  "untouched_skills_at_level_1": 6,
+  "total_level_at_48h": 16,
+  "passes_50": false
+ },
+ "day7_check": {
+  "main_combat_level_at_day_7": 5.0,
+  "gap_levels": -7.0
+ }
+}

@@ -1,0 +1,67 @@
+{
+ "schema": "provenance/2",
+ "rows": [
+  {
+   "id": "fixture.pass.xp_curve",
+   "type": "tuning",
+   "path": "content/tuning/curve.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  },
+  {
+   "id": "fixture.pass.xp_curve_ref",
+   "type": "tuning",
+   "path": "content/tuning/curve.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": "/reference_action",
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  }
+ ]
+}

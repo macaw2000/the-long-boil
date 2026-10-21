@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tuning.xp_curve/1",
+  "title": "The shared XP curve (work order 001), version 1",
+  "description": "Shape of content/tuning/xp-curve.json as of work order 002. Changes from /0: no 'status' and no 'validators' (the register owns both), and 'formula.constants' carries the curve constants as numbers. The cost rule is fixed by this schema version: cost(L -> L+1) = round_half_up(base * ratio^(L-1) * min(1, (L / opening_end)^opening_power)) for L = 1..99. A curve of another shape needs a new schema version.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "id", "revision", "source", "applies_to", "assumptions",
+    "formula", "reference_action", "band_checkpoints",
+    "band_xp_rate_targets", "day2_check", "day7_check", "table"
+  ],
+  "properties": {
+    "schema": { "const": "tuning.xp_curve/1" },
+    "id": { "$ref": "#/$defs/content_id" },
+    "revision": { "type": "integer", "minimum": 1 },
+    "source": { "type": "string", "minLength": 1 },
+    "applies_to": { "type": "string", "minLength": 1 },
+    "assumptions": {
+      "type": "object",
+      "properties": { "_note": { "type": "string" } },
+      "additionalProperties": { "type": ["number", "string"] }
+    },
+    "formula": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["shape", "level_cost", "total_xp", "join", "constants", "derived", "_derivation"],
+      "properties": {
+        "shape": { "type": "string", "minLength": 1 },
+        "level_cost": { "type": "string", "minLength": 1 },
+        "total_xp": { "type": "string", "minLength": 1 },
+        "join": { "type": "string", "minLength": 1 },
+        "constants": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["base", "ratio", "opening_end", "opening_power"],
+          "properties": {
+            "base": { "type": "number", "exclusiveMinimum": 0 },
+            "ratio": { "type": "number", "exclusiveMinimum": 0 },
+            "opening_end": { "type": "integer", "minimum": 1, "maximum": 99 },
+            "opening_power": { "type": "number", "minimum": 0 }
+          }
+        },
+        "derived": { "type": "boolean" },
+        "_derivation": { "type": "string" }
+      }
+    },
+    "reference_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "action", "skill", "xp", "seconds_per_action", "purpose", "derived"],
+      "properties": {
+        "id": { "$ref": "#/$defs/content_id" },
+        "action": { "type": "string", "minLength": 1 },
+        "skill": { "type": "string", "minLength": 1 },
+        "xp": { "type": "number", "exclusiveMinimum": 0 },
+        "seconds_per_action": { "type": "number", "exclusiveMinimum": 0 },
+        "purpose": { "type": "string", "minLength": 1 },
+        "derived": { "type": "boolean" }
+      }
+    },
+    "band_checkpoints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["main_skill_xp_per_day_at_reference_rate", "checkpoints"],
+      "properties": {
+        "_note": { "type": "string" },
+        "main_skill_xp_per_day_at_reference_rate": { "type": "number", "exclusiveMinimum": 0 },
+        "checkpoints": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/checkpoint" }
+        }
+      }
+    },
+    "band_xp_rate_targets": {
+      "type": "object",
+      "properties": { "_note": { "type": "string" } },
+      "additionalProperties": { "type": "number", "exclusiveMinimum": 0 }
+    },
+    "day2_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "noncombat_xp_each", "noncombat_level_each", "main_combat_xp",
+        "main_combat_level", "other_combat_xp_each", "other_combat_level_each",
+        "untouched_skills_at_level_1", "total_level_at_48h", "passes_50"
+      ],
+      "properties": {
+        "_note": { "type": "string" },
+        "noncombat_xp_each": { "type": "number", "minimum": 0 },
+        "noncombat_level_each": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "main_combat_xp": { "type": "number", "minimum": 0 },
+        "main_combat_level": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "other_combat_xp_each": { "type": "number", "minimum": 0 },
+        "other_combat_level_each": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "untouched_skills_at_level_1": { "type": "integer", "minimum": 0 },
+        "total_level_at_48h": { "type": "integer", "minimum": 0 },
+        "passes_50": { "type": "boolean" }
+      }
+    },
+    "day7_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["main_combat_level_at_day_7", "gap_levels"],
+      "properties": {
+        "_note": { "type": "string" },
+        "main_combat_level_at_day_7": { "type": "number", "minimum": 1 },
+        "gap_levels": { "type": "number" }
+      }
+    },
+    "table": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["level", "cost_to_next", "total_xp"],
+        "properties": {
+          "level": { "type": "integer", "minimum": 1 },
+          "cost_to_next": { "type": ["integer", "null"], "minimum": 0 },
+          "total_xp": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "content_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)+$"
+    },
+    "checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level", "total_xp", "band", "band_xp", "band_rate_multiplier",
+        "band_days_at_own_rate", "target_band_days", "gap_days",
+        "elapsed_days", "target_elapsed_days", "gap_elapsed_days",
+        "elapsed_days_if_held_at_reference_rate"
+      ],
+      "properties": {
+        "level": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "total_xp": { "type": "integer", "minimum": 0 },
+        "band": { "type": "string", "pattern": "^[0-9]+ to [0-9]+$" },
+        "band_xp": { "type": "integer", "minimum": 0 },
+        "band_rate_multiplier": { "type": "number", "exclusiveMinimum": 0 },
+        "band_days_at_own_rate": { "type": "number", "minimum": 0 },
+        "target_band_days": { "type": "number", "exclusiveMinimum": 0 },
+        "gap_days": { "type": "number" },
+        "elapsed_days": { "type": "number", "minimum": 0 },
+        "target_elapsed_days": { "type": "number", "exclusiveMinimum": 0 },
+        "gap_elapsed_days": { "type": "number" },
+        "elapsed_days_if_held_at_reference_rate": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}

@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "provenance/2",
+  "title": "Provenance register, version 2",
+  "description": "The provenance register, version 2 (work order 002). Every provenance/1 field, plus row fields 'revision' (content revision the row describes), 'work_order' (path of the work order that produced the item), 'pointer' (RFC 6901 JSON Pointer into the file at 'path' for an item that is one part of a file; null means the whole file) and 'validators.waiver' ({by: work order path, reason}). Every field is present; a field that does not apply is null.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "rows"
+  ],
+  "properties": {
+    "schema": {
+      "const": "provenance/2"
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/row"
+      }
+    }
+  },
+  "$defs": {
+    "status": {
+      "enum": [
+        "drafted",
+        "validated",
+        "reviewed",
+        "approved",
+        "live"
+      ]
+    },
+    "timestamp_or_null": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "review_or_null": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "by",
+        "verdict",
+        "notes"
+      ],
+      "properties": {
+        "by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verdict": {
+          "enum": [
+            "pass",
+            "fail"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "history_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "at",
+        "status",
+        "by"
+      ],
+      "properties": {
+        "at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "by": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "waiver_or_null": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "by",
+        "reason"
+      ],
+      "properties": {
+        "by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "path",
+        "status",
+        "drafted_by",
+        "model",
+        "patch",
+        "validators",
+        "review",
+        "approved_by",
+        "approved_at",
+        "history",
+        "revision",
+        "work_order",
+        "pointer"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "drafted_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "patch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "validators": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "run",
+            "checks",
+            "waiver"
+          ],
+          "properties": {
+            "result": {
+              "enum": [
+                "pass",
+                "fail",
+                "waived",
+                null
+              ]
+            },
+            "run": {
+              "$ref": "#/$defs/timestamp_or_null"
+            },
+            "checks": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "waiver": {
+              "$ref": "#/$defs/waiver_or_null"
+            }
+          }
+        },
+        "review": {
+          "$ref": "#/$defs/review_or_null"
+        },
+        "approved_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "approved_at": {
+          "$ref": "#/$defs/timestamp_or_null"
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/history_entry"
+          }
+        },
+        "revision": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "work_order": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "pointer": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^/"
+        }
+      }
+    }
+  }
+}

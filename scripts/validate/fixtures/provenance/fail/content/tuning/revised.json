@@ -1,0 +1,9 @@
+{
+ "schema": "tuning.xp_curve/1",
+ "id": "fixture.fail.revised",
+ "revision": 3,
+ "part": {
+  "id": "fixture.fail.revised_part",
+  "revision": 5
+ }
+}

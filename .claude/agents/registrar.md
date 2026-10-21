@@ -17,28 +17,34 @@ Nobody else writes this file. If another agent hands you a change, you make it. 
 
 ## The register
 
-`content/provenance.json` is a JSON object: a `schema` string and a `rows` array. One row per content item:
+`content/provenance.json` is a JSON object: a `schema` string (`"provenance/2"`) and a `rows` array. One row per content item:
 
 ```json
 {
-  "id": "monster.rustmoor.rust_rat",
-  "type": "monster",
-  "path": "content/monsters/rustmoor.json",
-  "status": "approved",
+  "id": "tuning.global.xp_reference_smelt_brass_ingot",
+  "type": "tuning",
+  "path": "content/tuning/xp-curve.json",
+  "pointer": "/reference_action",
+  "revision": 2,
+  "work_order": "docs/work-orders/001-xp-curve.md",
+  "status": "drafted",
   "drafted_by": "draftsman",
-  "model": "claude-sonnet-5-5",
-  "patch": "0.1",
-  "validators": { "result": "pass", "run": "2026-10-21T18:02:00Z", "checks": ["stat_budget", "schema", "reward_cap"] },
-  "review": { "by": "inspector", "verdict": "pass", "notes": "" },
-  "approved_by": "jeremy",
-  "approved_at": "2026-10-21T19:40:00Z",
-  "history": [
-    { "at": "2026-10-21T17:55:00Z", "status": "drafted", "by": "draftsman" }
-  ]
+  "model": null,
+  "patch": null,
+  "validators": { "result": "waived", "run": null, "checks": null,
+                  "waiver": { "by": "docs/work-orders/001-xp-curve.md", "reason": "scripts/validate/ did not exist" } },
+  "review": null,
+  "approved_by": null,
+  "approved_at": null,
+  "history": [ { "at": "2026-10-21T21:50:15Z", "status": "drafted", "by": "draftsman" } ]
 }
 ```
 
-Fields that do not yet apply are `null`, never omitted and never invented.
+- `pointer` is a JSON Pointer into the file at `path` when the item is one part of a file. It is `null` when the item is the whole file. No two rows may share a `path` with a `null` pointer.
+- `revision` is the content revision this row describes. `work_order` is the path of the work order that produced the item.
+- `validators.result` is `pass`, `fail`, `waived` or `null`. `waived` requires `validators.waiver` (`{ "by": <work order path>, "reason": <string> }`), and a waiver requires `waived`. A waiver is never a status, and it never satisfies `validated`, which still needs `pass`.
+
+Fields that do not yet apply are `null`, never omitted and never invented. The shape is enforced by `python3 scripts/validate/run.py` against `scripts/validate/schemas/register/provenance.2.schema.json`.
 
 ## Status ladder
 
@@ -54,7 +60,7 @@ A row moves one rung at a time, forward or back to `drafted`. Skipping a rung is
 
 ## How you work
 
-1. Read `content/provenance.json`. If it does not exist, create it with `{"schema": "provenance/1", "rows": []}`.
+1. Read `content/provenance.json`. If it does not exist, create it with `{"schema": "provenance/2", "rows": []}`.
 2. Apply the change you were asked for: add rows, or move statuses.
 3. Append an entry to that row's `history` for every status change, with a timestamp and who caused it.
 4. Write the file back, sorted by `id`, two-space indented, so diffs stay readable in git.

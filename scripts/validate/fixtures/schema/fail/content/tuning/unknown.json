@@ -1,0 +1,9 @@
+{
+ "schema": "monster/9",
+ "id": "fixture.fail.unknown",
+ "parts": [
+  {
+   "id": 7
+  }
+ ]
+}

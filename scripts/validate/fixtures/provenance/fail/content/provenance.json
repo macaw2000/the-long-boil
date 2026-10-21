@@ -1,0 +1,219 @@
+{
+ "schema": "provenance/2",
+ "rows": [
+  {
+   "id": "fixture.fail.curve",
+   "type": "tuning",
+   "path": "content/tuning/curve.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "skipped",
+    "run": null,
+    "checks": null,
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  },
+  {
+   "id": "fixture.fail.curve_ref",
+   "type": "tuning",
+   "path": "content/tuning/curve.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": "/nowhere",
+   "validators": {
+    "result": "waived",
+    "run": null,
+    "checks": null,
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  },
+  {
+   "id": "fixture.fail.twice",
+   "type": "tuning",
+   "path": "content/tuning/twice.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": {
+     "by": "docs/work-orders/001-xp-curve.md",
+     "reason": "Fixture waiver."
+    }
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  },
+  {
+   "id": "fixture.fail.twice",
+   "type": "tuning",
+   "path": "content/tuning/twice.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  },
+  {
+   "id": "fixture.fail.ghost",
+   "type": "tuning",
+   "path": "content/tuning/missing.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  },
+  {
+   "id": "fixture.fail.revised",
+   "type": "tuning",
+   "path": "content/tuning/revised.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 2,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  },
+  {
+   "id": "fixture.fail.revised_part",
+   "type": "tuning",
+   "path": "content/tuning/revised.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 3,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": "/part",
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  }
+ ]
+}

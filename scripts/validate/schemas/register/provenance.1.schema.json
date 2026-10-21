@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "provenance/1",
+  "title": "Provenance register, version 1",
+  "description": "The provenance register, version 1, as described in .claude/agents/registrar.md. Accepted with a warning while the registrar migrates to provenance/2.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "rows"
+  ],
+  "properties": {
+    "schema": {
+      "const": "provenance/1"
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/row"
+      }
+    }
+  },
+  "$defs": {
+    "status": {
+      "enum": [
+        "drafted",
+        "validated",
+        "reviewed",
+        "approved",
+        "live"
+      ]
+    },
+    "timestamp_or_null": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "review_or_null": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "by",
+        "verdict",
+        "notes"
+      ],
+      "properties": {
+        "by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "verdict": {
+          "enum": [
+            "pass",
+            "fail"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "history_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "at",
+        "status",
+        "by"
+      ],
+      "properties": {
+        "at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "by": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "path",
+        "status",
+        "drafted_by",
+        "model",
+        "patch",
+        "validators",
+        "review",
+        "approved_by",
+        "approved_at",
+        "history"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "drafted_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "model": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "patch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "validators": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "run",
+            "checks"
+          ],
+          "properties": {
+            "result": {
+              "enum": [
+                "pass",
+                "fail",
+                "waived",
+                null
+              ]
+            },
+            "run": {
+              "$ref": "#/$defs/timestamp_or_null"
+            },
+            "checks": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "review": {
+          "$ref": "#/$defs/review_or_null"
+        },
+        "approved_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "approved_at": {
+          "$ref": "#/$defs/timestamp_or_null"
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/history_entry"
+          }
+        }
+      }
+    }
+  }
+}

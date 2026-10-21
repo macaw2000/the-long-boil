@@ -1,0 +1,79 @@
+"""Check 1: schema.
+
+- Every file under content/ parses as JSON (the register included).
+- Every content file (everything under content/ except the register)
+  declares a "schema" string, a schema exists for it, and the file matches it.
+- Every "id", at any depth, is unique across the whole content tree.
+
+The register's own shape is the provenance check's job, not this one's.
+
+Usage: python3 scripts/validate/check_schema.py [--root DIR]
+"""
+
+import sys
+
+sys.dont_write_bytecode = True  # keep __pycache__ out of the repo
+
+import lib  # noqa: E402
+
+CHECK = "schema"
+
+
+def run(root):
+    report = lib.Report(CHECK)
+    schemas = lib.load_schemas("content")
+
+    # Parse every file, the register included.
+    for path in lib.walk_files(root, lib.CONTENT_DIR):
+        if path == lib.REGISTER_PATH:
+            _, error = lib.load_json(root, path)
+            if error:
+                report.fail("parse", path, error)
+
+    seen = {}  # id -> list of (path, pointer)
+    for path in lib.content_files(root):
+        data, error = lib.load_json(root, path)
+        if error:
+            report.fail("parse", path, error)
+            continue
+        if not isinstance(data, dict):
+            report.fail("not-an-object", path, "top level must be a JSON object")
+            continue
+
+        top_id = data.get("id") if isinstance(data.get("id"), str) else None
+
+        declared = data.get("schema")
+        if not isinstance(declared, str) or not declared:
+            report.fail("no-schema", path, "does not declare a \"schema\" string", top_id)
+        elif declared not in schemas:
+            report.fail(
+                "unknown-schema", path,
+                "schema %r is not accepted; known: %s"
+                % (declared, ", ".join(sorted(schemas))),
+                top_id)
+        else:
+            for pointer, message in lib.validate(data, schemas[declared]):
+                report.fail("shape", path, "%s: %s" % (pointer, message), top_id)
+
+        for pointer, value in lib.collect_ids(data):
+            if not isinstance(value, str) or not value:
+                report.fail("bad-id", path, "%s: id must be a non-empty string" % pointer)
+                continue
+            seen.setdefault(value, []).append((path, pointer))
+
+    for ident in sorted(seen):
+        places = seen[ident]
+        if len(places) > 1:
+            where = ", ".join("%s#%s" % place for place in places)
+            for path in sorted(set(place[0] for place in places)):
+                report.fail("duplicate-id", path,
+                            "id appears %d times: %s" % (len(places), where), ident)
+    return report
+
+
+def main(argv):
+    return run(lib.parse_root(argv)).emit()
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

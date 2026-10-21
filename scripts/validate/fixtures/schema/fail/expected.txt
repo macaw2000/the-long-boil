@@ -1,0 +1,14 @@
+FAIL schema/bad-id content/tuning/unknown.json : /parts/0/id: id must be a non-empty string
+FAIL schema/duplicate-id content/tuning/dupe.json id=fixture.fail.old : id appears 2 times: content/tuning/dupe.json#/reference_action/id, content/tuning/old.json#/id
+FAIL schema/duplicate-id content/tuning/dupe.json id=fixture.fail.shape : id appears 2 times: content/tuning/dupe.json#/id, content/tuning/shape.json#/id
+FAIL schema/duplicate-id content/tuning/old.json id=fixture.fail.old : id appears 2 times: content/tuning/dupe.json#/reference_action/id, content/tuning/old.json#/id
+FAIL schema/duplicate-id content/tuning/shape.json id=fixture.fail.shape : id appears 2 times: content/tuning/dupe.json#/id, content/tuning/shape.json#/id
+FAIL schema/no-schema content/tuning/no-schema.json id=fixture.fail.no_schema : does not declare a "schema" string
+FAIL schema/parse content/provenance.json : does not parse as JSON: Expecting value: line 2 column 1 (char 39)
+FAIL schema/parse content/tuning/broken.json : does not parse as JSON: Expecting property name enclosed in double quotes: line 2 column 1 (char 34)
+FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /formula/BASE: field 'BASE' is not allowed by this schema
+FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /formula/constants: missing required field 'base'
+FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /status: field 'status' is not allowed by this schema
+FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /validators: field 'validators' is not allowed by this schema
+FAIL schema/unknown-schema content/tuning/old.json id=fixture.fail.old : schema 'tuning.xp_curve/0' is not accepted; known: tuning.xp_curve/1
+FAIL schema/unknown-schema content/tuning/unknown.json id=fixture.fail.unknown : schema 'monster/9' is not accepted; known: tuning.xp_curve/1
