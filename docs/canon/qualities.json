@@ -1,0 +1,39 @@
+{
+  "schema": "qualities/1",
+  "source": "docs/gdd.md section 5, Qualities: one model for everything",
+  "note": "Every fact the story can check is a quality: a named integer on the player's record. An agent may only read or set a name listed here. A draft that needs a new quality reports it; it is added here by Jeremy before that draft ships.",
+  "types": {
+    "skill": { "range": [1, 100], "set_by": "the idle loop, never by a storylet" },
+    "item": { "range": [0, null], "set_by": "drops, crafting, storylets" },
+    "favour": { "range": [0, 7], "set_by": "Work Orders, storylets, Guild Contracts" },
+    "needle": { "range": [0, 8], "set_by": "failed or risky storylets; falls 1 per 24h" },
+    "progress": { "range": [0, 100], "set_by": "storylets" },
+    "lore": { "range": [0, 24], "set_by": "storylets, boss first-kills, rare drops" },
+    "flag": { "range": [0, 1], "set_by": "choices" }
+  },
+  "qualities": {
+    "skill": [
+      "prospecting", "lumbering", "scavenging",
+      "smithing", "tinkering", "tailoring", "cooking", "tea_blending",
+      "calibrating",
+      "vitality", "pressure", "precision", "melee", "fortitude", "marksmanship", "aetherics"
+    ],
+    "favour": [
+      "favour.board", "favour.stokers", "favour.counting_house", "favour.chapel",
+      "favour.gaugers", "favour.polytechnic", "favour.vapourists", "favour.thunderhead"
+    ],
+    "needle": ["needle.scald", "needle.arrears", "needle.notice", "needle.haze"],
+    "progress": [
+      "prologue.progress", "act1.progress", "act2.progress", "act3.progress",
+      "ambition.gauge", "ambition.lantern", "ambition.ember", "ambition.fathom"
+    ],
+    "lore": ["lore.whistle_notations", "lore.ledger_pages"],
+    "nerve": ["nerve"],
+    "flag": []
+  },
+  "open_questions": [
+    "The flag list is empty. The GDD names example flags (gave Page 1 to Inkwell, partnered with the Baron) but no complete set. Flags get added here as each act's beats are written.",
+    "The GDD does not name the item qualities for the 24 Ledger Pages individually. Decide whether they are 24 item ids or one counter plus a set of flags.",
+    "Nerve's cap of 10 is stated, and the Night Lamp raises it to 14. Whether the cap is a quality or a config value is an engine decision, not a canon one."
+  ]
+}
