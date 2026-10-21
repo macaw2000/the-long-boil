@@ -34,6 +34,16 @@ Produce one file, `content/tuning/xp-curve.json`, holding:
 
 Nothing else. No stats, no drop rates, no calibration odds, no prices. Those are later work orders.
 
+## Settled before you start
+
+Jeremy set these on 21 October 2026. They are now in `docs/gdd.md`, section 6. Do not raise them as open questions.
+
+- **One shared curve.** All sixteen skills level on the same curve. There is not a curve per skill, and no skill is cheaper than another.
+- **Logarithmic.** Each level costs more experience than the last, so early levels come quickly and late ones do not.
+- **Offline counts.** Progress earned offline counts toward level exactly as time at the keyboard does. A zone's two weeks are two weeks of a player's life, not two weeks of their attention, so your band arithmetic includes the 12 offline hours per check-in.
+
+One thing his wording leaves open, and you should ask rather than assume: "logarithmic" describes how levelling feels, and the usual way to build it is total experience rising geometrically with level, so each level costs a fixed multiple of the one before. If that is what you implement, say so plainly in your report in one line, so he can correct it in one word if he meant something else.
+
 ## Constraints
 
 - Every number is derived from a stated GDD fact or raised as an open question. Show the derivation inline in your report, with the GDD line each one rests on.
@@ -47,7 +57,7 @@ Nothing else. No stats, no drop rates, no calibration odds, no prices. Those are
 - A derivation per constant, each citing its GDD line.
 - The three band checkpoints as elapsed days, against the two-week target, with the gap.
 - Every assumption, in a table, each marked as an assumption.
-- Open questions. Expect at least these, and add any others: whether offline hours count toward the band time, whether non-combat skills share the curve with combat skills, and whether the 16 skills level independently or feed a total level that gates zones.
+- Open questions. The three big shape questions are settled above, so expect these instead, and add any others: which skill a zone's level band refers to, whether total level across all sixteen skills gates anything beyond the level 50 trading unlock, and what the curve does above level 70, which no capstone content reaches.
 - The new ids, handed to the `registrar` for rows at `drafted`.
 
 ## Then
