@@ -95,6 +95,56 @@
       "id": "item.rustmoor.ledger_page_drop_4",
       "name": "Ledger Page, Rustmoor Drop 4",
       "flavour": "A page of Hester's, in her own hand."
+    },
+    {
+      "id": "item.rustmoor.iron_rifle",
+      "name": "Iron Rifle",
+      "flavour": "Bench-built from iron and patience, it throws a ball true at thirty yards."
+    },
+    {
+      "id": "item.rustmoor.spark_rod",
+      "name": "Spark Rod",
+      "flavour": "An iron rod wound in copper that snaps a blue spark at anything that squeaks."
+    },
+    {
+      "id": "item.rustmoor.garnet_rifle",
+      "name": "Garnet Rifle",
+      "flavour": "An Iron Rifle with a Garnet Sight fitted, for shots you would rather not take twice."
+    },
+    {
+      "id": "item.rustmoor.brass_catapult",
+      "name": "Brass Catapult",
+      "flavour": "A brass fork and a strip of boiler gasket that sends a nut wherever you were looking."
+    },
+    {
+      "id": "item.rustmoor.copper_coil",
+      "name": "Copper Coil",
+      "flavour": "A hand coil of bare copper wire that stings whatever you point it at."
+    },
+    {
+      "id": "item.rustmoor.iron_crowbar",
+      "name": "Iron Crowbar",
+      "flavour": "Opens crates, doors and Rust Rats with equal disregard."
+    },
+    {
+      "id": "item.rustmoor.brass_sparker",
+      "name": "Brass Sparker",
+      "flavour": "A brass flint-wheel in a wire cage that throws a crackle the length of your arm."
+    },
+    {
+      "id": "item.rustmoor.riveting_hammer",
+      "name": "Riveting Hammer",
+      "flavour": "A shipwright's steel hammer, built to close a rivet in one blow and as good on a skull."
+    },
+    {
+      "id": "item.rustmoor.steel_carbine",
+      "name": "Steel Carbine",
+      "flavour": "A short steel rifle that throws a slug through a soup tin and the rat inside it."
+    },
+    {
+      "id": "item.rustmoor.garnet_rod",
+      "name": "Garnet Rod",
+      "flavour": "A Spark Rod tipped with a garnet, which fattens its spark to a fistful."
     }
   ]
 }

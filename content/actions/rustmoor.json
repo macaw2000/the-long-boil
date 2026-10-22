@@ -216,6 +216,208 @@
           "qty": 1
         }
       ]
+    },
+    {
+      "id": "action.rustmoor.tinker_iron_rifle",
+      "skill": "tinkering",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 19,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_rifle",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_spark_rod",
+      "skill": "tinkering",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 30,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 1
+        },
+        {
+          "item": "item.rustmoor.copper",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.spark_rod",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_garnet_rifle",
+      "skill": "tinkering",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 42,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_rifle",
+          "qty": 1
+        },
+        {
+          "item": "item.rustmoor.garnet_sight",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.garnet_rifle",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_brass_catapult",
+      "skill": "tinkering",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 9,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_catapult",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_copper_coil",
+      "skill": "tinkering",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 9,
+      "inputs": [
+        {
+          "item": "item.rustmoor.copper",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.copper_coil",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_iron_crowbar",
+      "skill": "smithing",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 19,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_crowbar",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_brass_sparker",
+      "skill": "tinkering",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 19,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_sparker",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_riveting_hammer",
+      "skill": "smithing",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 30,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.riveting_hammer",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_steel_carbine",
+      "skill": "tinkering",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 30,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_carbine",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_garnet_rod",
+      "skill": "tinkering",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 42,
+      "inputs": [
+        {
+          "item": "item.rustmoor.spark_rod",
+          "qty": 1
+        },
+        {
+          "item": "item.rustmoor.garnet",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.garnet_rod",
+          "qty": 1
+        }
+      ]
     }
   ]
 }

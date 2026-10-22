@@ -717,3 +717,16 @@ put(FR + MP, monsters2(TEN, BOSS, dict(TEN, id="monster.global.fixture_rifle_shy
 put("references/pass/" + GP, gearfile("gear.global.fixture", weapon(INGOT, "melee", 1, 10, 0)))
 put(R + "gear/fixture.json", gearfile("gear.global.fixture", weapon(INGOT, "melee", 1, 10, 0),
     armour("item.global.fixture_ghost_coat", 1, 5), armour("item.global.fixture_stray", 1, 5)))
+
+# ---- dotfiles: every check skips dotfiles and dot-directories under content/
+# (lib.walk_files). Each pass fixture gets a dotfile that is not JSON and a
+# file in a dot-directory that every check would fail on if it read it: it
+# declares an unknown monster schema, holds an id with no register row, and
+# repeats an id. The names are not gitignored (.DS_Store is), so they are
+# committed and the proof survives a clone. A hidden gear/9 file does the
+# same for the combat check.
+for check in ("schema", "provenance", "xp_curve", "references", "pacing", "drops", "combat"):
+    put(check + "/pass/content/.notes.json", "{ not json, as a Finder or editor file would be\n")
+    put(check + "/pass/content/monsters/.cache/stray.json", {"schema": "monster/9", "id": "fixture.hidden.stray",
+        "monsters": [{"id": "fixture.hidden.stray"}]})
+    put(check + "/pass/content/gear/.cache/stray.json", {"schema": "gear/9", "id": "gear.global.fixture_hidden"})

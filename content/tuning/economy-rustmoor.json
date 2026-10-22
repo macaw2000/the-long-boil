@@ -97,6 +97,56 @@
       "bound": true,
       "collector_price": null,
       "collector_weekly_cap": null
+    },
+    "item.rustmoor.iron_rifle": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.spark_rod": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.garnet_rifle": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.brass_catapult": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.copper_coil": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.iron_crowbar": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.brass_sparker": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.riveting_hammer": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.steel_carbine": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.garnet_rod": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
     }
   },
   "anchors": {

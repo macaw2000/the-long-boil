@@ -41,6 +41,28 @@ No armour. Armour comes with Tailoring; the check's no-armour warnings are expec
 - Clearance: Act I only for any new name or flavour line.
 - Hand new ids to the registrar through your report. The provenance check will fail until it adds the rows; every other check must pass.
 
+## Settled after the first draft
+
+Jeremy set these on 22 October 2026:
+
+- **Weapon power at +0 is 10 × level required.**
+- **A monster's attack interval scales with its kill time:** `attack_interval_s = seconds_per_kill / 18`, so every fight has about the same number of monster swings and harder monsters hit harder. Kill times and Ration use are unchanged.
+- **Scrapjaw's Cleaver has +0 power 180,** between the Steel Blade and the level-20 rule, so level-20 Cinderworks weapons outclass it.
+- **Accepted:** the hit-point jump between tiers, Tinkering as the source of the Spark Rod, and the Garnet Rifle.
+
+## Settled after the inspector's review
+
+Jeremy set these on 22 October 2026. The third, fourth and fifth are recorded in GDD sections 6 and 7.
+
+- **Scrapjaw is weak to melee.** Ada's path in section 7 is melee, and the boss now drops a weapon of the style that beats it. Re-solve Scrapjaw for the melee reference player.
+- **Every attack style has a weapon at levels 1, 5, 10 and 15 in Rustmoor.** That is 7 more weapons: melee at 5 and 10 (Smithing), marksmanship at 1 and 10 (Tinkering), aetherics at 1, 5 and 15 (Tinkering), each with its item, its action at the tier rate for its level, and its economy entry. Power follows the 10 × level rule.
+- **Scrapjaw keeps the /18 attack interval.** The settled steepness is now about 9 points of win chance per level and about 15% with the wrong style, replacing work order 009's 15 points and 4%.
+- **Rations are required for the boss,** and Brassbuckle leaves a starter stock in the first session. A Cooking work order comes next.
+- **Rustmoor has no armour** for the capstone, so these stats stand when Tailoring arrives in the Cinderworks.
+- **Accepted for now:** the Ration load on new players, to revisit after a playtest.
+- **Small fixes:** the Iron Rifle throws a ball, not a bolt. The Garnet Rifle keeps no collector, and its sight adding power rather than accuracy is accepted.
+- **`combat.json` must record** the /18 interval rule, the 10 × level power rule and the Cleaver's 180, and its steepness and Vitality/Fortitude figures must match the content.
+
 ## Hand back
 
 - The files, every new id, each monster's stats with its computed kill time or win chance, the boss steepness, derivations, proposals, open questions, and the validator output verbatim.

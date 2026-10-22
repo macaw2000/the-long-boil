@@ -1,8 +1,8 @@
 {
  "schema": "tuning.combat/1",
  "id": "tuning.global.combat",
- "revision": 3,
- "source": "docs/work-orders/009-combat-model.md (including 'Settled after the first draft'); docs/gdd.md sections 1, 6 (Combat paragraph), 7; content/monsters/rustmoor.json; content/tuning/xp-curve.json; docs/work-orders/001-xp-curve.md and 008-rustmoor-drops.md (carried-forward notes)",
+ "revision": 4,
+ "source": "docs/work-orders/009-combat-model.md (including 'Settled after the first draft'); docs/work-orders/011-rustmoor-combat-stats.md ('Settled after the first draft' and 'Settled after the inspector's review'); docs/gdd.md sections 1, 6 (Combat paragraph), 7; content/monsters/rustmoor.json; content/tuning/xp-curve.json; docs/work-orders/001-xp-curve.md and 008-rustmoor-drops.md (carried-forward notes)",
  "applies_to": "every fight: the seven combat skills, weapons and armour, monsters and bosses in all zones",
  "basis_key": {
   "settled": "Jeremy has decided it (work order 009, 'Settled after the first draft', 22 October 2026); where the GDD records it, the line is quoted",
@@ -86,8 +86,10 @@
     "level_required": "style level needed to equip (work order 008 carried forward: 'Scrapjaw's Cleaver needs level 20 to equip')",
     "stats_by_calibration": "exactly 21 rows, +0 to +20, each {calibration, power, accuracy}; power in x10 units (units.HP_DAMAGE_SCALE); fixed, no rolls (derived from section 6)"
    },
+   "power_at_plus_0": {"rule": "power(0) = 10 * level_required, accuracy(0) = 0", "basis": "settled", "settled": "Work order 011, 'Settled after the first draft' (22 October 2026): 'Weapon power at +0 is 10 x level required.'"},
+   "scrapjaws_cleaver": {"power_at_plus_0": 180, "basis": "settled", "settled": "Work order 011, 'Settled after the first draft': 'Scrapjaw's Cleaver has +0 power 180, between the Steel Blade and the level-20 rule, so level-20 Cinderworks weapons outclass it.' The one exception to power_at_plus_0."},
    "proposed_row_rule": "power(c) = round(power(0) * (1 + CALIBRATION_STEP * c)), accuracy(c) = accuracy(0) + c",
-   "basis": "proposal; CALIBRATION_STEP is left to the calibration work order"
+   "basis": "proposal, except power_at_plus_0 and scrapjaws_cleaver (settled); CALIBRATION_STEP is left to the calibration work order"
   },
   "armour": {
    "fields": {
@@ -109,10 +111,11 @@
    "hit_chance": "fixed per monster, 0 to 1",
    "attack_interval_s": "seconds per monster swing"
   },
+  "attack_interval_rule": {"rule": "attack_interval_s = seconds_per_kill / 18", "basis": "settled", "settled": "Work order 011, 'Settled after the first draft' (22 October 2026): 'A monster's attack interval scales with its kill time: attack_interval_s = seconds_per_kill / 18, so every fight has about the same number of monster swings and harder monsters hit harder.' 'Settled after the inspector's review': 'Scrapjaw keeps the /18 attack interval' (270 / 18 = 15.0 s)."},
   "existing_fields_used": "level, weakness, seconds_per_kill, boss (content/monsters/rustmoor.json)",
   "monster_dps": "hit_chance * (max_hit * damage_taken_mult / 2) / attack_interval_s",
   "monster_swing_second_moment": "hit_chance * (max_hit * damage_taken_mult)^2 / 3",
-  "basis": "proposal"
+  "basis": "proposal, except attack_interval_rule (settled)"
  },
 
  "reference_player": {
@@ -136,7 +139,7 @@
   "single_style_band": {
    "basis": "settled",
    "settled": "Work order 009: 'The band assumes a one-style player, who fights some Rustmoor rats unmatched. Rustmoor's 14.7 to 15.2 days are accepted.'",
-   "detail": "Rustmoor's weaknesses rotate melee, marksmanship, aetherics, melee, marksmanship. Holding seconds_per_kill fixed at level and taking the best target per five-level range, the band takes at most 14.68 days for melee, 14.83 marksmanship, 15.19 aetherics at WEAKNESS_MULTIPLIER 1.25, against 13.96 if every target were matched."
+   "detail": "Rustmoor's rat weaknesses rotate melee, marksmanship, aetherics, melee (Scrapjaw, melee, is a boss and not in the band). Holding seconds_per_kill fixed at level and taking the best target per five-level range, the band takes at most 14.68 days for melee, 14.83 marksmanship, 15.19 aetherics at WEAKNESS_MULTIPLIER 1.25, against 13.96 if every target were matched."
   }
  },
 
@@ -191,7 +194,8 @@
   "expected_attempt_seconds": "BETWEEN_KILLS_S + m_p + (1 - P) * KNOCKOUT_RESPAWN_S (approximation: a lost fight is counted at full length, then a knockout). At any player level, a won attempt takes no less than boss.seconds_per_kill (kill_time.floor).",
   "steepness": {
    "basis": "settled",
-   "settled": "Work order 009: 'Boss fights are steep, and that is accepted: about 15 points of win chance per level, and about 4% for a boss fought with the wrong style.'"
+   "settled": "Work order 011, 'Settled after the inspector's review' (22 October 2026), replacing work order 009's 15 points and 4%: 'The settled steepness is now about 9 points of win chance per level and about 15% with the wrong style.'",
+   "figures": "Scrapjaw (weak to melee), reference player with the Steel Blade (+0, power 150; the Cleaver is Scrapjaw's own drop and never counts), 3 Rations, RATION_HEAL_HP 600: win chance 0.405 at level 19, 0.500 at 20, 0.589 at 21 (-9.5 and +8.9 points); 0.152 with the wrong style at level 20 (marksmanship, Garnet Rifle, power 150; aetherics, Garnet Rod, power 150); 0.001 without Rations. The reference player's other six skills are 6 at levels 19 to 21, so only the main style moves."
   },
   "basis": "proposal, except BOSS_TARGET_WIN_CHANCE (derived), the Ration cap and the accepted steepness (settled)"
  },
@@ -203,7 +207,7 @@
   "why": "The curve's base, its day-2 check (total level passes 50 only at 70/5 with three crafting skills) and the Ledger Page counter (work order 008) all rest on 70/5.",
   "consequences": [
    "Vitality and Fortitude sit at 6, 10 and 18 when the main skill reaches 20, 45 and 70 (reference_player table): max HP 1,500, 1,900, 2,700; damage taken cut by 5.7%, 9.1%, 15.3%.",
-   "Vitality and Fortitude do not change at-level kill time. They change Ration use, knockouts without Rations, and boss odds: at Scrapjaw, +5 Vitality takes the illustrative win chance from 50% to 91%, +5 Fortitude to 64%.",
+   "Vitality and Fortitude do not change at-level kill time. They change Ration use, knockouts without Rations, and boss odds: at Scrapjaw (melee reference player, Steel Blade, 3 Rations, RATION_HEAL_HP 600), +5 Vitality (max HP 1,500 to 2,000) takes the win chance from 50% to 73%, +5 Fortitude (armour 6 to 11) to 58%.",
    "A player who switches styles to match every weakness splits the 70% across up to three styles and levels each more slowly than the curve assumes.",
    "Story checks on Vitality, Fortitude, Pressure or Precision cannot assume more than about 6 in Act I, 10 in Act II, 18 in Act III."
   ]
@@ -215,7 +219,10 @@
   "Consumables set by triggers, not loadout slots (gear.loadout.consumables)",
   "Checks use the closed forms as written, continuous moments (units.closed_forms_for_checks)",
   "One-style band assumption and Rustmoor's 14.7 to 15.2 days (weakness.single_style_band)",
-  "Boss steepness accepted (boss.steepness)",
+  "Boss steepness: about 9 points per level, about 15% with the wrong style (boss.steepness; work order 011)",
+  "Monster attack interval is seconds_per_kill / 18 (monster_stats_shape.attack_interval_rule; work order 011)",
+  "Weapon power at +0 is 10 x level_required (gear.weapon.power_at_plus_0; work order 011)",
+  "Scrapjaw's Cleaver has +0 power 180 (gear.weapon.scrapjaws_cleaver; work order 011)",
   "Boss Ration cap 3 (constants.BOSS_RATION_CAP_PER_ATTEMPT)",
   "Focus is one of the three attack styles (combat_xp_split)",
   "Loadout is one weapon and one armour piece (gear.loadout)",

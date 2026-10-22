@@ -75,14 +75,23 @@ def rel(root, path):
     return os.path.relpath(path, root).replace(os.sep, "/")
 
 
+def is_hidden(name):
+    """A dotfile or dot-directory name (".DS_Store", ".git"). Content never
+    has one; editors and the OS leave them behind (work orders 002, 010)."""
+    return name.startswith(".")
+
+
 def walk_files(root, subdir):
-    """Every regular file under root/subdir, sorted, as repo-relative paths."""
+    """Every regular file under root/subdir, sorted, as repo-relative paths.
+    Dotfiles and everything under a dot-directory are skipped, for every
+    check."""
     base = os.path.join(root, subdir)
     out = []
     for dirpath, dirnames, filenames in os.walk(base):
-        dirnames.sort()
+        dirnames[:] = sorted(d for d in dirnames if not is_hidden(d))
         for name in sorted(filenames):
-            out.append(rel(root, os.path.join(dirpath, name)))
+            if not is_hidden(name):
+                out.append(rel(root, os.path.join(dirpath, name)))
     return out
 
 

@@ -1,5 +1,5 @@
 {
-  "schema": "monster/1",
+  "schema": "monster/2",
   "monsters": [
     {
       "id": "monster.rustmoor.rust_rat_runt",
@@ -9,7 +9,12 @@
       "boss": false,
       "weakness": "melee",
       "xp": 9,
-      "seconds_per_kill": 54
+      "seconds_per_kill": 54,
+      "hp": 148,
+      "max_hit": 42,
+      "hit_chance": 0.75,
+      "attack_interval_s": 3.0,
+      "evasion": 2
     },
     {
       "id": "monster.rustmoor.rust_rat_scrounger",
@@ -19,7 +24,12 @@
       "boss": false,
       "weakness": "marksmanship",
       "xp": 19,
-      "seconds_per_kill": 108
+      "seconds_per_kill": 108,
+      "hp": 1612,
+      "max_hit": 44,
+      "hit_chance": 0.75,
+      "attack_interval_s": 6.0,
+      "evasion": 7
     },
     {
       "id": "monster.rustmoor.rust_rat_tinplate",
@@ -29,7 +39,12 @@
       "boss": false,
       "weakness": "aetherics",
       "xp": 30,
-      "seconds_per_kill": 162
+      "seconds_per_kill": 162,
+      "hp": 5067,
+      "max_hit": 52,
+      "hit_chance": 0.75,
+      "attack_interval_s": 9.0,
+      "evasion": 14
     },
     {
       "id": "monster.rustmoor.rust_rat_gaffer",
@@ -39,7 +54,12 @@
       "boss": false,
       "weakness": "melee",
       "xp": 42,
-      "seconds_per_kill": 216
+      "seconds_per_kill": 216,
+      "hp": 10378,
+      "max_hit": 56,
+      "hit_chance": 0.75,
+      "attack_interval_s": 12.0,
+      "evasion": 20
     },
     {
       "id": "monster.rustmoor.scrapjaw",
@@ -47,9 +67,14 @@
       "flavour": "It charges jaw-first and shuts it on whatever is nearest, which is usually a girder and sometimes you.",
       "level": 20,
       "boss": true,
-      "weakness": "marksmanship",
+      "weakness": "melee",
       "xp": 52,
-      "seconds_per_kill": 270
+      "seconds_per_kill": 270,
+      "hp": 15004,
+      "max_hit": 530,
+      "hit_chance": 0.75,
+      "attack_interval_s": 15.0,
+      "evasion": 26
     }
   ]
 }
