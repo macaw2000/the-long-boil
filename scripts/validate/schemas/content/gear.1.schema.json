@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gear/1",
+  "title": "Gear, version 1",
+  "description": "A file under content/gear/ (work order 010, scope 3). A top-level id of the form gear.<zone>.<name>, so the register can hold the file (work order 010 names no id; without one a gear file would have no content id and no register row). 'gear' lists one entry per gear item: item, the id of an item under content/items/; slot, weapon or armour (combat.json gear.loadout); style, melee, marksmanship or aetherics, weapons only; level_required, the style level to equip a weapon or the Fortitude level to wear armour (combat.json gear.weapon.fields, gear.armour.fields); stats_by_calibration, exactly 21 rows, +0 to +20. A weapon row is {calibration, power, accuracy}, power in the model's x10 units; an armour row is {calibration, armour}. Rows +1 to +20 may be null while the calibration step is open. Rules this subset of JSON Schema cannot say (row n has calibration n, row +0 is not null, which fields a slot needs, style only on weapons, one entry per item) are checked by scripts/validate/check_combat.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "gear"
+  ],
+  "properties": {
+    "schema": {
+      "const": "gear/1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^gear\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "gear": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gear"
+      }
+    }
+  },
+  "$defs": {
+    "gear": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item",
+        "slot",
+        "level_required",
+        "stats_by_calibration"
+      ],
+      "properties": {
+        "item": {
+          "type": "string",
+          "pattern": "^item\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"
+        },
+        "slot": {
+          "enum": [
+            "weapon",
+            "armour"
+          ]
+        },
+        "style": {
+          "enum": [
+            "melee",
+            "marksmanship",
+            "aetherics"
+          ]
+        },
+        "level_required": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "stats_by_calibration": {
+          "type": "array",
+          "minItems": 21,
+          "maxItems": 21,
+          "items": {
+            "$ref": "#/$defs/row"
+          }
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "row": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "calibration"
+      ],
+      "properties": {
+        "calibration": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "power": {
+          "type": "number",
+          "minimum": 0
+        },
+        "accuracy": {
+          "type": "number"
+        },
+        "armour": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 FAIL pacing/band-days content/monsters/fixture.json : main combat skill band 20 to 45: 38.14 days, effective rate 1.53x the reference (curve target 2.5x); best targets: monster.global.fixture_late_rat (levels 20-24), monster.global.fixture_slow_wraith (levels 25-44); must be within 2 of 14 days
+FAIL pacing/not-checkable content/monsters/broken-2.json : file does not match monster/2 (1 errors; see the schema check); pacing for the main combat skill leaves its monsters out
 FAIL pacing/not-checkable content/monsters/broken.json : file does not match monster/1 (1 errors; see the schema check); pacing for the main combat skill leaves its monsters out
-FAIL pacing/not-checkable content/monsters/future.json : schema is 'monster/2'; only monster/1 can be checked
+FAIL pacing/not-checkable content/monsters/future.json : schema is 'monster/3'; only monster/1 or monster/2 can be checked
 WARN pacing/band-uncovered content/monsters/fixture.json : main combat skill band 1 to 20: has non-boss monsters, but none is unlocked at level 1 (lowest non-boss monster level is 2); not checked

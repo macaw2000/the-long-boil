@@ -40,6 +40,15 @@ FAIL schema/shape content/drops/bad.json id=drop.global.fixture_bad : /tables/2/
 FAIL schema/shape content/drops/bad.json id=drop.global.fixture_bad : /zone_pity/0/kills: below minimum 1
 FAIL schema/shape content/drops/no-id.json : /: missing required field 'id'
 FAIL schema/shape content/drops/no-id.json : /: missing required field 'zone_pity'
+FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/0/stats_by_calibration: fewer than 21 items
+FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/1/level_required: below minimum 1
+FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/1/style: must be one of ["melee", "marksmanship", "aetherics"], got "pressure"
+FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/2/item: does not match pattern ^item\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/2/slot: must be one of ["weapon", "armour"], got "trinket"
+FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/3/rows: field 'rows' is not allowed by this schema
+FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/3/stats_by_calibration/0/weight: field 'weight' is not allowed by this schema
+FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/4: missing required field 'stats_by_calibration'
+FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /id: does not match pattern ^gear\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
 FAIL schema/shape content/items/bad.json : /items/0/id: does not match pattern ^item\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
 FAIL schema/shape content/items/bad.json : /items/1/flavour: has 21 words; at most 20 allowed
 FAIL schema/shape content/items/bad.json : /items/2/flavour: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
@@ -49,6 +58,14 @@ FAIL schema/shape content/items/bad.json : /items/4/stats: field 'stats' is not 
 FAIL schema/shape content/items/bad.json : /items/4: missing required field 'name'
 FAIL schema/shape content/items/bad.json : /items/5/id: does not match pattern ^item\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
 FAIL schema/shape content/items/bad.json : /price: field 'price' is not allowed by this schema
+FAIL schema/shape content/monsters/bad-2.json : /monsters/0: missing required field 'hp'
+FAIL schema/shape content/monsters/bad-2.json : /monsters/1/hp: expected integer, got number
+FAIL schema/shape content/monsters/bad-2.json : /monsters/2/hit_chance: must be greater than 0
+FAIL schema/shape content/monsters/bad-2.json : /monsters/3/hit_chance: above maximum 1
+FAIL schema/shape content/monsters/bad-2.json : /monsters/4/attack_interval_s: must be greater than 0
+FAIL schema/shape content/monsters/bad-2.json : /monsters/5/max_hit: below minimum 1
+FAIL schema/shape content/monsters/bad-2.json : /monsters/6/evasion: below minimum 0
+FAIL schema/shape content/monsters/bad-2.json : /monsters/7/armour: field 'armour' is not allowed by this schema
 FAIL schema/shape content/monsters/bad.json : /drops: field 'drops' is not allowed by this schema
 FAIL schema/shape content/monsters/bad.json : /monsters/0/id: does not match pattern ^monster\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
 FAIL schema/shape content/monsters/bad.json : /monsters/1/id: does not match pattern ^monster\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
@@ -64,6 +81,15 @@ FAIL schema/shape content/monsters/bad.json : /monsters/6/level: expected intege
 FAIL schema/shape content/monsters/bad.json : /monsters/7/boss: expected boolean, got string
 FAIL schema/shape content/monsters/bad.json : /monsters/8/weakness: must be one of ["melee", "marksmanship", "aetherics"], got "pressure"
 FAIL schema/shape content/monsters/bad.json : /monsters/9/weakness: must be one of ["melee", "marksmanship", "aetherics"], got "Melee"
+FAIL schema/shape content/tuning/combat-bad.json id=tuning.global.fixture_combat_bad : /constants/CRIT_MULTIPLIER/value: expected number, got string
+FAIL schema/shape content/tuning/combat-bad.json id=tuning.global.fixture_combat_bad : /constants/HIT_CHANCE_MAX/basis: must be one of ["settled", "derived", "proposal", "open"], got "guess"
+FAIL schema/shape content/tuning/combat-bad.json id=tuning.global.fixture_combat_bad : /constants/HP_BASE/value: expected number, got null
+FAIL schema/shape content/tuning/combat-bad.json id=tuning.global.fixture_combat_bad : /constants/RATION_HEAL_HP/value: must be greater than 0
+FAIL schema/shape content/tuning/combat-bad.json id=tuning.global.fixture_combat_bad : /constants/SPARE: field 'SPARE' is not allowed by this schema
+FAIL schema/shape content/tuning/combat-bad.json id=tuning.global.fixture_combat_bad : /constants: missing required field 'ARMOUR_HALF_POINT'
+FAIL schema/shape content/tuning/combat-bad.json id=tuning.global.fixture_combat_bad : /status: field 'status' is not allowed by this schema
+FAIL schema/shape content/tuning/combat-bad.json id=tuning.global.fixture_combat_bad : /units: missing required field 'HP_DAMAGE_SCALE'
+FAIL schema/shape content/tuning/combat-no-heal.json id=tuning.global.fixture_combat_no_heal : /constants: missing required field 'RATION_HEAL_HP'
 FAIL schema/shape content/tuning/economy-bad.json id=tuning.foundry.economy : /: missing required field 'anchors'
 FAIL schema/shape content/tuning/economy-bad.json id=tuning.foundry.economy : /id: does not match pattern ^tuning\.(rustmoor|cinderworks|thunderhead|global)\.economy$
 FAIL schema/shape content/tuning/economy-bad.json id=tuning.foundry.economy : /items/item.global.fixture_brass_ingot: missing required field 'collector_weekly_cap'
@@ -78,19 +104,23 @@ FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /formula/BAS
 FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /formula/constants: missing required field 'base'
 FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /status: field 'status' is not allowed by this schema
 FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /validators: field 'validators' is not allowed by this schema
-FAIL schema/unknown-schema content/tuning/anchored.json : schema 'monster/9' is not accepted; known: action/1, drops/1, item/1, monster/1, tuning.economy/1, tuning.xp_curve/1
-FAIL schema/unknown-schema content/tuning/old.json id=fixture.fail.old : schema 'tuning.xp_curve/0' is not accepted; known: action/1, drops/1, item/1, monster/1, tuning.economy/1, tuning.xp_curve/1
-FAIL schema/unknown-schema content/tuning/unknown.json id=fixture.fail.unknown : schema 'monster/9' is not accepted; known: action/1, drops/1, item/1, monster/1, tuning.economy/1, tuning.xp_curve/1
+FAIL schema/unknown-schema content/tuning/anchored.json : schema 'monster/9' is not accepted; known: action/1, drops/1, gear/1, item/1, monster/1, monster/2, tuning.combat/1, tuning.economy/1, tuning.xp_curve/1
+FAIL schema/unknown-schema content/tuning/combat-old.json id=tuning.global.fixture_combat_old : schema 'tuning.combat/0' is not accepted; known: action/1, drops/1, gear/1, item/1, monster/1, monster/2, tuning.combat/1, tuning.economy/1, tuning.xp_curve/1
+FAIL schema/unknown-schema content/tuning/old.json id=fixture.fail.old : schema 'tuning.xp_curve/0' is not accepted; known: action/1, drops/1, gear/1, item/1, monster/1, monster/2, tuning.combat/1, tuning.economy/1, tuning.xp_curve/1
+FAIL schema/unknown-schema content/tuning/unknown.json id=fixture.fail.unknown : schema 'monster/9' is not accepted; known: action/1, drops/1, gear/1, item/1, monster/1, monster/2, tuning.combat/1, tuning.economy/1, tuning.xp_curve/1
 FAIL schema/wrong-directory content/actions/misplaced.json : files under content/actions/ must declare action/*; this one declares 'item/1'
 FAIL schema/wrong-directory content/actions/misplaced.json : schema 'item/1' belongs under content/items/
 FAIL schema/wrong-directory content/actions/stray-economy.json id=tuning.global.economy_stray : files under content/actions/ must declare action/*; this one declares 'tuning.economy/1'
 FAIL schema/wrong-directory content/actions/stray-economy.json id=tuning.global.economy_stray : schema 'tuning.economy/1' belongs under content/tuning/
 FAIL schema/wrong-directory content/drops/misplaced.json : files under content/drops/ must declare drops/*; this one declares 'item/1'
 FAIL schema/wrong-directory content/drops/misplaced.json : schema 'item/1' belongs under content/items/
+FAIL schema/wrong-directory content/gear/misplaced.json : files under content/gear/ must declare gear/*; this one declares 'item/1'
+FAIL schema/wrong-directory content/gear/misplaced.json : schema 'item/1' belongs under content/items/
 FAIL schema/wrong-directory content/monsters/misplaced.json : files under content/monsters/ must declare monster/*; this one declares 'item/1'
 FAIL schema/wrong-directory content/monsters/misplaced.json : schema 'item/1' belongs under content/items/
 FAIL schema/wrong-directory content/tuning/anchored.json : schema 'monster/9' belongs under content/monsters/
 FAIL schema/wrong-directory content/tuning/stray-drops.json id=drops.global.fixture_stray : schema 'drops/1' belongs under content/drops/
+FAIL schema/wrong-directory content/tuning/stray-gear.json id=gear.global.fixture_stray : schema 'gear/1' belongs under content/gear/
 FAIL schema/wrong-directory content/tuning/stray-monsters.json : schema 'monster/1' belongs under content/monsters/
 FAIL schema/wrong-directory content/tuning/stray.json : schema 'action/1' belongs under content/actions/
 FAIL schema/wrong-directory content/tuning/unknown.json id=fixture.fail.unknown : schema 'monster/9' belongs under content/monsters/

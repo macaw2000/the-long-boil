@@ -380,7 +380,7 @@ Logging off leaves 12 hours of steam, shown as a pressure gauge; at zero your Ti
 
 ### Combat
 
-Combat is automatic: pick a zone, a loadout, and triggers ("eat a Ration below 40% HP"), then watch or walk away. Monsters are weak to Melee, Marksmanship, or Aetherics, so loadouts matter. A knockout respawns in 60 seconds and resumes the queue, so offline hours are never wasted. Bosses are fought on purpose: a boss attempt is a separate queue item, and a lost fight spends the attempt and pays no XP. Attempts can be queued again, so a boss pays XP no faster than the zone's best monster; players come back for its drop, not its XP. A boss's first-kill reward replaces its ordinary drop roll on that kill.
+Combat is automatic: pick a zone, a loadout, and triggers ("eat a Ration below 40% HP"), then watch or walk away. Monsters are weak to Melee, Marksmanship, or Aetherics, so loadouts matter. A knockout respawns in 60 seconds and resumes the queue, so offline hours are never wasted. Bosses are fought on purpose: a boss attempt is a separate queue item, and a lost fight spends the attempt and pays no XP. Attempts can be queued again, so a boss pays XP no faster than the zone's best monster; players come back for its drop, not its XP. A boss's first-kill reward replaces its ordinary drop roll on that kill. A loadout is one weapon and one armour piece, and its focus is the weapon's style: Melee, Marksmanship or Aetherics. A Tinker who outlevels a monster still takes its usual time per kill, so fighting easy monsters is safe but no faster; the reward for levelling is reaching harder ones. A boss fight allows at most 3 Rations.
 
 | Zone | Levels | Monsters | Boss and drop | Act | Ledger Pages |
 | --- | --- | --- | --- | --- | --- |
@@ -460,7 +460,7 @@ By the end of the week she is about level 12 in Rustmoor, halfway through Act I,
 
 ### The first month
 
-Around day 14 she beats Scrapjaw on her second attempt and reads Ledger Page 1. She gives it to Mrs. Inkwell rather than Lord Gauntlett, takes the Lantern Ambition, and walks into the Cinderworks on a Stokers' token. Act II's Whistle storylets push her Haze to 6, and she learns to keep a calming tea in her loadout. She is in the Foundry when her guild takes the Stokers' charter for Season 1.
+Around day 14 she beats Scrapjaw on her second attempt and reads Ledger Page 1. She gives it to Mrs. Inkwell rather than Lord Gauntlett, takes the Lantern Ambition, and walks into the Cinderworks on a Stokers' token. Act II's Whistle storylets push her Haze to 6, and she learns to set a trigger for a calming tea. She is in the Foundry when her guild takes the Stokers' charter for Season 1.
 
 ### Month three
 

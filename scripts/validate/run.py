@@ -31,6 +31,7 @@ import sys
 sys.dont_write_bytecode = True  # keep __pycache__ out of the repo
 
 import lib  # noqa: E402
+import check_combat
 import check_drops
 import check_pacing
 import check_provenance
@@ -45,6 +46,7 @@ CHECKS = (
     ("references", check_references),
     ("pacing", check_pacing),
     ("drops", check_drops),
+    ("combat", check_combat),
 )
 
 FIXTURES = os.path.join(lib.HERE, "fixtures")

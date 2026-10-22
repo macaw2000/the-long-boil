@@ -1,5 +1,5 @@
 {
- "schema": "monster/2",
+ "schema": "monster/3",
  "monsters": [
   {
    "id": "monster.global.fixture_future",

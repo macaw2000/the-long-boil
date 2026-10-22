@@ -1,0 +1,267 @@
+{
+ "schema": "gear/1",
+ "id": "gear.global.fixture_broken_rules",
+ "gear": [
+  {
+   "item": "item.global.fixture_no_style",
+   "slot": "weapon",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 9,
+     "accuracy": 9
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_styled_coat",
+   "slot": "armour",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 9
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "style": "melee"
+  },
+  {
+   "item": "item.global.fixture_null_zero",
+   "slot": "weapon",
+   "style": "marksmanship",
+   "level_required": 1,
+   "stats_by_calibration": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_shuffled",
+   "slot": "weapon",
+   "style": "marksmanship",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 9,
+     "accuracy": 9
+    },
+    {
+     "calibration": 2,
+     "power": 9,
+     "accuracy": 9
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_mixed",
+   "slot": "weapon",
+   "style": "marksmanship",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 9,
+     "armour": 3
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_spiked",
+   "slot": "armour",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 9,
+     "power": 4
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_twice",
+   "slot": "weapon",
+   "style": "marksmanship",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 99,
+     "accuracy": 99
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_twice",
+   "slot": "weapon",
+   "style": "marksmanship",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 99,
+     "accuracy": 99
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ ]
+}

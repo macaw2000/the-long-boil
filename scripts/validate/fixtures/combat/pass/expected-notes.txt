@@ -1,0 +1,10 @@
+NOTE combat : 1 gear file(s); 7 weapon(s), 2 armour piece(s) keep the gear rules, any zone
+NOTE combat : 2 monster(s) on monster/2, 1 monster/1 file(s) skipped; model content/tuning/combat.json, curve content/tuning/curve.json, RATION_HEAL_HP 250
+NOTE combat : monster.global.fixture_tin_rat: matched, Rations stocked: computed 120.0 s, floored 120.0 s against seconds_per_kill 120 (off by +0.0%); reference player main aetherics 10, other six 5, max_hp 750, item.global.fixture_coil, armour item.global.fixture_coat
+NOTE combat : monster.global.fixture_tin_rat: unmatched (melee), Rations stocked with item.global.fixture_spanner: computed 178.3 s, floored 178.3 s
+NOTE combat : monster.global.fixture_tin_rat: unmatched (marksmanship), Rations stocked with item.global.fixture_jaw_rifle: computed 19.9 s, floored 120.0 s
+NOTE combat : monster.global.fixture_tin_rat: matched, without Rations: computed 143.2 s, floored 143.2 s, 0.29 knockouts per kill
+NOTE combat : monster.global.fixture_jaw_king: matched, 2 Rations: win chance 0.485 against BOSS_TARGET_WIN_CHANCE 0.5 (off by -0.015); won attempt computed 200.0 s, floored 200.0 s against seconds_per_kill 200; reference player main marksmanship 15, other six 7, max_hp 850, item.global.fixture_rifle, armour item.global.fixture_coat
+NOTE combat : monster.global.fixture_jaw_king: unmatched (melee), Rations stocked with item.global.fixture_spanner: win chance 0.001
+NOTE combat : monster.global.fixture_jaw_king: unmatched (aetherics), Rations stocked with item.global.fixture_big_coil: win chance 1.000
+NOTE combat : monster.global.fixture_jaw_king: matched, without Rations: win chance 0.009

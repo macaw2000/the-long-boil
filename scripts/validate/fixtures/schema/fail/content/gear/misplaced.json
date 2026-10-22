@@ -1,0 +1,10 @@
+{
+ "schema": "item/1",
+ "items": [
+  {
+   "id": "item.global.fixture_misplaced_in_gear",
+   "name": "Misplaced",
+   "flavour": "Item file in the gear directory."
+  }
+ ]
+}

@@ -1,0 +1,231 @@
+{
+ "schema": "tuning.combat/1",
+ "id": "tuning.global.combat",
+ "revision": 3,
+ "source": "docs/work-orders/009-combat-model.md (including 'Settled after the first draft'); docs/gdd.md sections 1, 6 (Combat paragraph), 7; content/monsters/rustmoor.json; content/tuning/xp-curve.json; docs/work-orders/001-xp-curve.md and 008-rustmoor-drops.md (carried-forward notes)",
+ "applies_to": "every fight: the seven combat skills, weapons and armour, monsters and bosses in all zones",
+ "basis_key": {
+  "settled": "Jeremy has decided it (work order 009, 'Settled after the first draft', 22 October 2026); where the GDD records it, the line is quoted",
+  "derived": "follows from a quoted GDD line or an existing approved file; the derivation names it",
+  "proposal": "a choice made here for Jeremy to accept or change; not canon",
+  "open": "the model needs it but neither the GDD nor a derivation gives it; value is null and the work order that will set it is named"
+ },
+
+ "units": {
+  "HP_DAMAGE_SCALE": 10,
+  "basis": "settled",
+  "settled": "Work order 009: 'Hit points and damage are scaled x10, so the engine rolls whole numbers.'",
+  "rule": "Every hit point and damage quantity (max HP, monster HP, max hits, swing damage, DPS, Ration heal) is ten times its revision-1 value. Times, probabilities, multipliers, levels, accuracy, evasion and armour are not HP or damage and are unchanged. Every kill time, Ration count per kill, damage share and win chance is a ratio of two scaled quantities, so all are unchanged from revision 1.",
+  "whole_number_rolls": "The engine rolls whole numbers of damage; how it rounds is the engine's own concern, not part of this model. Checks use the closed forms below as written, with continuous moments. At x10 scale rounding a roll moves a swing's mean by at most 0.5 HP.",
+  "closed_forms_for_checks": {"basis": "settled", "settled": "Work order 009, settled with revision 2: 'Checks use the closed forms as written (continuous moments); the engine's whole-number rolls are its own concern.'"}
+ },
+
+ "constants": {
+  "PLAYER_ATTACK_INTERVAL_S": {"value": 3.0, "basis": "proposal", "note": "One swing every 3 s for every style and weapon. Weapons do not carry their own interval, to keep gear to two numbers."},
+  "BETWEEN_KILLS_S": {"value": 6, "basis": "proposal", "note": "Time from one kill to the next fight starting. About 11% of the shortest seconds_per_kill (54 s, Rust Rat Runt)."},
+  "KNOCKOUT_RESPAWN_S": {"value": 60, "basis": "derived", "gdd": "Section 1: 'a knockout (60-second respawn, then the queue resumes)'; section 6: 'A knockout respawns in 60 seconds and resumes the queue'."},
+  "REFERENCE_RATION_TRIGGER_HP_FRACTION": {"value": 0.4, "basis": "derived", "gdd": "Section 6: 'triggers (\"eat a Ration below 40% HP\")'; section 7, first session step 5, the same trigger. The player may set others; 0.4 is the reference."},
+  "HP_BASE": {"value": 900, "basis": "proposal", "note": "Revision 1's 90, scaled x10 (units.HP_DAMAGE_SCALE, settled). The base value itself is still a proposal."},
+  "HP_PER_VITALITY": {"value": 100, "basis": "proposal", "note": "Revision 1's 10, scaled x10. Vitality 1 gives 1,000 HP."},
+  "DAMAGE_PER_STYLE_LEVEL": {"value": 10, "basis": "proposal", "note": "Each style level adds this to the max hit before multipliers. Revision 1 added the style level itself (1 per level); x10 scaling makes it 10. weapon.power is stated in the same scaled units."},
+  "PRESSURE_DAMAGE_PER_LEVEL": {"value": 0.01, "basis": "proposal", "note": "+1% max hit per Pressure level, every style. A multiplier, so unscaled."},
+  "HIT_CHANCE_BASE": {"value": 0.75, "basis": "proposal", "note": "Player hit chance when accuracy equals the monster's evasion."},
+  "HIT_CHANCE_PER_POINT": {"value": 0.02, "basis": "proposal"},
+  "HIT_CHANCE_MIN": {"value": 0.05, "basis": "proposal"},
+  "HIT_CHANCE_MAX": {"value": 0.95, "basis": "proposal"},
+  "CRIT_CHANCE_PER_PRECISION": {"value": 0.005, "basis": "proposal"},
+  "CRIT_CHANCE_CAP": {"value": 0.5, "basis": "proposal", "note": "Reached at Precision 100."},
+  "CRIT_MULTIPLIER": {"value": 1.5, "basis": "proposal"},
+  "ARMOUR_HALF_POINT": {"value": 100, "basis": "proposal", "note": "Armour 100 halves damage taken. Armour is Fortitude level plus the armour piece's armour points, not HP, so it is not scaled."},
+  "WEAKNESS_MULTIPLIER": {"value": 1.25, "basis": "proposal", "note": "A matched style's max hit is multiplied by this. The band consequence of 1.25 under a one-style player is settled (see weakness); the value itself rests on that acceptance."},
+  "REFERENCE_DAMAGE_SHARE_PER_KILL": {"value": 0.25, "basis": "proposal", "note": "A reference player loses a quarter of their HP per at-level kill. Without Rations that is a knockout about every 4 kills."},
+  "BOSS_TARGET_WIN_CHANCE": {"value": 0.5, "basis": "derived", "gdd": "Section 7: 'she beats Scrapjaw on her second attempt'. With win chance P, expected attempts to the first win are 1/P; 1/P = 2 gives P = 0.5."},
+  "BOSS_RATION_CAP_PER_ATTEMPT": {"value": 3, "basis": "settled", "gdd": "Section 6: 'A boss fight allows at most 3 Rations.'"},
+  "MAIN_COMBAT_SKILL_SHARE": {"value": 0.7, "basis": "derived", "gdd": "content/tuning/xp-curve.json assumptions.MAIN_COMBAT_SKILL_SHARE. Which skill takes it is settled (combat_xp_split)."},
+  "OTHER_COMBAT_SKILLS_SHARE_EACH": {"value": 0.05, "basis": "derived", "gdd": "content/tuning/xp-curve.json assumptions.OTHER_COMBAT_SKILLS_SHARE_EACH"},
+  "RATION_HEAL_HP": {"value": 600, "basis": "proposal", "note": "Provisional; the Cooking work order replaces it (work order 009: 'How much a Ration heals is for the Cooking work order, within the model's rules'). x10 units. Chosen within rations.needs for the reference player at levels 1 to 20 against Rustmoor-level monsters: the hard rule (heal > reference monster_dps * PLAYER_ATTACK_INTERVAL_S) needs more than 15.6, set by the Rust Rat Runt (0.25 * 1000 / 48 * 3); the soft rule (heal <= (1 - REFERENCE_RATION_TRIGGER_HP_FRACTION) * max_hp) allows at most 600, set by the smallest reference max HP in the band (1000 at level 1). 600 is the largest heal that never overheals at the 40% trigger anywhere in the band."},
+  "CALIBRATION_STEP": {"value": null, "basis": "open", "note": "How much one calibration level raises a gear stat. Left to the calibration work order (work order 009, 'Settled after the first draft': 'The calibration step is left to the calibration work order')."}
+ },
+
+ "skills": {
+  "_note": "Section 6, Skills table: Vitality 'Hit points'; Pressure 'Steam-driven force'; Precision 'Accuracy and crits'; Melee 'Close damage'; Marksmanship 'Ranged damage'; Aetherics 'Storm and steam magic'; Fortitude 'Defence'. Which skill feeds which stat is derived from that table; every formula and coefficient is a proposal.",
+  "vitality": {"stat": "max_hp", "formula": "max_hp = HP_BASE + HP_PER_VITALITY * vitality", "basis": "proposal"},
+  "pressure": {"stat": "damage multiplier, all styles", "formula": "pressure_mult = 1 + PRESSURE_DAMAGE_PER_LEVEL * pressure", "basis": "proposal"},
+  "precision": {"stat": "accuracy and crit chance", "formula": "adds precision to accuracy; crit_chance = min(CRIT_CHANCE_CAP, CRIT_CHANCE_PER_PRECISION * precision)", "basis": "proposal"},
+  "melee": {"stat": "style level when the weapon's style is melee", "formula": "style_level in max_hit and accuracy", "basis": "proposal"},
+  "marksmanship": {"stat": "style level when the weapon's style is marksmanship", "formula": "style_level in max_hit and accuracy", "basis": "proposal"},
+  "aetherics": {"stat": "style level when the weapon's style is aetherics", "formula": "style_level in max_hit and accuracy", "basis": "proposal"},
+  "fortitude": {"stat": "armour", "formula": "armour = fortitude + armour_piece.armour; damage_taken_mult = 1 - armour / (armour + ARMOUR_HALF_POINT)", "basis": "proposal; one armour piece is settled (gear.loadout)"},
+  "styles_are_symmetric": "The three style skills use identical formulas; they differ only through weapons and monster weakness. Derived from section 6: 'no skill is cheaper to level than another' read together with 'loadouts matter'; the symmetry itself is a proposal."
+ },
+
+ "player_formulas": {
+  "max_hp": "HP_BASE + HP_PER_VITALITY * vitality",
+  "accuracy": "style_level + precision + weapon.accuracy",
+  "hit_chance": "clamp(HIT_CHANCE_BASE + HIT_CHANCE_PER_POINT * (accuracy - monster.evasion), HIT_CHANCE_MIN, HIT_CHANCE_MAX)",
+  "max_hit": "(weapon.power + DAMAGE_PER_STYLE_LEVEL * style_level) * pressure_mult * (WEAKNESS_MULTIPLIER if weapon.style == monster.weakness else 1)",
+  "landed_hit_roll": "modelled as uniform on [0, max_hit]; a crit multiplies the roll by CRIT_MULTIPLIER. The engine rolls whole numbers (units.whole_number_rolls)",
+  "mean_swing_damage": "hit_chance * (max_hit / 2) * (1 + (CRIT_MULTIPLIER - 1) * crit_chance)",
+  "swing_damage_second_moment": "hit_chance * (max_hit^2 / 3) * (1 - crit_chance + CRIT_MULTIPLIER^2 * crit_chance)",
+  "player_dps": "mean_swing_damage / PLAYER_ATTACK_INTERVAL_S",
+  "basis": "proposal"
+ },
+
+ "gear": {
+  "_note": "Shape only. Section 6: 'Gear has fixed stats per calibration level, so a +5 Brass Spanner is identical everywhere'; section 6 Skills table: 'Calibrating ... Gear +1 to +20'. Values come in work order 011.",
+  "loadout": {
+   "slots": ["weapon", "armour"],
+   "rule": "A loadout is exactly one weapon and one armour piece. Consumables (Rations, teas) are not loadout slots; they are set by triggers.",
+   "consumables": {"basis": "settled", "settled": "Work order 009, settled with revision 2: 'Consumables are set by triggers, not loadout slots. GDD section 7's calming tea is a trigger.'"},
+   "basis": "settled",
+   "gdd": "Section 6: 'A loadout is one weapon and one armour piece, and its focus is the weapon's style: Melee, Marksmanship or Aetherics.'"
+  },
+  "weapon": {
+   "fields": {
+    "style": "melee | marksmanship | aetherics (section 6: 'Monsters are weak to Melee, Marksmanship, or Aetherics')",
+    "level_required": "style level needed to equip (work order 008 carried forward: 'Scrapjaw's Cleaver needs level 20 to equip')",
+    "stats_by_calibration": "exactly 21 rows, +0 to +20, each {calibration, power, accuracy}; power in x10 units (units.HP_DAMAGE_SCALE); fixed, no rolls (derived from section 6)"
+   },
+   "proposed_row_rule": "power(c) = round(power(0) * (1 + CALIBRATION_STEP * c)), accuracy(c) = accuracy(0) + c",
+   "basis": "proposal; CALIBRATION_STEP is left to the calibration work order"
+  },
+  "armour": {
+   "fields": {
+    "level_required": "fortitude level needed to wear",
+    "stats_by_calibration": "21 rows, +0 to +20, each {calibration, armour}"
+   },
+   "slot": "None. There is one armour slot (gear.loadout, settled), so coats, goggles and plate (section 6 Skills table: Tailoring, Smithing) all fill it and one is worn at a time.",
+   "basis": "proposal for the fields; the single slot is settled"
+  },
+  "reference_gear": "For the target, 'the gear the zone offers' is the best +0 weapon of the matched style, and the best +0 armour piece, that the zone offers with level_required at or below the player's level. Calibration is headroom above the target, not part of it (proposal; section 7 month three treats calibrating toward +10 as a long sink)."
+ },
+
+ "monster_stats_shape": {
+  "_note": "Fields work order 011 will set per monster. No values here. hp and max_hit are in x10 units (units.HP_DAMAGE_SCALE).",
+  "fields": {
+   "hp": "hit points, whole number",
+   "evasion": "compared with player accuracy",
+   "max_hit": "monster hits are modelled as uniform on [0, max_hit * damage_taken_mult]; the engine rolls whole numbers",
+   "hit_chance": "fixed per monster, 0 to 1",
+   "attack_interval_s": "seconds per monster swing"
+  },
+  "existing_fields_used": "level, weakness, seconds_per_kill, boss (content/monsters/rustmoor.json)",
+  "monster_dps": "hit_chance * (max_hit * damage_taken_mult / 2) / attack_interval_s",
+  "monster_swing_second_moment": "hit_chance * (max_hit * damage_taken_mult)^2 / 3",
+  "basis": "proposal"
+ },
+
+ "reference_player": {
+  "_note": "The 'player at a monster's level' in the work order's constraint. Main style skill at L (the monster's weakness, so the loadout is matched); the other six combat skills at secondary_level(L); reference_gear for that level. max_hp is in x10 units.",
+  "secondary_level": "the highest level S with total_xp(S) <= total_xp(L) * OTHER_COMBAT_SKILLS_SHARE_EACH / MAIN_COMBAT_SKILL_SHARE, using the xp-curve table",
+  "derived": true,
+  "table": [
+   {"main_level": 1, "secondary_level": 1, "max_hp": 1000},
+   {"main_level": 5, "secondary_level": 2, "max_hp": 1100},
+   {"main_level": 10, "secondary_level": 4, "max_hp": 1300},
+   {"main_level": 15, "secondary_level": 5, "max_hp": 1400},
+   {"main_level": 20, "secondary_level": 6, "max_hp": 1500},
+   {"main_level": 45, "secondary_level": 10, "max_hp": 1900},
+   {"main_level": 70, "secondary_level": 18, "max_hp": 2700}
+  ]
+ },
+
+ "weakness": {
+  "rule": "A weapon whose style equals monster.weakness multiplies max_hit by WEAKNESS_MULTIPLIER. Unmatched weapons take no penalty beyond missing the bonus.",
+  "consequence": "With Rations stocked, computed fight time scales inversely with the player's DPS, so the reference player's unmatched computed seconds per kill = BETWEEN_KILLS_S + WEAKNESS_MULTIPLIER * (seconds_per_kill - BETWEEN_KILLS_S). Tinplate: 162 s matched, 201 s unmatched. The kill-time floor does not bind on an unmatched at-level fight, since it is already slower than seconds_per_kill.",
+  "single_style_band": {
+   "basis": "settled",
+   "settled": "Work order 009: 'The band assumes a one-style player, who fights some Rustmoor rats unmatched. Rustmoor's 14.7 to 15.2 days are accepted.'",
+   "detail": "Rustmoor's weaknesses rotate melee, marksmanship, aetherics, melee, marksmanship. Holding seconds_per_kill fixed at level and taking the best target per five-level range, the band takes at most 14.68 days for melee, 14.83 marksmanship, 15.19 aetherics at WEAKNESS_MULTIPLIER 1.25, against 13.96 if every target were matched."
+  }
+ },
+
+ "kill_time": {
+  "_note": "Closed form, expected values, no simulation. seconds_per_kill in the monster files is the full cycle used by the pacing check (xp / seconds_per_kill), so it includes the time between kills and eating. Every HP and damage quantity below is in x10 units; every time is in seconds and unchanged by the scale.",
+  "t_pure": "monster.hp / player_dps",
+  "ration_drag": "f = monster_dps * PLAYER_ATTACK_INTERVAL_S / ration.heal_hp  (eating costs one player swing while the monster keeps attacking); requires f < 1",
+  "stocked": {
+   "t_fight": "t_pure / (1 - f)",
+   "rations_per_kill": "monster_dps * t_fight / ration.heal_hp",
+   "computed_seconds_per_kill": "BETWEEN_KILLS_S + t_fight",
+   "knockouts_per_kill": "0, provided monster.max_hit * damage_taken_mult < REFERENCE_RATION_TRIGGER_HP_FRACTION * max_hp"
+  },
+  "unstocked": {
+   "knockouts_per_kill": "k = monster_dps * t_pure / max_hp",
+   "computed_seconds_per_kill": "BETWEEN_KILLS_S + t_pure + k * (KNOCKOUT_RESPAWN_S + t_pure / 2)",
+   "assumptions": "No HP regeneration between kills; a knockout restores full HP after the respawn; the half-fought monster is lost, costing on average half a fight (an approximation)."
+  },
+  "floor": {
+   "formula": "expected_seconds_per_kill = max(monster.seconds_per_kill, computed_seconds_per_kill), at every player level",
+   "basis": "settled",
+   "gdd": "Section 6: 'A Tinker who outlevels a monster still takes its usual time per kill, so fighting easy monsters is safe but no faster; the reward for levelling is reaching harder ones.' Work order 009, settled with revision 2: 'The kill-time floor applies at every level, not only at or above the monster's level. Nothing kills faster than its target time.'",
+   "rewards": "XP, Crowns, drop rolls and the Ledger Page counter are paid per kill, unchanged, at the paced rate: per hour = 3600 / expected_seconds_per_kill times the per-kill amount. A floored fight therefore never pays faster than monster.xp * 3600 / monster.seconds_per_kill, so the pacing and drops checks that use seconds_per_kill stay valid.",
+   "what_outlevelling_buys": "Inside the floor, a stronger player takes less damage per kill: fewer Rations (rations_per_kill falls with t_fight computed unfloored) and fewer knockouts.",
+   "damage_and_rations": {"rule": "Damage taken, Rations eaten and knockouts are computed from the unfloored fight; the extra floored seconds are idle and cost no HP.", "basis": "settled", "settled": "Work order 009, settled with revision 2: 'Damage taken and Rations eaten come from the unfloored fight; the extra floored seconds are idle.'"}
+  },
+  "target": "For the reference player at monster.level with a matched reference_gear loadout and Rations stocked, computed_seconds_per_kill == monster.seconds_per_kill and monster_dps * t_fight == REFERENCE_DAMAGE_SHARE_PER_KILL * max_hp.",
+  "solving_for_011": "Pick evasion (suggested: equal to the reference accuracy, so the reference hit chance is HIT_CHANCE_BASE), hit_chance and attack_interval_s; then monster_dps = REFERENCE_DAMAGE_SHARE_PER_KILL * max_hp / (seconds_per_kill - BETWEEN_KILLS_S) fixes max_hit, and hp = player_dps * (seconds_per_kill - BETWEEN_KILLS_S) * (1 - f) fixes hp, rounded to a whole number.",
+  "basis": "proposal, except floor (settled)"
+ },
+
+ "rations": {
+  "_note": "Section 6 ('eat a Ration below 40% HP') and the Skills table (Cooking produces 'Healing rations') name Rations; no Ration item exists. This is what the model needs from one, not an item.",
+  "needs": {
+   "heal_hp": "a fixed whole number per Ration item, in x10 units. Left to the Cooking work order (work order 009, 'Settled after the first draft': 'How much a Ration heals is for the Cooking work order, within the model's rules').",
+   "hard_rule": "heal_hp > monster_dps * PLAYER_ATTACK_INTERVAL_S for any monster it is meant for, or the stocked formula diverges",
+   "soft_rule": "heal_hp <= (1 - REFERENCE_RATION_TRIGGER_HP_FRACTION) * max_hp of the reference player at the Ration's tier, so eating at the trigger never overheals",
+   "consumption": "rations_per_kill at reference = REFERENCE_DAMAGE_SHARE_PER_KILL * max_hp / heal_hp / (1 - f); this is Cooking's demand per kill",
+   "boss_cap": "At most BOSS_RATION_CAP_PER_ATTEMPT (3) per boss attempt (settled)."
+  },
+  "basis": "proposal for the rules; heal_hp open (Cooking work order); boss cap settled"
+ },
+
+ "boss": {
+  "_note": "Section 6: 'a boss attempt is a separate queue item, and a lost fight spends the attempt and pays no XP'. A boss fight is a race between two times, each approximated as normal (renewal central limit), so win chance is closed form.",
+  "player_time": "m_p = PLAYER_ATTACK_INTERVAL_S * boss.hp / mean_swing_damage + n * PLAYER_ATTACK_INTERVAL_S, where n = BOSS_RATION_CAP_PER_ATTEMPT if Rations are stocked else 0 (assumes every allowed Ration is eaten)",
+  "player_time_variance": "v_p = PLAYER_ATTACK_INTERVAL_S^2 * boss.hp * var_swing / mean_swing_damage^3, var_swing = second_moment - mean^2",
+  "boss_time": "m_b = boss.attack_interval_s * pool / boss_mean_swing, pool = max_hp + n * ration.heal_hp",
+  "boss_time_variance": "v_b = boss.attack_interval_s^2 * pool * boss_var_swing / boss_mean_swing^3",
+  "win_chance": "P = Phi((m_b - m_p) / sqrt(v_p + v_b)), Phi the standard normal CDF. Every term in the ratio is a time, so the x10 scale leaves P unchanged.",
+  "target": "For the reference player at boss.level with a matched loadout and n Rations, m_b == m_p (so P == BOSS_TARGET_WIN_CHANCE) and BETWEEN_KILLS_S + m_p == boss.seconds_per_kill.",
+  "expected_attempt_seconds": "BETWEEN_KILLS_S + m_p + (1 - P) * KNOCKOUT_RESPAWN_S (approximation: a lost fight is counted at full length, then a knockout). At any player level, a won attempt takes no less than boss.seconds_per_kill (kill_time.floor).",
+  "steepness": {
+   "basis": "settled",
+   "settled": "Work order 009: 'Boss fights are steep, and that is accepted: about 15 points of win chance per level, and about 4% for a boss fought with the wrong style.'"
+  },
+  "basis": "proposal, except BOSS_TARGET_WIN_CHANCE (derived), the Ration cap and the accepted steepness (settled)"
+ },
+
+ "combat_xp_split": {
+  "rule": "Each kill's combat XP goes MAIN_COMBAT_SKILL_SHARE (70%) to the loadout's focus, which is the style skill of the weapon (Melee, Marksmanship or Aetherics), and OTHER_COMBAT_SKILLS_SHARE_EACH (5%) to each of the other six combat skills. Vitality, Fortitude, Pressure and Precision can never be the focus and always take the 5% share.",
+  "basis": "settled",
+  "gdd": "Section 6: 'its focus is the weapon's style: Melee, Marksmanship or Aetherics'; work order 009: 'Only the three attack styles can be a loadout's focus. Vitality, Fortitude, Pressure and Precision always take the 5% share.'",
+  "why": "The curve's base, its day-2 check (total level passes 50 only at 70/5 with three crafting skills) and the Ledger Page counter (work order 008) all rest on 70/5.",
+  "consequences": [
+   "Vitality and Fortitude sit at 6, 10 and 18 when the main skill reaches 20, 45 and 70 (reference_player table): max HP 1,500, 1,900, 2,700; damage taken cut by 5.7%, 9.1%, 15.3%.",
+   "Vitality and Fortitude do not change at-level kill time. They change Ration use, knockouts without Rations, and boss odds: at Scrapjaw, +5 Vitality takes the illustrative win chance from 50% to 91%, +5 Fortitude to 64%.",
+   "A player who switches styles to match every weakness splits the 70% across up to three styles and levels each more slowly than the curve assumes.",
+   "Story checks on Vitality, Fortitude, Pressure or Precision cannot assume more than about 6 in Act I, 10 in Act II, 18 in Act III."
+  ]
+ },
+
+ "settled_points": [
+  "Kill-time floor at seconds_per_kill at every level (kill_time.floor)",
+  "Damage taken and Rations eaten from the unfloored fight (kill_time.floor.damage_and_rations)",
+  "Consumables set by triggers, not loadout slots (gear.loadout.consumables)",
+  "Checks use the closed forms as written, continuous moments (units.closed_forms_for_checks)",
+  "One-style band assumption and Rustmoor's 14.7 to 15.2 days (weakness.single_style_band)",
+  "Boss steepness accepted (boss.steepness)",
+  "Boss Ration cap 3 (constants.BOSS_RATION_CAP_PER_ATTEMPT)",
+  "Focus is one of the three attack styles (combat_xp_split)",
+  "Loadout is one weapon and one armour piece (gear.loadout)",
+  "Hit points and damage scaled x10 (units)",
+  "Calibration step left to the calibration work order (constants.CALIBRATION_STEP)"
+ ],
+
+ "open_questions": [
+  "Ration heal_hp: for the Cooking work order, within rations.needs.",
+  "CALIBRATION_STEP: for the calibration work order.",
+  "Every value still marked proposal (intervals, HP base and per-Vitality, hit and crit constants, ARMOUR_HALF_POINT, WEAKNESS_MULTIPLIER, REFERENCE_DAMAGE_SHARE_PER_KILL) waits on Jeremy."
+ ]
+}

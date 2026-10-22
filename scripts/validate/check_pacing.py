@@ -26,7 +26,9 @@ end). A band with no actions of its own is a NOTE. A band that has actions of
 its own but nothing unlocked at its first level is a WARN, not checked.
 
 Combat (work order 005): the main combat skill earns XP only from monsters,
-so it is checked from monster/1 files, reported as "main combat skill":
+so it is checked from monster/1 and monster/2 files (monster/2 adds combat
+stats and keeps every monster/1 field, work order 010), reported as "main
+combat skill":
 
 - At each level L, the best target is the non-boss monster with the highest
   XP per hour (xp * 3600 / seconds_per_kill) among those with level <= L.
@@ -57,9 +59,10 @@ from check_xp_curve import TARGET_BAND_DAYS, ZONE_BANDS, band_key  # noqa: E402
 CHECK = "pacing"
 
 ACTION_SCHEMA_PREFIX = "action/"
-CHECKABLE_ACTION_SCHEMA = "action/1"
+CHECKABLE_ACTION_SCHEMAS = ("action/1",)
 MONSTER_SCHEMA_PREFIX = "monster/"
-CHECKABLE_MONSTER_SCHEMA = "monster/1"
+# Work order 010: monster/2 is monster/1 plus combat stats; both are read.
+CHECKABLE_MONSTER_SCHEMAS = ("monster/1", "monster/2")
 
 # The label the main combat skill is reported under. Monsters name no skill:
 # the main combat skill is whichever one the loadout is built around.
@@ -80,9 +83,10 @@ def _declared(data):
 
 
 def _load_entries(report, root, schemas, prefix, checkable, key, what):
-    """[(path, entry)] from every file declaring prefix* that matches checkable.
+    """[(path, entry)] from every file declaring prefix* that matches the
+    version it declares, which must be one of the checkable versions.
 
-    A file that declares prefix* but is not the checkable version, or does not
+    A file that declares prefix* but is not a checkable version, or does not
     match it, fails here as not-checkable: pacing computed without its entries
     would be wrong, so the check says so instead of guessing.
     """
@@ -96,17 +100,17 @@ def _load_entries(report, root, schemas, prefix, checkable, key, what):
         if not declared.startswith(prefix):
             continue
         files += 1
-        if declared != checkable:
+        if declared not in checkable:
             report.fail("not-checkable", path,
                         "schema is %r; only %s can be checked"
-                        % (declared, checkable))
+                        % (declared, " or ".join(checkable)))
             continue
-        errors = lib.validate(data, schemas[checkable])
+        errors = lib.validate(data, schemas[declared])
         if errors:
             report.fail("not-checkable", path,
                         "file does not match %s (%d errors; see the schema check); "
                         "pacing for the %s leaves its %s out"
-                        % (checkable, len(errors), what, key))
+                        % (declared, len(errors), what, key))
             continue
         for entry in data[key]:
             out.append((path, entry))
@@ -115,12 +119,12 @@ def _load_entries(report, root, schemas, prefix, checkable, key, what):
 
 def load_actions(report, root, schemas):
     return _load_entries(report, root, schemas, ACTION_SCHEMA_PREFIX,
-                         CHECKABLE_ACTION_SCHEMA, "actions", "skills it names")
+                         CHECKABLE_ACTION_SCHEMAS, "actions", "skills it names")
 
 
 def load_monsters(report, root, schemas):
     return _load_entries(report, root, schemas, MONSTER_SCHEMA_PREFIX,
-                         CHECKABLE_MONSTER_SCHEMA, "monsters", MAIN_COMBAT_LABEL)
+                         CHECKABLE_MONSTER_SCHEMAS, "monsters", MAIN_COMBAT_LABEL)
 
 
 def load_curve(report, root, schemas):

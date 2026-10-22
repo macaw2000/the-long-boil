@@ -481,3 +481,239 @@ put(DL + "content/drops/rustmoor.json", drops("drops.rustmoor.fixture",
 put(DL + TEP, econ("thunderhead", [(T[0], True, None, None), (T[1], False, None, None),
                                    (T[2], True, 30, 1), (T[3], True, None, None), (T[5], True, None, None),
                                    (T[6], True, None, None)]))
+
+# ---- work order 010: combat model, monster/2, gear/1, the combat check
+# A synthetic model (every constant differs from content/tuning/combat.json),
+# set against the fixture pacing curve PC. Monster stats are solved here, by
+# this file's own arithmetic, from combat.json's solving_for_011 and boss
+# target, so the check's arithmetic is not checked against itself. Zone
+# "global", names prefixed fixture_, so no fixture copies real content.
+CMV = dict(PLAYER_ATTACK_INTERVAL_S=2.5, BETWEEN_KILLS_S=5, KNOCKOUT_RESPAWN_S=30,
+           REFERENCE_RATION_TRIGGER_HP_FRACTION=0.5, HP_BASE=500, HP_PER_VITALITY=50,
+           DAMAGE_PER_STYLE_LEVEL=8, PRESSURE_DAMAGE_PER_LEVEL=0.02, HIT_CHANCE_BASE=0.7,
+           HIT_CHANCE_PER_POINT=0.03, HIT_CHANCE_MIN=0.1, HIT_CHANCE_MAX=0.9,
+           CRIT_CHANCE_PER_PRECISION=0.01, CRIT_CHANCE_CAP=0.4, CRIT_MULTIPLIER=2.0,
+           ARMOUR_HALF_POINT=50, WEAKNESS_MULTIPLIER=1.5, REFERENCE_DAMAGE_SHARE_PER_KILL=0.3,
+           BOSS_TARGET_WIN_CHANCE=0.5, BOSS_RATION_CAP_PER_ATTEMPT=2, MAIN_COMBAT_SKILL_SHARE=0.4,
+           OTHER_COMBAT_SKILLS_SHARE_EACH=0.1, CALIBRATION_STEP=None, RATION_HEAL_HP=250)
+def model(ident="tuning.global.fixture_combat", schema="tuning.combat/1", **override):
+    v = dict(CMV, **override)
+    consts = {k: {"value": x, "basis": "open" if x is None else "proposal", "note": "Fixture value."}
+              for k, x in v.items() if x is not ...}
+    prose = {"_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."}
+    return {"schema": schema, "id": ident, "revision": 1,
+            "source": "Validator fixture. Not game content.", "applies_to": "Validator fixture.",
+            "basis_key": {"proposal": "fixture"}, "units": {"HP_DAMAGE_SCALE": 10, "basis": "proposal"},
+            "constants": consts, "skills": prose, "player_formulas": prose, "gear": prose,
+            "monster_stats_shape": prose, "reference_player": prose, "weakness": prose,
+            "kill_time": prose, "rations": prose, "boss": prose, "combat_xp_split": prose,
+            "settled_points": [], "open_questions": []}
+CM = model()
+CMP = "content/tuning/combat.json"
+GP = "content/gear/fixture.json"
+PCT = dict((r["level"], r["total_xp"]) for r in PC["table"])
+def sec_level(L):
+    allowed = PCT[L] * CMV["OTHER_COMBAT_SKILLS_SHARE_EACH"] / CMV["MAIN_COMBAT_SKILL_SHARE"]
+    return max(s for s in PCT if PCT[s] <= allowed)
+def ref(L, power, acc, matched, armour_pts, evasion=None):
+    """The reference player's figures at level L, by combat.json's formulas."""
+    v, S = CMV, sec_level(L)
+    max_hp = v["HP_BASE"] + v["HP_PER_VITALITY"] * S
+    crit = min(v["CRIT_CHANCE_CAP"], v["CRIT_CHANCE_PER_PRECISION"] * S)
+    accuracy = L + S + acc
+    ev = accuracy if evasion is None else evasion
+    hit = min(v["HIT_CHANCE_MAX"], max(v["HIT_CHANCE_MIN"], v["HIT_CHANCE_BASE"] + v["HIT_CHANCE_PER_POINT"] * (accuracy - ev)))
+    mx = (power + v["DAMAGE_PER_STYLE_LEVEL"] * L) * (1 + v["PRESSURE_DAMAGE_PER_LEVEL"] * S) * (v["WEAKNESS_MULTIPLIER"] if matched else 1)
+    mean = hit * mx / 2 * (1 + (v["CRIT_MULTIPLIER"] - 1) * crit)
+    arm = S + armour_pts
+    taken = 1 - arm / (arm + v["ARMOUR_HALF_POINT"])
+    return dict(S=S, max_hp=max_hp, mean=mean, taken=taken, evasion=ev)
+def solve_kill(ident, L, spk, weakness, power, acc, armour_pts, hit_chance=0.6, interval=2.0, xp=10, **extra):
+    v, r = CMV, ref(L, power, acc, True, armour_pts)
+    fight = spk - v["BETWEEN_KILLS_S"]
+    m_dps = v["REFERENCE_DAMAGE_SHARE_PER_KILL"] * r["max_hp"] / fight
+    max_hit = rhu(m_dps * interval / (hit_chance * r["taken"] / 2))
+    m_dps = hit_chance * max_hit * r["taken"] / 2 / interval  # after rounding
+    f = m_dps * v["PLAYER_ATTACK_INTERVAL_S"] / v["RATION_HEAL_HP"]
+    hp = rhu(r["mean"] / v["PLAYER_ATTACK_INTERVAL_S"] * fight * (1 - f))
+    return dict(mon(ident, L, xp, spk, weakness=weakness), hp=hp, max_hit=max_hit, hit_chance=hit_chance,
+                attack_interval_s=interval, evasion=r["evasion"], **extra)
+def solve_boss(ident, L, spk, weakness, power, acc, armour_pts, hit_chance=0.7, interval=3.0, xp=400):
+    v, r = CMV, ref(L, power, acc, True, armour_pts)
+    n, ai = v["BOSS_RATION_CAP_PER_ATTEMPT"], v["PLAYER_ATTACK_INTERVAL_S"]
+    m_p = spk - v["BETWEEN_KILLS_S"]
+    hp = rhu((m_p - n * ai) * r["mean"] / ai)
+    pool = r["max_hp"] + n * v["RATION_HEAL_HP"]
+    max_hit = rhu(2 * (interval * pool / m_p) / (hit_chance * r["taken"]))
+    return dict(mon(ident, L, xp, spk, boss=True, weakness=weakness), hp=hp, max_hit=max_hit,
+                hit_chance=hit_chance, attack_interval_s=interval, evasion=r["evasion"])
+def wrow(n, power, acc): return dict(calibration=n, power=power, accuracy=acc)
+def arow(n, armour): return dict(calibration=n, armour=armour)
+def weapon(item, style, level, power, acc, rows=None):
+    return dict(item=item, slot="weapon", style=style, level_required=level,
+                stats_by_calibration=rows or [wrow(0, power, acc)] + [None] * 20)
+def armour(item, level, points, rows=None):
+    return dict(item=item, slot="armour", level_required=level,
+                stats_by_calibration=rows or [arow(0, points)] + [None] * 20)
+def gearfile(ident, *entries, schema="gear/1"):
+    return {"schema": schema, "id": ident, "gear": list(entries)}
+def monsters2(*entries): return monsters(*entries, schema="monster/2")
+WPN = dict(melee=("item.global.fixture_spanner", 30, 2), marksmanship=("item.global.fixture_rifle", 20, 6),
+           aetherics=("item.global.fixture_coil", 40, 0))
+COAT = "item.global.fixture_coat"
+# Ten: an aetherics monster at level 10. Boss: a marksmanship boss at 15.
+# With the fixture shares (0.1 / 0.4), the secondary level is sec_level(L).
+TEN = solve_kill("monster.global.fixture_tin_rat", 10, 120, "aetherics", 40, 0, 10)
+BOSS = solve_boss("monster.global.fixture_jaw_king", 15, 200, "marksmanship", 20, 6, 10)
+GOOD_GEAR = gearfile("gear.global.fixture",
+    weapon(WPN["melee"][0], "melee", 1, *WPN["melee"][1:]),
+    weapon(WPN["marksmanship"][0], "marksmanship", 5, *WPN["marksmanship"][1:],
+           rows=[wrow(n, 20 + 2 * n, 6 + n) for n in range(21)]),
+    weapon(WPN["aetherics"][0], "aetherics", 10, *WPN["aetherics"][1:]),
+    # A weaker aetherics weapon: never the best, so the check must pick the coil.
+    weapon("item.global.fixture_wand", "aetherics", 1, 5, 0),
+    # Needs level 11: not available against a level-10 monster.
+    weapon("item.global.fixture_big_coil", "aetherics", 11, 400, 50),
+    armour(COAT, 1, 10),
+    # Fortitude 60: above every reference player's Fortitude here, never worn.
+    armour("item.global.fixture_plate", 60, 500))
+
+# schema: tuning.combat/1, monster/2 and gear/1 accepted where they belong.
+put("schema/pass/" + CMP, CM)
+put("schema/pass/content/monsters/combat.json", monsters2(dict(TEN, id="monster.global.fixture_schema_tin_rat"), BOSS))
+put("schema/pass/" + GP, GOOD_GEAR)
+bm = model("tuning.global.fixture_combat_bad")
+bm["constants"]["HP_BASE"]["value"] = None            # only the open values may be null
+bm["constants"]["CRIT_MULTIPLIER"]["value"] = "1.5"   # a string is not machine-readable
+del bm["constants"]["ARMOUR_HALF_POINT"]               # every formula constant is required
+bm["constants"]["SPARE"] = {"value": 1, "basis": "proposal"}
+bm["constants"]["HIT_CHANCE_MAX"]["basis"] = "guess"
+bm["constants"]["RATION_HEAL_HP"]["value"] = 0
+del bm["units"]["HP_DAMAGE_SCALE"]
+bm["status"] = "drafted"                              # the register owns status
+put(S + "tuning/combat-bad.json", bm)
+put(S + "tuning/combat-no-heal.json", model("tuning.global.fixture_combat_no_heal", RATION_HEAL_HP=...))
+# The revision-2 file's current header: tuning.combat/0 is not accepted.
+put(S + "tuning/combat-old.json", model("tuning.global.fixture_combat_old", schema="tuning.combat/0"))
+b2 = lambda i, **kw: dict(dict(TEN, id="monster.global.fixture_" + i), **kw)
+nohp = b2("no_hp"); del nohp["hp"]
+put(S + "monsters/bad-2.json", monsters2(nohp, b2("fraction_hp", hp=10.5), b2("zero_hit", hit_chance=0),
+    b2("sure_hit", hit_chance=1.2), b2("no_interval", attack_interval_s=0), b2("zero_max_hit", max_hit=0),
+    b2("negative_evasion", evasion=-1), b2("armoured", armour=5)))
+put(S + "gear/bad.json", {"schema": "gear/1", "id": "gear.foundry.fixture_bad", "gear": [
+    dict(weapon("item.global.fixture_short", "melee", 1, 1, 1), stats_by_calibration=[wrow(0, 1, 1)] * 20),
+    dict(weapon("item.global.fixture_sling", "pressure", 0, 1, 1)),
+    dict(armour("items.global.fixture_hat", 1, 1), slot="trinket"),
+    dict(armour("item.global.fixture_cape", 1, 1), rows=None,
+         stats_by_calibration=[dict(arow(0, 1), weight=3)] + [None] * 20),
+    {"item": "item.global.fixture_no_rows", "slot": "armour", "level_required": 1}]})
+put(S + "tuning/stray-gear.json", gearfile("gear.global.fixture_stray"))
+put(S + "gear/misplaced.json", items(("item.global.fixture_misplaced_in_gear", "Misplaced", "Item file in the gear directory.")))
+
+# pacing: monster/2 is read like monster/1. The slow crab pays far less per
+# hour than the wraith, so the bands are unchanged.
+put("pacing/pass/content/monsters/combat.json", monsters2(
+    dict(solve_kill("monster.global.fixture_slow_crab", 20, 36, "melee", 30, 2, 10), xp=1)))
+put(FC + "content/monsters/future.json", monsters(mon("monster.global.fixture_future", 1, 10, 36), schema="monster/3"))
+nh = dict(TEN, id="monster.global.fixture_no_stats"); del nh["hp"]
+put(FC + "content/monsters/broken-2.json", monsters2(nh))
+
+# combat pass: the solved monster and boss, with a monster/1 file skipped;
+# both are within tolerance, so every line is a NOTE, pinned in
+# expected-notes.txt. Two far stronger weapons would break both targets if
+# they counted: a thunderhead coil (another zone) and the boss's own
+# first-kill rifle.
+JAW_RIFLE = "item.global.fixture_jaw_rifle"
+PASS_GEAR = dict(GOOD_GEAR, gear=GOOD_GEAR["gear"] + [
+    weapon("item.thunderhead.fixture_far_coil", "aetherics", 1, 999, 50),
+    weapon(JAW_RIFLE, "marksmanship", 1, 999, 50)])
+put("combat/pass/" + CP, PC)
+put("combat/pass/" + CMP, CM)
+put("combat/pass/" + GP, PASS_GEAR)
+put("combat/pass/" + DP, drops("drops.global.fixture", table(BOSS["id"], 1, 1, first_kill=[JAW_RIFLE])))
+put("combat/pass/" + MP, monsters2(TEN, BOSS))
+put("combat/pass/content/monsters/old.json", monsters(mon("monster.global.fixture_old_rat", 1, 6, 36)))
+if not os.path.exists(os.path.join(F, "combat/pass/expected-notes.txt")):
+    put("combat/pass/expected-notes.txt", "")
+
+# combat fail: every gear rule broken in one file, a gear/2 and a broken gear
+# file, monsters on and off target (bracketing the 5% kill-time and 0.05
+# win-chance tolerances), one whose only weakness gear is in another zone
+# (no_rifle), a boss whose only weakness gear is its own drop,
+# one the Ration cannot keep pace with, and a level-1 monster below the
+# armour's Fortitude.
+CF = "combat/fail/"
+put(CF + CP, PC)
+put(CF + CMP, CM)
+put(CF + GP, gearfile("gear.global.fixture",
+    weapon(WPN["melee"][0], "melee", 1, *WPN["melee"][1:]),
+    weapon(WPN["aetherics"][0], "aetherics", 1, *WPN["aetherics"][1:]),
+    armour(COAT, sec_level(10), 10)))
+put(CF + "content/gear/broken-rules.json", gearfile("gear.global.fixture_broken_rules",
+    {k: v for k, v in weapon("item.global.fixture_no_style", "melee", 1, 9, 9).items() if k != "style"},
+    dict(armour("item.global.fixture_styled_coat", 1, 9), style="melee"),
+    dict(weapon("item.global.fixture_null_zero", "marksmanship", 1, 9, 9), stats_by_calibration=[None] * 21),
+    weapon("item.global.fixture_shuffled", "marksmanship", 1, 9, 9,
+           rows=[wrow(0, 9, 9), wrow(2, 9, 9)] + [None] * 19),
+    weapon("item.global.fixture_mixed", "marksmanship", 1, 9, 9,
+           rows=[dict(calibration=0, power=9, armour=3)] + [None] * 20),
+    armour("item.global.fixture_spiked", 1, 9, rows=[dict(calibration=0, armour=9, power=4)] + [None] * 20),
+    # Twice in one file: one entry per item, and neither is used.
+    weapon("item.global.fixture_twice", "marksmanship", 1, 99, 99),
+    weapon("item.global.fixture_twice", "marksmanship", 1, 99, 99)))
+put(CF + "content/gear/far.json", gearfile("gear.thunderhead.fixture_far",
+    weapon("item.thunderhead.fixture_far_rifle", "marksmanship", 1, 20, 6)))
+OWN = "item.global.fixture_own_wand"
+# Level 15, so only the level-15 own king could use it.
+put(CF + "content/gear/own.json", gearfile("gear.global.fixture_own", weapon(OWN, "marksmanship", 15, 20, 6)))
+put(CF + DP, drops("drops.global.fixture", table("monster.global.fixture_own_king", 1, 1, [(OWN, 0.1, 1, 1)])))
+put(CF + "content/gear/future.json", gearfile("gear.global.fixture_future", schema="gear/2"))
+put(CF + "content/gear/broken.json", gearfile("gear.global.fixture_broken", weapon("item.global.fixture_short_rows", "melee", 1, 1, 1, rows=[wrow(0, 1, 1)])))
+TK = solve_boss("monster.global.fixture_tough_king", 10, 200, "aetherics", 40, 0, 10)
+ON = solve_kill("monster.global.fixture_on_target", 10, 120, "aetherics", 40, 0, 10)
+put(CF + MP, monsters2(
+    ON,
+    dict(ON, id="monster.global.fixture_too_tough", hp=ON["hp"] * 2),
+    # 3.8% slow: within the 5% tolerance (a NOTE). 6.7% slow: outside it.
+    dict(ON, id="monster.global.fixture_bit_tough", hp=rhu(ON["hp"] * 1.04)),
+    dict(ON, id="monster.global.fixture_rather_tough", hp=rhu(ON["hp"] * 1.07)),
+    # Thunderhead: uses thunderhead's rifle (its own zone) and finds no
+    # thunderhead armour. The global no_rifle above may not use that rifle.
+    dict(ON, id="monster.thunderhead.fixture_far_rat", weakness="marksmanship"),
+    # Its only rifle is its own drop.
+    dict(solve_boss("monster.global.fixture_own_king", 15, 200, "marksmanship", 20, 6, 10)),
+    # 10% more hp than its solved value: the win chance falls below 0.45.
+    dict(TK, hp=rhu(TK["hp"] * 1.1)),
+    # Dies in half the time: the floored time is exactly the target, the
+    # computed time is not, and the comparison uses the computed time.
+    dict(ON, id="monster.global.fixture_too_soft", hp=ON["hp"] // 2),
+    dict(ON, id="monster.global.fixture_no_rifle", weakness="marksmanship"),
+    dict(ON, id="monster.global.fixture_glutton", max_hit=ON["max_hit"] * 60),
+    dict(solve_kill("monster.global.fixture_level_one", 1, 60, "melee", 30, 2, 0)),
+    dict(solve_boss("monster.global.fixture_soft_king", 10, 200, "aetherics", 40, 0, 10), hp=50)))
+
+nh2 = dict(ON, id="monster.global.fixture_no_evasion"); del nh2["evasion"]
+put(CF + "content/monsters/broken.json", monsters2(nh2))
+
+# combat fail-model: monster/2 monsters, but the only model declares
+# tuning.combat/0, as content/tuning/combat.json revision 2 does today.
+FM = "combat/fail-model/"
+put(FM + CP, PC)
+put(FM + CMP, model(schema="tuning.combat/0"))
+put(FM + GP, GOOD_GEAR)
+put(FM + MP, monsters2(TEN))
+
+# combat fail-ration-open: the model's RATION_HEAL_HP is null (open), so no stocked kill time or boss win chance is computed; the
+# unrationed NOTE lines still are. The level-10 marksmanship monster has no
+# rifle at its level.
+FR = "combat/fail-ration-open/"
+put(FR + CP, PC)
+put(FR + CMP, model(RATION_HEAL_HP=None))
+put(FR + GP, GOOD_GEAR)
+put(FR + MP, monsters2(TEN, BOSS, dict(TEN, id="monster.global.fixture_rifle_shy", level=4, weakness="marksmanship")))
+
+# references: every gear entry's item is an item under content/items/
+# (Jeremy, answer to work order 010).
+put("references/pass/" + GP, gearfile("gear.global.fixture", weapon(INGOT, "melee", 1, 10, 0)))
+put(R + "gear/fixture.json", gearfile("gear.global.fixture", weapon(INGOT, "melee", 1, 10, 0),
+    armour("item.global.fixture_ghost_coat", 1, 5), armour("item.global.fixture_stray", 1, 5)))

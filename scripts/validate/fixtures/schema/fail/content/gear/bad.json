@@ -1,0 +1,216 @@
+{
+ "schema": "gear/1",
+ "id": "gear.foundry.fixture_bad",
+ "gear": [
+  {
+   "item": "item.global.fixture_short",
+   "slot": "weapon",
+   "style": "melee",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    }
+   ]
+  },
+  {
+   "item": "item.global.fixture_sling",
+   "slot": "weapon",
+   "style": "pressure",
+   "level_required": 0,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "items.global.fixture_hat",
+   "slot": "trinket",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 1
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_cape",
+   "slot": "armour",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 1,
+     "weight": 3
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "rows": null
+  },
+  {
+   "item": "item.global.fixture_no_rows",
+   "slot": "armour",
+   "level_required": 1
+  }
+ ]
+}

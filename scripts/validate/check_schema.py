@@ -5,11 +5,13 @@
   declares a "schema" string, a schema exists for it, and the file matches it.
 - Every "id", at any depth, is unique across the whole content tree, except
   inside a zone economy file's "anchors" (lib.ID_EXEMPT_KEYS, work order 007).
-- Item, action, monster and drop files live where work orders 003, 005 and
-  007 put them: a file under content/items/ declares item/*, a file under
-  content/actions/ declares action/*, a file under content/monsters/ declares
-  monster/*, a file under content/drops/ declares drops/*, and none of these
-  schemas is declared anywhere else.
+- Item, action, monster, drop and gear files live where work orders 003, 005,
+  007 and 010 put them: a file under content/items/ declares item/*, a file
+  under content/actions/ declares action/*, a file under content/monsters/
+  declares monster/* (monster/1 and monster/2 are both accepted, work order
+  010), a file under content/drops/ declares drops/*, a file under
+  content/gear/ declares gear/*, and none of these schemas is declared
+  anywhere else.
 - A zone economy file (tuning.economy/*) lives under content/tuning/ (work
   order 007). This rule runs one way only: content/tuning/ also holds the XP
   curve, so not every file there declares tuning.economy/*.
@@ -27,13 +29,14 @@ import lib  # noqa: E402
 
 CHECK = "schema"
 
-# Work orders 003, 005 and 007: schema family -> the only directory it may
+# Work orders 003, 005, 007 and 010: schema family -> the only directory it may
 # live in, and the only family that directory may hold.
 SCHEMA_HOMES = (
     ("item/", "content/items/"),
     ("action/", "content/actions/"),
     ("monster/", "content/monsters/"),
     ("drops/", "content/drops/"),
+    ("gear/", "content/gear/"),
 )
 
 # Work order 007: schema family -> the only directory it may live in. The

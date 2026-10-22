@@ -1,0 +1,623 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tuning.combat/1",
+  "title": "The combat model (work order 009), version 1",
+  "description": "Shape of content/tuning/combat.json as of revision 2 (work order 010, scope 1). Every constant the kill-time and win-chance formulas read is a number under constants.<NAME>.value, each with a basis (settled, derived, proposal, open); only CALIBRATION_STEP and RATION_HEAL_HP may be null, the two values the model leaves open (calibration work order; Cooking work order). Both are required keys (Jeremy, answer to work order 010). No 'status' field: the register owns status, as for tuning.xp_curve/1. units.HP_DAMAGE_SCALE is a number. The formulas themselves are prose; they are fixed by this schema version and encoded in scripts/validate/check_combat.py, so a model whose formulas change needs a new schema version. Every other section is free-form prose for the reader.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "revision",
+    "source",
+    "applies_to",
+    "units",
+    "constants",
+    "player_formulas",
+    "gear",
+    "monster_stats_shape",
+    "reference_player",
+    "weakness",
+    "kill_time",
+    "rations",
+    "boss",
+    "combat_xp_split"
+  ],
+  "properties": {
+    "schema": {
+      "const": "tuning.combat/1"
+    },
+    "id": {
+      "$ref": "#/$defs/content_id"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "applies_to": {
+      "type": "string",
+      "minLength": 1
+    },
+    "basis_key": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "units": {
+      "type": "object",
+      "required": [
+        "HP_DAMAGE_SCALE"
+      ],
+      "properties": {
+        "HP_DAMAGE_SCALE": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "constants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "PLAYER_ATTACK_INTERVAL_S",
+        "BETWEEN_KILLS_S",
+        "KNOCKOUT_RESPAWN_S",
+        "REFERENCE_RATION_TRIGGER_HP_FRACTION",
+        "HP_BASE",
+        "HP_PER_VITALITY",
+        "DAMAGE_PER_STYLE_LEVEL",
+        "PRESSURE_DAMAGE_PER_LEVEL",
+        "HIT_CHANCE_BASE",
+        "HIT_CHANCE_PER_POINT",
+        "HIT_CHANCE_MIN",
+        "HIT_CHANCE_MAX",
+        "CRIT_CHANCE_PER_PRECISION",
+        "CRIT_CHANCE_CAP",
+        "CRIT_MULTIPLIER",
+        "ARMOUR_HALF_POINT",
+        "WEAKNESS_MULTIPLIER",
+        "REFERENCE_DAMAGE_SHARE_PER_KILL",
+        "BOSS_TARGET_WIN_CHANCE",
+        "BOSS_RATION_CAP_PER_ATTEMPT",
+        "MAIN_COMBAT_SKILL_SHARE",
+        "OTHER_COMBAT_SKILLS_SHARE_EACH",
+        "CALIBRATION_STEP",
+        "RATION_HEAL_HP"
+      ],
+      "properties": {
+        "PLAYER_ATTACK_INTERVAL_S": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "BETWEEN_KILLS_S": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "KNOCKOUT_RESPAWN_S": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "REFERENCE_RATION_TRIGGER_HP_FRACTION": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "HP_BASE": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "HP_PER_VITALITY": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "DAMAGE_PER_STYLE_LEVEL": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "PRESSURE_DAMAGE_PER_LEVEL": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "HIT_CHANCE_BASE": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "HIT_CHANCE_PER_POINT": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "HIT_CHANCE_MIN": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "HIT_CHANCE_MAX": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "CRIT_CHANCE_PER_PRECISION": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "CRIT_CHANCE_CAP": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "CRIT_MULTIPLIER": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "ARMOUR_HALF_POINT": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "WEAKNESS_MULTIPLIER": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "REFERENCE_DAMAGE_SHARE_PER_KILL": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "BOSS_TARGET_WIN_CHANCE": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "BOSS_RATION_CAP_PER_ATTEMPT": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "MAIN_COMBAT_SKILL_SHARE": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "OTHER_COMBAT_SKILLS_SHARE_EACH": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "CALIBRATION_STEP": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        },
+        "RATION_HEAL_HP": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        }
+      }
+    },
+    "skills": {
+      "type": "object"
+    },
+    "player_formulas": {
+      "type": "object"
+    },
+    "gear": {
+      "type": "object"
+    },
+    "monster_stats_shape": {
+      "type": "object"
+    },
+    "reference_player": {
+      "type": "object"
+    },
+    "weakness": {
+      "type": "object"
+    },
+    "kill_time": {
+      "type": "object"
+    },
+    "rations": {
+      "type": "object"
+    },
+    "boss": {
+      "type": "object"
+    },
+    "combat_xp_split": {
+      "type": "object"
+    },
+    "settled_points": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "content_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)+$"
+    },
+    "basis": {
+      "enum": [
+        "settled",
+        "derived",
+        "proposal",
+        "open"
+      ]
+    }
+  }
+}

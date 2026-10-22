@@ -1,0 +1,1 @@
+FAIL combat/no-model content/tuning/combat.json : monster/2 monsters exist but no file is a valid tuning.combat/1 model (these declare tuning.combat/* but are not a valid tuning.combat/1; see the schema check)

@@ -1,0 +1,101 @@
+{
+ "schema": "gear/1",
+ "id": "gear.global.fixture",
+ "gear": [
+  {
+   "item": "item.global.fixture_brass_ingot",
+   "slot": "weapon",
+   "style": "melee",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 10,
+     "accuracy": 0
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_ghost_coat",
+   "slot": "armour",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 5
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_stray",
+   "slot": "armour",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 5
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ ]
+}

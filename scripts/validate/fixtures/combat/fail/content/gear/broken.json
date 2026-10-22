@@ -1,0 +1,19 @@
+{
+ "schema": "gear/1",
+ "id": "gear.global.fixture_broken",
+ "gear": [
+  {
+   "item": "item.global.fixture_short_rows",
+   "slot": "weapon",
+   "style": "melee",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 1,
+     "accuracy": 1
+    }
+   ]
+  }
+ ]
+}

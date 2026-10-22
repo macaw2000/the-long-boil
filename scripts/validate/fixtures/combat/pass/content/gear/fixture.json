@@ -1,0 +1,379 @@
+{
+ "schema": "gear/1",
+ "id": "gear.global.fixture",
+ "gear": [
+  {
+   "item": "item.global.fixture_spanner",
+   "slot": "weapon",
+   "style": "melee",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 30,
+     "accuracy": 2
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_rifle",
+   "slot": "weapon",
+   "style": "marksmanship",
+   "level_required": 5,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 20,
+     "accuracy": 6
+    },
+    {
+     "calibration": 1,
+     "power": 22,
+     "accuracy": 7
+    },
+    {
+     "calibration": 2,
+     "power": 24,
+     "accuracy": 8
+    },
+    {
+     "calibration": 3,
+     "power": 26,
+     "accuracy": 9
+    },
+    {
+     "calibration": 4,
+     "power": 28,
+     "accuracy": 10
+    },
+    {
+     "calibration": 5,
+     "power": 30,
+     "accuracy": 11
+    },
+    {
+     "calibration": 6,
+     "power": 32,
+     "accuracy": 12
+    },
+    {
+     "calibration": 7,
+     "power": 34,
+     "accuracy": 13
+    },
+    {
+     "calibration": 8,
+     "power": 36,
+     "accuracy": 14
+    },
+    {
+     "calibration": 9,
+     "power": 38,
+     "accuracy": 15
+    },
+    {
+     "calibration": 10,
+     "power": 40,
+     "accuracy": 16
+    },
+    {
+     "calibration": 11,
+     "power": 42,
+     "accuracy": 17
+    },
+    {
+     "calibration": 12,
+     "power": 44,
+     "accuracy": 18
+    },
+    {
+     "calibration": 13,
+     "power": 46,
+     "accuracy": 19
+    },
+    {
+     "calibration": 14,
+     "power": 48,
+     "accuracy": 20
+    },
+    {
+     "calibration": 15,
+     "power": 50,
+     "accuracy": 21
+    },
+    {
+     "calibration": 16,
+     "power": 52,
+     "accuracy": 22
+    },
+    {
+     "calibration": 17,
+     "power": 54,
+     "accuracy": 23
+    },
+    {
+     "calibration": 18,
+     "power": 56,
+     "accuracy": 24
+    },
+    {
+     "calibration": 19,
+     "power": 58,
+     "accuracy": 25
+    },
+    {
+     "calibration": 20,
+     "power": 60,
+     "accuracy": 26
+    }
+   ]
+  },
+  {
+   "item": "item.global.fixture_coil",
+   "slot": "weapon",
+   "style": "aetherics",
+   "level_required": 10,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 40,
+     "accuracy": 0
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_wand",
+   "slot": "weapon",
+   "style": "aetherics",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 5,
+     "accuracy": 0
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_big_coil",
+   "slot": "weapon",
+   "style": "aetherics",
+   "level_required": 11,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 400,
+     "accuracy": 50
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_coat",
+   "slot": "armour",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 10
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_plate",
+   "slot": "armour",
+   "level_required": 60,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 500
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.thunderhead.fixture_far_coil",
+   "slot": "weapon",
+   "style": "aetherics",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 999,
+     "accuracy": 50
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_jaw_rifle",
+   "slot": "weapon",
+   "style": "marksmanship",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 999,
+     "accuracy": 50
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ ]
+}

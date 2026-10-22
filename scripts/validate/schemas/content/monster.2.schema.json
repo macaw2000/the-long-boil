@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "monster/2",
+  "title": "Monsters, version 2",
+  "description": "monster/1 plus the combat stats of the combat model (content/tuning/combat.json, schema tuning.combat/1; work order 010, scope 2). Every monster/1 field keeps its meaning. Added, named as combat.json monster_stats_shape names them: hp, whole-number hit points in the model's x10 units; max_hit, the whole-number top of the monster's damage roll before the player's armour, x10 units; hit_chance, the monster's fixed chance to land a swing, above 0 and at most 1; attack_interval_s, seconds per monster swing; evasion, compared with the player's accuracy (not scaled). The schema check accepts monster/1 alongside monster/2, so a file can move when its stats are set (work order 011).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "monsters"
+  ],
+  "properties": {
+    "schema": {
+      "const": "monster/2"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "monsters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/monster"
+      }
+    }
+  },
+  "$defs": {
+    "monster": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "flavour",
+        "level",
+        "boss",
+        "weakness",
+        "xp",
+        "seconds_per_kill",
+        "hp",
+        "max_hit",
+        "hit_chance",
+        "attack_interval_s",
+        "evasion"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^monster\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"
+        },
+        "flavour": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S",
+          "maxWords": 20
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "boss": {
+          "type": "boolean"
+        },
+        "weakness": {
+          "enum": [
+            "melee",
+            "marksmanship",
+            "aetherics"
+          ]
+        },
+        "xp": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "seconds_per_kill": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "hp": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_hit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "hit_chance": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        },
+        "attack_interval_s": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "evasion": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

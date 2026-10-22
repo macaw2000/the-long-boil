@@ -1,0 +1,39 @@
+{
+ "schema": "gear/1",
+ "id": "gear.global.fixture_own",
+ "gear": [
+  {
+   "item": "item.global.fixture_own_wand",
+   "slot": "weapon",
+   "style": "marksmanship",
+   "level_required": 15,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 20,
+     "accuracy": 6
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ ]
+}
