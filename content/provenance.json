@@ -822,7 +822,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Re-review after rewrite: pass with notes. Forge-only line fixes the GDD §2 contradiction."
+        "notes": "Re-review after rewrite: pass with notes. Forge-only line fixes the GDD \u00a72 contradiction."
       },
       "approved_by": "jeremy",
       "approved_at": "2026-10-22T00:21:09Z",
@@ -1290,7 +1290,7 @@
       "pointer": "/monsters/3",
       "revision": null,
       "work_order": "docs/work-orders/006-rustmoor-monsters.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1311,8 +1311,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: flavour does not support the melee weakness."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:33:15Z",
       "history": [
         {
           "at": "2026-10-22T00:27:01Z",
@@ -1328,6 +1328,11 @@
           "at": "2026-10-22T00:28:32Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:33:15Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1338,7 +1343,7 @@
       "pointer": "/monsters/0",
       "revision": null,
       "work_order": "docs/work-orders/006-rustmoor-monsters.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1359,8 +1364,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:33:15Z",
       "history": [
         {
           "at": "2026-10-22T00:27:01Z",
@@ -1376,6 +1381,11 @@
           "at": "2026-10-22T00:28:32Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:33:15Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1386,7 +1396,7 @@
       "pointer": "/monsters/1",
       "revision": null,
       "work_order": "docs/work-orders/006-rustmoor-monsters.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1407,8 +1417,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:33:15Z",
       "history": [
         {
           "at": "2026-10-22T00:27:01Z",
@@ -1424,6 +1434,11 @@
           "at": "2026-10-22T00:28:32Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:33:15Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1434,7 +1449,7 @@
       "pointer": "/monsters/2",
       "revision": null,
       "work_order": "docs/work-orders/006-rustmoor-monsters.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1455,8 +1470,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:33:15Z",
       "history": [
         {
           "at": "2026-10-22T00:27:01Z",
@@ -1472,6 +1487,11 @@
           "at": "2026-10-22T00:28:32Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:33:15Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1482,7 +1502,7 @@
       "pointer": "/monsters/4",
       "revision": null,
       "work_order": "docs/work-orders/006-rustmoor-monsters.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1503,8 +1523,8 @@
         "verdict": "pass",
         "notes": "Pass with notes after revision: no reveal risk; 'king' dropped from flavour; 'usually a girder' implies it often misses."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:33:15Z",
       "history": [
         {
           "at": "2026-10-22T00:27:01Z",
@@ -1520,6 +1540,11 @@
           "at": "2026-10-22T00:30:45Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:33:15Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
