@@ -8,7 +8,7 @@
       "pointer": "/actions/17",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -31,8 +31,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: Smithing makes tools against the GDD skills table; settled by Jeremy."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -48,6 +48,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -58,7 +63,7 @@
       "pointer": "/actions/19",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -81,8 +86,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: Smithing makes tools against the GDD skills table; settled by Jeremy."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -98,6 +103,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -532,7 +542,7 @@
       "pointer": "/actions/15",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -555,8 +565,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -572,6 +582,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -688,7 +703,7 @@
       "pointer": "/actions/18",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -711,8 +726,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: cheapest weapons at their tier."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -728,6 +743,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -738,7 +758,7 @@
       "pointer": "/actions/16",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -761,8 +781,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: cheapest weapons at their tier."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -778,6 +798,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -788,7 +813,7 @@
       "pointer": "/actions/14",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -811,8 +836,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:46:21Z",
@@ -828,6 +853,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -838,7 +868,7 @@
       "pointer": "/actions/21",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -861,8 +891,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -878,6 +908,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -994,7 +1029,7 @@
       "pointer": "/actions/12",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1017,8 +1052,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:46:21Z",
@@ -1034,6 +1069,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1044,7 +1084,7 @@
       "pointer": "/actions/13",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1067,8 +1107,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:46:21Z",
@@ -1084,6 +1124,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1094,7 +1139,7 @@
       "pointer": "/actions/20",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1117,8 +1162,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -1134,6 +1179,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1198,7 +1248,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1221,8 +1271,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:46:21Z",
@@ -1238,6 +1288,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1248,7 +1303,7 @@
       "pointer": "/items/22",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1271,8 +1326,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -1288,6 +1343,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1457,7 +1517,7 @@
       "pointer": "/items/25",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1480,8 +1540,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -1497,6 +1557,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1623,7 +1688,7 @@
       "pointer": "/items/23",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1646,8 +1711,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -1663,6 +1728,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1726,7 +1796,7 @@
       "pointer": "/items/21",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1749,8 +1819,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:46:21Z",
@@ -1766,6 +1836,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1776,7 +1851,7 @@
       "pointer": "/items/28",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1799,8 +1874,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -1816,6 +1891,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1879,7 +1959,7 @@
       "pointer": "/items/24",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1902,8 +1982,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -1919,6 +1999,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -2088,7 +2173,7 @@
       "pointer": "/items/19",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -2111,8 +2196,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:46:21Z",
@@ -2128,6 +2213,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -2462,7 +2552,7 @@
       "pointer": "/items/26",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -2485,8 +2575,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: 'shipwright's' has no canon basis; skull joke repeats the Spanner's."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -2502,6 +2592,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -2566,7 +2661,7 @@
       "pointer": "/items/20",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -2589,8 +2684,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:46:21Z",
@@ -2606,6 +2701,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -2669,7 +2769,7 @@
       "pointer": "/items/27",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -2692,8 +2792,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:57:06Z",
@@ -2709,6 +2809,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -2772,7 +2877,7 @@
       "pointer": "/monsters/3",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -2795,8 +2900,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T00:27:01Z",
@@ -2832,6 +2937,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -2842,7 +2952,7 @@
       "pointer": "/monsters/0",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -2865,8 +2975,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T00:27:01Z",
@@ -2902,6 +3012,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -2912,7 +3027,7 @@
       "pointer": "/monsters/1",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -2935,8 +3050,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T00:27:01Z",
@@ -2972,6 +3087,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -2982,7 +3102,7 @@
       "pointer": "/monsters/2",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -3005,8 +3125,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T00:27:01Z",
@@ -3042,6 +3162,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -3052,7 +3177,7 @@
       "pointer": "/monsters/4",
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -3075,8 +3200,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: 15% for non-melee styles; untestable without Rations."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T00:27:01Z",
@@ -3112,6 +3237,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -3122,7 +3252,7 @@
       "pointer": null,
       "revision": 4,
       "work_order": "docs/work-orders/009-combat-model.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -3145,8 +3275,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: band-day figures' basis to be restated."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T15:05:04Z",
@@ -3172,6 +3302,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -3284,7 +3419,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -3307,8 +3442,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: aetherics weapons cheapest per tier."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T16:03:01Z",
       "history": [
         {
           "at": "2026-10-22T00:51:03Z",
@@ -3344,6 +3479,11 @@
           "at": "2026-10-22T16:01:02Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T16:03:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     }
