@@ -1,1 +1,1 @@
-FAIL pacing/no-curve - : actions exist but no file is a valid tuning.xp_curve/1 curve
+FAIL pacing/no-curve - : actions or monsters exist but no file is a valid tuning.xp_curve/1 curve

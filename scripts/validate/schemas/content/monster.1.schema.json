@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "monster/1",
+  "title": "Monsters, version 1",
+  "description": "A file under content/monsters/ (work order 005, scope 1). Holds a list of monsters under 'monsters'. Each monster has an id of the form monster.<zone>.<name>, zone one of rustmoor, cinderworks, thunderhead, global (the same list as items and actions); a name; one line of flavour of at most 20 words; level, an integer 1 to 100, the main combat level at which the monster becomes the player's sensible target; boss, a boolean; weakness, one of melee, marksmanship, aetherics (GDD section 6: 'Monsters are weak to Melee, Marksmanship, or Aetherics'); xp, the positive total combat XP for one kill before the main-skill split; and seconds_per_kill, the positive TARGET time for one kill by a player at 'level', including the time between kills: a design target the later combat-stats work order must hit, not a result of stats. No hit points, damage or drops yet. 'revision' (file or monster) is optional and exists only so a register row's revision can match what it points at, as for items and actions. maxWords is a keyword this repo's validator adds: whitespace-separated words.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "monsters"],
+  "properties": {
+    "schema": {"const": "monster/1"},
+    "revision": {"type": "integer", "minimum": 1},
+    "monsters": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/monster"}
+    }
+  },
+  "$defs": {
+    "monster": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "flavour", "level", "boss", "weakness", "xp", "seconds_per_kill"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^monster\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"},
+        "name": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"},
+        "flavour": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S", "maxWords": 20},
+        "level": {"type": "integer", "minimum": 1, "maximum": 100},
+        "boss": {"type": "boolean"},
+        "weakness": {"enum": ["melee", "marksmanship", "aetherics"]},
+        "xp": {"type": "number", "exclusiveMinimum": 0},
+        "seconds_per_kill": {"type": "number", "exclusiveMinimum": 0},
+        "revision": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

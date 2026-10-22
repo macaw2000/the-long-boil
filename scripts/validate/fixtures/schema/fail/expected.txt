@@ -32,13 +32,32 @@ FAIL schema/shape content/items/bad.json : /items/4/stats: field 'stats' is not 
 FAIL schema/shape content/items/bad.json : /items/4: missing required field 'name'
 FAIL schema/shape content/items/bad.json : /items/5/id: does not match pattern ^item\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
 FAIL schema/shape content/items/bad.json : /price: field 'price' is not allowed by this schema
+FAIL schema/shape content/monsters/bad.json : /drops: field 'drops' is not allowed by this schema
+FAIL schema/shape content/monsters/bad.json : /monsters/0/id: does not match pattern ^monster\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/monsters/bad.json : /monsters/1/id: does not match pattern ^monster\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/monsters/bad.json : /monsters/10/xp: must be greater than 0
+FAIL schema/shape content/monsters/bad.json : /monsters/11/seconds_per_kill: must be greater than 0
+FAIL schema/shape content/monsters/bad.json : /monsters/12/hp: field 'hp' is not allowed by this schema
+FAIL schema/shape content/monsters/bad.json : /monsters/13: missing required field 'seconds_per_kill'
+FAIL schema/shape content/monsters/bad.json : /monsters/2/flavour: has 21 words; at most 20 allowed
+FAIL schema/shape content/monsters/bad.json : /monsters/3/flavour: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
+FAIL schema/shape content/monsters/bad.json : /monsters/4/level: below minimum 1
+FAIL schema/shape content/monsters/bad.json : /monsters/5/level: above maximum 100
+FAIL schema/shape content/monsters/bad.json : /monsters/6/level: expected integer, got number
+FAIL schema/shape content/monsters/bad.json : /monsters/7/boss: expected boolean, got string
+FAIL schema/shape content/monsters/bad.json : /monsters/8/weakness: must be one of ["melee", "marksmanship", "aetherics"], got "pressure"
+FAIL schema/shape content/monsters/bad.json : /monsters/9/weakness: must be one of ["melee", "marksmanship", "aetherics"], got "Melee"
 FAIL schema/shape content/tuning/newline.json id=fixture.fail.newline\n : /id: does not match pattern ^[a-z0-9_]+(\.[a-z0-9_]+)+$
 FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /formula/BASE: field 'BASE' is not allowed by this schema
 FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /formula/constants: missing required field 'base'
 FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /status: field 'status' is not allowed by this schema
 FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /validators: field 'validators' is not allowed by this schema
-FAIL schema/unknown-schema content/tuning/old.json id=fixture.fail.old : schema 'tuning.xp_curve/0' is not accepted; known: action/1, item/1, tuning.xp_curve/1
-FAIL schema/unknown-schema content/tuning/unknown.json id=fixture.fail.unknown : schema 'monster/9' is not accepted; known: action/1, item/1, tuning.xp_curve/1
+FAIL schema/unknown-schema content/tuning/old.json id=fixture.fail.old : schema 'tuning.xp_curve/0' is not accepted; known: action/1, item/1, monster/1, tuning.xp_curve/1
+FAIL schema/unknown-schema content/tuning/unknown.json id=fixture.fail.unknown : schema 'monster/9' is not accepted; known: action/1, item/1, monster/1, tuning.xp_curve/1
 FAIL schema/wrong-directory content/actions/misplaced.json : files under content/actions/ must declare action/*; this one declares 'item/1'
 FAIL schema/wrong-directory content/actions/misplaced.json : schema 'item/1' belongs under content/items/
+FAIL schema/wrong-directory content/monsters/misplaced.json : files under content/monsters/ must declare monster/*; this one declares 'item/1'
+FAIL schema/wrong-directory content/monsters/misplaced.json : schema 'item/1' belongs under content/items/
+FAIL schema/wrong-directory content/tuning/stray-monsters.json : schema 'monster/1' belongs under content/monsters/
 FAIL schema/wrong-directory content/tuning/stray.json : schema 'action/1' belongs under content/actions/
+FAIL schema/wrong-directory content/tuning/unknown.json id=fixture.fail.unknown : schema 'monster/9' belongs under content/monsters/

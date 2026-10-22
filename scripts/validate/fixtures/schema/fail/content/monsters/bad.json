@@ -1,0 +1,146 @@
+{
+ "schema": "monster/1",
+ "drops": [],
+ "monsters": [
+  {
+   "id": "monsters.global.fixture_bad_prefix",
+   "name": "Fixture Bad Prefix",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": 10
+  },
+  {
+   "id": "monster.foundry.fixture_unknown_zone",
+   "name": "Fixture Unknown Zone",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": 10
+  },
+  {
+   "id": "monster.global.fixture_long_flavour",
+   "name": "Fixture Long Flavour",
+   "flavour": "one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone",
+   "level": 1,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": 10
+  },
+  {
+   "id": "monster.global.fixture_two_lines",
+   "name": "Fixture Two Lines",
+   "flavour": "First line.\nSecond line.",
+   "level": 1,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": 10
+  },
+  {
+   "id": "monster.global.fixture_level_zero",
+   "name": "Fixture Level Zero",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 0,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": 10
+  },
+  {
+   "id": "monster.global.fixture_level_high",
+   "name": "Fixture Level High",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 101,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": 10
+  },
+  {
+   "id": "monster.global.fixture_level_fraction",
+   "name": "Fixture Level Fraction",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 2.5,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": 10
+  },
+  {
+   "id": "monster.global.fixture_boss_string",
+   "name": "Fixture Boss String",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": "yes",
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": 10
+  },
+  {
+   "id": "monster.global.fixture_bad_weakness",
+   "name": "Fixture Bad Weakness",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": false,
+   "weakness": "pressure",
+   "xp": 1,
+   "seconds_per_kill": 10
+  },
+  {
+   "id": "monster.global.fixture_capital_weakness",
+   "name": "Fixture Capital Weakness",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": false,
+   "weakness": "Melee",
+   "xp": 1,
+   "seconds_per_kill": 10
+  },
+  {
+   "id": "monster.global.fixture_zero_xp",
+   "name": "Fixture Zero Xp",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 0,
+   "seconds_per_kill": 10
+  },
+  {
+   "id": "monster.global.fixture_negative_time",
+   "name": "Fixture Negative Time",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": -5
+  },
+  {
+   "id": "monster.global.fixture_hit_points",
+   "name": "Fixture Hit Points",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": 10,
+   "hp": 12
+  },
+  {
+   "id": "monster.global.fixture_no_time",
+   "name": "Fixture No Time",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 1
+  }
+ ]
+}

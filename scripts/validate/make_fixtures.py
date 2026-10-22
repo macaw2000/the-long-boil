@@ -221,3 +221,62 @@ put("pacing/fail-many-curves/" + AP, actions(act("action.global.fixture_two_curv
 # Q8: "$" means end of string (ECMA-262), so a trailing newline is refused.
 n = curve("fixture.fail.newline\n"); n["reference_action"]["id"] = "fixture.fail.newline_ref"
 put("schema/fail/content/tuning/newline.json", n)
+
+# ---- work order 005: monsters and combat pacing
+# Zone "global" with names prefixed fixture_, so no fixture copies real
+# content. Numbers are synthetic and set against the fixture pacing curve PC
+# (5 band-skill hours a day, reference 600 XP/h).
+def mon(ident, level, xp, seconds, boss=False, weakness="melee", name=None, flavour="Fixture monster, kept for a validator."):
+    return dict(id=ident, name=name or ident.rsplit(".", 1)[1].replace("_", " ").title(), flavour=flavour,
+                level=level, boss=boss, weakness=weakness, xp=xp, seconds_per_kill=seconds)
+def monsters(*entries, schema="monster/1"):
+    return {"schema": schema, "monsters": list(entries)}
+MP = "content/monsters/fixture.json"
+
+# schema: monster/1 accepted under content/monsters/, refused elsewhere.
+put("schema/pass/" + MP, monsters(
+    mon("monster.global.fixture_rat", 1, 6, 36),
+    mon("monster.global.fixture_gull", 8, 8, 36, weakness="marksmanship"),
+    mon("monster.global.fixture_jaw", 15, 400, 300, boss=True, weakness="aetherics")))
+put(S + "monsters/bad.json", {"schema": "monster/1", "drops": [], "monsters": [
+    mon("monsters.global.fixture_bad_prefix", 1, 1, 10),
+    mon("monster.foundry.fixture_unknown_zone", 1, 1, 10),
+    mon("monster.global.fixture_long_flavour", 1, 1, 10,
+        flavour="one two three four five six seven eight nine ten eleven twelve thirteen "
+                "fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone"),
+    mon("monster.global.fixture_two_lines", 1, 1, 10, flavour="First line.\nSecond line."),
+    mon("monster.global.fixture_level_zero", 0, 1, 10),
+    mon("monster.global.fixture_level_high", 101, 1, 10),
+    mon("monster.global.fixture_level_fraction", 2.5, 1, 10),
+    mon("monster.global.fixture_boss_string", 1, 1, 10, boss="yes"),
+    mon("monster.global.fixture_bad_weakness", 1, 1, 10, weakness="pressure"),
+    mon("monster.global.fixture_capital_weakness", 1, 1, 10, weakness="Melee"),
+    mon("monster.global.fixture_zero_xp", 1, 0, 10),
+    mon("monster.global.fixture_negative_time", 1, 1, -5),
+    dict(mon("monster.global.fixture_hit_points", 1, 1, 10), hp=12),
+    {k: v for k, v in mon("monster.global.fixture_no_time", 1, 1, 10).items() if k != "seconds_per_kill"}]})
+put(S + "monsters/misplaced.json", items(("item.global.fixture_misplaced_in_monsters", "Misplaced", "Item file in the monsters directory.")))
+put(S + "tuning/stray-monsters.json", monsters(mon("monster.global.fixture_stray", 1, 1, 10)))
+
+# pacing pass: band 1 climbs from slightly under the reference (600 XP/h) to
+# slightly over; band 2 has its own monster at level 20; band 3 has none
+# (NOTE). The level-1 boss pays far more per hour than anything else: if
+# bosses counted, band 1 would be about 2 days and fail.
+put("pacing/pass/" + MP, monsters(
+    mon("monster.global.fixture_rat", 1, 5.5, 36),
+    mon("monster.global.fixture_big_rat", 8, 7.5, 36, weakness="marksmanship"),
+    mon("monster.global.fixture_wraith", 20, 25, 36, weakness="aetherics"),
+    mon("monster.global.fixture_rat_king", 1, 500, 60, boss=True)))
+# pacing fail-combat: band 1 is WARN (no non-boss monster at level 1; the
+# level-1 boss does not cover it); band 2 runs on the level-2 monster until 25
+# and is far too slow, and a fast level-20 boss does not rescue it; a file of
+# monster/2 and a file that does not match monster/1 are not-checkable.
+FC = "pacing/fail-combat/"
+put(FC + CP, PC)
+put(FC + MP, monsters(
+    mon("monster.global.fixture_late_rat", 2, 6, 36),
+    mon("monster.global.fixture_slow_wraith", 25, 10, 36, weakness="aetherics"),
+    mon("monster.global.fixture_first_boss", 1, 500, 60, boss=True),
+    mon("monster.global.fixture_fast_boss", 20, 5000, 60, boss=True)))
+put(FC + "content/monsters/future.json", monsters(mon("monster.global.fixture_future", 1, 10, 36), schema="monster/2"))
+put(FC + "content/monsters/broken.json", monsters(mon("monster.global.fixture_broken", 0, 10, 36)))

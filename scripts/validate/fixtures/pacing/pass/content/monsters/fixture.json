@@ -1,0 +1,45 @@
+{
+ "schema": "monster/1",
+ "monsters": [
+  {
+   "id": "monster.global.fixture_rat",
+   "name": "Fixture Rat",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 5.5,
+   "seconds_per_kill": 36
+  },
+  {
+   "id": "monster.global.fixture_big_rat",
+   "name": "Fixture Big Rat",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 8,
+   "boss": false,
+   "weakness": "marksmanship",
+   "xp": 7.5,
+   "seconds_per_kill": 36
+  },
+  {
+   "id": "monster.global.fixture_wraith",
+   "name": "Fixture Wraith",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 20,
+   "boss": false,
+   "weakness": "aetherics",
+   "xp": 25,
+   "seconds_per_kill": 36
+  },
+  {
+   "id": "monster.global.fixture_rat_king",
+   "name": "Fixture Rat King",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": true,
+   "weakness": "melee",
+   "xp": 500,
+   "seconds_per_kill": 60
+  }
+ ]
+}

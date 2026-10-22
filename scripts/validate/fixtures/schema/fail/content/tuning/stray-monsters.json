@@ -1,0 +1,15 @@
+{
+ "schema": "monster/1",
+ "monsters": [
+  {
+   "id": "monster.global.fixture_stray",
+   "name": "Fixture Stray",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": 10
+  }
+ ]
+}

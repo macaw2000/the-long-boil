@@ -4,9 +4,10 @@
 - Every content file (everything under content/ except the register)
   declares a "schema" string, a schema exists for it, and the file matches it.
 - Every "id", at any depth, is unique across the whole content tree.
-- Item and action files live where work order 003 puts them: a file under
-  content/items/ declares item/*, a file under content/actions/ declares
-  action/*, and neither schema is declared anywhere else.
+- Item, action and monster files live where work orders 003 and 005 put
+  them: a file under content/items/ declares item/*, a file under
+  content/actions/ declares action/*, a file under content/monsters/ declares
+  monster/*, and none of these schemas is declared anywhere else.
 
 The register's own shape is the provenance check's job, not this one's.
 
@@ -21,10 +22,11 @@ import lib  # noqa: E402
 
 CHECK = "schema"
 
-# Work order 003: schema family -> the only directory it may live in.
+# Work orders 003 and 005: schema family -> the only directory it may live in.
 SCHEMA_HOMES = (
     ("item/", "content/items/"),
     ("action/", "content/actions/"),
+    ("monster/", "content/monsters/"),
 )
 
 
