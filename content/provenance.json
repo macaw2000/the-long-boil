@@ -1284,6 +1284,246 @@
       ]
     },
     {
+      "id": "monster.rustmoor.rust_rat_gaffer",
+      "type": "monster",
+      "path": "content/monsters/rustmoor.json",
+      "pointer": "/monsters/3",
+      "revision": null,
+      "work_order": "docs/work-orders/006-rustmoor-monsters.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:27:06Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: flavour does not support the melee weakness."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:27:01Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:27:06Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:28:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "monster.rustmoor.rust_rat_runt",
+      "type": "monster",
+      "path": "content/monsters/rustmoor.json",
+      "pointer": "/monsters/0",
+      "revision": null,
+      "work_order": "docs/work-orders/006-rustmoor-monsters.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:27:06Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:27:01Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:27:06Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:28:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "monster.rustmoor.rust_rat_scrounger",
+      "type": "monster",
+      "path": "content/monsters/rustmoor.json",
+      "pointer": "/monsters/1",
+      "revision": null,
+      "work_order": "docs/work-orders/006-rustmoor-monsters.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:27:06Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:27:01Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:27:06Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:28:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "monster.rustmoor.rust_rat_tinplate",
+      "type": "monster",
+      "path": "content/monsters/rustmoor.json",
+      "pointer": "/monsters/2",
+      "revision": null,
+      "work_order": "docs/work-orders/006-rustmoor-monsters.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:27:06Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:27:01Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:27:06Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:28:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "monster.rustmoor.scrapjaw",
+      "type": "monster",
+      "path": "content/monsters/rustmoor.json",
+      "pointer": "/monsters/4",
+      "revision": null,
+      "work_order": "docs/work-orders/006-rustmoor-monsters.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:30:35Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes after revision: no reveal risk; 'king' dropped from flavour; 'usually a girder' implies it often misses."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:27:01Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:27:06Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:30:45Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
       "id": "tuning.global.xp_curve",
       "type": "tuning",
       "path": "content/tuning/xp-curve.json",

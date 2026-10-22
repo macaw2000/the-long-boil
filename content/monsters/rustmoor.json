@@ -1,0 +1,55 @@
+{
+  "schema": "monster/1",
+  "monsters": [
+    {
+      "id": "monster.rustmoor.rust_rat_runt",
+      "name": "Rust Rat Runt",
+      "flavour": "It bites your boot, thinks better of it, and bites the other one.",
+      "level": 1,
+      "boss": false,
+      "weakness": "melee",
+      "xp": 9,
+      "seconds_per_kill": 54
+    },
+    {
+      "id": "monster.rustmoor.rust_rat_scrounger",
+      "name": "Rust Rat Scrounger",
+      "flavour": "It keeps three yards off with a bolt in its teeth, waiting for you to look away.",
+      "level": 5,
+      "boss": false,
+      "weakness": "marksmanship",
+      "xp": 19,
+      "seconds_per_kill": 108
+    },
+    {
+      "id": "monster.rustmoor.rust_rat_tinplate",
+      "name": "Rust Rat Tinplate",
+      "flavour": "It wears a soup tin for a helmet and a cistern lid for a grudge.",
+      "level": 10,
+      "boss": false,
+      "weakness": "aetherics",
+      "xp": 30,
+      "seconds_per_kill": 162
+    },
+    {
+      "id": "monster.rustmoor.rust_rat_gaffer",
+      "name": "Rust Rat Gaffer",
+      "flavour": "It runs the other rats like a shift and docks their pay in tail.",
+      "level": 15,
+      "boss": false,
+      "weakness": "melee",
+      "xp": 42,
+      "seconds_per_kill": 216
+    },
+    {
+      "id": "monster.rustmoor.scrapjaw",
+      "name": "Scrapjaw",
+      "flavour": "It charges jaw-first and shuts it on whatever is nearest, which is usually a girder and sometimes you.",
+      "level": 20,
+      "boss": true,
+      "weakness": "marksmanship",
+      "xp": 52,
+      "seconds_per_kill": 270
+    }
+  ]
+}

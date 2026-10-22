@@ -36,6 +36,15 @@ Spread the three weaknesses across the four rats so that no single combat skill 
 - **Section 7's ledger** shows a check-in "2 Rust Rat kills short of a level". Say whether your numbers make that plausible.
 - **Scrapjaw's XP:** propose a value and say what it rests on. A boss attempt is a separate queue item, and a lost fight spends the attempt.
 
+## Settled after the first draft
+
+Jeremy set these on 21 October 2026, after the inspector's review:
+
+- **Boss attempts can be repeated, and a lost attempt pays no XP.** Recorded in GDD section 6, Combat.
+- **Scrapjaw pays 52 XP over 270 s (1.04x),** just under the top rat's 1.05x, so farming it is driven by its drop alone. The drops work order controls that.
+- **Scrapjaw's marksmanship weakness stays** until combat stats exist. A ranged-weak boss dropping a melee weapon is accepted for now.
+- **Scrapjaw's flavour gets one concrete behaviour,** like the rats' lines, and still says nothing of paper or ledgers.
+
 ## Clearance
 
 Act I only. Flavour lines may not lean toward anything above Layer 1 in the slice. Scrapjaw's flavour must not mention Ledger Page 1 or what it holds.

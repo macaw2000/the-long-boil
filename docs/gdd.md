@@ -380,7 +380,7 @@ Logging off leaves 12 hours of steam, shown as a pressure gauge; at zero your Ti
 
 ### Combat
 
-Combat is automatic: pick a zone, a loadout, and triggers ("eat a Ration below 40% HP"), then watch or walk away. Monsters are weak to Melee, Marksmanship, or Aetherics, so loadouts matter. A knockout respawns in 60 seconds and resumes the queue, so offline hours are never wasted. Bosses are fought on purpose: a boss attempt is a separate queue item, and a lost fight spends the attempt.
+Combat is automatic: pick a zone, a loadout, and triggers ("eat a Ration below 40% HP"), then watch or walk away. Monsters are weak to Melee, Marksmanship, or Aetherics, so loadouts matter. A knockout respawns in 60 seconds and resumes the queue, so offline hours are never wasted. Bosses are fought on purpose: a boss attempt is a separate queue item, and a lost fight spends the attempt and pays no XP. Attempts can be queued again, so a boss pays XP no faster than the zone's best monster; players come back for its drop, not its XP.
 
 | Zone | Levels | Monsters | Boss and drop | Act | Ledger Pages |
 | --- | --- | --- | --- | --- | --- |
