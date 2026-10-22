@@ -3,9 +3,10 @@
   "private": true,
   "workspaces": ["packages/*"],
   "scripts": {
-    "build": "tsc -b packages/rules",
+    "build": "tsc -b packages/rules packages/server",
     "test": "vitest run",
-    "typecheck": "tsc -b packages/rules --pretty"
+    "typecheck": "tsc -b packages/rules packages/server --pretty",
+    "start": "npm run build && node packages/server/dist/main.js"
   },
   "devDependencies": {
     "@types/node": "22.19.1",
