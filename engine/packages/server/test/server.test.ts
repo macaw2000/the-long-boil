@@ -70,6 +70,28 @@ describe("a Tinker's first session", () => {
     expect(body.events.some((event: { type: string }) => event.type === "boiler_dry")).toBe(true);
   });
 
+  it("equips the spanner and fights Rust Rats, eating the bound Rations first", async () => {
+    expect((await call("PUT", `/tinkers/${id}/weapon`, { item: "item.rustmoor.brass_spanner" })).status).toBe(200);
+    const queued = await call("PUT", `/tinkers/${id}/queue`, { queue: [{ actionId: "monster.rustmoor.rust_rat_runt", remaining: 200 }] });
+    expect(queued.status).toBe(200);
+    clock += 2 * HOUR;
+    const { body } = await call("POST", `/tinkers/${id}/check-in`);
+    const kills = body.events.filter((event: { type: string }) => event.type === "monster_killed");
+    expect(kills.length).toBeGreaterThan(100);
+    expect(body.tinker.crowns).toBe(kills.reduce((sum: number, kill: { crowns: number }) => sum + kill.crowns, 0));
+    const scrap = body.tinker.inventory.find((stack: { item: string }) => stack.item === "item.rustmoor.rat_scrap");
+    expect(scrap.qty).toBe(kills.length);
+    const rations = body.tinker.inventory.filter((stack: { item: string }) => stack.item === "item.rustmoor.rustmoor_ration");
+    expect(rations).toHaveLength(1);
+    expect(rations[0].bound).toBe(true);
+    expect(rations[0].qty).toBeLessThan(342);
+    expect(body.tinker.skills.find((skill: { skill: string }) => skill.skill === "melee").level).toBeGreaterThan(1);
+  });
+
+  it("refuses a weapon the Tinker does not hold", async () => {
+    expect((await call("PUT", `/tinkers/${id}/weapon`, { item: "item.rustmoor.steel_blade" })).status).toBe(400);
+  });
+
   it("keeps every change in the ordered event log", async () => {
     const { rows } = await db.query("SELECT seq, type FROM events WHERE tinker_id = $1 ORDER BY seq", [id]);
     expect(rows[0]).toEqual({ seq: "1", type: "tinker_created" });
@@ -86,10 +108,11 @@ describe("a Tinker's first session", () => {
     const skills: Record<string, number> = {};
     for (const { type, payload } of rows) {
       if (type === "tinker_created") for (const stack of payload.inventory) inventory[stack.item] = (inventory[stack.item] ?? 0) + stack.qty;
-      if (type === "action_completed") {
+      if (type === "action_completed" || type === "monster_killed" || type === "boss_attempted") {
         for (const [item, qty] of Object.entries(payload.consumed as Record<string, number>)) inventory[item] = (inventory[item] ?? 0) - qty;
         for (const [item, qty] of Object.entries(payload.produced as Record<string, number>)) inventory[item] = (inventory[item] ?? 0) + qty;
-        skills[payload.skill] = (skills[payload.skill] ?? 0) + payload.xp;
+        const xp: Record<string, number> = type === "action_completed" ? { [payload.skill]: payload.xp } : payload.xp;
+        for (const [skill, gained] of Object.entries(xp)) skills[skill] = (skills[skill] ?? 0) + gained;
       }
     }
     for (const item of Object.keys(inventory)) if (inventory[item] === 0) delete inventory[item];

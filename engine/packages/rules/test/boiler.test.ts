@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BOILER_HOURS, checkIn, levelFor, resolve, setQueue, type GameEvent, type TinkerState } from "../src/index.js";
+import { checkIn, levelFor, newTinker, resolve, setQueue, type GameEvent, type TinkerState } from "../src/index.js";
 import { loadRealContent } from "./load.js";
 
 const content = loadRealContent();
@@ -9,7 +9,7 @@ const SMELT = "action.rustmoor.smelt_brass_ingot";
 const PROSPECT = "action.rustmoor.prospect_copper";
 
 function freshTinker(inventory: Record<string, number> = {}): TinkerState {
-  return { skillXp: {}, inventory, queue: [], progressMs: 0, resolvedTo: 0, steamUntil: BOILER_HOURS * HOUR };
+  return newTinker(inventory, 0, 0, 1);
 }
 
 function count(events: GameEvent[], type: GameEvent["type"]) {

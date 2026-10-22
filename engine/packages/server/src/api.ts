@@ -4,7 +4,7 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import type { GameContent } from "./content-loader.js";
 import type { Db } from "./db.js";
-import { BadRequest, NotFound, checkIn, createTinker, setQueue } from "./tinkers.js";
+import { BadRequest, NotFound, checkIn, createTinker, equip, setQueue } from "./tinkers.js";
 
 export interface ApiOptions {
   db: Db;
@@ -28,6 +28,8 @@ export function buildApi({ db, content, now = Date.now }: ApiOptions): FastifyIn
   app.get("/content", async () => ({
     version: content.rules.version,
     actions: [...content.rules.actions.values()],
+    monsters: [...content.rules.monsters.values()],
+    weapons: [...content.rules.weapons.values()],
   }));
 
   app.post<{ Body: { login: string; name: string } }>(
@@ -73,6 +75,12 @@ export function buildApi({ db, content, now = Date.now }: ApiOptions): FastifyIn
       },
     },
     async (request) => setQueue(db, content, Number(request.params.id), request.body.queue, now()),
+  );
+
+  app.put<{ Params: { id: string }; Body: { item: string } }>(
+    "/tinkers/:id/weapon",
+    { schema: { body: { type: "object", required: ["item"], properties: { item: { type: "string" } } } } },
+    async (request) => equip(db, content, Number(request.params.id), request.body.item, now()),
   );
 
   return app;

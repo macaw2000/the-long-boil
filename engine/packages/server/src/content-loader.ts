@@ -43,11 +43,20 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
   }
   const version = hash.digest("hex").slice(0, 12);
 
-  const actions: Action[] = listJson(join(dir, "actions")).flatMap((path) => readJson(path).actions);
+  const all = (sub: string, key: string) => listJson(join(dir, sub)).flatMap((path) => readJson(path)[key]);
+  const actions: Action[] = all("actions", "actions");
   const curve: CurveRow[] = readJson(join(dir, "tuning", "xp-curve.json")).table;
   const start = readJson(join(dir, "start.json"));
   return {
-    rules: buildContent(version, actions, curve),
+    rules: buildContent({
+      version,
+      actions,
+      curve,
+      monsters: all("monsters", "monsters"),
+      gear: all("gear", "gear"),
+      drops: listJson(join(dir, "drops")).map(readJson),
+      combat: readJson(join(dir, "tuning", "combat.json")).constants,
+    }),
     start: { inventory: start.inventory, crowns: start.crowns },
   };
 }

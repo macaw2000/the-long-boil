@@ -26,6 +26,8 @@ export interface TinkerView {
   progressMs: number;
   steamUntil: string;
   resolvedTo: string;
+  weapon: string | null;
+  bossesBeaten: string[];
 }
 
 export interface Outcome {
@@ -41,7 +43,11 @@ interface Loaded {
 
 async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
   const row = (
-    await tx.query("SELECT progress_ms, resolved_to, steam_until, last_seq FROM tinkers WHERE id = $1 FOR UPDATE", [tinkerId])
+    await tx.query(
+      `SELECT progress_ms, resolved_to, steam_until, last_seq, crowns, weapon, rng, ration_debt, pity, bosses_beaten
+       FROM tinkers WHERE id = $1 FOR UPDATE`,
+      [tinkerId],
+    )
   ).rows[0];
   if (!row) throw new NotFound(`no Tinker ${tinkerId}`);
 
@@ -63,10 +69,16 @@ async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
     state: {
       skillXp,
       inventory,
+      crowns: Number(row.crowns),
       queue,
       progressMs: Number(row.progress_ms),
       resolvedTo: row.resolved_to.getTime(),
       steamUntil: row.steam_until.getTime(),
+      weapon: row.weapon,
+      rng: Number(row.rng),
+      rationDebt: Number(row.ration_debt),
+      pity: row.pity,
+      bossesBeaten: row.bosses_beaten,
     },
     stacks,
     lastSeq: Number(row.last_seq),
@@ -127,9 +139,23 @@ async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state: Tinker
   }
 
   await tx.query(
-    `UPDATE tinkers SET progress_ms = $2, resolved_to = $3, steam_until = $4, last_seq = $5, content_version = $6
+    `UPDATE tinkers SET progress_ms = $2, resolved_to = $3, steam_until = $4, last_seq = $5, content_version = $6,
+       crowns = $7, weapon = $8, rng = $9, ration_debt = $10, pity = $11, bosses_beaten = $12
      WHERE id = $1`,
-    [tinkerId, state.progressMs, new Date(state.resolvedTo), new Date(state.steamUntil), lastSeq, version],
+    [
+      tinkerId,
+      state.progressMs,
+      new Date(state.resolvedTo),
+      new Date(state.steamUntil),
+      lastSeq,
+      version,
+      state.crowns,
+      state.weapon,
+      state.rng,
+      state.rationDebt,
+      JSON.stringify(state.pity),
+      JSON.stringify(state.bossesBeaten),
+    ],
   );
 }
 
@@ -166,6 +192,8 @@ async function view(tx: Tx, tinkerId: number, content: GameContent): Promise<Tin
     progressMs: loaded.state.progressMs,
     steamUntil: row.steam_until.toISOString(),
     resolvedTo: row.resolved_to.toISOString(),
+    weapon: loaded.state.weapon,
+    bossesBeaten: loaded.state.bossesBeaten,
   };
 }
 
@@ -197,11 +225,14 @@ export async function createTinker(db: Db, content: GameContent, login: string, 
         [tinkerId, stack.item, stack.bound, stack.qty],
       );
     }
+    // Each Tinker's generator is seeded from its id, so two Tinkers never share a run of luck.
+    const seed = Number(BigInt.asUintN(32, BigInt(tinkerId) * 2654435761n));
+    await tx.query("UPDATE tinkers SET rng = $2 WHERE id = $1", [tinkerId, seed]);
     const seq = await appendEvents(
       tx,
       tinkerId,
       0,
-      [{ type: "tinker_created", at: now, payload: { name, inventory: content.start.inventory, crowns: content.start.crowns } }],
+      [{ type: "tinker_created", at: now, payload: { name, inventory: content.start.inventory, crowns: content.start.crowns, seed } }],
       version,
     );
     await tx.query("UPDATE tinkers SET last_seq = $2 WHERE id = $1", [tinkerId, seq]);
@@ -230,7 +261,9 @@ export async function checkIn(db: Db, content: GameContent, tinkerId: number, no
 /** Sets the queue at a check-in: resolves first, so time already spent is kept. */
 export async function setQueue(db: Db, content: GameContent, tinkerId: number, queue: QueueEntry[], now: number): Promise<Outcome> {
   for (const entry of queue) {
-    if (!content.rules.actions.has(entry.actionId)) throw new BadRequest(`unknown action ${entry.actionId}`);
+    if (!content.rules.actions.has(entry.actionId) && !content.rules.monsters.has(entry.actionId)) {
+      throw new BadRequest(`unknown action or monster ${entry.actionId}`);
+    }
   }
   return withTransaction(db, async (tx) => {
     const loaded = await lockAndLoad(tx, tinkerId);
@@ -254,6 +287,34 @@ export async function setQueue(db: Db, content: GameContent, tinkerId: number, q
       version,
     );
     await saveState(tx, tinkerId, loaded, queued, seq, version);
+    return { tinker: await view(tx, tinkerId, content), events: resolved.events };
+  });
+}
+
+/** Equips a held weapon at a check-in: resolves first, so the fight under way finishes with the old one. */
+export async function equip(db: Db, content: GameContent, tinkerId: number, item: string, now: number): Promise<Outcome> {
+  return withTransaction(db, async (tx) => {
+    const loaded = await lockAndLoad(tx, tinkerId);
+    const resolved = rules.checkIn(loaded.state, content.rules, now);
+    let equipped: TinkerState;
+    try {
+      equipped = rules.equip(resolved.state, content.rules, item);
+    } catch (error) {
+      throw new BadRequest((error as Error).message);
+    }
+    const version = content.rules.version;
+    const seq = await appendEvents(
+      tx,
+      tinkerId,
+      loaded.lastSeq,
+      [
+        ...fromRules(resolved.events),
+        { type: "checked_in", at: now, payload: { steamUntil: resolved.state.steamUntil } },
+        { type: "weapon_equipped", at: now, payload: { item } },
+      ],
+      version,
+    );
+    await saveState(tx, tinkerId, loaded, equipped, seq, version);
     return { tinker: await view(tx, tinkerId, content), events: resolved.events };
   });
 }
