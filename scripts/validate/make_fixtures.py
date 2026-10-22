@@ -303,12 +303,14 @@ TEP, GEP = "content/tuning/economy-thunderhead.json", "content/tuning/economy-gl
 PAGE = ["item.thunderhead.fixture_ledger_page_%d" % n for n in range(1, 6)]
 GPAGE = "item.global.fixture_ledger_page_free"
 MEMO = "item.thunderhead.fixture_harpy_memo"
+CLEAVER = "item.thunderhead.fixture_rat_king_cleaver"
 RAT, BIG, WRAITH, MOTH, KING = ("monster.thunderhead.fixture_rat", "monster.thunderhead.fixture_big_rat",
     "monster.thunderhead.fixture_wraith", "monster.thunderhead.fixture_moth", "monster.thunderhead.fixture_rat_king")
 GRUB = "monster.global.fixture_grub"
 LEDGER_ITEMS = items(*([(ORE, "Copper Ore", "Fixture ore, dug for a validator."),
                         (INGOT, "Brass Ingot", "Fixture ingot, smelted for a validator."),
                         (MEMO, "Harpy Memo", "Fixture curio, chewed for a validator."),
+                        (CLEAVER, "Rat King Cleaver", "Fixture boss drop, kept for a validator."),
                         (GPAGE, "Free Page", "Fixture page in the global zone, which the page rules skip.")]
                        + [(p, "Ledger Page %d" % n, "Fixture page, torn for a validator.")
                           for n, p in enumerate(PAGE, 1)]))
@@ -330,8 +332,12 @@ LEDGER_TABLES = [
     table(RAT, 2, 4, [(ORE, 0.5, 1, 2), (PAGE[0], 0.002, 1, 1), (PAGE[1], 0.002, 1, 1)]),
     table(BIG, 4, 7, [(PAGE[2], 0.002, 1, 1), (MEMO, 0.05, 1, 1)]),
     table(WRAITH, 10, 10, [(PAGE[3], 0.001, 1, 1)]),
-    table(KING, 50, 80, [(INGOT, 1.0, 1, 3)], first_kill=[PAGE[4]])]
-LEDGER_PITY = [(PAGE[0], 400), (PAGE[1], 500), (PAGE[2], 450), (PAGE[3], 500)]
+    # The boss's signature item sits in first_kill beside its one page and
+    # also in its entries; this passes.
+    table(KING, 50, 80, [(INGOT, 1.0, 1, 3), (CLEAVER, 0.05, 1, 1)], first_kill=[CLEAVER, PAGE[4]])]
+# Ordered, on one shared zone timer (GDD section 5, revised): page 3 first,
+# then 1, 2, 4. Page 4 sits exactly on the 1,000-kill limit.
+LEDGER_PITY = [(PAGE[2], 600), (PAGE[0], 800), (PAGE[1], 900), (PAGE[3], 1000)]
 LEDGER_DROPS = drops("drops.thunderhead.fixture", *LEDGER_TABLES, pity=LEDGER_PITY)
 # global: the page rules do not apply, so an unbound global page that drops
 # from two tables with no pity passes.
@@ -457,13 +463,13 @@ put(DL + MP, monsters(mon(HARPY, 45, 90, 36), mon(GULL, 50, 90, 36), mon(BARON, 
                       mon(SCRAP, 2, 6, 36)))
 put(DL + "content/drops/thunderhead.json", drops("drops.thunderhead.fixture",
     # t1 to t3 drop from non-boss tables (3 pages, not 4); t2 has no zone_pity;
-    # t3's is 501. t3 also drops from the gull (two tables). t4 is in the
+    # t3's is 1,001, one over the limit. t3 also drops from the gull (two tables). t4 is in the
     # boss's entries; the boss gives two pages on first kill, t5 and t1 (t1
     # now in two tables as well).
     table(HARPY, 1, 2, [(T[0], 0.002, 1, 1), (T[1], 0.002, 1, 1), (T[2], 0.002, 1, 1)]),
     table(GULL, 1, 2, [(T[2], 0.002, 1, 1)]),
     table(BARON, 9, 9, [(T[3], 0.01, 1, 1)], first_kill=[T[4], T[0]]),
-    pity=[(T[0], 400), (T[2], 501)]))
+    pity=[(T[0], 400), (T[2], 1001)]))
 put(DL + "content/drops/cinderworks.json", drops("drops.cinderworks.fixture",
     # five pages drop, each with pity; the boss has no table. c1 also drops
     # in rustmoor (two zones).

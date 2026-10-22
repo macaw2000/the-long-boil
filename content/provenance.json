@@ -638,6 +638,55 @@
       ]
     },
     {
+      "id": "drops.rustmoor.scrapyards",
+      "type": "drops",
+      "path": "content/drops/rustmoor.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/008-rustmoor-drops.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T14:47:04Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: page roll rule and pity slack against the main-skill share need a ruling; Rat Scrap mostly unsold."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:51:03Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:51:12Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T14:47:13Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
       "id": "item.rustmoor.brass_ingot",
       "type": "item",
       "path": "content/items/rustmoor.json",
@@ -1178,6 +1227,349 @@
       ]
     },
     {
+      "id": "item.rustmoor.ledger_page_1",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/14",
+      "revision": null,
+      "work_order": "docs/work-orders/008-rustmoor-drops.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T14:47:04Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:51:03Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:51:12Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T14:47:13Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.ledger_page_drop_1",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/15",
+      "revision": null,
+      "work_order": "docs/work-orders/008-rustmoor-drops.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T14:47:04Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:51:03Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:51:12Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T14:47:13Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.ledger_page_drop_2",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/16",
+      "revision": null,
+      "work_order": "docs/work-orders/008-rustmoor-drops.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T14:47:04Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:51:03Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:51:12Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T14:47:13Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.ledger_page_drop_3",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/17",
+      "revision": null,
+      "work_order": "docs/work-orders/008-rustmoor-drops.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T14:47:04Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:51:03Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:51:12Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T14:47:13Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.ledger_page_drop_4",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/18",
+      "revision": null,
+      "work_order": "docs/work-orders/008-rustmoor-drops.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T14:47:04Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:51:03Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:51:12Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T14:47:13Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.rat_scrap",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/12",
+      "revision": null,
+      "work_order": "docs/work-orders/008-rustmoor-drops.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T14:47:04Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:51:03Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:51:12Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T14:47:13Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.scrapjaws_cleaver",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/13",
+      "revision": null,
+      "work_order": "docs/work-orders/008-rustmoor-drops.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T14:47:04Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:51:03Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:51:12Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T14:47:13Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
       "id": "item.rustmoor.steel_blade",
       "type": "item",
       "path": "content/items/rustmoor.json",
@@ -1647,6 +2039,55 @@
           "at": "2026-10-22T00:04:01Z",
           "status": "approved",
           "by": "jeremy"
+        }
+      ]
+    },
+    {
+      "id": "tuning.rustmoor.economy",
+      "type": "tuning",
+      "path": "content/tuning/economy-rustmoor.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/008-rustmoor-drops.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T14:47:04Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: Cleaver price likely to collapse; first-kill vs entries roll needs a rule."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:51:03Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:51:12Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T14:47:13Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ]
     }

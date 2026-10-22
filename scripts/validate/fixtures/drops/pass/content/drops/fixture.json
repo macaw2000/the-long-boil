@@ -80,29 +80,36 @@
      "chance": 1.0,
      "qty_min": 1,
      "qty_max": 3
+    },
+    {
+     "item": "item.thunderhead.fixture_rat_king_cleaver",
+     "chance": 0.05,
+     "qty_min": 1,
+     "qty_max": 1
     }
    ],
    "first_kill": [
+    "item.thunderhead.fixture_rat_king_cleaver",
     "item.thunderhead.fixture_ledger_page_5"
    ]
   }
  ],
  "zone_pity": [
   {
+   "item": "item.thunderhead.fixture_ledger_page_3",
+   "kills": 600
+  },
+  {
    "item": "item.thunderhead.fixture_ledger_page_1",
-   "kills": 400
+   "kills": 800
   },
   {
    "item": "item.thunderhead.fixture_ledger_page_2",
-   "kills": 500
-  },
-  {
-   "item": "item.thunderhead.fixture_ledger_page_3",
-   "kills": 450
+   "kills": 900
   },
   {
    "item": "item.thunderhead.fixture_ledger_page_4",
-   "kills": 500
+   "kills": 1000
   }
  ]
 }

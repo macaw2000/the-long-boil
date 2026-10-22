@@ -320,7 +320,7 @@ Paying off Arrears in Crowns is also a new Crown sink, and the Assayer tracks it
 
 ### Ledger Pages and the Commonplace Book
 
-Hester's notebook is the spine players can hold. The capstone holds 24 Ledger Pages: 3 from boss first-kills, 9 from storylets, and 12 as rare zone drops (4 per zone). Each zone drop has a pity timer that guarantees the next page within 500 kills of any monster in that zone, so nobody grinds forever for a story beat or has to go back to a monster they have outgrown. Pages are bound to the player and read in Hester's Ledger, a screen styled as her notebook. Every lore fact a player uncovers is written into the Commonplace Book, a re-readable codex.
+Hester's notebook is the spine players can hold. The capstone holds 24 Ledger Pages: 3 from boss first-kills, 9 from storylets, and 12 as rare zone drops (4 per zone). A zone's drop pages arrive in a fixed order on one shared pity timer, which guarantees the next page within 1,000 kills of any monster in that zone, so nobody grinds forever for a story beat or has to go back to a monster they have outgrown. At Rustmoor's pace that spreads the four pages across the zone's two weeks. Pages are bound to the player and read in Hester's Ledger, a screen styled as her notebook. Every lore fact a player uncovers is written into the Commonplace Book, a re-readable codex.
 
 ### Story rewards and the economy
 
@@ -401,7 +401,7 @@ An order book: sellers list, buyers post standing bids, and matches fill at once
 
 ### Guilds, Work Orders, and Favour
 
-A guild costs 500,000 Crowns and gets chat, a contribution roster, a Workshop, and 5 weekly Guild Contracts such as "Smelt 50,000 Brass Ingots", whose tiers pay upgrades and tokens. Solo players get a new Work Order every 8 hours. Work Orders and trading unlock at total level 50 on an account at least two days old, so throwaway alt accounts cannot farm them. The cheap early levels make total level 50 a matter of hours, so the account's age does the real gating.
+A guild costs 500,000 Crowns and gets chat, a contribution roster, a Workshop, and 5 weekly Guild Contracts such as "Smelt 50,000 Brass Ingots", whose tiers pay upgrades and tokens. Solo players get a new Work Order every 8 hours. Work Orders and trading unlock at total level 50 on an account at least two days old, so throwaway alt accounts cannot farm them. Selling to NPC collectors at the Counting-House window is never locked, so a new Tinker can sell scrap in the first session. The cheap early levels make total level 50 a matter of hours, so the account's age does the real gating.
 
 This edition adds one thing: every Work Order and Guild Contract carries a faction's seal. Completing it earns that faction Favour, and during a Reckoning it counts as a pledge to that faction's side. Players choose which seals to take, so the daily grind becomes a quiet vote on the city's future.
 
@@ -417,7 +417,7 @@ The draft named this as its open gap: the overall Crown faucet and sink budget n
 | --- | --- |
 | Monster drops | Calibrating attempts |
 | Work Order and Guild Contract rewards | Exchange sales tax (2%) |
-| NPC collectors buying Curios, capped weekly | Tax on Cog Crate sales (15%) |
+| NPC collectors buying Curios, scrap and crafted goods, capped weekly | Tax on Cog Crate sales (15%) |
 | Story rewards, small and capped | Paying off Arrears |
 |  | Guild founding (500,000 Crowns) and Workshop upgrades |
 |  | NPC sell orders at the price ceiling |
@@ -456,7 +456,7 @@ Phones use a bottom tab bar with five tabs: Workshop, Story, Exchange, Guild, an
 
 By day 2 Ada's total level passes 50, which opens Exchange trading and Work Orders. She starts taking Stokers' seals because she likes Mother Ash. Inspector Rook turns up twice in Act I scenes, and Ada decides to cooperate, which keeps Notice low and gives Rook a reason to trust her later. A guild invites her; she joins one that has not yet chosen a charter.
 
-By the end of the week she is about level 12 in Rustmoor, halfway through Act I, and has collected one rare-drop Ledger Page. It is about the Lowvents vents, and it makes the Stoker letters feel different.
+By the end of the week she is about level 12 in Rustmoor, halfway through Act I, and has collected two rare-drop Ledger Pages. The first is about the Lowvents vents, and it makes the Stoker letters feel different.
 
 ### The first month
 

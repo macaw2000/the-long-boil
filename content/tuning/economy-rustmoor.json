@@ -1,0 +1,111 @@
+{
+  "schema": "tuning.economy/1",
+  "id": "tuning.rustmoor.economy",
+  "zone": "rustmoor",
+  "items": {
+    "item.rustmoor.copper": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.iron_ore": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.coal": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.garnet": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.brass_ingot": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.iron_ingot": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.steel_ingot": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.steel_blade": {
+      "bound": false,
+      "collector_price": 105,
+      "collector_weekly_cap": 16
+    },
+    "item.rustmoor.brass_spanner": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.brass_key": {
+      "bound": false,
+      "collector_price": 30,
+      "collector_weekly_cap": 33
+    },
+    "item.rustmoor.iron_lock": {
+      "bound": false,
+      "collector_price": 53,
+      "collector_weekly_cap": 22
+    },
+    "item.rustmoor.garnet_sight": {
+      "bound": false,
+      "collector_price": 135,
+      "collector_weekly_cap": 16
+    },
+    "item.rustmoor.rat_scrap": {
+      "bound": false,
+      "collector_price": 2,
+      "collector_weekly_cap": 66
+    },
+    "item.rustmoor.scrapjaws_cleaver": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.ledger_page_1": {
+      "bound": true,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.ledger_page_drop_1": {
+      "bound": true,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.ledger_page_drop_2": {
+      "bound": true,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.ledger_page_drop_3": {
+      "bound": true,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    },
+    "item.rustmoor.ledger_page_drop_4": {
+      "bound": true,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    }
+  },
+  "anchors": {
+    "favour_price_upper_bound": "GDD appendix A.2, as quoted in work order 008: a Stoker offers +600 Crowns for 20 Brass Ingots, 30 Crowns per ingot. A favour price, used as an upper bound.",
+    "market_rate": "Proposal: the market sits at half the favour price upper bound, 15 Crowns per Brass Ingot. A Brass Ingot is 108 labour-seconds (prospect copper 54 s + smelt 54 s), so 15/108 Crowns per labour-second, 500 Crowns per hour of labour.",
+    "end_product_price": "collector_price = labour-seconds of the whole chain x 15/108, rounded half up, using the placeholder recipe quantities of 1 from work order 004. Brass Key 216 s = 30; Iron Lock 378 s = 52.5, 53; Steel Blade 756 s = 105; Garnet Sight 972 s = 135.",
+    "end_product_cap": "Proposal: a collector buys one hour of the product's own final action per week, 3600 / seconds rounded down. Brass Key 108 s = 33; Iron Lock 162 s = 22; Steel Blade 216 s = 16; Garnet Sight 216 s = 16.",
+    "rat_scrap": "Proposal: 2 Crowns a unit, capped at one hour of Rust Rat Runt kills a week (3600 / 54 = 66).",
+    "collector_weekly_total": "66 x 2 + 33 x 30 + 22 x 53 + 16 x 105 + 16 x 135 = 6128 Crowns per player per week at most.",
+    "bound": "Ledger Pages are bound (GDD section 5). Scrapjaw's Cleaver is tradable, unbound with no collector, as settled by Jeremy on 22 October 2026 (work order 008). Every other Rustmoor item is unbound; only those listed with a price have a collector."
+  }
+}

@@ -17,6 +17,11 @@
    "flavour": "Fixture curio, chewed for a validator."
   },
   {
+   "id": "item.thunderhead.fixture_rat_king_cleaver",
+   "name": "Rat King Cleaver",
+   "flavour": "Fixture boss drop, kept for a validator."
+  },
+  {
    "id": "item.global.fixture_ledger_page_free",
    "name": "Free Page",
    "flavour": "Fixture page in the global zone, which the page rules skip."

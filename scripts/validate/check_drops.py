@@ -15,6 +15,14 @@ Drop tables (drops/1):
 - every zone_pity item is one that some non-boss table in the same file has
   in its entries (Jeremy, answer to work order 007 Q6).
 
+zone_pity is an ordered list (GDD section 5, revised: "A zone's drop pages
+arrive in a fixed order on one shared pity timer"). The game keeps ONE
+counter per zone, advanced by any kill in the zone; the pages are delivered
+in list order, and each entry's kills is the most kills the counter may run
+before that entry's page arrives. This check reads each entry's kills against
+LEDGER_PITY_MAX_KILLS and does not check the order itself: any order is a
+valid design choice.
+
 Economy files (tuning.economy/1):
 - one file per zone, and the zone in the id is the file's "zone";
 - collector_price and collector_weekly_cap are null together or set together;
@@ -32,10 +40,12 @@ every rule below.
 - for every zone that has a drop table (the zone of the table's monster):
   exactly LEDGER_DROPS_PER_ZONE distinct Ledger Pages appear in the entries of
   that zone's non-boss monsters' tables, and each has a zone_pity entry of at
-  most LEDGER_PITY_MAX_KILLS kills in the file that holds its table (pity
-  counts any kill in the zone: Jeremy, answer to work order 007 Q6);
+  most LEDGER_PITY_MAX_KILLS kills in the file that holds its table (the one
+  shared timer counts any kill in the zone: GDD section 5, revised);
 - every boss of such a zone has a drop table whose first_kill holds exactly
-  LEDGER_BOSS_FIRST_KILL Ledger Page;
+  LEDGER_BOSS_FIRST_KILL Ledger Page. Other, non-page items may sit in
+  first_kill beside it, and may also be in the boss's entries (a boss's
+  signature drop, such as Scrapjaw's Cleaver: GDD section 6);
 - Jeremy's answer to work order 007 Q7: no Ledger Page is in a boss's
   entries; no Ledger Page appears in more than one table (entries or
   first_kill); no Ledger Page appears in more than one zone's drops.
@@ -75,10 +85,12 @@ MONSTERS_DIR = "content/monsters/"
 MONSTER_SCHEMA_PREFIX = "monster/"
 
 # GDD section 5, Ledger Pages: "12 as rare zone drops (4 per zone). Each zone
-# drop has a pity timer that guarantees the next page within 500 kills".
+# drop ..." and, revised by Jeremy (work order 007, after Q6): "A zone's drop
+# pages arrive in a fixed order on one shared pity timer, which guarantees
+# the next page within 1,000 kills of any monster in that zone".
 LEDGER_MARK = "ledger_page"
 LEDGER_DROPS_PER_ZONE = 4
-LEDGER_PITY_MAX_KILLS = 500
+LEDGER_PITY_MAX_KILLS = 1000
 # GDD section 5: "3 from boss first-kills" (one per zone boss); work order 007.
 LEDGER_BOSS_FIRST_KILL = 1
 # Jeremy, answer to work order 007 Q8: the Ledger Page rules skip this zone.

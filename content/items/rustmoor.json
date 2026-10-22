@@ -60,6 +60,41 @@
       "id": "item.rustmoor.garnet_sight",
       "name": "Garnet Sight",
       "flavour": "A rifle sight with a garnet bead that catches the faintest light."
+    },
+    {
+      "id": "item.rustmoor.rat_scrap",
+      "name": "Rat Scrap",
+      "flavour": "Bent tin, stripped bolts and wire, prised from a Rust Rat and sold by the sackful."
+    },
+    {
+      "id": "item.rustmoor.scrapjaws_cleaver",
+      "name": "Scrapjaw's Cleaver",
+      "flavour": "Riveted from three centuries of rubbish and sharpened on girders."
+    },
+    {
+      "id": "item.rustmoor.ledger_page_1",
+      "name": "Ledger Page 1",
+      "flavour": "A page of Hester's, in her own hand."
+    },
+    {
+      "id": "item.rustmoor.ledger_page_drop_1",
+      "name": "Ledger Page, Rustmoor Drop 1",
+      "flavour": "A page of Hester's, in her own hand."
+    },
+    {
+      "id": "item.rustmoor.ledger_page_drop_2",
+      "name": "Ledger Page, Rustmoor Drop 2",
+      "flavour": "A page of Hester's, in her own hand."
+    },
+    {
+      "id": "item.rustmoor.ledger_page_drop_3",
+      "name": "Ledger Page, Rustmoor Drop 3",
+      "flavour": "A page of Hester's, in her own hand."
+    },
+    {
+      "id": "item.rustmoor.ledger_page_drop_4",
+      "name": "Ledger Page, Rustmoor Drop 4",
+      "flavour": "A page of Hester's, in her own hand."
     }
   ]
 }

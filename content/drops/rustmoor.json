@@ -1,0 +1,131 @@
+{
+  "schema": "drops/1",
+  "id": "drops.rustmoor.scrapyards",
+  "tables": [
+    {
+      "monster": "monster.rustmoor.rust_rat_runt",
+      "crowns": {
+        "min": 5,
+        "max": 9
+      },
+      "entries": [
+        {
+          "item": "item.rustmoor.rat_scrap",
+          "chance": 1.0,
+          "qty_min": 1,
+          "qty_max": 1
+        },
+        {
+          "item": "item.rustmoor.ledger_page_drop_1",
+          "chance": 0.0005,
+          "qty_min": 1,
+          "qty_max": 1
+        }
+      ],
+      "first_kill": []
+    },
+    {
+      "monster": "monster.rustmoor.rust_rat_scrounger",
+      "crowns": {
+        "min": 10,
+        "max": 19
+      },
+      "entries": [
+        {
+          "item": "item.rustmoor.rat_scrap",
+          "chance": 1.0,
+          "qty_min": 1,
+          "qty_max": 1
+        },
+        {
+          "item": "item.rustmoor.ledger_page_drop_2",
+          "chance": 0.0005,
+          "qty_min": 1,
+          "qty_max": 1
+        }
+      ],
+      "first_kill": []
+    },
+    {
+      "monster": "monster.rustmoor.rust_rat_tinplate",
+      "crowns": {
+        "min": 15,
+        "max": 30
+      },
+      "entries": [
+        {
+          "item": "item.rustmoor.rat_scrap",
+          "chance": 1.0,
+          "qty_min": 1,
+          "qty_max": 1
+        },
+        {
+          "item": "item.rustmoor.ledger_page_drop_3",
+          "chance": 0.0005,
+          "qty_min": 1,
+          "qty_max": 1
+        }
+      ],
+      "first_kill": []
+    },
+    {
+      "monster": "monster.rustmoor.rust_rat_gaffer",
+      "crowns": {
+        "min": 21,
+        "max": 42
+      },
+      "entries": [
+        {
+          "item": "item.rustmoor.rat_scrap",
+          "chance": 1.0,
+          "qty_min": 1,
+          "qty_max": 1
+        },
+        {
+          "item": "item.rustmoor.ledger_page_drop_4",
+          "chance": 0.0005,
+          "qty_min": 1,
+          "qty_max": 1
+        }
+      ],
+      "first_kill": []
+    },
+    {
+      "monster": "monster.rustmoor.scrapjaw",
+      "crowns": {
+        "min": 26,
+        "max": 52
+      },
+      "entries": [
+        {
+          "item": "item.rustmoor.scrapjaws_cleaver",
+          "chance": 0.02,
+          "qty_min": 1,
+          "qty_max": 1
+        }
+      ],
+      "first_kill": [
+        "item.rustmoor.ledger_page_1",
+        "item.rustmoor.scrapjaws_cleaver"
+      ]
+    }
+  ],
+  "zone_pity": [
+    {
+      "item": "item.rustmoor.ledger_page_drop_1",
+      "kills": 1000
+    },
+    {
+      "item": "item.rustmoor.ledger_page_drop_2",
+      "kills": 1000
+    },
+    {
+      "item": "item.rustmoor.ledger_page_drop_3",
+      "kills": 1000
+    },
+    {
+      "item": "item.rustmoor.ledger_page_drop_4",
+      "kills": 1000
+    }
+  ]
+}
