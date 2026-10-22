@@ -8,7 +8,7 @@
       "pointer": "/actions/7",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -29,8 +29,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: output has no use yet; carried to economy work order."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -46,6 +46,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -56,7 +61,7 @@
       "pointer": "/actions/2",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -77,8 +82,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -94,6 +99,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -104,7 +114,7 @@
       "pointer": "/actions/0",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -125,8 +135,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -142,6 +152,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -152,7 +167,7 @@
       "pointer": "/actions/3",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -173,8 +188,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -190,6 +205,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -200,7 +220,7 @@
       "pointer": "/actions/1",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -221,8 +241,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -238,6 +258,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -248,7 +273,7 @@
       "pointer": "/actions/4",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -269,8 +294,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -286,6 +311,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -296,7 +326,7 @@
       "pointer": "/actions/5",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -317,8 +347,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -334,6 +364,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -344,7 +379,7 @@
       "pointer": "/actions/6",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -365,8 +400,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: cross-skill gating not modelled by pacing check."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -382,6 +417,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -392,7 +432,7 @@
       "pointer": "/actions/9",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -413,8 +453,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -430,6 +470,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -440,7 +485,7 @@
       "pointer": "/actions/8",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -461,8 +506,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -478,6 +523,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -488,7 +538,7 @@
       "pointer": "/actions/11",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -509,8 +559,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: cross-skill gating not modelled by pacing check."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -526,6 +576,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -536,7 +591,7 @@
       "pointer": "/actions/10",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -557,8 +612,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -574,6 +629,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -584,7 +644,7 @@
       "pointer": "/items/4",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -605,8 +665,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -622,6 +682,11 @@
           "at": "2026-10-22T00:18:47Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -632,7 +697,7 @@
       "pointer": "/items/9",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -653,8 +718,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: name says key, flavour says blank."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -670,6 +735,11 @@
           "at": "2026-10-22T00:18:47Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -680,7 +750,7 @@
       "pointer": "/items/8",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -701,8 +771,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -718,6 +788,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -728,7 +803,7 @@
       "pointer": "/items/2",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -749,8 +824,8 @@
         "verdict": "pass",
         "notes": "Re-review after rewrite: pass with notes. Forge-only line fixes the GDD §2 contradiction."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -776,6 +851,11 @@
           "at": "2026-10-22T00:18:47Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -786,7 +866,7 @@
       "pointer": "/items/0",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -807,8 +887,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: shares a 'dug from a seam' frame with garnet."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -824,6 +904,11 @@
           "at": "2026-10-22T00:18:47Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -834,7 +919,7 @@
       "pointer": "/items/3",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -855,8 +940,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: shares a 'dug from a seam' frame with copper."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -872,6 +957,11 @@
           "at": "2026-10-22T00:18:47Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -882,7 +972,7 @@
       "pointer": "/items/11",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -903,8 +993,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -920,6 +1010,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -930,7 +1025,7 @@
       "pointer": "/items/5",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -951,8 +1046,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -968,6 +1063,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -978,7 +1078,7 @@
       "pointer": "/items/10",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -999,8 +1099,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -1016,6 +1116,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1026,7 +1131,7 @@
       "pointer": "/items/1",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1047,8 +1152,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -1064,6 +1169,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1074,7 +1184,7 @@
       "pointer": "/items/7",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1095,8 +1205,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: 'sharper than it looks' is stock phrasing."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -1112,6 +1222,11 @@
           "at": "2026-10-22T00:18:47Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1122,7 +1237,7 @@
       "pointer": "/items/6",
       "revision": null,
       "work_order": "docs/work-orders/004-rustmoor-actions.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1143,8 +1258,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:21:09Z",
       "history": [
         {
           "at": "2026-10-22T00:10:41Z",
@@ -1160,6 +1275,11 @@
           "at": "2026-10-22T00:17:10Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:21:09Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
