@@ -32,6 +32,24 @@ Nothing else. No monsters, no combat actions, no prices, no gear stats, no calib
 - **The reference is a unit, not a fixed action.** The curve file's Brass Ingot reference (10 XP, 54 s) sets the meaning of 1x. Your real Brass Ingot smelt may pay a little under that, because it is one of the first actions.
 - **Section 7's ledger** shows 400 Brass Ingots smelted in one gap of at most 12 hours, alongside Rust Rat kills. Your smelt time must let that happen.
 
+## Settled after the first draft
+
+Jeremy set these on 21 October 2026:
+
+- **Recipe quantities stay at 1 for now.** Real counts come with the economy work order, once prices exist.
+- **The 0.05 step between tiers is accepted** (0.90, 0.95, 1.00 and 1.05 times the reference).
+- **Later tiers take longer and pay whole-number XP.** Keep each tier's rate multiple exactly as drafted. The Brass Ingot smelt stays at 54 s.
+- **Brass from copper alone is accepted** as a simplification.
+- **Cross-skill inputs are accepted.** They reward balanced play, and the Exchange opens on day 2.
+
+## Carried forward to the economy work order
+
+Set by Jeremy on 21 October 2026, after the inspector's review:
+
+- **Every end product needs a use or a capped buyer.** Steel Blade, Brass Key, Iron Lock and Garnet Sight have neither, yet each is its tier's best XP action, so players will make them in bulk. An uncapped NPC buyer would be a Crown faucet the section 6 budget does not list.
+- **Recipe quantities** are still placeholders at 1.
+- **The first session seeds 50 Brass Ingots** (GDD section 7, step 3), because a three-step chain cannot fit a two-action queue from an empty workshop.
+
 ## Constraints
 
 - Every number is derived or raised as a question, as always. Show each action's XP per hour as a multiple of the reference.

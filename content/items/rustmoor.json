@@ -1,0 +1,65 @@
+{
+  "schema": "item/1",
+  "items": [
+    {
+      "id": "item.rustmoor.copper",
+      "name": "Copper",
+      "flavour": "Green-skinned copper, dug from a seam deep in the tip's packed layers."
+    },
+    {
+      "id": "item.rustmoor.iron_ore",
+      "name": "Iron Ore",
+      "flavour": "Red-brown ore that stains the hands and the Scrapyards alike."
+    },
+    {
+      "id": "item.rustmoor.coal",
+      "name": "Coal",
+      "flavour": "Black lumps for the forge, sold by the scuttle and weighed twice."
+    },
+    {
+      "id": "item.rustmoor.garnet",
+      "name": "Garnet",
+      "flavour": "A dark red stone, dug from a seam where the tip has pressed hardest."
+    },
+    {
+      "id": "item.rustmoor.brass_ingot",
+      "name": "Brass Ingot",
+      "flavour": "A yellow bar of brass, the same stuff as a Crown and rather heavier."
+    },
+    {
+      "id": "item.rustmoor.iron_ingot",
+      "name": "Iron Ingot",
+      "flavour": "Plain grey iron, honest until the rain gets at it."
+    },
+    {
+      "id": "item.rustmoor.steel_ingot",
+      "name": "Steel Ingot",
+      "flavour": "Iron that has been through the fire twice and kept its temper."
+    },
+    {
+      "id": "item.rustmoor.steel_blade",
+      "name": "Steel Blade",
+      "flavour": "A plain forged blade, edged on the wheel and sharper than it looks."
+    },
+    {
+      "id": "item.rustmoor.brass_spanner",
+      "name": "Brass Spanner",
+      "flavour": "Fits most nuts on Sprocket Row, and most rat skulls."
+    },
+    {
+      "id": "item.rustmoor.brass_key",
+      "name": "Brass Key",
+      "flavour": "A brass blank, waiting to be filed to somebody's lock."
+    },
+    {
+      "id": "item.rustmoor.iron_lock",
+      "name": "Iron Lock",
+      "flavour": "A stout iron padlock whose key turns twice before it gives."
+    },
+    {
+      "id": "item.rustmoor.garnet_sight",
+      "name": "Garnet Sight",
+      "flavour": "A rifle sight with a garnet bead that catches the faintest light."
+    }
+  ]
+}

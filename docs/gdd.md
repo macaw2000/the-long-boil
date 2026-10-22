@@ -351,7 +351,7 @@ Sixteen skills, each levelled 1 to 100, feed the loop. Each one is also a story 
 
 | Skill | Group | Produces | Story uses it for |
 | --- | --- | --- | --- |
-| Prospecting | Gathering | Ore and gems | Reading metal and stone, finding seams in Rustmoor |
+| Prospecting | Gathering | Ore, coal and gems | Reading metal and stone, finding seams in Rustmoor |
 | Lumbering | Gathering | Timber from the rim's Hanging Groves | Climbing, rigging, anything at height |
 | Scavenging | Gathering | Wreck salvage | Searching, finding what was thrown away |
 | Smithing | Production | Plate and blades | Repairs, forcing things open, Stoker work |
@@ -369,6 +369,8 @@ Sixteen skills, each levelled 1 to 100, feed the loop. Each one is also a story 
 | Aetherics | Combat | Storm and steam magic | The Whistle, the storms, the Downpipe |
 
 Alchemy arrives after the capstone as the seventeenth skill.
+
+In Rustmoor, a seam is a vein of metal or stone packed into the tip's old, compressed layers. Prospecting digs seams out; Scavenging picks over the loose surface.
 
 All sixteen skills share one XP curve; no skill is cheaper to level than another. The curve is logarithmic in feel: each level costs more than the last, so early levels come quickly and late ones do not. The first few levels are cheaper still, so a new Tinker's total level passes 50 within two days. Offline progress counts exactly as time at the keyboard does, so a zone's two weeks are two weeks of a player's life, not of their attention. Harder actions pay more XP per hour than early ones, which is what keeps each zone's level band near two weeks even as levels grow dearer. Combat XP goes mostly to the main combat skill a loadout is built around, and a zone's level band refers to that skill. The curve runs unchanged to level 100, past anything the capstone needs. Two weeks per zone is the pace of a balanced player who splits the queue between combat and crafting; a player who fights around the clock moves about twice as fast, and that is fine. Within a zone, later actions pay a little more XP per hour than early ones while the zone's average holds: in Rustmoor, the first actions pay slightly under a Brass Ingot's rate and the later ones slightly over.
 
@@ -434,7 +436,7 @@ Phones use a bottom tab bar with five tabs: Workshop, Story, Exchange, Guild, an
 
 1. Ada signs in with Discord. The first screen is a solicitor's letter on Sprocket Row: No. 9 is hers, contents included.
 2. Professor Brassbuckle peels the Gauger tape off the Boiler. The Boiler gauge fills to 12 hours, and a one-line tip explains that this is how long her Tinker works without her.
-3. Brassbuckle walks her through Prospecting copper, smelting brass, and tinkering a Brass Spanner. Ada queues 50 more and watches the first few land.
+3. Brassbuckle walks her through Prospecting copper, smelting brass, and tinkering a Brass Spanner. He leaves her 50 Brass Ingots from the workshop's old stock, so Ada queues 50 more spanners and watches the first few land.
 4. Pip Tumbler's first letter arrives: a bill for the workshop's back rent. The Arrears dial twitches to life, at 0, with a tip.
 5. Rust Rats have been raiding the Row. Ada equips the spanner, sets one trigger ("eat a Ration below 40% HP"), and wins her first fight in Rustmoor.
 6. She sells the rats' scrap at the Counting-House window and pays the bill.

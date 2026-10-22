@@ -2,6 +2,1168 @@
   "schema": "provenance/2",
   "rows": [
     {
+      "id": "action.rustmoor.forge_steel_blade",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/7",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: output has no use yet; carried to economy work order."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.prospect_coal",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/2",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.prospect_copper",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/0",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.prospect_garnet",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/3",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.prospect_iron_ore",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/1",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.smelt_brass_ingot",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/4",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.smelt_iron_ingot",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/5",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.smelt_steel_ingot",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/6",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: cross-skill gating not modelled by pacing check."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_brass_key",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/9",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_brass_spanner",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/8",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_garnet_sight",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/11",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: cross-skill gating not modelled by pacing check."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_iron_lock",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/10",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.brass_ingot",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/4",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:18:47Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.brass_key",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/9",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: name says key, flavour says blank."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:18:47Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.brass_spanner",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/8",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.coal",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/2",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:17:37Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Re-review after rewrite: pass with notes. Forge-only line fixes the GDD §2 contradiction."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "drafted",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:17:37Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:18:47Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.copper",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/0",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: shares a 'dug from a seam' frame with garnet."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:18:47Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.garnet",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/3",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: shares a 'dug from a seam' frame with copper."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:18:47Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.garnet_sight",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/11",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.iron_ingot",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/5",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.iron_lock",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/10",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.iron_ore",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/1",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.steel_blade",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/7",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: 'sharper than it looks' is stock phrasing."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:18:47Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "item.rustmoor.steel_ingot",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/6",
+      "revision": null,
+      "work_order": "docs/work-orders/004-rustmoor-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-22T00:12:26Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T00:10:41Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-22T00:12:26Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-22T00:17:10Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
       "id": "tuning.global.xp_curve",
       "type": "tuning",
       "path": "content/tuning/xp-curve.json",
