@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "start/1",
+  "title": "Starting inventory, version 1",
+  "description": "The one file content/start.json (work order 013, scope 2): what every new Tinker starts with in the first session (GDD section 7, The first session, step 3: Brassbuckle 'leaves her 50 Brass Ingots and a crate of Rations from the workshop's old stock'; work order 012, Settled after review: 'The starter crate holds 342 Rations, bound to the player'). 'id' is the file-level id start.global.inventory. 'inventory' is a list of stacks {item, qty, bound}: item, an item id; qty, an integer of at least 1; bound, a boolean, true when this stack cannot be traded or sold (a stack may be bound even when the item is otherwise tradable, as the starter Rations are). 'crowns' is the starting Crowns, an integer of at least 0. Work order 013 names the stack fields and 'crowns' but not the list's key; 'inventory' is this schema's choice. That every item exists is the references check's job; that no Ledger Page appears is the start check's; that the file is content/start.json is the schema check's. 'revision' is optional and exists only so a register row's revision can match the file.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "inventory",
+    "crowns"
+  ],
+  "properties": {
+    "schema": {
+      "const": "start/1"
+    },
+    "id": {
+      "const": "start.global.inventory"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "inventory": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/stack"
+      }
+    },
+    "crowns": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "$defs": {
+    "stack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item",
+        "qty",
+        "bound"
+      ],
+      "properties": {
+        "item": {
+          "type": "string",
+          "pattern": "^item\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"
+        },
+        "qty": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "bound": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

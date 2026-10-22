@@ -1,0 +1,18 @@
+{
+ "schema": "start/1",
+ "id": "start.global.inventory",
+ "revision": 1,
+ "inventory": [
+  {
+   "item": "item.global.fixture_brass_ingot",
+   "qty": 50,
+   "bound": false
+  },
+  {
+   "item": "item.global.fixture_ghost_start",
+   "qty": 342,
+   "bound": true
+  }
+ ],
+ "crowns": 0
+}

@@ -1,0 +1,13 @@
+{
+ "schema": "start/1",
+ "id": "start.global.bad",
+ "revision": 1,
+ "inventory": [
+  {
+   "item": "item.global.fixture_ledger_page_free",
+   "qty": 0,
+   "bound": true
+  }
+ ],
+ "crowns": 0
+}

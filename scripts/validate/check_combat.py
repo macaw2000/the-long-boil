@@ -407,33 +407,55 @@ def _times(seconds, target):
     return "computed %.1f s, floored %.1f s" % (seconds, max(target, seconds))
 
 
+class Reference:
+    """The reference player's setup against one monster (the rules in this
+    module's docstring), shared with the drops check's grocer sink report
+    (work order 013) so both read the same player. level_ok is False when the
+    monster's level is not in the curve table; weapon is None when no
+    weakness-style weapon qualifies; armour is None when no armour does."""
+
+    def __init__(self, c, sec_of, all_weapons, all_armours, boss_drops, m):
+        ident, level = m["id"], m["level"]
+        self.zone = zone_of(ident)
+        self.banned = boss_drops.get(ident, set()) if m["boss"] else set()
+        self.weapons = [w for w in all_weapons
+                        if zone_of(w[0]) == self.zone and w[0] not in self.banned]
+        armours = [a for a in all_armours
+                   if zone_of(a[0]) == self.zone and a[0] not in self.banned]
+        self.level_ok = level in sec_of
+        self.armour = self.weapon = self.player = None
+        if not self.level_ok:
+            return
+        self.sec = sec_of[level]
+        for item, required, points in armours:
+            if required <= self.sec and (self.armour is None or
+                                         (-points, item) < (-self.armour[1], self.armour[0])):
+                self.armour = (item, points)
+        self.armour_points = self.armour[1] if self.armour else 0
+        self.args = (level, self.sec, self.armour_points)
+        self.weapon = _best_weapon(c, self.weapons, m["weakness"], self.args, m)
+        if self.weapon is not None:
+            self.player = Player(c, level, self.sec, self.weapon, self.armour_points)
+
+
 def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path, m):
     ident, level, style = m["id"], m["level"], m["weakness"]
-    zone = zone_of(ident)
-    banned = boss_drops.get(ident, set()) if m["boss"] else set()
-    weapons = [w for w in all_weapons if zone_of(w[0]) == zone and w[0] not in banned]
-    armours = [a for a in all_armours if zone_of(a[0]) == zone and a[0] not in banned]
+    ref = Reference(c, sec_of, all_weapons, all_armours, boss_drops, m)
+    zone, banned, weapons = ref.zone, ref.banned, ref.weapons
     target = m["seconds_per_kill"]
     heal = c[RATION_KEY]
-    if level not in sec_of:
+    if not ref.level_ok:
         report.fail("level-off-curve", path,
                     "level %d is not in the curve table" % level, ident)
         return
-    sec = sec_of[level]
-    armour = None
-    for item, required, points in armours:
-        if required <= sec and (armour is None or (-points, item) < (-armour[1], armour[0])):
-            armour = (item, points)
+    sec, armour = ref.sec, ref.armour
     if armour is None:
         report.warn("no-armour", path,
                     "no +0 %s armour with level_required <= %d (the reference "
                     "player's Fortitude at level %d)%s; armour 0 used"
                     % (zone, sec, level, ", leaving out the boss's own drops" if banned else ""),
                     ident)
-    armour_points = armour[1] if armour else 0
-    args = (level, sec, armour_points)
-
-    weapon = _best_weapon(c, weapons, style, args, m)
+    armour_points, args, weapon = ref.armour_points, ref.args, ref.weapon
     if weapon is None:
         report.fail("no-weakness-gear", path,
                     "no +0 %s %s weapon with level_required <= %d%s, so the reference "
@@ -441,7 +463,7 @@ def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path,
                     % (zone, style, level,
                        ", leaving out the boss's own drops" if banned else ""), ident)
         return
-    player = Player(c, level, sec, weapon, armour_points)
+    player = ref.player
     fight = Fight(c, player, m, heal)
     if not fight.damaging():
         report.fail("no-damage", path,

@@ -6,7 +6,9 @@ Step 1 replays every check against its committed fixtures. The pass fixture
 must produce no FAIL lines; each fail fixture must produce exactly the FAIL and
 WARN lines in its expected.txt. A check has one fail fixture, "fail", and may
 have more, "fail-<name>", for failures that cannot share one content tree
-(work order 003). A pass fixture may also hold an expected-notes.txt; when it
+(work order 003). Likewise a check has one pass fixture, "pass", and may have
+more, "pass-<name>", for figures that cannot share one content tree (work
+order 013's grocer sink). A pass fixture may also hold an expected-notes.txt; when it
 does, the pass fixture's NOTE lines must be exactly the lines in it, so a
 check that only reports figures (work order 007's Crown faucet) still has its
 arithmetic pinned. A check whose fixtures misbehave is not trusted, and the run
@@ -37,6 +39,7 @@ import check_pacing
 import check_provenance
 import check_references
 import check_schema
+import check_start
 import check_xp_curve
 
 CHECKS = (
@@ -47,6 +50,7 @@ CHECKS = (
     ("pacing", check_pacing),
     ("drops", check_drops),
     ("combat", check_combat),
+    ("start", check_start),
 )
 
 FIXTURES = os.path.join(lib.HERE, "fixtures")
@@ -56,42 +60,49 @@ def _problem_lines(report):
     return sorted(report.fails) + sorted(report.warns)
 
 
-def _fail_roots(name):
-    """fixtures/<name>/fail, then any fixtures/<name>/fail-<suffix>, sorted."""
+def _roots(name, kind):
+    """fixtures/<name>/<kind>, then any fixtures/<name>/<kind>-<suffix>, sorted."""
     base = os.path.join(FIXTURES, name)
     extra = []
     if os.path.isdir(base):
         extra = sorted(d for d in os.listdir(base)
-                       if d.startswith("fail-") and os.path.isdir(os.path.join(base, d)))
-    return [os.path.join(base, d) for d in ["fail"] + extra]
+                       if d.startswith(kind + "-") and os.path.isdir(os.path.join(base, d)))
+    return [os.path.join(base, d) for d in [kind] + extra]
+
+
+def _fail_roots(name):
+    return _roots(name, "fail")
 
 
 def self_test(refresh=False):
     problems = []
     for name, module in CHECKS:
-        pass_root = os.path.join(FIXTURES, name, "pass")
+        pass_roots = _roots(name, "pass")
         fail_roots = _fail_roots(name)
-        missing = [r for r in [pass_root] + fail_roots if not os.path.isdir(r)]
+        missing = [r for r in pass_roots + fail_roots if not os.path.isdir(r)]
         for needed in missing:
             problems.append("fixture missing: %s" % lib.rel(lib.DEFAULT_ROOT, needed))
         if missing:
             continue
 
-        passed = module.run(pass_root)
-        for line in passed.fails:
-            problems.append("%s pass fixture failed: %s" % (name, line))
-        notes_path = os.path.join(pass_root, "expected-notes.txt")
-        if os.path.isfile(notes_path):
+        for pass_root in pass_roots:
+            label = "%s %s" % (name, os.path.basename(pass_root).replace("-", " ", 1))
+            passed = module.run(pass_root)
+            for line in passed.fails:
+                problems.append("%s fixture failed: %s" % (label, line))
+            notes_path = os.path.join(pass_root, "expected-notes.txt")
+            if not os.path.isfile(notes_path):
+                continue
             if refresh:
                 with open(notes_path, "w", encoding="utf-8") as fh:
                     fh.write("\n".join(passed.notes) + "\n")
-            else:
-                with open(notes_path, "r", encoding="utf-8") as fh:
-                    expected = [l for l in fh.read().splitlines() if l.strip()]
-                for line in sorted(set(expected) - set(passed.notes)):
-                    problems.append("%s pass fixture no longer notes: %s" % (name, line))
-                for line in sorted(set(passed.notes) - set(expected)):
-                    problems.append("%s pass fixture newly notes: %s" % (name, line))
+                continue
+            with open(notes_path, "r", encoding="utf-8") as fh:
+                expected = [l for l in fh.read().splitlines() if l.strip()]
+            for line in sorted(set(expected) - set(passed.notes)):
+                problems.append("%s fixture no longer notes: %s" % (label, line))
+            for line in sorted(set(passed.notes) - set(expected)):
+                problems.append("%s fixture newly notes: %s" % (label, line))
 
         for fail_root in fail_roots:
             label = "%s %s" % (name, os.path.basename(fail_root).replace("-", " ", 1))

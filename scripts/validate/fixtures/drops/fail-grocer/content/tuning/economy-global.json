@@ -1,0 +1,9 @@
+{
+ "schema": "tuning.economy/3",
+ "id": "tuning.global.economy",
+ "zone": "global",
+ "items": {},
+ "anchors": {
+  "_note": "Fixture values, not game content."
+ }
+}

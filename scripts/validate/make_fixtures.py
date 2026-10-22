@@ -718,6 +718,105 @@ put("references/pass/" + GP, gearfile("gear.global.fixture", weapon(INGOT, "mele
 put(R + "gear/fixture.json", gearfile("gear.global.fixture", weapon(INGOT, "melee", 1, 10, 0),
     armour("item.global.fixture_ghost_coat", 1, 5), armour("item.global.fixture_stray", 1, 5)))
 
+# ---- work order 013: tuning.economy/2 (grocer_price), start/1, the grocer
+# rule, the grocer sink report and the start check. Names prefixed fixture_;
+# numbers are synthetic, set against the fixture curve PC and model CM.
+def econ2(zone, rows, ident=None):
+    """rows: (item, bound, collector_price, cap, grocer_price); grocer_price
+    ... leaves the field out (it is optional)."""
+    e = econ(zone, [r[:4] for r in rows], schema="tuning.economy/2", ident=ident)
+    for r in rows:
+        if r[4] is not ...:
+            e["items"][r[0]]["grocer_price"] = r[4]
+    return e
+def start(stacks, crowns=0, schema="start/1", ident="start.global.inventory"):
+    return {"schema": schema, "id": ident, "revision": 1,
+            "inventory": [dict(item=i, qty=q, bound=b) for i, q, b in stacks], "crowns": crowns}
+SP = "content/start.json"
+MEAL, PORK, HERB, RATION = ("item.global.fixture_meal", "item.global.fixture_pork",
+                            "item.global.fixture_herb", "item.global.fixture_ration")
+
+# schema: tuning.economy/2 with grocer_price set, null and absent, beside
+# /1; start/1 at content/start.json.
+put("schema/pass/content/tuning/economy-cinderworks.json", econ2("cinderworks", [
+    (MEAL, False, None, None, 3), (PORK, False, 4, 10, 5), (HERB, False, None, None, None),
+    (RATION, False, None, None, ...)]))
+put("schema/pass/" + SP, start([(INGOT, 50, False), (RATION, 342, True)], crowns=0))
+put(S + "tuning/economy-grocer-bad.json", econ2("rustmoor", [
+    (MEAL, False, None, None, 0), (PORK, False, None, None, 2.5), (HERB, False, None, None, "3")]))
+# grocer_price is not a tuning.economy/1 field.
+g1 = econ("thunderhead", [(MEAL, False, None, None)]); g1["items"][MEAL]["grocer_price"] = 3
+put(S + "tuning/economy-grocer-v1.json", g1)
+# content/start.json must declare start/*; start/* belongs only there.
+put(S + "start.json", items(("item.global.fixture_misplaced_in_start", "Misplaced", "Item file at the start path.")))
+sb = start([(INGOT, 0, False), (RATION, 2.5, "yes")], crowns=-1, ident="start.global.other")
+sb["inventory"].append({"item": "items.global.fixture_bad", "qty": 1})
+sb["inventory"].append({"item": ORE, "qty": 1, "bound": False, "note": "extra"})
+sb["status"] = "drafted"
+put(S + "tuning/start-bad.json", sb)
+
+# references: every item a start file names exists.
+put("references/pass/" + SP, start([(INGOT, 50, False), (ORE, 3, True)], crowns=10))
+put(R + "start.json", start([(INGOT, 50, False), ("item.global.fixture_ghost_start", 342, True)]))
+
+# drops pass: the global economy file moves to tuning.economy/2 beside the
+# thunderhead /1 file, with a grocer_price one Crown above the collector's.
+# The sink report then runs, and every figure is "not computed": the
+# monsters are monster/1 and the tree has no combat model or Cooking action.
+DROPS_GLOBAL_ECON = econ2("global", [(ORE, False, 3, 50, 4)])
+DROPS_GLOBAL_ECON["anchors"] = GLOBAL_ECON["anchors"]
+put("drops/pass/" + GEP, DROPS_GLOBAL_ECON)
+
+# drops pass-grocer: the grocer sink computed end to end. Two solved
+# monster/2 monsters (combat.json solving_for_011, as for the combat
+# fixtures): a melee rat at level 1 (600 XP an hour, picked at levels 1-9)
+# and an aetherics tin rat at level 10 (1,200 XP an hour, picked at 10-19).
+# Cooking: level 1, 1 meal makes 1 Ration; level 5, 1 pork and 1 herb make 2.
+# The meal's lowest grocer price is 2 (global), not 3 (rustmoor); the herb
+# has none and is counted at 0. Pork's collector pays 4 against a grocer
+# price of 5, which passes. Hand-checked figures are in expected-notes.txt.
+GR = "drops/pass-grocer/"
+G_RAT = solve_kill("monster.global.fixture_sink_rat", 1, 60, "melee", 30, 2, 10)
+G_TIN = solve_kill("monster.global.fixture_sink_tin_rat", 10, 120, "aetherics", 40, 0, 10, xp=40)
+put(GR + CP, PC)
+put(GR + CMP, CM)
+put(GR + GP, GOOD_GEAR)
+put(GR + MP, monsters2(G_RAT, G_TIN))
+put(GR + IP, items((MEAL, "Meal", "Fixture meal, sold for a validator."),
+                   (PORK, "Pork", "Fixture pork, sold for a validator."),
+                   (HERB, "Herb", "Fixture herb, picked for a validator."),
+                   (RATION, "Ration", "Fixture ration, eaten by a validator.")))
+put(GR + AP, actions(
+    act("action.global.fixture_cook_meal", "cooking", 1, 60, 10, [(MEAL, 1)], [(RATION, 1)]),
+    act("action.global.fixture_cook_pork", "cooking", 5, 60, 15, [(PORK, 1), (HERB, 1)], [(RATION, 2)])))
+put(GR + DP, drops("drops.global.fixture_sink",
+    table(G_RAT["id"], 2, 4), table(G_TIN["id"], 8, 12)))
+put(GR + "content/tuning/economy-rustmoor.json", econ2("rustmoor", [
+    (MEAL, False, None, None, 3), (PORK, False, 4, 10, 5), (RATION, False, None, None, None)]))
+put(GR + GEP, econ2("global", [(MEAL, False, None, None, 2)]))
+if not os.path.exists(os.path.join(F, GR + "expected-notes.txt")):
+    put(GR + "expected-notes.txt", "")
+
+# drops fail-grocer: a collector pays the grocer's price in the same row
+# (meal, 5 and 5), and more than it in another file (pork: grocer 3 in
+# rustmoor, collector 7 in cinderworks); the herb (collector 4, grocer 5)
+# passes. A /2 file that does not match, and a /3 file, are not checkable.
+FG = "drops/fail-grocer/"
+put(FG + "content/tuning/economy-rustmoor.json", econ2("rustmoor", [
+    (MEAL, False, 5, 10, 5), (PORK, False, None, None, 3), (HERB, False, 4, 10, 5)]))
+put(FG + "content/tuning/economy-cinderworks.json", econ2("cinderworks", [(PORK, False, 7, 10, None)]))
+put(FG + TEP, econ2("thunderhead", [(MEAL, False, None, None, 0)]))
+put(FG + GEP, econ("global", [], schema="tuning.economy/3"))
+
+# start pass: 50 ingots and a bound crate of Rations; start fail: a Ledger
+# Page in the inventory, a start/0 file and a start/1 file that does not
+# match.
+put("start/pass/" + SP, start([(INGOT, 50, False), (RATION, 342, True)], crowns=0))
+put("start/fail/" + SP, start([(INGOT, 50, False), ("item.rustmoor.fixture_ledger_page_1", 1, True),
+                               (RATION, 342, True)], crowns=25))
+put("start/fail/content/tuning/start-old.json", start([], schema="start/0", ident="start.global.old"))
+put("start/fail/content/tuning/start-bad.json", start([(GPAGE, 0, True)], ident="start.global.bad"))
+
 # ---- dotfiles: every check skips dotfiles and dot-directories under content/
 # (lib.walk_files). Each pass fixture gets a dotfile that is not JSON and a
 # file in a dot-directory that every check would fail on if it read it: it
@@ -725,7 +824,7 @@ put(R + "gear/fixture.json", gearfile("gear.global.fixture", weapon(INGOT, "mele
 # repeats an id. The names are not gitignored (.DS_Store is), so they are
 # committed and the proof survives a clone. A hidden gear/9 file does the
 # same for the combat check.
-for check in ("schema", "provenance", "xp_curve", "references", "pacing", "drops", "combat"):
+for check in ("schema", "provenance", "xp_curve", "references", "pacing", "drops", "combat", "start"):
     put(check + "/pass/content/.notes.json", "{ not json, as a Finder or editor file would be\n")
     put(check + "/pass/content/monsters/.cache/stray.json", {"schema": "monster/9", "id": "fixture.hidden.stray",
         "monsters": [{"id": "fixture.hidden.stray"}]})

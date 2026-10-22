@@ -1,0 +1,16 @@
+{
+ "schema": "tuning.economy/2",
+ "id": "tuning.thunderhead.economy",
+ "zone": "thunderhead",
+ "items": {
+  "item.global.fixture_meal": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null,
+   "grocer_price": 0
+  }
+ },
+ "anchors": {
+  "_note": "Fixture values, not game content."
+ }
+}

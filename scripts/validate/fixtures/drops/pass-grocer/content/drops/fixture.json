@@ -1,0 +1,25 @@
+{
+ "schema": "drops/1",
+ "id": "drops.global.fixture_sink",
+ "tables": [
+  {
+   "monster": "monster.global.fixture_sink_rat",
+   "crowns": {
+    "min": 2,
+    "max": 4
+   },
+   "entries": [],
+   "first_kill": []
+  },
+  {
+   "monster": "monster.global.fixture_sink_tin_rat",
+   "crowns": {
+    "min": 8,
+    "max": 12
+   },
+   "entries": [],
+   "first_kill": []
+  }
+ ],
+ "zone_pity": []
+}

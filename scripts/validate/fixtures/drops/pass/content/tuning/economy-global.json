@@ -1,12 +1,13 @@
 {
- "schema": "tuning.economy/1",
+ "schema": "tuning.economy/2",
  "id": "tuning.global.economy",
  "zone": "global",
  "items": {
   "item.global.fixture_copper_ore": {
    "bound": false,
    "collector_price": 3,
-   "collector_weekly_cap": 50
+   "collector_weekly_cap": 50,
+   "grocer_price": 4
   }
  },
  "anchors": {

@@ -129,22 +129,37 @@
     {
       "id": "item.rustmoor.brass_sparker",
       "name": "Brass Sparker",
-      "flavour": "A brass flint-wheel in a wire cage that throws a crackle the length of your arm."
+      "flavour": "A brass flint-wheel in a wire cage that spits a crackle the length of your arm."
     },
     {
       "id": "item.rustmoor.riveting_hammer",
       "name": "Riveting Hammer",
-      "flavour": "A shipwright's steel hammer, built to close a rivet in one blow and as good on a skull."
+      "flavour": "A boilermaker's steel hammer, built to close a red-hot rivet in a single blow."
     },
     {
       "id": "item.rustmoor.steel_carbine",
       "name": "Steel Carbine",
-      "flavour": "A short steel rifle that throws a slug through a soup tin and the rat inside it."
+      "flavour": "A short steel rifle that puts a slug through a soup tin and the rat inside it."
     },
     {
       "id": "item.rustmoor.garnet_rod",
       "name": "Garnet Rod",
       "flavour": "A Spark Rod tipped with a garnet, which fattens its spark to a fistful."
+    },
+    {
+      "id": "item.rustmoor.barley_meal",
+      "name": "Barley Meal",
+      "flavour": "Coarse barley meal in a paper sack, floor sweepings included at no extra charge."
+    },
+    {
+      "id": "item.rustmoor.salt_pork",
+      "name": "Salt Pork",
+      "flavour": "Pork packed in so much salt that it will keep longer than you will."
+    },
+    {
+      "id": "item.rustmoor.rustmoor_ration",
+      "name": "Rustmoor Ration",
+      "flavour": "A wax-paper brick of whatever went into the pot, stewed until it stopped mattering."
     }
   ]
 }

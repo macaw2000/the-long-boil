@@ -1,0 +1,3 @@
+FAIL start/ledger-page content/start.json id=item.rustmoor.fixture_ledger_page_1 : /inventory/1: item.rustmoor.fixture_ledger_page_1 is a Ledger Page; Ledger Pages may not be in the starting inventory
+FAIL start/not-checkable content/tuning/start-bad.json id=start.global.bad : file does not match start/1 (2 errors; see the schema check); its stacks are not checked
+FAIL start/not-checkable content/tuning/start-old.json id=start.global.old : schema is 'start/0'; only start/1 can be checked

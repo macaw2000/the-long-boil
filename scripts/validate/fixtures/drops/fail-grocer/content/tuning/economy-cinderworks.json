@@ -1,0 +1,16 @@
+{
+ "schema": "tuning.economy/2",
+ "id": "tuning.cinderworks.economy",
+ "zone": "cinderworks",
+ "items": {
+  "item.global.fixture_pork": {
+   "bound": false,
+   "collector_price": 7,
+   "collector_weekly_cap": 10,
+   "grocer_price": null
+  }
+ },
+ "anchors": {
+  "_note": "Fixture values, not game content."
+ }
+}

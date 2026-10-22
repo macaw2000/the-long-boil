@@ -7,4 +7,17 @@ NOTE drops : Crown faucet boss monster.global.fixture_grub_king (level 60): 9 Cr
 NOTE drops : Crown faucet boss monster.thunderhead.fixture_rat_king (level 1): 65 Crowns per winning attempt (50 to 80); a separate queue item, not in the per-hour figures
 NOTE drops : Crown faucet zone global (no zone band), content/tuning/economy-global.json: collectors pay at most 150 Crowns per player per week, from 1 item(s) with a collector price
 NOTE drops : Crown faucet zone thunderhead (band 45 to 70), content/tuning/economy-thunderhead.json: collectors pay at most 320 Crowns per player per week, from 2 item(s) with a collector price
-NOTE drops : Crown faucet: the 90% sink rule (GDD section 6) is not checked; no sinks exist yet
+NOTE drops : Crown sink, grocer: 1 item(s) with a grocer_price (item.global.fixture_copper_ore 4)
+NOTE drops : Crown sink zone rustmoor (band 1 to 20), grocer, by tier: monster.thunderhead.fixture_rat (levels 1-7), kill faucet 21000 Crowns/week: Rations not computed, no single valid tuning.combat/1 combat model; monster.thunderhead.fixture_big_rat (levels 8-19), kill faucet 38500 Crowns/week: Rations not computed, no single valid tuning.combat/1 combat model
+NOTE drops : Crown sink zone rustmoor (band 1 to 20), grocer: band 14.16 combat days at 10 combat hours a day; faucet 34034 Crowns/week = kills 34034 + collectors' weekly maximum 0 (no economy file for the zone)
+NOTE drops : Crown sink zone rustmoor (band 1 to 20), grocer, eating: not computed (no Cooking action unlocked at levels 1-19)
+NOTE drops : Crown sink zone rustmoor (band 1 to 20), grocer, levelling Cooking: not computed; pacing does not check Cooking in this band (no Cooking action unlocked inside the band)
+NOTE drops : Crown sink zone cinderworks (band 20 to 45), grocer, by tier: monster.thunderhead.fixture_wraith (levels 20-29), kill faucet 70000 Crowns/week: Rations not computed, no single valid tuning.combat/1 combat model; monster.thunderhead.fixture_moth (levels 30-44), no drop table: Rations not computed, no single valid tuning.combat/1 combat model
+NOTE drops : Crown sink zone cinderworks (band 20 to 45), grocer: band 10.29 combat days at 10 combat hours a day; kill faucet not computed (no drop table: monster.thunderhead.fixture_moth)
+NOTE drops : Crown sink zone cinderworks (band 20 to 45), grocer, eating: not computed (no Cooking action unlocked at levels 20-44)
+NOTE drops : Crown sink zone cinderworks (band 20 to 45), grocer, levelling Cooking: not computed; pacing does not check Cooking in this band (no Cooking action unlocked inside the band)
+NOTE drops : Crown sink zone thunderhead (band 45 to 70), grocer, by tier: monster.thunderhead.fixture_moth (levels 45-69), no drop table: Rations not computed, no single valid tuning.combat/1 combat model
+NOTE drops : Crown sink zone thunderhead (band 45 to 70), grocer: band 23.39 combat days at 10 combat hours a day; kill faucet not computed (no drop table: monster.thunderhead.fixture_moth)
+NOTE drops : Crown sink zone thunderhead (band 45 to 70), grocer, eating: not computed (no Cooking action unlocked at levels 45-69)
+NOTE drops : Crown sink zone thunderhead (band 45 to 70), grocer, levelling Cooking: not computed; pacing does not check Cooking in this band (no Cooking action unlocked inside the band)
+NOTE drops : Crown sink, grocer: the 90% sink rule (GDD section 6, The Crown budget) is reported, not enforced, until Calibrating, the main sink, exists

@@ -1,0 +1,28 @@
+{
+ "schema": "tuning.economy/2",
+ "id": "tuning.rustmoor.economy",
+ "zone": "rustmoor",
+ "items": {
+  "item.global.fixture_meal": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null,
+   "grocer_price": 0
+  },
+  "item.global.fixture_pork": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null,
+   "grocer_price": 2.5
+  },
+  "item.global.fixture_herb": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null,
+   "grocer_price": "3"
+  }
+ },
+ "anchors": {
+  "_note": "Fixture values, not game content."
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "schema": "item/1",
+ "items": [
+  {
+   "id": "item.global.fixture_meal",
+   "name": "Meal",
+   "flavour": "Fixture meal, sold for a validator."
+  },
+  {
+   "id": "item.global.fixture_pork",
+   "name": "Pork",
+   "flavour": "Fixture pork, sold for a validator."
+  },
+  {
+   "id": "item.global.fixture_herb",
+   "name": "Herb",
+   "flavour": "Fixture herb, picked for a validator."
+  },
+  {
+   "id": "item.global.fixture_ration",
+   "name": "Ration",
+   "flavour": "Fixture ration, eaten by a validator."
+  }
+ ]
+}

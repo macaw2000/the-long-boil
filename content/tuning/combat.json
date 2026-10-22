@@ -1,8 +1,8 @@
 {
  "schema": "tuning.combat/1",
  "id": "tuning.global.combat",
- "revision": 4,
- "source": "docs/work-orders/009-combat-model.md (including 'Settled after the first draft'); docs/work-orders/011-rustmoor-combat-stats.md ('Settled after the first draft' and 'Settled after the inspector's review'); docs/gdd.md sections 1, 6 (Combat paragraph), 7; content/monsters/rustmoor.json; content/tuning/xp-curve.json; docs/work-orders/001-xp-curve.md and 008-rustmoor-drops.md (carried-forward notes)",
+ "revision": 7,
+ "source": "docs/work-orders/009-combat-model.md (including 'Settled after the first draft'); docs/work-orders/011-rustmoor-combat-stats.md ('Settled after the first draft' and 'Settled after the inspector's review'); docs/gdd.md sections 1, 6 (Combat paragraph), 7; content/monsters/rustmoor.json; content/tuning/xp-curve.json; docs/work-orders/001-xp-curve.md and 008-rustmoor-drops.md (carried-forward notes); docs/work-orders/012-rustmoor-cooking.md (the Rustmoor Ration, revision 5; 'Settled after review', revision 6); docs/work-orders/013-grocer-and-starting-inventory.md (the Ration consumption correction, revision 7)",
  "applies_to": "every fight: the seven combat skills, weapons and armour, monsters and bosses in all zones",
  "basis_key": {
   "settled": "Jeremy has decided it (work order 009, 'Settled after the first draft', 22 October 2026); where the GDD records it, the line is quoted",
@@ -43,7 +43,7 @@
   "BOSS_RATION_CAP_PER_ATTEMPT": {"value": 3, "basis": "settled", "gdd": "Section 6: 'A boss fight allows at most 3 Rations.'"},
   "MAIN_COMBAT_SKILL_SHARE": {"value": 0.7, "basis": "derived", "gdd": "content/tuning/xp-curve.json assumptions.MAIN_COMBAT_SKILL_SHARE. Which skill takes it is settled (combat_xp_split)."},
   "OTHER_COMBAT_SKILLS_SHARE_EACH": {"value": 0.05, "basis": "derived", "gdd": "content/tuning/xp-curve.json assumptions.OTHER_COMBAT_SKILLS_SHARE_EACH"},
-  "RATION_HEAL_HP": {"value": 600, "basis": "proposal", "note": "Provisional; the Cooking work order replaces it (work order 009: 'How much a Ration heals is for the Cooking work order, within the model's rules'). x10 units. Chosen within rations.needs for the reference player at levels 1 to 20 against Rustmoor-level monsters: the hard rule (heal > reference monster_dps * PLAYER_ATTACK_INTERVAL_S) needs more than 15.6, set by the Rust Rat Runt (0.25 * 1000 / 48 * 3); the soft rule (heal <= (1 - REFERENCE_RATION_TRIGGER_HP_FRACTION) * max_hp) allows at most 600, set by the smallest reference max HP in the band (1000 at level 1). 600 is the largest heal that never overheals at the 40% trigger anywhere in the band."},
+  "RATION_HEAL_HP": {"value": 600, "basis": "settled", "item": "item.rustmoor.rustmoor_ration", "settled": "Work order 012, 'Settled after review' (22 October 2026): 'The Ration heal is settled at 600.'", "note": "Settled in revision 6. Work order 012 (revision 5) kept 600 as the heal of the Rustmoor Ration, the only Ration item; it was provisional in revisions 1 to 4 (work order 009: 'How much a Ration heals is for the Cooking work order, within the model's rules'). No monster changes. x10 units. Chosen within rations.needs for the reference player at levels 1 to 20 against Rustmoor-level monsters: the hard rule (heal > reference monster_dps * PLAYER_ATTACK_INTERVAL_S) needs more than 15.6, set by the Rust Rat Runt (0.25 * 1000 / 48 * 3); the soft rule (heal <= (1 - REFERENCE_RATION_TRIGGER_HP_FRACTION) * max_hp) allows at most 600, set by the smallest reference max HP in the band (1000 at level 1). 600 is the largest heal that never overheals at the 40% trigger anywhere in the band."},
   "CALIBRATION_STEP": {"value": null, "basis": "open", "note": "How much one calibration level raises a gear stat. Left to the calibration work order (work order 009, 'Settled after the first draft': 'The calibration step is left to the calibration work order')."}
  },
 
@@ -139,7 +139,8 @@
   "single_style_band": {
    "basis": "settled",
    "settled": "Work order 009: 'The band assumes a one-style player, who fights some Rustmoor rats unmatched. Rustmoor's 14.7 to 15.2 days are accepted.'",
-   "detail": "Rustmoor's rat weaknesses rotate melee, marksmanship, aetherics, melee (Scrapjaw, melee, is a boss and not in the band). Holding seconds_per_kill fixed at level and taking the best target per five-level range, the band takes at most 14.68 days for melee, 14.83 marksmanship, 15.19 aetherics at WEAKNESS_MULTIPLIER 1.25, against 13.96 if every target were matched."
+   "detail": "Rustmoor's rat weaknesses rotate melee, marksmanship, aetherics, melee (Scrapjaw, melee, is a boss and not in the band). Holding seconds_per_kill fixed at level and taking the best target per five-level range, the band takes at most 14.68 days for melee, 14.83 marksmanship, 15.19 aetherics at WEAKNESS_MULTIPLIER 1.25, against 13.96 if every target were matched.",
+   "scrapjaw_never_counted": "The 14.68 / 14.83 / 15.19-day figures never counted Scrapjaw, before or after its weakness moved to melee (work order 011). They come from the four rats alone over the ranges 1-4, 5-9, 10-14 and 15-19; Scrapjaw is level 20, outside every range, and a boss is never a pacing target (pacing check: '1 boss(es), never counted'). Recomputed in work order 012 from the four rats and the xp-curve table, they reproduce exactly."
   }
  },
 
@@ -172,15 +173,17 @@
  },
 
  "rations": {
-  "_note": "Section 6 ('eat a Ration below 40% HP') and the Skills table (Cooking produces 'Healing rations') name Rations; no Ration item exists. This is what the model needs from one, not an item.",
+  "_note": "Section 6 ('eat a Ration below 40% HP') and the Skills table (Cooking produces 'Healing rations') name Rations. Since revision 5 one Ration item exists, item.rustmoor.rustmoor_ration (work order 012), healing RATION_HEAL_HP. Below is what the model needs from any Ration.",
   "needs": {
-   "heal_hp": "a fixed whole number per Ration item, in x10 units. Left to the Cooking work order (work order 009, 'Settled after the first draft': 'How much a Ration heals is for the Cooking work order, within the model's rules').",
+   "heal_hp": "a fixed whole number per Ration item, in x10 units (work order 009, 'Settled after the first draft': 'How much a Ration heals is for the Cooking work order, within the model's rules'). Settled at 600 for the Rustmoor Ration (constants.RATION_HEAL_HP; work order 012, 'Settled after review': 'The Ration heal is settled at 600.'): it meets hard_rule against every Rustmoor monster and is the largest heal that meets soft_rule at every reference level 1 to 20.",
    "hard_rule": "heal_hp > monster_dps * PLAYER_ATTACK_INTERVAL_S for any monster it is meant for, or the stocked formula diverges",
    "soft_rule": "heal_hp <= (1 - REFERENCE_RATION_TRIGGER_HP_FRACTION) * max_hp of the reference player at the Ration's tier, so eating at the trigger never overheals",
-   "consumption": "rations_per_kill at reference = REFERENCE_DAMAGE_SHARE_PER_KILL * max_hp / heal_hp / (1 - f); this is Cooking's demand per kill",
+   "consumption": "rations_per_kill = monster_dps * t_fight / heal_hp (kill_time.stocked.rations_per_kill); at the reference, where kill_time.target gives monster_dps * t_fight == REFERENCE_DAMAGE_SHARE_PER_KILL * max_hp, that is REFERENCE_DAMAGE_SHARE_PER_KILL * max_hp / heal_hp, with no further division by (1 - f). This is Cooking's demand per kill",
    "boss_cap": "At most BOSS_RATION_CAP_PER_ATTEMPT (3) per boss attempt (settled)."
   },
-  "basis": "proposal for the rules; heal_hp open (Cooking work order); boss cap settled"
+  "reference_use": "At the reference with heal 600, from kill_time.stocked.rations_per_kill as the combat and drops checks compute it (drops check, Crown sink report, revision 7): 0.416, 0.458, 0.542, 0.583 Rations per kill and 27.72, 15.28, 12.04, 9.72 Rations an hour against the Runt, Scrounger, Tinplate and Gaffer; 2,085 Rations over the 1 to 20 band.",
+  "correction": "Revision 7 (work order 013): rations.needs.consumption divided by (1 - f) on top of t_fight, which already carries the 1 / (1 - f) of kill_time.stocked.t_fight, so it counted the eating drag twice. It now agrees with kill_time.stocked.rations_per_kill, the formula the combat and drops checks use. reference_use was computed with the old formula (0.428, 0.465, 0.547, 0.588 a kill; 28.5, 15.5, 12.2, 9.8 an hour; 2,110 over the band) and is restated. No constant, monster or check result changes.",
+  "basis": "proposal for the rules (work order 012); heal_hp settled at 600 (work order 012, 'Settled after review'); boss cap settled"
  },
 
  "boss": {
@@ -224,6 +227,7 @@
   "Weapon power at +0 is 10 x level_required (gear.weapon.power_at_plus_0; work order 011)",
   "Scrapjaw's Cleaver has +0 power 180 (gear.weapon.scrapjaws_cleaver; work order 011)",
   "Boss Ration cap 3 (constants.BOSS_RATION_CAP_PER_ATTEMPT)",
+  "Ration heal 600, the Rustmoor Ration (constants.RATION_HEAL_HP; work order 012, 'Settled after review')",
   "Focus is one of the three attack styles (combat_xp_split)",
   "Loadout is one weapon and one armour piece (gear.loadout)",
   "Hit points and damage scaled x10 (units)",
@@ -231,7 +235,6 @@
  ],
 
  "open_questions": [
-  "Ration heal_hp: for the Cooking work order, within rations.needs.",
   "CALIBRATION_STEP: for the calibration work order.",
   "Every value still marked proposal (intervals, HP base and per-Vitality, hit and crit constants, ARMOUR_HALF_POINT, WEAKNESS_MULTIPLIER, REFERENCE_DAMAGE_SHARE_PER_KILL) waits on Jeremy."
  ]

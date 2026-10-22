@@ -1,0 +1,10 @@
+{
+ "schema": "item/1",
+ "items": [
+  {
+   "id": "item.global.fixture_misplaced_in_start",
+   "name": "Misplaced",
+   "flavour": "Item file at the start path."
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+NOTE drops : 1 checkable drop file(s), 2 drop table(s), 2 checkable economy file(s), 0 Ledger Page item(s)
+NOTE drops : Crown faucet: 10 combat hours a day from the curve, no main-skill share; Crowns per kill is the mean of min and max
+NOTE drops : Crown faucet band 1 to 20: monster.global.fixture_sink_rat (levels 1-9): 3 Crowns a kill, 180.0 Crowns/h, 12600 Crowns/week; monster.global.fixture_sink_tin_rat (levels 10-19): 10 Crowns a kill, 300.0 Crowns/h, 21000 Crowns/week
+NOTE drops : Crown faucet band 20 to 45: no non-boss monsters unlocked inside the band; not reported (as in the pacing check)
+NOTE drops : Crown faucet band 45 to 70: no non-boss monsters unlocked inside the band; not reported (as in the pacing check)
+NOTE drops : Crown faucet zone global (no zone band), content/tuning/economy-global.json: collectors pay at most 0 Crowns per player per week, from 0 item(s) with a collector price
+NOTE drops : Crown faucet zone rustmoor (band 1 to 20), content/tuning/economy-rustmoor.json: collectors pay at most 40 Crowns per player per week, from 1 item(s) with a collector price
+NOTE drops : Crown sink, grocer: 2 item(s) with a grocer_price (item.global.fixture_meal 2, item.global.fixture_pork 5)
+NOTE drops : Crown sink zone rustmoor (band 1 to 20), grocer, by tier: monster.global.fixture_sink_rat (levels 1-4), kill faucet 12600 Crowns/week, 38.95 Rations/h eaten; recipe action.global.fixture_cook_meal, 2 Crowns a Ration; eating 5453 Crowns/week, 43.3% of the kill faucet; monster.global.fixture_sink_rat (levels 5-9), kill faucet 12600 Crowns/week, 38.95 Rations/h eaten; recipe action.global.fixture_cook_pork, 2.5 Crowns a Ration; eating 6817 Crowns/week, 54.1% of the kill faucet; monster.global.fixture_sink_tin_rat (levels 10-19), kill faucet 21000 Crowns/week, 27.07 Rations/h eaten; recipe action.global.fixture_cook_pork, 2.5 Crowns a Ration; eating 4737 Crowns/week, 22.6% of the kill faucet
+NOTE drops : Crown sink zone rustmoor (band 1 to 20), grocer: band 10.80 combat days at 10 combat hours a day; faucet 17071 Crowns/week = kills 17031 + collectors' weekly maximum 40 (content/tuning/economy-rustmoor.json)
+NOTE drops : Crown sink zone rustmoor (band 1 to 20), grocer, eating: 3529 Rations eaten over the band, 8652 Crowns of ingredients, 5609 Crowns/week, 32.9% of the faucet
+NOTE drops : Crown sink zone rustmoor (band 1 to 20), grocer, levelling Cooking: 11.29 Cooking band days (as pacing), 6510 Rations made against 3529 eaten, 16143 Crowns of ingredients, 10010 Crowns/week, 58.6% of the faucet
+NOTE drops : Crown sink zone rustmoor (band 1 to 20), grocer: Cooking inputs with no grocer_price, counted at 0 Crowns: item.global.fixture_herb
+NOTE drops : Crown sink zone cinderworks (band 20 to 45), grocer: not reported, as the faucet band is not
+NOTE drops : Crown sink zone thunderhead (band 45 to 70), grocer: not reported, as the faucet band is not
+NOTE drops : Crown sink, grocer: the 90% sink rule (GDD section 6, The Crown budget) is reported, not enforced, until Calibrating, the main sink, exists

@@ -418,6 +418,90 @@
           "qty": 1
         }
       ]
+    },
+    {
+      "id": "action.rustmoor.cook_barley_rations",
+      "skill": "cooking",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 9,
+      "inputs": [
+        {
+          "item": "item.rustmoor.barley_meal",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.rustmoor_ration",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.cook_salt_pork_rations",
+      "skill": "cooking",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 19,
+      "inputs": [
+        {
+          "item": "item.rustmoor.salt_pork",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.rustmoor_ration",
+          "qty": 2
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.cook_pork_barley_rations",
+      "skill": "cooking",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 30,
+      "inputs": [
+        {
+          "item": "item.rustmoor.barley_meal",
+          "qty": 1
+        },
+        {
+          "item": "item.rustmoor.salt_pork",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.rustmoor_ration",
+          "qty": 3
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.cook_full_pot_rations",
+      "skill": "cooking",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 42,
+      "inputs": [
+        {
+          "item": "item.rustmoor.barley_meal",
+          "qty": 2
+        },
+        {
+          "item": "item.rustmoor.salt_pork",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.rustmoor_ration",
+          "qty": 4
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,16 @@
+{
+ "schema": "tuning.economy/2",
+ "id": "tuning.global.economy",
+ "zone": "global",
+ "items": {
+  "item.global.fixture_meal": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null,
+   "grocer_price": 2
+  }
+ },
+ "anchors": {
+  "_note": "Fixture values, not game content."
+ }
+}

@@ -15,6 +15,8 @@
 - A zone economy file (tuning.economy/*) lives under content/tuning/ (work
   order 007). This rule runs one way only: content/tuning/ also holds the XP
   curve, so not every file there declares tuning.economy/*.
+- The starting inventory (start/*) is the one file content/start.json, and
+  content/start.json declares start/* (work order 013, scope 2).
 
 The register's own shape is the provenance check's job, not this one's.
 
@@ -43,6 +45,12 @@ SCHEMA_HOMES = (
 # directory may hold other families too.
 SCHEMA_ONLY_IN = (
     ("tuning.economy/", "content/tuning/"),
+)
+
+# Work order 013: schema family -> the one file it may be, and that file must
+# declare it.
+SCHEMA_AT_PATH = (
+    ("start/", "content/start.json"),
 )
 
 
@@ -115,6 +123,16 @@ def _check_home(report, path, declared, ident):
         if declared.startswith(prefix) and not path.startswith(home):
             report.fail("wrong-directory", path,
                         "schema %r belongs under %s" % (declared, home), ident)
+    for prefix, only in SCHEMA_AT_PATH:
+        at_path = path == only
+        declares = declared.startswith(prefix)
+        if at_path and not declares:
+            report.fail("wrong-file", path,
+                        "%s must declare %s*; this one declares %r"
+                        % (only, prefix, declared or None), ident)
+        elif declares and not at_path:
+            report.fail("wrong-file", path,
+                        "schema %r belongs only in %s" % (declared, only), ident)
 
 
 def main(argv):

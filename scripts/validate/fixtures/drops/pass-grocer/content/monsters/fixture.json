@@ -1,0 +1,35 @@
+{
+ "schema": "monster/2",
+ "monsters": [
+  {
+   "id": "monster.global.fixture_sink_rat",
+   "name": "Fixture Sink Rat",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 10,
+   "seconds_per_kill": 60,
+   "hp": 439,
+   "max_hit": 24,
+   "hit_chance": 0.6,
+   "attack_interval_s": 2.0,
+   "evasion": 4
+  },
+  {
+   "id": "monster.global.fixture_sink_tin_rat",
+   "name": "Fixture Sink Tin Rat",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 10,
+   "boss": false,
+   "weakness": "aetherics",
+   "xp": 40,
+   "seconds_per_kill": 120,
+   "hp": 3282,
+   "max_hit": 17,
+   "hit_chance": 0.6,
+   "attack_interval_s": 2.0,
+   "evasion": 15
+  }
+ ]
+}

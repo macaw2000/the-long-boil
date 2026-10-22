@@ -3,7 +3,9 @@ order 007, scopes 1, 2, 4 and 5).
 
 Shape is the schema check's job and whether each named monster and item
 exists is the references check's job. This check reads only drop files that
-match drops/1 and economy files that match tuning.economy/1; a file that
+match drops/1 and economy files that match tuning.economy/1 or
+tuning.economy/2 (work order 013: /2 is /1 plus grocer_price, and /1 stays
+accepted until the Rustmoor file migrates); a file that
 declares drops/* or tuning.economy/* but does not match fails here as
 not-checkable, because every rule below would be computed without it.
 
@@ -23,11 +25,17 @@ before that entry's page arrives. This check reads each entry's kills against
 LEDGER_PITY_MAX_KILLS and does not check the order itself: any order is a
 valid design choice.
 
-Economy files (tuning.economy/1):
+Economy files (tuning.economy/1 and /2):
 - one file per zone, and the zone in the id is the file's "zone";
 - collector_price and collector_weekly_cap are null together or set together;
 - a bound item has no collector price (work order 007: "A bound item cannot
-  be traded or sold").
+  be traded or sold");
+- grocer-arbitrage (work order 013, scope 3): no collector pays as much as
+  the grocer charges for the same item, so nobody can buy from the grocer
+  and sell to a collector at a profit. Compared across every checkable
+  economy file, not only within one row: an item's lowest grocer_price
+  anywhere must be above its every collector_price anywhere. A breach is a
+  FAIL on each file involved.
 
 Ledger Pages, any item whose id contains "ledger_page" (an item defined in an
 item file, or named by a drop table, a zone_pity entry or an economy file);
@@ -59,8 +67,41 @@ drops Crowns. Each boss with a drop table is reported on its own line, as
 Crowns per winning attempt, and is never added to the per-hour figures
 (Jeremy, answer to work order 007 Q11). For each economy file, the most
 collectors pay one player a week: the sum over items of collector_price x
-collector_weekly_cap. The GDD's 90% sink rule is not checked: no sinks exist
-yet.
+collector_weekly_cap.
+
+Crown sink, the grocer's counter (NOTE lines only, no thresholds; work order
+013, scope 4). For each zone with a band (ZONE_BAND) whose band the faucet
+reports, at each level L of the band:
+- the tier is the non-boss monster the faucet picks at L. Its Rations per
+  hour are the combat model's, for the combat check's reference player at
+  the monster's level (check_combat.Reference), Rations stocked:
+  rations_per_kill = monster_dps x t_fight / RATION_HEAL_HP
+  (combat.json kill_time.stocked), times 3600 / the floored expected seconds
+  per kill, max(seconds_per_kill, computed) (kill_time.floor). Only a
+  monster/2 monster has the stats for this;
+- Cooking is levelled at the pacing rate, so the player's Cooking level is L
+  and the recipe is the Cooking action pacing picks at L (highest XP per
+  hour, ties to the lower id). Its Crowns per Ration are the sum over inputs
+  of qty x the item's grocer_price, divided by the sum of its output qty.
+  Every Cooking output counts as a Ration (GDD section 6 Skills table:
+  Cooking produces "Healing rations"). The grocer_price used is the lowest
+  any checkable economy file gives the item; an input with none costs the
+  grocer nothing and is counted at 0, and the line says so;
+- combat hours at L are cost_to_next(L) / (the tier's XP per hour x
+  MAIN_COMBAT_SKILL_SHARE), the pacing check's band time; band days are
+  their sum / BAND_SKILL_QUEUE_HOURS_PER_DAY, as pacing reports them.
+Two sink figures are reported side by side, never added, because which one
+the 90% rule counts is open (work order 013 hand-back):
+- eating: Rations eaten x their recipe's Crowns per Ration, summed over the
+  band, and per week (band total x 7 / combat band days);
+- levelling Cooking: the grocer Crowns of every Cooking action pacing's
+  Cooking levelling performs over the band (cost_to_next(L) / XP per action
+  actions at each L), and per week (total x 7 / Cooking band days), with the
+  Rations those actions make beside the Rations eaten.
+Each is shown with its ratio to the faucet per week: the band's kill Crowns
+(per level as above, per week the same way) plus the zone's collector
+weekly maximum. The GDD's 90% sink rule (GDD section 6, The Crown budget) is
+reported, not enforced, until Calibrating, the main sink, exists.
 
 Usage: python3 scripts/validate/check_drops.py [--root DIR]
 """
@@ -71,6 +112,7 @@ import sys
 sys.dont_write_bytecode = True  # keep __pycache__ out of the repo
 
 import lib  # noqa: E402
+import check_combat  # noqa: E402
 import check_pacing  # noqa: E402
 from check_references import item_ids  # noqa: E402
 from check_xp_curve import ZONE_BANDS  # noqa: E402
@@ -80,7 +122,9 @@ CHECK = "drops"
 DROPS_SCHEMA_PREFIX = "drops/"
 CHECKABLE_DROPS_SCHEMA = "drops/1"
 ECONOMY_SCHEMA_PREFIX = "tuning.economy/"
-CHECKABLE_ECONOMY_SCHEMA = "tuning.economy/1"
+# Work order 013: /2 adds grocer_price; /1 stays accepted until the
+# draftsman migrates the Rustmoor file.
+CHECKABLE_ECONOMY_SCHEMAS = ("tuning.economy/1", "tuning.economy/2")
 MONSTERS_DIR = "content/monsters/"
 MONSTER_SCHEMA_PREFIX = "monster/"
 
@@ -132,15 +176,18 @@ def _load(report, root, schemas, prefix, checkable, what):
         declared = _declared(data)
         if not declared.startswith(prefix):
             continue
-        if declared != checkable:
+        if isinstance(checkable, str):
+            checkable = (checkable,)
+        if declared not in checkable:
             report.fail("not-checkable", path,
-                        "schema is %r; only %s can be checked" % (declared, checkable))
+                        "schema is %r; only %s can be checked"
+                        % (declared, " or ".join(checkable)))
             continue
-        errors = lib.validate(data, schemas[checkable])
+        errors = lib.validate(data, schemas[declared])
         if errors:
             report.fail("not-checkable", path,
                         "file does not match %s (%d errors; see the schema check); "
-                        "%s leave it out" % (checkable, len(errors), what))
+                        "%s leave it out" % (declared, len(errors), what))
             continue
         out.append((path, data))
     return out
@@ -244,6 +291,42 @@ def check_economy(report, economies):
                             "zone %s has %d economy files (%s); one per zone"
                             % (zone, len(files), ", ".join(p for p, _ in files)))
     return by_zone
+
+
+def check_grocer(report, economies):
+    """Work order 013, scope 3: no collector pays as much as the grocer
+    charges for the same item, in any pair of checkable economy files."""
+    grocer, collector = {}, {}
+    for path, data in economies:
+        for item in sorted(data["items"]):
+            row = data["items"][item]
+            if row.get("grocer_price") is not None:
+                grocer.setdefault(item, []).append((row["grocer_price"], path))
+            if row["collector_price"] is not None:
+                collector.setdefault(item, []).append((row["collector_price"], path))
+    for item in sorted(grocer):
+        for price, gpath in grocer[item]:
+            for paid, cpath in collector.get(item, []):
+                if paid < price:
+                    continue
+                message = ("/items/%s: the grocer sells it at %s Crowns (%s) and a "
+                           "collector pays %s Crowns (%s); a collector must pay less "
+                           "than the grocer charges, or buying from the grocer and "
+                           "selling to the collector is a profit"
+                           % (item, price, gpath, paid, cpath))
+                for path in sorted(set((gpath, cpath))):
+                    report.fail("grocer-arbitrage", path, message, item)
+
+
+def grocer_prices(economies):
+    """{item: lowest grocer_price in any checkable economy file}."""
+    out = {}
+    for _path, data in economies:
+        for item, row in data["items"].items():
+            price = row.get("grocer_price")
+            if price is not None and (item not in out or price < out[item]):
+                out[item] = price
+    return out
 
 
 def _text(value):
@@ -457,9 +540,7 @@ def faucet_report(report, root, schemas, tables, economy_by_zone):
                         "per player per week, from %d item(s) with a collector price"
                         % (zone, "band %d to %d" % band if band else "no zone band",
                            path, _num(total), len(priced)))
-    if tables or economy_by_zone:
-        report.note("Crown faucet: the 90% sink rule (GDD section 6) is not checked; "
-                    "no sinks exist yet")
+    return per_kill
 
 
 def _band_faucet(report, entries, start, end, per_kill, speed, hours_per_day):
@@ -494,6 +575,265 @@ def _band_faucet(report, entries, start, end, per_kill, speed, hours_per_day):
     report.note("%s: %s" % (label, "; ".join(parts)))
 
 
+# --------------------------------------------------------------------------
+# Crown sink report: the grocer's counter (work order 013, scope 4)
+# --------------------------------------------------------------------------
+
+COOKING = "cooking"
+
+
+class _Combat:
+    """The combat check's model, gear and reference player, loaded once, for
+    Rations eaten per hour. Every load failure is the combat or pacing
+    check's to report; here it only makes a figure "not computed"."""
+
+    def __init__(self, root, schemas, curve):
+        scratch = lib.Report(check_combat.CHECK)
+        self.c = None
+        self.why = None
+        self.cache = {}
+        _path, c = check_combat.load_model(scratch, root, schemas)
+        if c is None:
+            self.why = "no single valid %s combat model" % check_combat.MODEL_SCHEMA
+            return
+        if c[check_combat.RATION_KEY] is None:
+            self.why = "%s is null in the combat model" % check_combat.RATION_KEY
+            return
+        self.c = c
+        _n, gear = check_combat.load_gear(scratch, root, schemas)
+        self.weapons = sorted((e["item"], e["style"], e["level_required"],
+                               e["stats_by_calibration"][0]["power"],
+                               e["stats_by_calibration"][0]["accuracy"])
+                              for _p, e in gear if e["slot"] == "weapon")
+        self.armours = sorted((e["item"], e["level_required"],
+                               e["stats_by_calibration"][0]["armour"])
+                              for _p, e in gear if e["slot"] == "armour")
+        self.boss_drops = check_combat.load_boss_drops(root)
+        self.sec_of = check_combat.secondary_levels(curve, c)
+
+    def rations_per_hour(self, monster):
+        """(Rations eaten per hour, None) or (None, why not)."""
+        ident = monster["id"]
+        if ident not in self.cache:
+            self.cache[ident] = self._rations(monster)
+        return self.cache[ident]
+
+    def _rations(self, m):
+        if self.c is None:
+            return None, self.why
+        if "hp" not in m:
+            return None, "%s has no combat stats (monster/1)" % m["id"]
+        c, heal = self.c, self.c[check_combat.RATION_KEY]
+        ref = check_combat.Reference(c, self.sec_of, self.weapons, self.armours,
+                                     self.boss_drops, m)
+        if not ref.level_ok:
+            return None, "%s: level %d is not in the curve table" % (m["id"], m["level"])
+        if ref.player is None:
+            return None, ("%s: the reference player has no %s weapon (see the combat "
+                          "check)" % (m["id"], m["weakness"]))
+        fight = check_combat.Fight(c, ref.player, m, heal)
+        if not fight.damaging():
+            return None, "%s: the reference player's mean swing is 0" % m["id"]
+        f = fight.drag()
+        if f >= 1:
+            return None, "%s: the stocked fight never ends (f >= 1)" % m["id"]
+        t_fight = fight.t_pure() / (1 - f)
+        per_kill = fight.m_dps * t_fight / heal
+        seconds = max(m["seconds_per_kill"], c["BETWEEN_KILLS_S"] + t_fight)
+        return per_kill * 3600.0 / seconds, None
+
+
+def _recipe_cost(action, prices):
+    """(Crowns of grocer ingredients per action, Rations made per action,
+    [inputs with no grocer_price])."""
+    crowns, unpriced = 0, []
+    for stack in action["inputs"]:
+        if stack["item"] in prices:
+            crowns += stack["qty"] * prices[stack["item"]]
+        else:
+            unpriced.append(stack["item"])
+    made = sum(stack["qty"] for stack in action["outputs"])
+    return crowns, made, unpriced
+
+
+def _ranges(levels):
+    """"1-4, 7" from [1, 2, 3, 4, 7]."""
+    out = []
+    for level in sorted(levels):
+        if out and out[-1][1] == level - 1:
+            out[-1][1] = level
+        else:
+            out.append([level, level])
+    return ", ".join(str(a) if a == b else "%d-%d" % (a, b) for a, b in out)
+
+
+def _pct(part, whole):
+    return "%.1f%%" % (100.0 * part / whole) if whole else "no faucet"
+
+
+def sink_report(report, root, schemas, per_kill, economies, economy_by_zone):
+    prices = grocer_prices(economies)
+    if not prices:
+        if economies:
+            report.note("Crown sink, grocer: no checkable economy file gives any item a "
+                        "grocer_price; nothing to report")
+        return
+    report.note("Crown sink, grocer: %d item(s) with a grocer_price (%s)"
+                % (len(prices), ", ".join("%s %s" % (i, prices[i]) for i in sorted(prices))))
+    scratch = lib.Report(check_pacing.CHECK)
+    _f, monsters = check_pacing.load_monsters(scratch, root, schemas)
+    _f, actions = check_pacing.load_actions(scratch, root, schemas)
+    curve_path, curve = check_pacing.load_curve(scratch, root, schemas)
+    inputs = check_pacing.curve_inputs(scratch, curve_path, curve) if curve else None
+    if inputs is None:
+        report.note("Crown sink, grocer: no valid curve with the pacing assumptions; "
+                    "not computed (see the pacing check)")
+        return
+    hours_per_day = curve["assumptions"][HOURS_PER_DAY_KEY]
+    share = curve["assumptions"][check_pacing.SHARE_KEY]
+    costs = inputs[2]
+    combat = _Combat(root, schemas, curve)
+    by_id = dict((m["id"], m) for _p, m in monsters)
+    pool = check_pacing.monster_pool(monsters).entries
+    cooking = [(p, a) for p, a in actions if a["skill"] == COOKING]
+    cook_pool = check_pacing.action_pool(COOKING, cooking).entries
+    recipes = dict((a["id"], a) for _p, a in cooking)
+    for zone in sorted(ZONE_BAND, key=lambda z: ZONE_BAND[z]):
+        start, end = ZONE_BAND[zone]
+        _zone_sink(report, zone, start, end, pool, cook_pool, recipes, by_id, per_kill,
+                   prices, costs, hours_per_day, share, combat,
+                   economy_by_zone.get(zone, []))
+    report.note("Crown sink, grocer: the 90% sink rule (GDD section 6, The Crown budget) "
+                "is reported, not enforced, until Calibrating, the main sink, exists")
+
+
+def _zone_sink(report, zone, start, end, pool, cook_pool, recipes, by_id, per_kill,
+               prices, costs, hours_per_day, share, combat, econ_files):
+    label = "Crown sink zone %s (band %d to %d), grocer" % (zone, start, end)
+    if not [e for e in pool if start <= e[2] < end] or \
+            check_pacing.best_entry(pool, start) is None:
+        report.note("%s: not reported, as the faucet band is not" % label)
+        return
+    week = hours_per_day * DAYS_PER_WEEK
+    spans = []  # [monster, recipe, first, last]
+    combat_hours = eaten = eat_crowns = faucet = 0.0
+    eat_missing, faucet_missing, unpriced = set(), set(), set()
+    no_recipe = []
+    for level in range(start, end):
+        _p, mid, _l, xph = check_pacing.best_entry(pool, level)
+        cook = check_pacing.best_entry(cook_pool, level)
+        rid = cook[1] if cook else None
+        if spans and spans[-1][0] == mid and spans[-1][1] == rid:
+            spans[-1][3] = level
+        else:
+            spans.append([mid, rid, level, level])
+        hours = costs[level] / (xph * share)
+        combat_hours += hours
+        rate, why = combat.rations_per_hour(by_id[mid])
+        if rid is None:
+            no_recipe.append(level)
+        elif rate is None:
+            eat_missing.add(why)
+        else:
+            crowns, made, missing = _recipe_cost(recipes[rid], prices)
+            unpriced.update(missing)
+            eaten += rate * hours
+            eat_crowns += rate * hours * crowns / made
+        if mid in per_kill:
+            faucet += per_kill[mid] * 3600.0 / by_id[mid]["seconds_per_kill"] * hours
+        else:
+            faucet_missing.add(mid)
+
+    if no_recipe:
+        eat_missing.add("no Cooking action unlocked at level%s %s"
+                        % ("" if len(no_recipe) == 1 else "s", _ranges(no_recipe)))
+    parts = []
+    for mid, rid, first, last in spans:
+        levels = "levels %s" % (first if first == last else "%d-%d" % (first, last))
+        rate, why = combat.rations_per_hour(by_id[mid])
+        text = "%s (%s)" % (mid, levels)
+        if mid in per_kill:
+            kill_week = per_kill[mid] * 3600.0 / by_id[mid]["seconds_per_kill"] * week
+            text += ", kill faucet %.0f Crowns/week" % kill_week
+        else:
+            kill_week = None
+            text += ", no drop table"
+        if rate is None:
+            parts.append("%s: Rations not computed, %s" % (text, why))
+            continue
+        text += ", %.2f Rations/h eaten" % rate
+        if rid is None:
+            parts.append("%s; no Cooking action unlocked" % text)
+            continue
+        crowns, made, _missing = _recipe_cost(recipes[rid], prices)
+        per_ration = float(crowns) / made
+        eat_week = rate * week * per_ration
+        text += ("; recipe %s, %s Crowns a Ration; eating %.0f Crowns/week"
+                 % (rid, _num(round(per_ration, 3)), eat_week))
+        if kill_week:
+            text += ", %s of the kill faucet" % _pct(eat_week, kill_week)
+        parts.append(text)
+    report.note("%s, by tier: %s" % (label, "; ".join(parts)))
+
+    combat_days = combat_hours / hours_per_day
+    collectors = sum(r["collector_price"] * r["collector_weekly_cap"]
+                     for _path, data in econ_files for r in data["items"].values()
+                     if r["collector_price"] is not None
+                     and r["collector_weekly_cap"] is not None)
+    if faucet_missing:
+        faucet_text = ("kill faucet not computed (no drop table: %s)"
+                       % ", ".join(sorted(faucet_missing)))
+        faucet_week = None
+    else:
+        kill_week = faucet * DAYS_PER_WEEK / combat_days
+        faucet_week = kill_week + collectors
+        faucet_text = ("faucet %.0f Crowns/week = kills %.0f + collectors' weekly maximum "
+                       "%.0f (%s)" % (faucet_week, kill_week, collectors,
+                                      ", ".join(p for p, _d in econ_files)
+                                      or "no economy file for the zone"))
+    report.note("%s: band %.2f combat days at %s combat hours a day; %s"
+                % (label, combat_days, _num(hours_per_day), faucet_text))
+
+    if eat_missing:
+        report.note("%s, eating: not computed (%s)" % (label, "; ".join(sorted(eat_missing))))
+    else:
+        eat_week = eat_crowns * DAYS_PER_WEEK / combat_days
+        report.note("%s, eating: %.0f Rations eaten over the band, %.0f Crowns of "
+                    "ingredients, %.0f Crowns/week, %s of the faucet"
+                    % (label, eaten, eat_crowns, eat_week,
+                       _pct(eat_week, faucet_week) if faucet_week else "faucet unknown"))
+
+    own = [e for e in cook_pool if start <= e[2] < end]
+    if not own or check_pacing.best_entry(cook_pool, start) is None:
+        report.note("%s, levelling Cooking: not computed; pacing does not check Cooking "
+                    "in this band (%s)"
+                    % (label, "no Cooking action unlocked inside the band" if not own
+                       else "none unlocked at level %d" % start))
+    else:
+        cook_hours = made_total = level_crowns = 0.0
+        for level in range(start, end):
+            _p, rid, _l, xph = check_pacing.best_entry(cook_pool, level)
+            action = recipes[rid]
+            count = float(costs[level]) / action["xp"]
+            crowns, made, missing = _recipe_cost(action, prices)
+            unpriced.update(missing)
+            cook_hours += costs[level] / xph
+            made_total += count * made
+            level_crowns += count * crowns
+        cook_days = cook_hours / (hours_per_day * share)
+        level_week = level_crowns * DAYS_PER_WEEK / cook_days
+        report.note("%s, levelling Cooking: %.2f Cooking band days (as pacing), %.0f "
+                    "Rations made%s, %.0f Crowns of ingredients, %.0f Crowns/week, %s of "
+                    "the faucet"
+                    % (label, cook_days, made_total,
+                       "" if eat_missing else " against %.0f eaten" % eaten,
+                       level_crowns, level_week,
+                       _pct(level_week, faucet_week) if faucet_week else "faucet unknown"))
+    if unpriced:
+        report.note("%s: Cooking inputs with no grocer_price, counted at 0 Crowns: %s"
+                    % (label, ", ".join(sorted(unpriced))))
+
+
 def _num(value):
     return ("%d" % value) if float(value).is_integer() else ("%s" % value)
 
@@ -507,19 +847,21 @@ def run(root):
     drop_files = _load(report, root, schemas, DROPS_SCHEMA_PREFIX,
                        CHECKABLE_DROPS_SCHEMA, "the drop, Ledger Page and faucet rules")
     economies = _load(report, root, schemas, ECONOMY_SCHEMA_PREFIX,
-                      CHECKABLE_ECONOMY_SCHEMA, "the economy, Ledger Page and faucet rules")
+                      CHECKABLE_ECONOMY_SCHEMAS, "the economy, Ledger Page and faucet rules")
     tables = [(path, index, table) for path, data in drop_files
               for index, table in enumerate(data["tables"])]
     monsters = load_monsters(root)
 
     check_tables(report, drop_files, tables, monsters)
     economy_by_zone = check_economy(report, economies)
+    check_grocer(report, economies)
     pages = check_ledger(report, root, drop_files, tables, economy_by_zone, monsters)
     report.note("%d checkable drop file(s), %d drop table(s), %d checkable economy "
                 "file(s), %d Ledger Page item(s)%s"
                 % (len(drop_files), len(tables), len(economies), pages,
                    "; nothing to check" if not (tables or economies or pages) else ""))
-    faucet_report(report, root, schemas, tables, economy_by_zone)
+    per_kill = faucet_report(report, root, schemas, tables, economy_by_zone)
+    sink_report(report, root, schemas, per_kill, economies, economy_by_zone)
     return report
 
 

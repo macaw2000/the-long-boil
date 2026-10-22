@@ -16,6 +16,9 @@ above.
 Work order 010 (Jeremy's answer to its hand-back): every item a gear file
 (gear/*) names in an entry's "item" must be an item as above.
 
+Work order 013: every item the starting inventory (start/*) names in an
+"inventory" stack must be an item as above.
+
 Ids are collected leniently: an item or monster file with shape errors still
 contributes the ids it has, and an action, drop or economy file with shape
 errors still has its references checked. The schema check reports the shape
@@ -40,6 +43,7 @@ MONSTER_SCHEMA_PREFIX = "monster/"
 DROPS_SCHEMA_PREFIX = "drops/"
 ECONOMY_SCHEMA_PREFIX = "tuning.economy/"
 GEAR_SCHEMA_PREFIX = "gear/"
+START_SCHEMA_PREFIX = "start/"
 
 
 def _declared(data):
@@ -151,6 +155,19 @@ def check_gear(report, path, data, items):
     return references
 
 
+def check_start(report, path, data, items):
+    """Returns the number of references checked in one start/* file."""
+    references = 0
+    for index, stack in _entries(data, "inventory"):
+        item = stack.get("item")
+        if not isinstance(item, str):
+            continue  # the schema check reports this
+        references += 1
+        if item not in items:
+            _unknown_item(report, path, "/inventory/%d/item" % index, item, item)
+    return references
+
+
 def run(root):
     report = lib.Report(CHECK)
     items = item_ids(root)
@@ -159,6 +176,7 @@ def run(root):
     references = 0
     drop_files = drop_refs = economy_files = economy_refs = 0
     gear_files = gear_refs = 0
+    start_files = start_refs = 0
     for path in lib.content_files(root):
         data, error = lib.load_json(root, path)
         if error:
@@ -175,6 +193,10 @@ def run(root):
         if declared.startswith(GEAR_SCHEMA_PREFIX):
             gear_files += 1
             gear_refs += check_gear(report, path, data, items)
+            continue
+        if declared.startswith(START_SCHEMA_PREFIX):
+            start_files += 1
+            start_refs += check_start(report, path, data, items)
             continue
         if not declared.startswith(ACTION_SCHEMA_PREFIX):
             continue
@@ -199,6 +221,7 @@ def run(root):
                 "defined; %d economy file(s), %d item reference(s)"
                 % (drop_files, drop_refs, len(monsters), economy_files, economy_refs))
     report.note("%d gear file(s), %d item reference(s)" % (gear_files, gear_refs))
+    report.note("%d start file(s), %d item reference(s)" % (start_files, start_refs))
     return report
 
 

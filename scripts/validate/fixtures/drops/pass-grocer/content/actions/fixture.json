@@ -1,0 +1,47 @@
+{
+ "schema": "action/1",
+ "actions": [
+  {
+   "id": "action.global.fixture_cook_meal",
+   "skill": "cooking",
+   "level_required": 1,
+   "seconds": 60,
+   "xp": 10,
+   "inputs": [
+    {
+     "item": "item.global.fixture_meal",
+     "qty": 1
+    }
+   ],
+   "outputs": [
+    {
+     "item": "item.global.fixture_ration",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "id": "action.global.fixture_cook_pork",
+   "skill": "cooking",
+   "level_required": 5,
+   "seconds": 60,
+   "xp": 15,
+   "inputs": [
+    {
+     "item": "item.global.fixture_pork",
+     "qty": 1
+    },
+    {
+     "item": "item.global.fixture_herb",
+     "qty": 1
+    }
+   ],
+   "outputs": [
+    {
+     "item": "item.global.fixture_ration",
+     "qty": 2
+    }
+   ]
+  }
+ ]
+}

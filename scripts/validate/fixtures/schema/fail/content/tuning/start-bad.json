@@ -1,0 +1,29 @@
+{
+ "schema": "start/1",
+ "id": "start.global.other",
+ "revision": 1,
+ "inventory": [
+  {
+   "item": "item.global.fixture_brass_ingot",
+   "qty": 0,
+   "bound": false
+  },
+  {
+   "item": "item.global.fixture_ration",
+   "qty": 2.5,
+   "bound": "yes"
+  },
+  {
+   "item": "items.global.fixture_bad",
+   "qty": 1
+  },
+  {
+   "item": "item.global.fixture_copper_ore",
+   "qty": 1,
+   "bound": false,
+   "note": "extra"
+  }
+ ],
+ "crowns": -1,
+ "status": "drafted"
+}
