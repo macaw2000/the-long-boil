@@ -8,7 +8,7 @@
       "pointer": null,
       "revision": 2,
       "work_order": "docs/work-orders/001-xp-curve.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -27,8 +27,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: fits GDD pacing; open design calls carried forward in work order 001 (band-1 rate climb, balanced-player target, 70/30 split provisional)."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:04:01Z",
       "history": [
         {
           "at": "2026-10-21T21:50:15Z",
@@ -44,6 +44,11 @@
           "at": "2026-10-21T23:55:00Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:04:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -54,7 +59,7 @@
       "pointer": "/reference_action",
       "revision": 2,
       "work_order": "docs/work-orders/001-xp-curve.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -73,8 +78,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: 54 s per smelt marked as an inferred upper bound, not derived; 10 XP is a unit choice."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T00:04:01Z",
       "history": [
         {
           "at": "2026-10-21T21:50:15Z",
@@ -90,6 +95,11 @@
           "at": "2026-10-21T23:55:00Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T00:04:01Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     }
