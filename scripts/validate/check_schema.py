@@ -4,6 +4,9 @@
 - Every content file (everything under content/ except the register)
   declares a "schema" string, a schema exists for it, and the file matches it.
 - Every "id", at any depth, is unique across the whole content tree.
+- Item and action files live where work order 003 puts them: a file under
+  content/items/ declares item/*, a file under content/actions/ declares
+  action/*, and neither schema is declared anywhere else.
 
 The register's own shape is the provenance check's job, not this one's.
 
@@ -17,6 +20,12 @@ sys.dont_write_bytecode = True  # keep __pycache__ out of the repo
 import lib  # noqa: E402
 
 CHECK = "schema"
+
+# Work order 003: schema family -> the only directory it may live in.
+SCHEMA_HOMES = (
+    ("item/", "content/items/"),
+    ("action/", "content/actions/"),
+)
 
 
 def run(root):
@@ -54,6 +63,7 @@ def run(root):
         else:
             for pointer, message in lib.validate(data, schemas[declared]):
                 report.fail("shape", path, "%s: %s" % (pointer, message), top_id)
+        _check_home(report, path, declared, top_id)
 
         for pointer, value in lib.collect_ids(data):
             if not isinstance(value, str) or not value:
@@ -69,6 +79,20 @@ def run(root):
                 report.fail("duplicate-id", path,
                             "id appears %d times: %s" % (len(places), where), ident)
     return report
+
+
+def _check_home(report, path, declared, ident):
+    declared = declared if isinstance(declared, str) else ""
+    for prefix, home in SCHEMA_HOMES:
+        in_home = path.startswith(home)
+        declares = declared.startswith(prefix)
+        if in_home and not declares:
+            report.fail("wrong-directory", path,
+                        "files under %s must declare %s*; this one declares %r"
+                        % (home, prefix, declared or None), ident)
+        elif declares and not in_home:
+            report.fail("wrong-directory", path,
+                        "schema %r belongs under %s" % (declared, home), ident)
 
 
 def main(argv):

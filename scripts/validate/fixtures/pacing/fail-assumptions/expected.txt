@@ -1,0 +1,2 @@
+FAIL pacing/assumption-missing content/tuning/curve.json id=fixture.pacing.curve : assumptions.BAND_SKILL_QUEUE_HOURS_PER_DAY is 0; pacing needs a positive number
+FAIL pacing/assumption-missing content/tuning/curve.json id=fixture.pacing.curve : assumptions.MAIN_COMBAT_SKILL_SHARE is None; pacing needs a positive number

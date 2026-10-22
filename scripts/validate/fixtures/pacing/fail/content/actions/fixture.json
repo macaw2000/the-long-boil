@@ -1,0 +1,50 @@
+{
+ "schema": "action/1",
+ "actions": [
+  {
+   "id": "action.global.fixture_slow",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 54,
+   "xp": 5,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_fast",
+   "skill": "tinkering",
+   "level_required": 1,
+   "seconds": 54,
+   "xp": 30,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_late_start",
+   "skill": "tailoring",
+   "level_required": 3,
+   "seconds": 54,
+   "xp": 10,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_cook_a",
+   "skill": "cooking",
+   "level_required": 1,
+   "seconds": 54,
+   "xp": 10.6,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_cook_b",
+   "skill": "cooking",
+   "level_required": 30,
+   "seconds": 54,
+   "xp": 50,
+   "inputs": [],
+   "outputs": []
+  }
+ ]
+}

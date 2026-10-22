@@ -1,0 +1,41 @@
+{
+ "schema": "action/1",
+ "actions": [
+  {
+   "id": "action.global.fixture_smelt_a",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 54,
+   "xp": 9.5,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_smelt_b",
+   "skill": "smithing",
+   "level_required": 12,
+   "seconds": 54,
+   "xp": 11.5,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_smelt_c",
+   "skill": "smithing",
+   "level_required": 20,
+   "seconds": 54,
+   "xp": 37.6,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_dig_a",
+   "skill": "prospecting",
+   "level_required": 1,
+   "seconds": 60,
+   "xp": 11.8,
+   "inputs": [],
+   "outputs": []
+  }
+ ]
+}

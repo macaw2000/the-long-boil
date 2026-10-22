@@ -1,0 +1,14 @@
+{
+ "schema": "action/1",
+ "actions": [
+  {
+   "id": "action.global.fixture_no_curve",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 54,
+   "xp": 10,
+   "inputs": [],
+   "outputs": []
+  }
+ ]
+}

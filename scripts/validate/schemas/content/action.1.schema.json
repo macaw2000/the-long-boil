@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "action/1",
+  "title": "Actions, version 1",
+  "description": "A file under content/actions/ (work order 003, scope 2). Holds a list of actions. Each action has an id of the form action.<zone>.<name>, zone one of rustmoor, cinderworks, thunderhead, global (Jeremy, answer to work order 003 Q5); a skill, one of the nine non-combat skills in GDD section 6 (Gathering, Production, Special), lowercase with underscores; the seven combat skills are refused until monster XP exists (Jeremy, answer to work order 003 Q3); level_required, an integer 1 to 100; seconds, the positive time one action takes; xp, the positive XP one action pays; and inputs and outputs, each a possibly empty list of {item, qty}. Whether each named item exists is the references check's job. 'revision' (file or action) is optional and exists only so a register row's revision can match what it points at.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "actions"],
+  "properties": {
+    "schema": {"const": "action/1"},
+    "revision": {"type": "integer", "minimum": 1},
+    "actions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/action"}
+    }
+  },
+  "$defs": {
+    "stack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["item", "qty"],
+      "properties": {
+        "item": {"type": "string", "pattern": "^item\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"},
+        "qty": {"type": "integer", "minimum": 1}
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "skill", "level_required", "seconds", "xp", "inputs", "outputs"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^action\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"},
+        "skill": {"enum": [
+          "prospecting", "lumbering", "scavenging",
+          "smithing", "tinkering", "tailoring", "cooking", "tea_blending",
+          "calibrating"
+        ]},
+        "level_required": {"type": "integer", "minimum": 1, "maximum": 100},
+        "seconds": {"type": "number", "exclusiveMinimum": 0},
+        "xp": {"type": "number", "exclusiveMinimum": 0},
+        "inputs": {"type": "array", "items": {"$ref": "#/$defs/stack"}},
+        "outputs": {"type": "array", "items": {"$ref": "#/$defs/stack"}},
+        "revision": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

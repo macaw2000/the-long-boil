@@ -1,0 +1,6 @@
+FAIL pacing/band-days content/actions/fixture.json : skill cooking band 20 to 45: 21.81 days, effective rate 2.68x the reference (curve target 2.5x); best actions: action.global.fixture_cook_a (levels 20-29), action.global.fixture_cook_b (levels 30-44); must be within 2 of 14 days
+FAIL pacing/band-days content/actions/fixture.json : skill smithing band 1 to 20: 29.69 days, effective rate 0.56x the reference (curve target 0.71x); best actions: action.global.fixture_slow (levels 1-19); must be within 2 of 14 days
+FAIL pacing/band-days content/actions/fixture.json : skill tinkering band 1 to 20: 4.95 days, effective rate 3.33x the reference (curve target 0.71x); best actions: action.global.fixture_fast (levels 1-19); must be within 2 of 14 days
+FAIL pacing/not-checkable content/actions/broken.json : file does not match action/1 (1 errors; see the schema check); pacing for the skills it names leaves its actions out
+FAIL pacing/not-checkable content/actions/future.json : schema is 'action/2'; only action/1 can be checked
+WARN pacing/band-uncovered content/actions/fixture.json : skill tailoring band 1 to 20: has actions, but none is unlocked at level 1 (lowest level_required for the skill is 3); not checked

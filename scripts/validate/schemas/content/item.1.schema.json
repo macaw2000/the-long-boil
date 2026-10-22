@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "item/1",
+  "title": "Items, version 1",
+  "description": "A file under content/items/ (work order 003, scope 1). Holds a list of items. Each item has an id of the form item.<zone>.<name>, zone one of rustmoor, cinderworks, thunderhead, global (Jeremy, answer to work order 003 Q5), a name, and one line of flavour text of at most 20 words. Nothing else is required yet; stats, prices and calibration come in later work orders. 'revision' (file or item) is optional and exists only so a register row's revision can match what it points at. maxWords is a keyword this repo's validator adds: whitespace-separated words.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "items"],
+  "properties": {
+    "schema": {"const": "item/1"},
+    "revision": {"type": "integer", "minimum": 1},
+    "items": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/item"}
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "flavour"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^item\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"},
+        "name": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"},
+        "flavour": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S", "maxWords": 20},
+        "revision": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

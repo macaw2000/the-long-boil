@@ -6,9 +6,39 @@ FAIL schema/duplicate-id content/tuning/shape.json id=fixture.fail.shape : id ap
 FAIL schema/no-schema content/tuning/no-schema.json id=fixture.fail.no_schema : does not declare a "schema" string
 FAIL schema/parse content/provenance.json : does not parse as JSON: Expecting value: line 2 column 1 (char 39)
 FAIL schema/parse content/tuning/broken.json : does not parse as JSON: Expecting property name enclosed in double quotes: line 2 column 1 (char 34)
+FAIL schema/shape content/actions/bad.json : /actions/0/skill: must be one of ["prospecting", "lumbering", "scavenging", "smithing", "tinkering", "tailoring", "cooking", "tea_blending", "calibrating"], got "alchemy"
+FAIL schema/shape content/actions/bad.json : /actions/1/skill: must be one of ["prospecting", "lumbering", "scavenging", "smithing", "tinkering", "tailoring", "cooking", "tea_blending", "calibrating"], got "tea-blending"
+FAIL schema/shape content/actions/bad.json : /actions/10/skill: must be one of ["prospecting", "lumbering", "scavenging", "smithing", "tinkering", "tailoring", "cooking", "tea_blending", "calibrating"], got "aetherics"
+FAIL schema/shape content/actions/bad.json : /actions/11/id: does not match pattern ^action\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/actions/bad.json : /actions/11/inputs/0/item: does not match pattern ^item\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/actions/bad.json : /actions/12/crowns: field 'crowns' is not allowed by this schema
+FAIL schema/shape content/actions/bad.json : /actions/12/id: does not match pattern ^action\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/actions/bad.json : /actions/12/inputs/0: missing required field 'qty'
+FAIL schema/shape content/actions/bad.json : /actions/12/outputs: expected array, got null
+FAIL schema/shape content/actions/bad.json : /actions/2/level_required: below minimum 1
+FAIL schema/shape content/actions/bad.json : /actions/3/level_required: above maximum 100
+FAIL schema/shape content/actions/bad.json : /actions/4/level_required: expected integer, got number
+FAIL schema/shape content/actions/bad.json : /actions/5/seconds: must be greater than 0
+FAIL schema/shape content/actions/bad.json : /actions/6/xp: must be greater than 0
+FAIL schema/shape content/actions/bad.json : /actions/7/inputs/0/qty: below minimum 1
+FAIL schema/shape content/actions/bad.json : /actions/8/outputs/0/item: does not match pattern ^item\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/actions/bad.json : /actions/9/skill: must be one of ["prospecting", "lumbering", "scavenging", "smithing", "tinkering", "tailoring", "cooking", "tea_blending", "calibrating"], got "melee"
+FAIL schema/shape content/items/bad.json : /items/0/id: does not match pattern ^item\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/items/bad.json : /items/1/flavour: has 21 words; at most 20 allowed
+FAIL schema/shape content/items/bad.json : /items/2/flavour: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
+FAIL schema/shape content/items/bad.json : /items/3/flavour: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
+FAIL schema/shape content/items/bad.json : /items/3/name: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
+FAIL schema/shape content/items/bad.json : /items/4/stats: field 'stats' is not allowed by this schema
+FAIL schema/shape content/items/bad.json : /items/4: missing required field 'name'
+FAIL schema/shape content/items/bad.json : /items/5/id: does not match pattern ^item\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/items/bad.json : /price: field 'price' is not allowed by this schema
+FAIL schema/shape content/tuning/newline.json id=fixture.fail.newline\n : /id: does not match pattern ^[a-z0-9_]+(\.[a-z0-9_]+)+$
 FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /formula/BASE: field 'BASE' is not allowed by this schema
 FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /formula/constants: missing required field 'base'
 FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /status: field 'status' is not allowed by this schema
 FAIL schema/shape content/tuning/shape.json id=fixture.fail.shape : /validators: field 'validators' is not allowed by this schema
-FAIL schema/unknown-schema content/tuning/old.json id=fixture.fail.old : schema 'tuning.xp_curve/0' is not accepted; known: tuning.xp_curve/1
-FAIL schema/unknown-schema content/tuning/unknown.json id=fixture.fail.unknown : schema 'monster/9' is not accepted; known: tuning.xp_curve/1
+FAIL schema/unknown-schema content/tuning/old.json id=fixture.fail.old : schema 'tuning.xp_curve/0' is not accepted; known: action/1, item/1, tuning.xp_curve/1
+FAIL schema/unknown-schema content/tuning/unknown.json id=fixture.fail.unknown : schema 'monster/9' is not accepted; known: action/1, item/1, tuning.xp_curve/1
+FAIL schema/wrong-directory content/actions/misplaced.json : files under content/actions/ must declare action/*; this one declares 'item/1'
+FAIL schema/wrong-directory content/actions/misplaced.json : schema 'item/1' belongs under content/items/
+FAIL schema/wrong-directory content/tuning/stray.json : schema 'action/1' belongs under content/actions/

@@ -1,0 +1,76 @@
+{
+ "schema": "action/1",
+ "actions": [
+  {
+   "id": "action.global.fixture_ok",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 54,
+   "xp": 10,
+   "inputs": [
+    {
+     "item": "item.global.fixture_copper_ore",
+     "qty": 2
+    }
+   ],
+   "outputs": [
+    {
+     "item": "item.global.fixture_brass_ingot",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "id": "action.global.fixture_ghost_input",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 54,
+   "xp": 10,
+   "inputs": [
+    {
+     "item": "item.global.fixture_ghost",
+     "qty": 1
+    }
+   ],
+   "outputs": [
+    {
+     "item": "item.global.fixture_brass_ingot",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "id": "action.global.fixture_stray_output",
+   "skill": "tinkering",
+   "level_required": 1,
+   "seconds": 54,
+   "xp": 10,
+   "inputs": [
+    {
+     "item": "item.global.fixture_brass_ingot",
+     "qty": 1
+    }
+   ],
+   "outputs": [
+    {
+     "item": "item.global.fixture_stray",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "id": "action.global.fixture_action_as_item",
+   "skill": "tinkering",
+   "level_required": 1,
+   "seconds": 54,
+   "xp": 10,
+   "inputs": [
+    {
+     "item": "action.global.fixture_ok",
+     "qty": 1
+    }
+   ],
+   "outputs": []
+  }
+ ]
+}

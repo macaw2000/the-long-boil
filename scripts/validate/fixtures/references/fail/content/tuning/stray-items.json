@@ -1,0 +1,10 @@
+{
+ "schema": "item/1",
+ "items": [
+  {
+   "id": "item.global.fixture_stray",
+   "name": "Stray",
+   "flavour": "Defined outside content/items/."
+  }
+ ]
+}

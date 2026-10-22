@@ -1,0 +1,3 @@
+FAIL references/unknown-item content/actions/fixture.json id=action.global.fixture_action_as_item : /actions/3/inputs/0 names 'action.global.fixture_ok', which no item file under content/items/ defines
+FAIL references/unknown-item content/actions/fixture.json id=action.global.fixture_ghost_input : /actions/1/inputs/0 names 'item.global.fixture_ghost', which no item file under content/items/ defines
+FAIL references/unknown-item content/actions/fixture.json id=action.global.fixture_stray_output : /actions/2/outputs/0 names 'item.global.fixture_stray', which no item file under content/items/ defines

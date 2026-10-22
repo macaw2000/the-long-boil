@@ -62,6 +62,130 @@
      "by": "draftsman"
     }
    ]
+  },
+  {
+   "id": "item.global.fixture_copper_ore",
+   "type": "item",
+   "path": "content/items/fixture.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": null,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": "/items/0",
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  },
+  {
+   "id": "item.global.fixture_brass_ingot",
+   "type": "item",
+   "path": "content/items/fixture.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": null,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": "/items/1",
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  },
+  {
+   "id": "action.global.fixture_dig_ore",
+   "type": "action",
+   "path": "content/actions/fixture.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": null,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": "/actions/0",
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  },
+  {
+   "id": "action.global.fixture_smelt_ingot",
+   "type": "action",
+   "path": "content/actions/fixture.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": null,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": "/actions/1",
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
   }
  ]
 }

@@ -1,0 +1,14 @@
+{
+ "schema": "action/1",
+ "actions": [
+  {
+   "id": "action.global.fixture_stray",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 10,
+   "xp": 1,
+   "inputs": [],
+   "outputs": []
+  }
+ ]
+}

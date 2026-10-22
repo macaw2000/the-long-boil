@@ -1,0 +1,142 @@
+{
+ "schema": "action/1",
+ "actions": [
+  {
+   "id": "action.global.fixture_bad_skill",
+   "skill": "alchemy",
+   "level_required": 1,
+   "seconds": 10,
+   "xp": 1,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_dashed_skill",
+   "skill": "tea-blending",
+   "level_required": 1,
+   "seconds": 10,
+   "xp": 1,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_level_zero",
+   "skill": "smithing",
+   "level_required": 0,
+   "seconds": 10,
+   "xp": 1,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_level_high",
+   "skill": "smithing",
+   "level_required": 101,
+   "seconds": 10,
+   "xp": 1,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_level_fraction",
+   "skill": "smithing",
+   "level_required": 2.5,
+   "seconds": 10,
+   "xp": 1,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_no_time",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 0,
+   "xp": 1,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_negative_xp",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 10,
+   "xp": -1,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_zero_qty",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 10,
+   "xp": 1,
+   "inputs": [
+    {
+     "item": "item.global.fixture_copper_ore",
+     "qty": 0
+    }
+   ],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_bad_ref",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 10,
+   "xp": 1,
+   "inputs": [],
+   "outputs": [
+    {
+     "item": "action.global.fixture_bad_skill",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "id": "action.global.fixture_combat",
+   "skill": "melee",
+   "level_required": 1,
+   "seconds": 10,
+   "xp": 1,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_combat_2",
+   "skill": "aetherics",
+   "level_required": 1,
+   "seconds": 10,
+   "xp": 1,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.foundry.fixture_unknown_zone",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 10,
+   "xp": 1,
+   "inputs": [
+    {
+     "item": "item.foundry.fixture_ore",
+     "qty": 1
+    }
+   ],
+   "outputs": []
+  },
+  {
+   "id": "action.Fixture.bad_id",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 10,
+   "xp": 1,
+   "inputs": [
+    {
+     "item": "item.global.fixture_copper_ore"
+    }
+   ],
+   "outputs": null,
+   "crowns": 3
+  }
+ ]
+}

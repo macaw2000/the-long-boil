@@ -36,7 +36,8 @@ class Report:
         where = path or "-"
         if ident is not None:
             where = "%s id=%s" % (where, ident)
-        return "%s %s/%s %s : %s" % (level, self.check, code, where, message)
+        line = "%s %s/%s %s : %s" % (level, self.check, code, where, message)
+        return one_line(line)
 
     def fail(self, code, path, message, ident=None):
         self.fails.append(self._line("FAIL", code, path, ident, message))
@@ -45,7 +46,7 @@ class Report:
         self.warns.append(self._line("WARN", code, path, ident, message))
 
     def note(self, message):
-        self.notes.append("NOTE %s : %s" % (self.check, message))
+        self.notes.append(one_line("NOTE %s : %s" % (self.check, message)))
 
     def lines(self):
         return sorted(self.fails) + sorted(self.warns) + self.notes
@@ -60,6 +61,14 @@ class Report:
             % (self.check, status, len(self.fails), len(self.warns))
         )
         return 1 if self.fails else 0
+
+
+def one_line(text):
+    """Escapes control characters, so a value with a newline in it cannot
+    split one problem across two report lines."""
+    return "".join(
+        ch.encode("unicode_escape").decode("ascii") if ord(ch) < 32 or ch == "\x7f" else ch
+        for ch in text)
 
 
 def rel(root, path):
@@ -130,7 +139,7 @@ def resolve_pointer(document, pointer):
                 return False, None
             node = node[token]
         elif isinstance(node, list):
-            if not re.match(r"^(0|[1-9][0-9]*)$", token):
+            if not re.fullmatch(r"0|[1-9][0-9]*", token):
                 return False, None
             index = int(token)
             if index >= len(node):
@@ -177,7 +186,8 @@ def validate(instance, schema, root_schema=None, pointer=""):
 
     Supports: $ref (local #/$defs/...), type, enum, const, required,
     properties, additionalProperties, items, minItems, maxItems, minimum,
-    exclusiveMinimum, maximum, minLength, pattern.
+    exclusiveMinimum, maximum, minLength, pattern, and one keyword of this
+    repo's own: maxWords (a string's whitespace-separated word count).
 
     Returns a list of (pointer, message).
     """
@@ -213,8 +223,13 @@ def validate(instance, schema, root_schema=None, pointer=""):
     if isinstance(instance, str):
         if "minLength" in schema and len(instance) < schema["minLength"]:
             errors.append((where, "shorter than %d characters" % schema["minLength"]))
-        if "pattern" in schema and not re.search(schema["pattern"], instance):
+        if "pattern" in schema and not ecma_search(schema["pattern"], instance):
             errors.append((where, "does not match pattern %s" % schema["pattern"]))
+        if "maxWords" in schema:
+            words = len(instance.split())
+            if words > schema["maxWords"]:
+                errors.append((where, "has %d words; at most %d allowed"
+                               % (words, schema["maxWords"])))
 
     if _TYPES["number"](instance):
         if "minimum" in schema and instance < schema["minimum"]:
@@ -250,6 +265,34 @@ def validate(instance, schema, root_schema=None, pointer=""):
                     value, schema["items"], root_schema, "%s/%d" % (pointer, index)))
 
     return errors
+
+
+def ecma_pattern(pattern):
+    """JSON Schema patterns use ECMA-262 semantics, where "$" (no multiline
+    flag) matches only at the very end of the string. Python's "$" also
+    matches just before a trailing newline, so "id.x\\n" passed "^...$".
+    Rewrites every unescaped "$" outside a character class as "\\Z"."""
+    out, i, in_class = [], 0, False
+    while i < len(pattern):
+        ch = pattern[i]
+        if ch == "\\":
+            out.append(pattern[i:i + 2])
+            i += 2
+            continue
+        if in_class:
+            if ch == "]":
+                in_class = False
+        elif ch == "[":
+            in_class = True
+        elif ch == "$":
+            ch = "\\Z"
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
+
+def ecma_search(pattern, instance):
+    return re.search(ecma_pattern(pattern), instance) is not None
 
 
 def _describe(value):

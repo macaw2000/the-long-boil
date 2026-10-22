@@ -1,0 +1,1 @@
+FAIL pacing/many-curves content/tuning/curve-2.json, content/tuning/curve.json : 2 valid tuning.xp_curve/1 files; pacing needs exactly one

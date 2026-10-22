@@ -1,0 +1,38 @@
+{
+ "schema": "item/1",
+ "price": 5,
+ "items": [
+  {
+   "id": "items.fixture.bad_prefix",
+   "name": "Bad Prefix",
+   "flavour": "Fine."
+  },
+  {
+   "id": "item.global.fixture_long_flavour",
+   "name": "Long Flavour",
+   "flavour": "one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone"
+  },
+  {
+   "id": "item.global.fixture_two_lines",
+   "name": "Two Lines",
+   "flavour": "First line.\nSecond line."
+  },
+  {
+   "id": "item.global.fixture_trailing_newline",
+   "name": "Trailing\n",
+   "flavour": "Ends in a newline.\n"
+  },
+  {
+   "id": "item.global.fixture_no_name",
+   "flavour": "No name.",
+   "stats": {
+    "hp": 1
+   }
+  },
+  {
+   "id": "item.fixture.unknown_zone",
+   "name": "Unknown Zone",
+   "flavour": "Zone not on the list."
+  }
+ ]
+}
