@@ -33,6 +33,18 @@ Attach only these:
 - **Letters cost 1 Nerve,** like most storylets.
 - **Crowns are not a quality,** so paying Pip's bill cannot be written as a quality change. Model the bill through `needle.arrears` and raise payment in Crowns as an open question for the engine.
 
+## Settled after review
+
+Jeremy set these on 22 October 2026, after the inspector's review:
+
+- **Fix the inspector's fails as it proposed:** Brassbuckle is "she" (canon; the GDD's "He" was a typo, now fixed); the vent "empties a week's worth of steam straight into your sleeve" and says nothing; Pip's letter does not promise the Arrears dial stays up; "the rent is still owed" goes from the_list; "the coal" becomes "the Rations"; the kettle line ends at "Then she goes to put the kettle on."
+- **Pip runs the bill for the Counting-House.** The repair is a deal Pip brokers: the clock is a Counting-House clerk's, and success takes 10 Crowns off the 15.
+- **The bill is a Crown debt the engine tracks,** not an Arrears change. The letter sets `flag.owes_back_rent`; a successful repair also sets `flag.back_rent_reduced` (owing 5, not 15); the engine clears both when the player pays at the Counting-House window. Arrears may still rise for the risky options.
+- **Five flags are now in the registry:** `flag.kept_brass_plate`, `flag.asked_brassbuckle_plate`, `flag.own_reading`, `flag.owes_back_rent`, `flag.back_rent_reduced`. Use them so the brass plate, altitude review and bottom rim choices carry forward.
+- **A discarded letter returns to the deck** while its requirements still hold (an engine rule), so the letter may keep gating the Prologue.
+- **Add beat 2, the sealed laboratory,** as a sixth storylet at the Polytechnic, between the_list and rat_nests, and renumber `act1.progress` so the chain still runs in order. The Polytechnic is now an allowed location. rat_nests may then use the "R.S. The Rats have it" lead.
+- **rat_nests' hand search drops to difficulty 4.**
+
 ## Constraints
 
 - Follow your own rules: voice, word limits, the banned list, terrible things offstage, invented details marked and surfaced.
