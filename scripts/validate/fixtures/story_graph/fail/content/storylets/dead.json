@@ -1,0 +1,49 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.dead",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {},
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Shrug",
+   "success": {
+    "text": "Nothing happens.",
+    "changes": {}
+   }
+  },
+  {
+   "label": "Listen at the pipe",
+   "requires": {
+    "needle.fixture_haze": ">=5"
+   },
+   "success": {
+    "text": "The hum fades.",
+    "changes": {
+     "needle.fixture_haze": "-1"
+    }
+   }
+  },
+  {
+   "label": "Try",
+   "challenge": {
+    "quality": "smithing",
+    "difficulty": 5
+   },
+   "success": {
+    "text": "It works.",
+    "changes": {
+     "lore.fixture_notes": "+1"
+    }
+   },
+   "failure": {
+    "text": "It does not.",
+    "changes": {}
+   }
+  }
+ ]
+}

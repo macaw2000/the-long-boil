@@ -1,0 +1,31 @@
+{
+ "schema": "storylet/1",
+ "id": "act3.fixture_yard.four",
+ "revision": 1,
+ "act": 3,
+ "location": "fixture_yard",
+ "reveal_layer": 4,
+ "requires": {},
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "A",
+   "success": {
+    "text": "A.",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   }
+  },
+  {
+   "label": "B",
+   "success": {
+    "text": "B.",
+    "changes": {
+     "flag.fixture_seen": 0
+    }
+   }
+  }
+ ]
+}

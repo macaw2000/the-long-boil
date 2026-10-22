@@ -222,8 +222,9 @@ def validate(instance, schema, root_schema=None, pointer=""):
 
     Supports: $ref (local #/$defs/...), type, enum, const, required,
     properties, additionalProperties, items, minItems, maxItems, minimum,
-    exclusiveMinimum, maximum, minLength, pattern, and one keyword of this
-    repo's own: maxWords (a string's whitespace-separated word count).
+    exclusiveMinimum, maximum, minLength, pattern, dependentRequired, and one
+    keyword of this repo's own: maxWords (a string's whitespace-separated
+    word count).
 
     Returns a list of (pointer, message).
     """
@@ -279,6 +280,11 @@ def validate(instance, schema, root_schema=None, pointer=""):
         for key in schema.get("required", []):
             if key not in instance:
                 errors.append((where, "missing required field %r" % key))
+        for key, needed in schema.get("dependentRequired", {}).items():
+            if key in instance:
+                for other in needed:
+                    if other not in instance:
+                        errors.append((where, "field %r requires field %r" % (key, other)))
         properties = schema.get("properties", {})
         additional = schema.get("additionalProperties", True)
         for key, value in instance.items():

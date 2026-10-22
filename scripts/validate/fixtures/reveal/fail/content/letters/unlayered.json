@@ -1,0 +1,23 @@
+{
+ "schema": "letter/1",
+ "id": "act2.fixture_yard.unlayered",
+ "revision": 1,
+ "act": 2,
+ "location": "fixture_yard",
+ "requires": {},
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "A",
+   "success": {
+    "text": "A.",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   }
+  }
+ ],
+ "sender": "A fixture neighbour",
+ "weight": 1
+}

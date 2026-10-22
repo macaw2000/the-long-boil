@@ -1,0 +1,31 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.banned",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {},
+ "nerve": 1,
+ "description": "You feel a Sense of dread. A sense of it.",
+ "options": [
+  {
+   "label": "Delve into the TAPESTRY",
+   "success": {
+    "text": "A testament\nto brass.",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   }
+  },
+  {
+   "label": "Wait",
+   "success": {
+    "text": "Little did you know.",
+    "changes": {
+     "flag.fixture_seen": 0
+    }
+   }
+  }
+ ]
+}

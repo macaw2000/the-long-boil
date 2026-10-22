@@ -1,0 +1,37 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.calm",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {
+  "needle.fixture_scald": "<=3",
+  "progress.fixture_two": "==50"
+ },
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Rest",
+   "success": {
+    "text": "You rest.",
+    "changes": {
+     "needle.fixture_scald": "-1"
+    }
+   }
+  },
+  {
+   "label": "Work",
+   "requires": {
+    "smithing": ">=5"
+   },
+   "success": {
+    "text": "You work.",
+    "changes": {
+     "progress.fixture_two": "+1"
+    }
+   }
+  }
+ ]
+}

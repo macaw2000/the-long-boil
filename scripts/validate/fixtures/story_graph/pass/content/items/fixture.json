@@ -1,0 +1,10 @@
+{
+ "schema": "item/1",
+ "items": [
+  {
+   "id": "item.global.fixture_gauge",
+   "name": "Gauge",
+   "flavour": "A fixture gauge, read by a validator."
+  }
+ ]
+}

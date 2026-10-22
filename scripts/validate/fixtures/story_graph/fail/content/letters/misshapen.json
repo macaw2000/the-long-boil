@@ -1,0 +1,14 @@
+{
+ "schema": "letter/1",
+ "id": "act1.fixture_yard.misshapen",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {},
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [],
+ "sender": "A fixture neighbour",
+ "weight": -1
+}

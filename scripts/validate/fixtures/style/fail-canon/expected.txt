@@ -1,0 +1,1 @@
+FAIL style/style-unreadable docs/canon/style.md : has no "## Banned" section

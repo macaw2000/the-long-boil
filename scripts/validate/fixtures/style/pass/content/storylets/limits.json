@@ -1,0 +1,41 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.limits",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {},
+ "nerve": 1,
+ "description": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass",
+ "options": [
+  {
+   "label": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass",
+   "success": {
+    "text": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   }
+  },
+  {
+   "label": "You delved, and the players cheered.",
+   "challenge": {
+    "quality": "smithing",
+    "difficulty": 5
+   },
+   "success": {
+    "text": "Tapestries hang. Delved.",
+    "changes": {
+     "flag.fixture_seen": 0
+    }
+   },
+   "failure": {
+    "text": "rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust rust",
+    "changes": {
+     "flag.fixture_seen": 0
+    }
+   }
+  }
+ ]
+}

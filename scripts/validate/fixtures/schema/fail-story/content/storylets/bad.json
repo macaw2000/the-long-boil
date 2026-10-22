@@ -1,0 +1,32 @@
+{
+ "schema": "storylet/1",
+ "id": "act9.Fixture Yard.bad",
+ "revision": 1,
+ "act": 4,
+ "location": "fixture yard",
+ "reveal_layer": 5,
+ "requires": {
+  "progress.fixture_one": "at least 3"
+ },
+ "nerve": 0,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Only one",
+   "challenge": {
+    "quality": "smithing",
+    "difficulty": 0
+   },
+   "success": {
+    "text": "Changed.",
+    "changes": {
+     "progress.fixture_one": "10",
+     "flag.fixture_seen": -1
+    }
+   }
+  }
+ ],
+ "tags": [
+  "reveal"
+ ]
+}

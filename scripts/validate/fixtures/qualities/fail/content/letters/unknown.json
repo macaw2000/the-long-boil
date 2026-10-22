@@ -1,0 +1,26 @@
+{
+ "schema": "letter/1",
+ "id": "act1.fixture_yard.unknown_letter",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {
+  "tea-blending": ">=1"
+ },
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Agree",
+   "success": {
+    "text": "Agreed.",
+    "changes": {
+     "flag.fixture_unlisted": 1
+    }
+   }
+  }
+ ],
+ "sender": "A fixture neighbour",
+ "weight": 1
+}

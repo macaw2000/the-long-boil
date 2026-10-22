@@ -1,0 +1,27 @@
+{
+ "schema": "letter/1",
+ "id": "act1.fixture_yard.note",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 1,
+ "requires": {
+  "progress.fixture_one": ">=10"
+ },
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Reply",
+   "success": {
+    "text": "You reply.",
+    "changes": {
+     "favour.fixture_guild": "+1",
+     "needle.fixture_scald": "-1"
+    }
+   }
+  }
+ ],
+ "sender": "A fixture neighbour",
+ "weight": 2.5
+}

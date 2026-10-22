@@ -1,0 +1,42 @@
+{
+ "schema": "storylet/1",
+ "id": "prologue.fixture_yard.door",
+ "revision": 1,
+ "act": 0,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {},
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Knock",
+   "success": {
+    "text": "You knock. Someone answers.",
+    "changes": {
+     "progress.fixture_one": "+10",
+     "flag.fixture_seen": 1
+    }
+   }
+  },
+  {
+   "label": "Force the door",
+   "challenge": {
+    "quality": "smithing",
+    "difficulty": 15
+   },
+   "success": {
+    "text": "It gives.",
+    "changes": {
+     "progress.fixture_one": "+10"
+    }
+   },
+   "failure": {
+    "text": "It does not give.",
+    "changes": {
+     "needle.fixture_scald": "+2"
+    }
+   }
+  }
+ ]
+}

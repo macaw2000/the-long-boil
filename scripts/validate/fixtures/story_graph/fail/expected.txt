@@ -1,0 +1,9 @@
+FAIL story_graph/leads-nowhere content/storylets/dead.json id=act1.fixture_yard.dead : /options/0/success changes no quality
+FAIL story_graph/leads-nowhere content/storylets/dead.json id=act1.fixture_yard.dead : /options/2/failure changes no quality
+FAIL story_graph/never-set content/storylets/never.json id=act1.fixture_yard.never : /requires/progress.fixture_two: 'progress.fixture_two' is required but no storylet or letter outcome sets it, and the game does not set a progress quality
+FAIL story_graph/not-checkable content/letters/misshapen.json id=act1.fixture_yard.misshapen : file does not match letter/1 (2 errors; see the schema check); its graph is not checked
+FAIL story_graph/not-checkable content/storylets/old.json id=act1.fixture_yard.old : schema is 'storylet/0'; only storylet/1 and letter/1 can be checked
+FAIL story_graph/set-by-unknown content/storylets/never.json id=act1.fixture_yard.never : /requires/flag.fixture_never: no outcome sets 'flag.fixture_never', and docs/canon/qualities.json does not say whether the game sets a flag quality
+FAIL story_graph/unreachable content/storylets/loop.json id=act1.fixture_yard.loop : cannot be reached from a fresh Tinker; no reachable path meets: progress.fixture_loop >=10
+FAIL story_graph/unreachable content/storylets/never.json id=act1.fixture_yard.never : cannot be reached from a fresh Tinker; no reachable path meets: flag.fixture_never ==1, progress.fixture_two >=10
+FAIL story_graph/unreachable-option content/storylets/dead.json id=act1.fixture_yard.dead : /options/1 cannot be chosen from a fresh Tinker; no reachable path meets: needle.fixture_haze >=5

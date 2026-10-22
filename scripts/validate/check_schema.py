@@ -17,6 +17,12 @@
   curve, so not every file there declares tuning.economy/*.
 - The starting inventory (start/*) is the one file content/start.json, and
   content/start.json declares start/* (work order 013, scope 2).
+- Storylets and letters (work order 015): a file under content/storylets/
+  declares storylet/*, a file under content/letters/ declares letter/*, and
+  neither schema is declared anywhere else. A storylet/1 or letter/1 file
+  whose id matches its schema's pattern must also agree with itself: the
+  id's first part is "prologue" when act is 0 and "act<N>" when act is N,
+  and its second part equals "location" (id-form).
 
 The register's own shape is the provenance check's job, not this one's.
 
@@ -39,6 +45,8 @@ SCHEMA_HOMES = (
     ("monster/", "content/monsters/"),
     ("drops/", "content/drops/"),
     ("gear/", "content/gear/"),
+    ("storylet/", "content/storylets/"),
+    ("letter/", "content/letters/"),
 )
 
 # Work order 007: schema family -> the only directory it may live in. The
@@ -90,6 +98,8 @@ def run(root):
             for pointer, message in lib.validate(data, schemas[declared]):
                 report.fail("shape", path, "%s: %s" % (pointer, message), top_id)
         _check_home(report, path, declared, top_id)
+        if declared in ID_FORM_SCHEMAS and declared in schemas:
+            _check_id_form(report, path, data, top_id, schemas[declared])
 
         for pointer, value in lib.content_ids(data):
             if not isinstance(value, str) or not value:
@@ -105,6 +115,31 @@ def run(root):
                 report.fail("duplicate-id", path,
                             "id appears %d times: %s" % (len(places), where), ident)
     return report
+
+
+# Work order 015, scope 1: "id in act.location.name form".
+ID_FORM_SCHEMAS = ("storylet/1", "letter/1")
+
+
+def act_part(act):
+    """The id prefix an act number must have: prologue for 0, else act<N>."""
+    return "prologue" if act == 0 else "act%d" % act
+
+
+def _check_id_form(report, path, data, ident, schema):
+    pattern = schema["properties"]["id"]["pattern"]
+    if ident is None or not lib.ecma_search(pattern, ident):
+        return  # the shape check reports a malformed id
+    first, second, _name = ident.split(".")
+    act = data.get("act")
+    if isinstance(act, int) and not isinstance(act, bool) and first != act_part(act):
+        report.fail("id-form", path,
+                    "id begins %r but act is %d; it must begin %r"
+                    % (first, act, act_part(act)), ident)
+    location = data.get("location")
+    if isinstance(location, str) and second != location:
+        report.fail("id-form", path,
+                    "id's location part is %r but location is %r" % (second, location), ident)
 
 
 def _check_home(report, path, declared, ident):

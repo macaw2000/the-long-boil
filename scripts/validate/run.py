@@ -37,9 +37,13 @@ import check_combat
 import check_drops
 import check_pacing
 import check_provenance
+import check_qualities
 import check_references
+import check_reveal
 import check_schema
 import check_start
+import check_story_graph
+import check_style
 import check_xp_curve
 
 CHECKS = (
@@ -51,6 +55,10 @@ CHECKS = (
     ("drops", check_drops),
     ("combat", check_combat),
     ("start", check_start),
+    ("qualities", check_qualities),
+    ("story_graph", check_story_graph),
+    ("reveal", check_reveal),
+    ("style", check_style),
 )
 
 FIXTURES = os.path.join(lib.HERE, "fixtures")

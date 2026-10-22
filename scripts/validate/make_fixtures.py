@@ -817,6 +817,208 @@ put("start/fail/" + SP, start([(INGOT, 50, False), ("item.rustmoor.fixture_ledge
 put("start/fail/content/tuning/start-old.json", start([], schema="start/0", ident="start.global.old"))
 put("start/fail/content/tuning/start-bad.json", start([(GPAGE, 0, True)], ident="start.global.bad"))
 
+# ---- work order 015: storylet/1, letter/1 and the qualities, story_graph,
+# reveal and style checks. Every quality, location and storylet name is
+# prefixed fixture_; no fixture copies real content or canon. Each fixture
+# root carries its own docs/canon/qualities.json (and style.md for the style
+# check), since these checks read canon from the root they check.
+def oc(text, changes):
+    return {"text": text, "changes": changes}
+def opt(label, success, requires=None, challenge=None, failure=None):
+    o = {"label": label}
+    if requires is not None: o["requires"] = requires
+    if challenge is not None: o["challenge"] = {"quality": challenge[0], "difficulty": challenge[1]}
+    o["success"] = success
+    if failure is not None: o["failure"] = failure
+    return o
+def storylet(ident, act, loc, layer, requires, options, nerve=1, desc="You stand in a fixture yard.", schema="storylet/1"):
+    return {"schema": schema, "id": ident, "revision": 1, "act": act, "location": loc, "reveal_layer": layer,
+            "requires": requires, "nerve": nerve, "description": desc, "options": options}
+def letter(ident, act, loc, layer, requires, options, sender="A fixture neighbour", weight=1, schema="letter/1", **kw):
+    l = storylet(ident, act, loc, layer, requires, options, schema=schema, **kw)
+    l["sender"] = sender; l["weight"] = weight
+    return l
+REG = {"schema": "qualities/1", "source": "Validator fixture. Not canon.",
+       "types": {"skill": {"range": [1, 100], "set_by": "fixture: the idle loop"},
+                 "item": {"range": [0, None], "set_by": "fixture: drops"},
+                 "favour": {"range": [0, 7], "set_by": "fixture: work orders"},
+                 "needle": {"range": [0, 8], "set_by": "fixture: storylets"},
+                 "progress": {"range": [0, 100], "set_by": "fixture: storylets"},
+                 "lore": {"range": [0, 24], "set_by": "fixture: storylets, drops"},
+                 "flag": {"range": [0, 1], "set_by": "fixture: choices"}},
+       "qualities": {"skill": ["smithing", "tinkering"], "favour": ["favour.fixture_guild"],
+                     "needle": ["needle.fixture_scald", "needle.fixture_haze"],
+                     "progress": ["progress.fixture_one", "progress.fixture_two", "progress.fixture_loop"],
+                     "lore": ["lore.fixture_notes"], "nerve": ["nerve"],
+                     "flag": ["flag.fixture_seen", "flag.fixture_never"]}}
+REGP, STYP = "docs/canon/qualities.json", "docs/canon/style.md"
+STYLE_MD = ('# Fixture house style\n\nValidator fixture. Not canon.\n\n## Banned\n\n'
+            '"tapestry", "testament to", "delve", "a sense of", "little did you know", '
+            'and any sentence that explains its own joke.\n\n## Options\n\nFixture.\n')
+GAUGE = "item.global.fixture_gauge"
+STP, LTP = "content/storylets/", "content/letters/"
+FIX_ITEMS = items((GAUGE, "Gauge", "A fixture gauge, read by a validator."))
+# A well-formed pair: a prologue storylet with a certain and a challenge
+# option, and an act 1 letter with one option.
+GOOD_PROLOGUE = storylet("prologue.fixture_yard.door", 0, "fixture_yard", 0, {}, [
+    opt("Knock", oc("You knock. Someone answers.", {"progress.fixture_one": "+10", "flag.fixture_seen": 1})),
+    opt("Force the door", oc("It gives.", {"progress.fixture_one": "+10"}), challenge=("smithing", 15),
+        failure=oc("It does not give.", {"needle.fixture_scald": "+2"}))])
+GOOD_LETTER = letter("act1.fixture_yard.note", 1, "fixture_yard", 1, {"progress.fixture_one": ">=10"}, [
+    opt("Reply", oc("You reply.", {"favour.fixture_guild": "+1", "needle.fixture_scald": "-1"}))], weight=2.5)
+
+# schema pass: both new schemas, at home.
+put("schema/pass/" + STP + "door.json", GOOD_PROLOGUE)
+put("schema/pass/" + LTP + "note.json", GOOD_LETTER)
+# schema fail-story: shapes, homes and the id-form rule.
+SS = "schema/fail-story/content/"
+bad = storylet("act9.Fixture Yard.bad", 4, "fixture yard", 5, {"progress.fixture_one": "at least 3"}, [
+    opt("Only one", oc("Changed.", {"progress.fixture_one": "10", "flag.fixture_seen": -1}),
+        challenge=("smithing", 0))], nerve=0)
+bad["tags"] = ["reveal"]
+put(SS + "storylets/bad.json", bad)
+put(SS + "storylets/options.json", storylet("act1.fixture_yard.options", 1, "fixture_yard", 0, {}, [
+    opt("Failure with no challenge", oc("Yes.", {"flag.fixture_seen": 1}), failure=oc("No.", {})),
+    {"label": "No outcome", "requires": {}},
+    opt("Outcome with no text", {"changes": {"flag.fixture_seen": 1}}),
+    opt("", oc("", {}))]))
+put(SS + "storylets/mismatch.json", storylet("act2.fixture_docks.mismatch", 1, "fixture_yard", 0, {}, [
+    opt("A", oc("A.", {"flag.fixture_seen": 1})), opt("B", oc("B.", {"flag.fixture_seen": 0}))]))
+put(SS + "storylets/prologue-as-act.json", storylet("act0.fixture_yard.zero", 0, "fixture_yard", 0, {}, [
+    opt("A", oc("A.", {"flag.fixture_seen": 1})), opt("B", oc("B.", {"flag.fixture_seen": 0}))]))
+put(SS + "storylets/a-letter.json", letter("act1.fixture_yard.stray_letter", 1, "fixture_yard", 0, {}, [
+    opt("A", oc("A.", {"flag.fixture_seen": 1}))]))
+lb = letter("act1.fixture_yard.bad_letter", 1, "fixture_yard", 0, {}, [
+    opt("A", oc("A.", {"flag.fixture_seen": 1})), opt("B", oc("B.", {"flag.fixture_seen": 1})),
+    opt("C", oc("C.", {"flag.fixture_seen": 1}))], weight=0)
+del lb["sender"]
+put(SS + "letters/bad.json", lb)
+put(SS + "letters/old.json", letter("act1.fixture_yard.old_letter", 1, "fixture_yard", 0, {}, [
+    opt("A", oc("A.", {"flag.fixture_seen": 1}))], schema="letter/0"))
+put(SS + "letters/a-storylet.json", storylet("act1.fixture_yard.stray_storylet", 1, "fixture_yard", 0, {}, [
+    opt("A", oc("A.", {"flag.fixture_seen": 1})), opt("B", oc("B.", {"flag.fixture_seen": 0}))]))
+
+# qualities pass: skills, favour, needle, progress, flag and an item id.
+QP = "qualities/pass/"
+put(QP + REGP, REG)
+put(QP + IP, FIX_ITEMS)
+put(QP + STP + "door.json", GOOD_PROLOGUE)
+put(QP + LTP + "note.json", GOOD_LETTER)
+put(QP + STP + "gauge.json", storylet("act1.fixture_yard.gauge", 1, "fixture_yard", 1,
+    {"favour.fixture_guild": ">=1", GAUGE: ">=1"}, [
+    opt("Read the gauge", oc("You read it.", {"lore.fixture_notes": "+1"}), challenge=("tinkering", 10),
+        failure=oc("You misread it.", {"needle.fixture_scald": "+1"})),
+    opt("Pocket it", oc("You pocket it.", {GAUGE: "-1"}), requires={"flag.fixture_seen": "==1"})]))
+# qualities fail: unknown names in every place a name can sit, and in a
+# letter; a dashed skill and an item id no item file defines. The file with a
+# shape error is still read.
+QF = "qualities/fail/"
+put(QF + REGP, REG)
+put(QF + IP, FIX_ITEMS)
+put(QF + STP + "unknown.json", storylet("act1.fixture_yard.unknown", 1, "fixture_yard", 0,
+    {"favour.fixture_nobody": ">=1"}, [
+    opt("Brew", oc("Brewed.", {"item.global.fixture_ghost": "+1"}), challenge=("alchemy", 10),
+        failure=oc("Spilled.", {"needle.fixture_scald": "+1"})),
+    opt("Read", oc("Read.", {"flag.fixture_seen": 1}), requires={"item.fixture_pressure_gauge": ">=1"})]))
+put(QF + LTP + "unknown.json", letter("act1.fixture_yard.unknown_letter", 1, "fixture_yard", 0,
+    {"tea-blending": ">=1"}, [opt("Agree", oc("Agreed.", {"flag.fixture_unlisted": 1}))]))
+qs = storylet("act1.fixture_yard.misshapen", 1, "fixture_yard", 0, {"smithing": ">=1"}, [
+    opt("Only", oc("Done.", {"progress.fixture_nowhere": "+1"}))], nerve=9)
+put(QF + STP + "misshapen.json", qs)
+# qualities fail-registry: no docs/canon/qualities.json under the root.
+put("qualities/fail-registry/" + STP + "door.json", GOOD_PROLOGUE)
+
+# story_graph pass: the prologue sets progress one and the seen flag; the
+# letter needs progress one; the gauge storylet needs a game-set favour and
+# item and an option needs the flag; a needle requirement is met fresh and
+# also moved by outcomes.
+GP_ = "story_graph/pass/"
+put(GP_ + REGP, REG)
+put(GP_ + IP, FIX_ITEMS)
+put(GP_ + STP + "door.json", GOOD_PROLOGUE)
+put(GP_ + LTP + "note.json", GOOD_LETTER)
+put(GP_ + STP + "gauge.json", storylet("act1.fixture_yard.gauge", 1, "fixture_yard", 1,
+    {"favour.fixture_guild": ">=1", GAUGE: ">=1", "progress.fixture_one": ">=20"}, [
+    opt("Read the gauge", oc("You read it.", {"lore.fixture_notes": "+1", "progress.fixture_two": 50}),
+        challenge=("tinkering", 10), failure=oc("You misread it.", {"needle.fixture_scald": "+1"})),
+    opt("Pocket it", oc("You pocket it.", {GAUGE: "-1"}), requires={"flag.fixture_seen": "==1"})]))
+put(GP_ + STP + "calm.json", storylet("act1.fixture_yard.calm", 1, "fixture_yard", 0,
+    {"needle.fixture_scald": "<=3", "progress.fixture_two": "==50"}, [
+    opt("Rest", oc("You rest.", {"needle.fixture_scald": "-1"})),
+    opt("Work", oc("You work.", {"progress.fixture_two": "+1"}), requires={"smithing": ">=5"})]))
+# story_graph fail: never set; a flag no outcome sets (set-by-unknown); a
+# storylet that only it can unlock; an option needing a needle (haze) that
+# outcomes only ever lower; an outcome that changes nothing; a storylet/0 and a misshapen
+# storylet/1 (not-checkable).
+GF = "story_graph/fail/"
+put(GF + REGP, REG)
+put(GF + IP, FIX_ITEMS)
+put(GF + STP + "door.json", GOOD_PROLOGUE)
+put(GF + STP + "never.json", storylet("act1.fixture_yard.never", 1, "fixture_yard", 0,
+    {"progress.fixture_two": ">=10", "flag.fixture_never": "==1"}, [
+    opt("A", oc("A.", {"lore.fixture_notes": "+1"})), opt("B", oc("B.", {"lore.fixture_notes": "+1"}))]))
+put(GF + STP + "loop.json", storylet("act1.fixture_yard.loop", 1, "fixture_yard", 0,
+    {"progress.fixture_loop": ">=10"}, [
+    opt("A", oc("A.", {"progress.fixture_loop": "+10"})), opt("B", oc("B.", {"lore.fixture_notes": "+1"}))]))
+put(GF + STP + "dead.json", storylet("act1.fixture_yard.dead", 1, "fixture_yard", 0, {}, [
+    opt("Shrug", oc("Nothing happens.", {})),
+    opt("Listen at the pipe", oc("The hum fades.", {"needle.fixture_haze": "-1"}),
+        requires={"needle.fixture_haze": ">=5"}),
+    opt("Try", oc("It works.", {"lore.fixture_notes": "+1"}), challenge=("smithing", 5),
+        failure=oc("It does not.", {}))]))
+put(GF + STP + "old.json", storylet("act1.fixture_yard.old", 1, "fixture_yard", 0, {}, [], schema="storylet/0"))
+put(GF + LTP + "misshapen.json", letter("act1.fixture_yard.misshapen", 1, "fixture_yard", 0, {}, [], weight=-1))
+
+# reveal pass: every layer at its own act or later.
+RVP = "reveal/pass/"
+put(RVP + STP + "door.json", GOOD_PROLOGUE)
+put(RVP + LTP + "note.json", GOOD_LETTER)
+A2 = [opt("A", oc("A.", {"flag.fixture_seen": 1})), opt("B", oc("B.", {"flag.fixture_seen": 0}))]
+put(RVP + STP + "late.json", storylet("act3.fixture_yard.late", 3, "fixture_yard", 2, {}, A2))
+put(RVP + STP + "top.json", storylet("act3.fixture_yard.top", 3, "fixture_yard", 3, {}, A2))
+put(RVP + LTP + "second.json", letter("act2.fixture_yard.second", 2, "fixture_yard", 2, {}, A2[:1]))
+# reveal fail: a layer above its act (Prologue and act 1), layers 4 and 5,
+# and a file with no reveal_layer.
+RVF = "reveal/fail/"
+put(RVF + STP + "door.json", GOOD_PROLOGUE)
+put(RVF + STP + "early.json", storylet("act1.fixture_yard.early", 1, "fixture_yard", 2, {}, A2))
+put(RVF + STP + "prologue.json", storylet("prologue.fixture_yard.early", 0, "fixture_yard", 1, {}, A2))
+put(RVF + STP + "four.json", storylet("act3.fixture_yard.four", 3, "fixture_yard", 4, {}, A2))
+put(RVF + LTP + "five.json", letter("act2.fixture_yard.five", 2, "fixture_yard", 5, {}, A2[:1]))
+nl = letter("act2.fixture_yard.unlayered", 2, "fixture_yard", 0, {}, A2[:1]); del nl["reveal_layer"]
+put(RVF + LTP + "unlayered.json", nl)
+
+# style pass: every field exactly at its limit; "delved" is not "delve";
+# "players" is not "the player".
+def words(n, word="brass"):
+    return " ".join([word] * n)
+SYP = "style/pass/"
+put(SYP + STYP, STYLE_MD)
+put(SYP + STP + "door.json", GOOD_PROLOGUE)
+put(SYP + STP + "limits.json", storylet("act1.fixture_yard.limits", 1, "fixture_yard", 0, {}, [
+    opt(words(25), oc(words(150), {"flag.fixture_seen": 1})),
+    opt("You delved, and the players cheered.", oc("Tapestries hang. Delved.", {"flag.fixture_seen": 0}),
+        challenge=("smithing", 5), failure=oc(words(150, "rust"), {"flag.fixture_seen": 0}))],
+    desc=words(120)))
+put(SYP + LTP + "note.json", GOOD_LETTER)
+# style fail: one word over each limit; every banned phrase, in any case and
+# across a line break; "the player" in a letter.
+SYF = "style/fail/"
+put(SYF + STYP, STYLE_MD)
+put(SYF + STP + "long.json", storylet("act1.fixture_yard.long", 1, "fixture_yard", 0, {}, [
+    opt(words(26), oc(words(151), {"flag.fixture_seen": 1})),
+    opt("Look", oc("Fine.", {"flag.fixture_seen": 0}), challenge=("smithing", 5),
+        failure=oc(words(151, "rust"), {"flag.fixture_seen": 0}))], desc=words(121)))
+put(SYF + STP + "banned.json", storylet("act1.fixture_yard.banned", 1, "fixture_yard", 0, {}, [
+    opt("Delve into the TAPESTRY", oc("A testament\nto brass.", {"flag.fixture_seen": 1})),
+    opt("Wait", oc("Little did you know.", {"flag.fixture_seen": 0}))],
+    desc="You feel a Sense of dread. A sense of it."))
+put(SYF + LTP + "player.json", letter("act1.fixture_yard.player", 1, "fixture_yard", 0, {}, [
+    opt("Answer", oc("The player answers.", {"flag.fixture_seen": 1}))]))
+# style fail-canon: style.md has no Banned section.
+put("style/fail-canon/" + STYP, "# Fixture house style\n\n## Limits\n\nFixture.\n")
+put("style/fail-canon/" + STP + "door.json", GOOD_PROLOGUE)
+
 # ---- dotfiles: every check skips dotfiles and dot-directories under content/
 # (lib.walk_files). Each pass fixture gets a dotfile that is not JSON and a
 # file in a dot-directory that every check would fail on if it read it: it
@@ -824,7 +1026,8 @@ put("start/fail/content/tuning/start-bad.json", start([(GPAGE, 0, True)], ident=
 # repeats an id. The names are not gitignored (.DS_Store is), so they are
 # committed and the proof survives a clone. A hidden gear/9 file does the
 # same for the combat check.
-for check in ("schema", "provenance", "xp_curve", "references", "pacing", "drops", "combat", "start"):
+for check in ("schema", "provenance", "xp_curve", "references", "pacing", "drops", "combat", "start",
+              "qualities", "story_graph", "reveal", "style"):
     put(check + "/pass/content/.notes.json", "{ not json, as a Finder or editor file would be\n")
     put(check + "/pass/content/monsters/.cache/stray.json", {"schema": "monster/9", "id": "fixture.hidden.stray",
         "monsters": [{"id": "fixture.hidden.stray"}]})

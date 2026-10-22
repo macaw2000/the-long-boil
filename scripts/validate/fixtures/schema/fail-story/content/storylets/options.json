@@ -1,0 +1,45 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.options",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {},
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Failure with no challenge",
+   "success": {
+    "text": "Yes.",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   },
+   "failure": {
+    "text": "No.",
+    "changes": {}
+   }
+  },
+  {
+   "label": "No outcome",
+   "requires": {}
+  },
+  {
+   "label": "Outcome with no text",
+   "success": {
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   }
+  },
+  {
+   "label": "",
+   "success": {
+    "text": "",
+    "changes": {}
+   }
+  }
+ ]
+}

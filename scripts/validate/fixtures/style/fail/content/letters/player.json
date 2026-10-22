@@ -1,0 +1,24 @@
+{
+ "schema": "letter/1",
+ "id": "act1.fixture_yard.player",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {},
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Answer",
+   "success": {
+    "text": "The player answers.",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   }
+  }
+ ],
+ "sender": "A fixture neighbour",
+ "weight": 1
+}

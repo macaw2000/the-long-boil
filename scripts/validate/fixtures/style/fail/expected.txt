@@ -1,0 +1,10 @@
+FAIL style/banned content/letters/player.json id=act1.fixture_yard.player : /options/0/success/text contains 'The player' (banned: 'the player')
+FAIL style/banned content/storylets/banned.json id=act1.fixture_yard.banned : /description contains 'a Sense of' (banned: 'a sense of')
+FAIL style/banned content/storylets/banned.json id=act1.fixture_yard.banned : /options/0/label contains 'Delve' (banned: 'delve')
+FAIL style/banned content/storylets/banned.json id=act1.fixture_yard.banned : /options/0/label contains 'TAPESTRY' (banned: 'tapestry')
+FAIL style/banned content/storylets/banned.json id=act1.fixture_yard.banned : /options/0/success/text contains 'testament\nto' (banned: 'testament to')
+FAIL style/banned content/storylets/banned.json id=act1.fixture_yard.banned : /options/1/success/text contains 'Little did you know' (banned: 'little did you know')
+FAIL style/too-long content/storylets/long.json id=act1.fixture_yard.long : /description has 121 words; at most 120 allowed
+FAIL style/too-long content/storylets/long.json id=act1.fixture_yard.long : /options/0/label has 26 words; at most 25 allowed
+FAIL style/too-long content/storylets/long.json id=act1.fixture_yard.long : /options/0/success/text has 151 words; at most 150 allowed
+FAIL style/too-long content/storylets/long.json id=act1.fixture_yard.long : /options/1/failure/text has 151 words; at most 150 allowed

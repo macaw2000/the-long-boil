@@ -1,0 +1,49 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.gauge",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 1,
+ "requires": {
+  "favour.fixture_guild": ">=1",
+  "item.global.fixture_gauge": ">=1",
+  "progress.fixture_one": ">=20"
+ },
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Read the gauge",
+   "challenge": {
+    "quality": "tinkering",
+    "difficulty": 10
+   },
+   "success": {
+    "text": "You read it.",
+    "changes": {
+     "lore.fixture_notes": "+1",
+     "progress.fixture_two": 50
+    }
+   },
+   "failure": {
+    "text": "You misread it.",
+    "changes": {
+     "needle.fixture_scald": "+1"
+    }
+   }
+  },
+  {
+   "label": "Pocket it",
+   "requires": {
+    "flag.fixture_seen": "==1"
+   },
+   "success": {
+    "text": "You pocket it.",
+    "changes": {
+     "item.global.fixture_gauge": "-1"
+    }
+   }
+  }
+ ]
+}

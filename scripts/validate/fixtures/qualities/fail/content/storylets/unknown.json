@@ -1,0 +1,46 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.unknown",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {
+  "favour.fixture_nobody": ">=1"
+ },
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Brew",
+   "challenge": {
+    "quality": "alchemy",
+    "difficulty": 10
+   },
+   "success": {
+    "text": "Brewed.",
+    "changes": {
+     "item.global.fixture_ghost": "+1"
+    }
+   },
+   "failure": {
+    "text": "Spilled.",
+    "changes": {
+     "needle.fixture_scald": "+1"
+    }
+   }
+  },
+  {
+   "label": "Read",
+   "requires": {
+    "item.fixture_pressure_gauge": ">=1"
+   },
+   "success": {
+    "text": "Read.",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   }
+  }
+ ]
+}

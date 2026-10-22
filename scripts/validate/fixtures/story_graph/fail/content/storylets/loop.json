@@ -1,0 +1,33 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.loop",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {
+  "progress.fixture_loop": ">=10"
+ },
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "A",
+   "success": {
+    "text": "A.",
+    "changes": {
+     "progress.fixture_loop": "+10"
+    }
+   }
+  },
+  {
+   "label": "B",
+   "success": {
+    "text": "B.",
+    "changes": {
+     "lore.fixture_notes": "+1"
+    }
+   }
+  }
+ ]
+}
