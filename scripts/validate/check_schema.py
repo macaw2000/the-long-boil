@@ -3,11 +3,16 @@
 - Every file under content/ parses as JSON (the register included).
 - Every content file (everything under content/ except the register)
   declares a "schema" string, a schema exists for it, and the file matches it.
-- Every "id", at any depth, is unique across the whole content tree.
-- Item, action and monster files live where work orders 003 and 005 put
-  them: a file under content/items/ declares item/*, a file under
+- Every "id", at any depth, is unique across the whole content tree, except
+  inside a zone economy file's "anchors" (lib.ID_EXEMPT_KEYS, work order 007).
+- Item, action, monster and drop files live where work orders 003, 005 and
+  007 put them: a file under content/items/ declares item/*, a file under
   content/actions/ declares action/*, a file under content/monsters/ declares
-  monster/*, and none of these schemas is declared anywhere else.
+  monster/*, a file under content/drops/ declares drops/*, and none of these
+  schemas is declared anywhere else.
+- A zone economy file (tuning.economy/*) lives under content/tuning/ (work
+  order 007). This rule runs one way only: content/tuning/ also holds the XP
+  curve, so not every file there declares tuning.economy/*.
 
 The register's own shape is the provenance check's job, not this one's.
 
@@ -22,11 +27,19 @@ import lib  # noqa: E402
 
 CHECK = "schema"
 
-# Work orders 003 and 005: schema family -> the only directory it may live in.
+# Work orders 003, 005 and 007: schema family -> the only directory it may
+# live in, and the only family that directory may hold.
 SCHEMA_HOMES = (
     ("item/", "content/items/"),
     ("action/", "content/actions/"),
     ("monster/", "content/monsters/"),
+    ("drops/", "content/drops/"),
+)
+
+# Work order 007: schema family -> the only directory it may live in. The
+# directory may hold other families too.
+SCHEMA_ONLY_IN = (
+    ("tuning.economy/", "content/tuning/"),
 )
 
 
@@ -67,7 +80,7 @@ def run(root):
                 report.fail("shape", path, "%s: %s" % (pointer, message), top_id)
         _check_home(report, path, declared, top_id)
 
-        for pointer, value in lib.collect_ids(data):
+        for pointer, value in lib.content_ids(data):
             if not isinstance(value, str) or not value:
                 report.fail("bad-id", path, "%s: id must be a non-empty string" % pointer)
                 continue
@@ -93,6 +106,10 @@ def _check_home(report, path, declared, ident):
                         "files under %s must declare %s*; this one declares %r"
                         % (home, prefix, declared or None), ident)
         elif declares and not in_home:
+            report.fail("wrong-directory", path,
+                        "schema %r belongs under %s" % (declared, home), ident)
+    for prefix, home in SCHEMA_ONLY_IN:
+        if declared.startswith(prefix) and not path.startswith(home):
             report.fail("wrong-directory", path,
                         "schema %r belongs under %s" % (declared, home), ident)
 

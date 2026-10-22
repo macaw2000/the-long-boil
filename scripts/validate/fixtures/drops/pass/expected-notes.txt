@@ -1,0 +1,10 @@
+NOTE drops : 2 checkable drop file(s), 6 drop table(s), 2 checkable economy file(s), 6 Ledger Page item(s)
+NOTE drops : Crown faucet: 10 combat hours a day from the curve, no main-skill share; Crowns per kill is the mean of min and max
+NOTE drops : Crown faucet band 1 to 20: monster.thunderhead.fixture_rat (levels 1-7): 3 Crowns a kill, 300.0 Crowns/h, 21000 Crowns/week; monster.thunderhead.fixture_big_rat (levels 8-19): 5.5 Crowns a kill, 550.0 Crowns/h, 38500 Crowns/week
+NOTE drops : Crown faucet band 20 to 45: monster.thunderhead.fixture_wraith (levels 20-29): 10 Crowns a kill, 1000.0 Crowns/h, 70000 Crowns/week; monster.thunderhead.fixture_moth (levels 30-44): no drop table, Crowns unknown
+NOTE drops : Crown faucet band 45 to 70: monster.thunderhead.fixture_moth (levels 45-69): no drop table, Crowns unknown
+NOTE drops : Crown faucet boss monster.global.fixture_grub_king (level 60): 9 Crowns per winning attempt (9 to 9); a separate queue item, not in the per-hour figures
+NOTE drops : Crown faucet boss monster.thunderhead.fixture_rat_king (level 1): 65 Crowns per winning attempt (50 to 80); a separate queue item, not in the per-hour figures
+NOTE drops : Crown faucet zone global (no zone band), content/tuning/economy-global.json: collectors pay at most 150 Crowns per player per week, from 1 item(s) with a collector price
+NOTE drops : Crown faucet zone thunderhead (band 45 to 70), content/tuning/economy-thunderhead.json: collectors pay at most 320 Crowns per player per week, from 2 item(s) with a collector price
+NOTE drops : Crown faucet: the 90% sink rule (GDD section 6) is not checked; no sinks exist yet

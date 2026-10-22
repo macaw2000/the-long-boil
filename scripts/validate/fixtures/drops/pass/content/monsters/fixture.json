@@ -1,0 +1,75 @@
+{
+ "schema": "monster/1",
+ "monsters": [
+  {
+   "id": "monster.thunderhead.fixture_rat",
+   "name": "Fixture Rat",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 5.5,
+   "seconds_per_kill": 36
+  },
+  {
+   "id": "monster.thunderhead.fixture_big_rat",
+   "name": "Fixture Big Rat",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 8,
+   "boss": false,
+   "weakness": "marksmanship",
+   "xp": 7.5,
+   "seconds_per_kill": 36
+  },
+  {
+   "id": "monster.thunderhead.fixture_wraith",
+   "name": "Fixture Wraith",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 20,
+   "boss": false,
+   "weakness": "aetherics",
+   "xp": 25,
+   "seconds_per_kill": 36
+  },
+  {
+   "id": "monster.thunderhead.fixture_moth",
+   "name": "Fixture Moth",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 30,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 40,
+   "seconds_per_kill": 36
+  },
+  {
+   "id": "monster.thunderhead.fixture_rat_king",
+   "name": "Fixture Rat King",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 1,
+   "boss": true,
+   "weakness": "melee",
+   "xp": 500,
+   "seconds_per_kill": 60
+  },
+  {
+   "id": "monster.global.fixture_grub",
+   "name": "Fixture Grub",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 50,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": 3600
+  },
+  {
+   "id": "monster.global.fixture_grub_king",
+   "name": "Fixture Grub King",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 60,
+   "boss": true,
+   "weakness": "melee",
+   "xp": 1,
+   "seconds_per_kill": 3600
+  }
+ ]
+}

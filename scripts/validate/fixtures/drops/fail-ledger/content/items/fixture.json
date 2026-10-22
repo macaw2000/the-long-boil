@@ -1,0 +1,70 @@
+{
+ "schema": "item/1",
+ "items": [
+  {
+   "id": "item.thunderhead.fixture_ledger_page_t1",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.thunderhead.fixture_ledger_page_t2",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.thunderhead.fixture_ledger_page_t3",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.thunderhead.fixture_ledger_page_t4",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.thunderhead.fixture_ledger_page_t5",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.thunderhead.fixture_ledger_page_t6",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.thunderhead.fixture_ledger_page_t7",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.thunderhead.fixture_ledger_page_loose",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.cinderworks.fixture_ledger_page_c1",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.cinderworks.fixture_ledger_page_c2",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.cinderworks.fixture_ledger_page_c3",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.cinderworks.fixture_ledger_page_c4",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.cinderworks.fixture_ledger_page_c5",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  }
+ ]
+}

@@ -1,0 +1,9 @@
+{
+ "schema": "tuning.economy/1",
+ "id": "tuning.cinderworks.economy",
+ "zone": "thunderhead",
+ "items": {},
+ "anchors": {
+  "_note": "Fixture values, not game content."
+ }
+}

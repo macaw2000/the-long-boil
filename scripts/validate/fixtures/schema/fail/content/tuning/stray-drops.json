@@ -1,0 +1,16 @@
+{
+ "schema": "drops/1",
+ "id": "drops.global.fixture_stray",
+ "tables": [
+  {
+   "monster": "monster.global.fixture_stray_drop",
+   "crowns": {
+    "min": 0,
+    "max": 0
+   },
+   "entries": [],
+   "first_kill": []
+  }
+ ],
+ "zone_pity": []
+}

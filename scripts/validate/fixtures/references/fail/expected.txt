@@ -1,3 +1,10 @@
 FAIL references/unknown-item content/actions/fixture.json id=action.global.fixture_action_as_item : /actions/3/inputs/0 names 'action.global.fixture_ok', which no item file under content/items/ defines
 FAIL references/unknown-item content/actions/fixture.json id=action.global.fixture_ghost_input : /actions/1/inputs/0 names 'item.global.fixture_ghost', which no item file under content/items/ defines
 FAIL references/unknown-item content/actions/fixture.json id=action.global.fixture_stray_output : /actions/2/outputs/0 names 'item.global.fixture_stray', which no item file under content/items/ defines
+FAIL references/unknown-item content/drops/fixture.json id=drops.thunderhead.fixture : /zone_pity/0/item names 'item.thunderhead.fixture_ghost_pity', which no item file under content/items/ defines
+FAIL references/unknown-item content/drops/fixture.json id=monster.thunderhead.fixture_big_rat : /tables/3/entries/0/item names 'item.thunderhead.fixture_ghost_entry', which no item file under content/items/ defines
+FAIL references/unknown-item content/drops/fixture.json id=monster.thunderhead.fixture_rat_king : /tables/4/first_kill/0 names 'item.thunderhead.fixture_ghost_first', which no item file under content/items/ defines
+FAIL references/unknown-item content/tuning/economy-thunderhead.json id=item.thunderhead.fixture_ghost_priced : /items/item.thunderhead.fixture_ghost_priced names 'item.thunderhead.fixture_ghost_priced', which no item file under content/items/ defines
+FAIL references/unknown-item content/tuning/economy-thunderhead.json id=monster.thunderhead.fixture_rat : /items/monster.thunderhead.fixture_rat names 'monster.thunderhead.fixture_rat', which no item file under content/items/ defines
+FAIL references/unknown-monster content/drops/fixture.json id=monster.global.fixture_stray_monster : /tables/2/monster names 'monster.global.fixture_stray_monster', which no monster file under content/monsters/ defines
+FAIL references/unknown-monster content/drops/fixture.json id=monster.thunderhead.fixture_ghost_monster : /tables/1/monster names 'monster.thunderhead.fixture_ghost_monster', which no monster file under content/monsters/ defines

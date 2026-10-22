@@ -6,7 +6,10 @@ Step 1 replays every check against its committed fixtures. The pass fixture
 must produce no FAIL lines; each fail fixture must produce exactly the FAIL and
 WARN lines in its expected.txt. A check has one fail fixture, "fail", and may
 have more, "fail-<name>", for failures that cannot share one content tree
-(work order 003). A check whose fixtures misbehave is not trusted, and the run
+(work order 003). A pass fixture may also hold an expected-notes.txt; when it
+does, the pass fixture's NOTE lines must be exactly the lines in it, so a
+check that only reports figures (work order 007's Crown faucet) still has its
+arithmetic pinned. A check whose fixtures misbehave is not trusted, and the run
 fails.
 
 Step 2 runs every check against the real content tree and prints each
@@ -16,7 +19,8 @@ Exit status: 0 when every fixture behaves and every check passes, 1 otherwise.
 
 Options:
   --root DIR            check DIR instead of the repository root (step 2 only)
-  --refresh-expected    rewrite each fail fixture's expected.txt from the
+  --refresh-expected    rewrite each fail fixture's expected.txt, and each
+                        existing pass fixture expected-notes.txt, from the
                         current output, then exit; read the diff before
                         committing it
 """
@@ -27,6 +31,7 @@ import sys
 sys.dont_write_bytecode = True  # keep __pycache__ out of the repo
 
 import lib  # noqa: E402
+import check_drops
 import check_pacing
 import check_provenance
 import check_references
@@ -39,6 +44,7 @@ CHECKS = (
     ("xp_curve", check_xp_curve),
     ("references", check_references),
     ("pacing", check_pacing),
+    ("drops", check_drops),
 )
 
 FIXTURES = os.path.join(lib.HERE, "fixtures")
@@ -72,6 +78,18 @@ def self_test(refresh=False):
         passed = module.run(pass_root)
         for line in passed.fails:
             problems.append("%s pass fixture failed: %s" % (name, line))
+        notes_path = os.path.join(pass_root, "expected-notes.txt")
+        if os.path.isfile(notes_path):
+            if refresh:
+                with open(notes_path, "w", encoding="utf-8") as fh:
+                    fh.write("\n".join(passed.notes) + "\n")
+            else:
+                with open(notes_path, "r", encoding="utf-8") as fh:
+                    expected = [l for l in fh.read().splitlines() if l.strip()]
+                for line in sorted(set(expected) - set(passed.notes)):
+                    problems.append("%s pass fixture no longer notes: %s" % (name, line))
+                for line in sorted(set(passed.notes) - set(expected)):
+                    problems.append("%s pass fixture newly notes: %s" % (name, line))
 
         for fail_root in fail_roots:
             label = "%s %s" % (name, os.path.basename(fail_root).replace("-", " ", 1))

@@ -121,6 +121,33 @@ def collect_ids(node, pointer=""):
                 yield item
 
 
+# Jeremy's answer to work order 007 Q12: a zone economy file's top-level
+# "anchors" object holds the draftsman's free-form assumptions, so an "id"
+# inside it is not a content id.
+ID_EXEMPT_KEYS = (("tuning.economy/", "anchors"),)
+
+
+def content_ids(data):
+    """collect_ids for a whole content file, leaving out each exempt top-level
+    key of a file whose schema starts with the paired prefix."""
+    declared = data.get("schema") if isinstance(data, dict) else None
+    skip = set(key for prefix, key in ID_EXEMPT_KEYS
+               if isinstance(declared, str) and declared.startswith(prefix))
+    if not skip:
+        for item in collect_ids(data):
+            yield item
+        return
+    for key in data:
+        if key in skip:
+            continue
+        child = "/" + escape_pointer_token(key)
+        if key == "id":
+            yield child, data[key]
+        else:
+            for item in collect_ids(data[key], child):
+                yield item
+
+
 def escape_pointer_token(token):
     return str(token).replace("~", "~0").replace("/", "~1")
 

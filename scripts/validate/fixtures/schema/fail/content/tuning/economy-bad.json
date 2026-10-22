@@ -1,0 +1,17 @@
+{
+ "schema": "tuning.economy/1",
+ "id": "tuning.foundry.economy",
+ "zone": "foundry",
+ "price_list": [],
+ "items": {
+  "item.global.fixture_copper_ore": {
+   "bound": "yes",
+   "collector_price": 0,
+   "collector_weekly_cap": 2.5
+  },
+  "item.global.fixture_brass_ingot": {
+   "bound": false,
+   "collector_price": null
+  }
+ }
+}

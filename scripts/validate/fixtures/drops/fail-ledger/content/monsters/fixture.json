@@ -1,0 +1,65 @@
+{
+ "schema": "monster/1",
+ "monsters": [
+  {
+   "id": "monster.thunderhead.fixture_harpy",
+   "name": "Fixture Harpy",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 45,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 90,
+   "seconds_per_kill": 36
+  },
+  {
+   "id": "monster.thunderhead.fixture_gull",
+   "name": "Fixture Gull",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 50,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 90,
+   "seconds_per_kill": 36
+  },
+  {
+   "id": "monster.thunderhead.fixture_baron",
+   "name": "Fixture Baron",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 60,
+   "boss": true,
+   "weakness": "melee",
+   "xp": 900,
+   "seconds_per_kill": 60
+  },
+  {
+   "id": "monster.cinderworks.fixture_soot",
+   "name": "Fixture Soot",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 20,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 25,
+   "seconds_per_kill": 36
+  },
+  {
+   "id": "monster.cinderworks.fixture_bellows",
+   "name": "Fixture Bellows",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 40,
+   "boss": true,
+   "weakness": "melee",
+   "xp": 900,
+   "seconds_per_kill": 60
+  },
+  {
+   "id": "monster.rustmoor.fixture_scrap_rat",
+   "name": "Fixture Scrap Rat",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 2,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 6,
+   "seconds_per_kill": 36
+  }
+ ]
+}

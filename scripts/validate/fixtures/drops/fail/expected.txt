@@ -1,0 +1,16 @@
+FAIL drops/bound-but-priced content/tuning/economy-thunderhead.json id=item.global.fixture_copper_ore : /items/item.global.fixture_copper_ore: bound, so it cannot be sold, but collector_price is 5
+FAIL drops/collector-pair content/tuning/economy-thunderhead.json id=item.global.fixture_brass_ingot : /items/item.global.fixture_brass_ingot: collector_price is null and collector_weekly_cap is 10; both null or both set
+FAIL drops/collector-pair content/tuning/economy-thunderhead.json id=item.thunderhead.fixture_harpy_memo : /items/item.thunderhead.fixture_harpy_memo: collector_price is 40 and collector_weekly_cap is null; both null or both set
+FAIL drops/crowns-range content/drops/fixture.json id=monster.thunderhead.fixture_crab : /tables/4/crowns: max 2 is below min 5
+FAIL drops/duplicate-table content/drops/dupe.json id=monster.thunderhead.fixture_rat : monster has 2 drop tables: content/drops/dupe.json#/tables/0, content/drops/fixture.json#/tables/0; one per monster
+FAIL drops/duplicate-table content/drops/fixture.json id=monster.thunderhead.fixture_rat : monster has 2 drop tables: content/drops/dupe.json#/tables/0, content/drops/fixture.json#/tables/0; one per monster
+FAIL drops/economy-id-zone content/tuning/economy-thunderhead-2.json id=tuning.cinderworks.economy : id names zone cinderworks but "zone" is thunderhead
+FAIL drops/economy-per-zone content/tuning/economy-thunderhead-2.json : zone thunderhead has 2 economy files (content/tuning/economy-thunderhead-2.json, content/tuning/economy-thunderhead.json); one per zone
+FAIL drops/economy-per-zone content/tuning/economy-thunderhead.json : zone thunderhead has 2 economy files (content/tuning/economy-thunderhead-2.json, content/tuning/economy-thunderhead.json); one per zone
+FAIL drops/first-kill-not-boss content/drops/fixture.json id=monster.thunderhead.fixture_crab : /tables/4/first_kill lists item.global.fixture_brass_ingot, but monster.thunderhead.fixture_crab is not a boss; first-kill items are for bosses only
+FAIL drops/not-checkable content/drops/broken.json : file does not match drops/1 (1 errors; see the schema check); the drop, Ledger Page and faucet rules leave it out
+FAIL drops/not-checkable content/drops/future.json : schema is 'drops/2'; only drops/1 can be checked
+FAIL drops/not-checkable content/tuning/economy-broken.json : file does not match tuning.economy/1 (1 errors; see the schema check); the economy, Ledger Page and faucet rules leave it out
+FAIL drops/qty-range content/drops/fixture.json id=monster.thunderhead.fixture_crab : /tables/4/entries/0 (item.global.fixture_copper_ore): qty_max 1 is below qty_min 3
+FAIL drops/zone-pity-not-dropped content/drops/dupe.json id=drops.thunderhead.fixture_dupe : /zone_pity/1 names item.global.fixture_copper_ore, which no non-boss table in this file drops
+FAIL drops/zone-pity-not-dropped content/drops/fixture.json id=drops.thunderhead.fixture : /zone_pity/4 names item.global.fixture_brass_ingot, which no non-boss table in this file drops

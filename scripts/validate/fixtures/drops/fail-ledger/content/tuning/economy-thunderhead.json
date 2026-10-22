@@ -1,0 +1,40 @@
+{
+ "schema": "tuning.economy/1",
+ "id": "tuning.thunderhead.economy",
+ "zone": "thunderhead",
+ "items": {
+  "item.thunderhead.fixture_ledger_page_t1": {
+   "bound": true,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.thunderhead.fixture_ledger_page_t2": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.thunderhead.fixture_ledger_page_t3": {
+   "bound": true,
+   "collector_price": 30,
+   "collector_weekly_cap": 1
+  },
+  "item.thunderhead.fixture_ledger_page_t4": {
+   "bound": true,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.thunderhead.fixture_ledger_page_t6": {
+   "bound": true,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.thunderhead.fixture_ledger_page_t7": {
+   "bound": true,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  }
+ },
+ "anchors": {
+  "_note": "Fixture values, not game content."
+ }
+}

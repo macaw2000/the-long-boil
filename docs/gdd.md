@@ -320,7 +320,7 @@ Paying off Arrears in Crowns is also a new Crown sink, and the Assayer tracks it
 
 ### Ledger Pages and the Commonplace Book
 
-Hester's notebook is the spine players can hold. The capstone holds 24 Ledger Pages: 3 from boss first-kills, 9 from storylets, and 12 as rare zone drops (4 per zone). Each zone drop has a pity timer that guarantees the next page within 500 kills, so nobody grinds forever for a story beat. Pages are bound to the player and read in Hester's Ledger, a screen styled as her notebook. Every lore fact a player uncovers is written into the Commonplace Book, a re-readable codex.
+Hester's notebook is the spine players can hold. The capstone holds 24 Ledger Pages: 3 from boss first-kills, 9 from storylets, and 12 as rare zone drops (4 per zone). Each zone drop has a pity timer that guarantees the next page within 500 kills of any monster in that zone, so nobody grinds forever for a story beat or has to go back to a monster they have outgrown. Pages are bound to the player and read in Hester's Ledger, a screen styled as her notebook. Every lore fact a player uncovers is written into the Commonplace Book, a re-readable codex.
 
 ### Story rewards and the economy
 

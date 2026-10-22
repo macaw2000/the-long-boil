@@ -1,0 +1,41 @@
+{
+ "schema": "drops/1",
+ "id": "drops.global.fixture",
+ "tables": [
+  {
+   "monster": "monster.global.fixture_grub",
+   "crowns": {
+    "min": 2,
+    "max": 2
+   },
+   "entries": [
+    {
+     "item": "item.global.fixture_ledger_page_free",
+     "chance": 0.5,
+     "qty_min": 1,
+     "qty_max": 1
+    }
+   ],
+   "first_kill": []
+  },
+  {
+   "monster": "monster.global.fixture_grub_king",
+   "crowns": {
+    "min": 9,
+    "max": 9
+   },
+   "entries": [
+    {
+     "item": "item.global.fixture_ledger_page_free",
+     "chance": 1.0,
+     "qty_min": 1,
+     "qty_max": 1
+    }
+   ],
+   "first_kill": [
+    "item.global.fixture_ledger_page_free"
+   ]
+  }
+ ],
+ "zone_pity": []
+}

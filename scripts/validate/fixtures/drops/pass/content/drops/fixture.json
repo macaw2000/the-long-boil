@@ -1,0 +1,108 @@
+{
+ "schema": "drops/1",
+ "id": "drops.thunderhead.fixture",
+ "tables": [
+  {
+   "monster": "monster.thunderhead.fixture_rat",
+   "crowns": {
+    "min": 2,
+    "max": 4
+   },
+   "entries": [
+    {
+     "item": "item.global.fixture_copper_ore",
+     "chance": 0.5,
+     "qty_min": 1,
+     "qty_max": 2
+    },
+    {
+     "item": "item.thunderhead.fixture_ledger_page_1",
+     "chance": 0.002,
+     "qty_min": 1,
+     "qty_max": 1
+    },
+    {
+     "item": "item.thunderhead.fixture_ledger_page_2",
+     "chance": 0.002,
+     "qty_min": 1,
+     "qty_max": 1
+    }
+   ],
+   "first_kill": []
+  },
+  {
+   "monster": "monster.thunderhead.fixture_big_rat",
+   "crowns": {
+    "min": 4,
+    "max": 7
+   },
+   "entries": [
+    {
+     "item": "item.thunderhead.fixture_ledger_page_3",
+     "chance": 0.002,
+     "qty_min": 1,
+     "qty_max": 1
+    },
+    {
+     "item": "item.thunderhead.fixture_harpy_memo",
+     "chance": 0.05,
+     "qty_min": 1,
+     "qty_max": 1
+    }
+   ],
+   "first_kill": []
+  },
+  {
+   "monster": "monster.thunderhead.fixture_wraith",
+   "crowns": {
+    "min": 10,
+    "max": 10
+   },
+   "entries": [
+    {
+     "item": "item.thunderhead.fixture_ledger_page_4",
+     "chance": 0.001,
+     "qty_min": 1,
+     "qty_max": 1
+    }
+   ],
+   "first_kill": []
+  },
+  {
+   "monster": "monster.thunderhead.fixture_rat_king",
+   "crowns": {
+    "min": 50,
+    "max": 80
+   },
+   "entries": [
+    {
+     "item": "item.global.fixture_brass_ingot",
+     "chance": 1.0,
+     "qty_min": 1,
+     "qty_max": 3
+    }
+   ],
+   "first_kill": [
+    "item.thunderhead.fixture_ledger_page_5"
+   ]
+  }
+ ],
+ "zone_pity": [
+  {
+   "item": "item.thunderhead.fixture_ledger_page_1",
+   "kills": 400
+  },
+  {
+   "item": "item.thunderhead.fixture_ledger_page_2",
+   "kills": 500
+  },
+  {
+   "item": "item.thunderhead.fixture_ledger_page_3",
+   "kills": 450
+  },
+  {
+   "item": "item.thunderhead.fixture_ledger_page_4",
+   "kills": 500
+  }
+ ]
+}

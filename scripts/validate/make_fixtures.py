@@ -280,3 +280,198 @@ put(FC + MP, monsters(
     mon("monster.global.fixture_fast_boss", 20, 5000, 60, boss=True)))
 put(FC + "content/monsters/future.json", monsters(mon("monster.global.fixture_future", 1, 10, 36), schema="monster/2"))
 put(FC + "content/monsters/broken.json", monsters(mon("monster.global.fixture_broken", 0, 10, 36)))
+
+# ---- work order 007: drops, zone economy, Ledger Pages, Crown faucet
+# (with Jeremy's answers to its Q1, Q6, Q7, Q8, Q11 and Q12).
+# Ledger Page fixtures use thunderhead and cinderworks, since the rules skip
+# "global"; every name is prefixed fixture_, so no fixture copies real
+# content. Numbers are synthetic; the faucet figures are set against the
+# fixture pacing curve PC (10 combat hours a day, deliberately not the real 12).
+def table(monster, cmin, cmax, entries=(), first_kill=()):
+    return dict(monster=monster, crowns=dict(min=cmin, max=cmax),
+                entries=[dict(item=i, chance=c, qty_min=a, qty_max=b) for i, c, a, b in entries],
+                first_kill=list(first_kill))
+def drops(ident, *tables, pity=(), schema="drops/1"):
+    return {"schema": schema, "id": ident, "tables": list(tables),
+            "zone_pity": [dict(item=i, kills=k) for i, k in pity]}
+def econ(zone, rows, schema="tuning.economy/1", ident=None):
+    return {"schema": schema, "id": ident or "tuning.%s.economy" % zone, "zone": zone,
+            "items": {i: dict(bound=b, collector_price=p, collector_weekly_cap=c) for i, b, p, c in rows},
+            "anchors": {"_note": "Fixture values, not game content."}}
+DP = "content/drops/fixture.json"
+TEP, GEP = "content/tuning/economy-thunderhead.json", "content/tuning/economy-global.json"
+PAGE = ["item.thunderhead.fixture_ledger_page_%d" % n for n in range(1, 6)]
+GPAGE = "item.global.fixture_ledger_page_free"
+MEMO = "item.thunderhead.fixture_harpy_memo"
+RAT, BIG, WRAITH, MOTH, KING = ("monster.thunderhead.fixture_rat", "monster.thunderhead.fixture_big_rat",
+    "monster.thunderhead.fixture_wraith", "monster.thunderhead.fixture_moth", "monster.thunderhead.fixture_rat_king")
+GRUB = "monster.global.fixture_grub"
+LEDGER_ITEMS = items(*([(ORE, "Copper Ore", "Fixture ore, dug for a validator."),
+                        (INGOT, "Brass Ingot", "Fixture ingot, smelted for a validator."),
+                        (MEMO, "Harpy Memo", "Fixture curio, chewed for a validator."),
+                        (GPAGE, "Free Page", "Fixture page in the global zone, which the page rules skip.")]
+                       + [(p, "Ledger Page %d" % n, "Fixture page, torn for a validator.")
+                          for n, p in enumerate(PAGE, 1)]))
+LEDGER_MONSTER_LIST = [
+    mon(RAT, 1, 5.5, 36), mon(BIG, 8, 7.5, 36, weakness="marksmanship"),
+    mon(WRAITH, 20, 25, 36, weakness="aetherics"), mon(MOTH, 30, 40, 36),
+    mon(KING, 1, 500, 60, boss=True), mon(GRUB, 50, 1, 3600)]
+LEDGER_MONSTERS = monsters(*LEDGER_MONSTER_LIST)
+# Faucet (100 kills an hour each, 70 combat hours a week): rat 3 Crowns a kill,
+# 300/h, 21,000/week, levels 1-7; big rat 5.5, 550/h, 38,500/week, levels
+# 8-19; wraith 10, 1,000/h, 70,000/week, levels 20-29; moth has no table,
+# levels 30-44; the global grub (level 50, 1 XP an hour) puts band 45 to 70
+# in the report, but the moth still pays more XP an hour, so the moth is the
+# pick there too (as in pacing) and the band reads "no drop table". Bosses,
+# each on its own line: the rat king 65 Crowns per winning attempt (50 to
+# 80), the global grub king 9. Collectors (thunderhead): 40 x 5 +
+# 12 x 10 = 320; global: 3 x 50 = 150.
+LEDGER_TABLES = [
+    table(RAT, 2, 4, [(ORE, 0.5, 1, 2), (PAGE[0], 0.002, 1, 1), (PAGE[1], 0.002, 1, 1)]),
+    table(BIG, 4, 7, [(PAGE[2], 0.002, 1, 1), (MEMO, 0.05, 1, 1)]),
+    table(WRAITH, 10, 10, [(PAGE[3], 0.001, 1, 1)]),
+    table(KING, 50, 80, [(INGOT, 1.0, 1, 3)], first_kill=[PAGE[4]])]
+LEDGER_PITY = [(PAGE[0], 400), (PAGE[1], 500), (PAGE[2], 450), (PAGE[3], 500)]
+LEDGER_DROPS = drops("drops.thunderhead.fixture", *LEDGER_TABLES, pity=LEDGER_PITY)
+# global: the page rules do not apply, so an unbound global page that drops
+# from two tables with no pity passes.
+GLOBAL_DROPS = drops("drops.global.fixture",
+    table(GRUB, 2, 2, [(GPAGE, 0.5, 1, 1)]),
+    table("monster.global.fixture_grub_king", 9, 9, [(GPAGE, 1.0, 1, 1)], first_kill=[GPAGE]))
+GLOBAL_MONSTER = mon("monster.global.fixture_grub_king", 60, 1, 3600, boss=True)
+LEDGER_ECON = econ("thunderhead", [(p, True, None, None) for p in PAGE]
+                   + [(MEMO, False, 40, 5), (ORE, False, None, None), (INGOT, False, 12, 10)])
+# Q12: an "id" in anchors is not a content id, so this one, which repeats an
+# item id, is neither a duplicate nor an id the register must hold.
+GLOBAL_ECON = econ("global", [(ORE, False, 3, 50)])
+GLOBAL_ECON["anchors"] = {"_note": "Fixture values.", "example": {"id": ORE}}
+
+# schema: drops/1 under content/drops/, tuning.economy/1 under content/tuning/.
+put("schema/pass/" + DP, drops("drops.global.fixture",
+    table("monster.global.fixture_rat", 0, 3, [(ORE, 1, 1, 2), (INGOT, 0.01, 1, 1)]),
+    table("monster.global.fixture_jaw", 40, 40, first_kill=[INGOT]), pity=[(INGOT, 200)]))
+put("schema/pass/" + GEP, GLOBAL_ECON)
+bad = drops("drop.global.fixture_bad",
+    table("monsters.global.fixture_bad_prefix", -1, 2.5),
+    table("monster.global.fixture_rat", 0, 1, [(ORE, 0, 0, 1), (INGOT, 1.5, 1, 1.5), ("action.global.fixture_x", 0.5, 1, 1)],
+          first_kill=[7]),
+    {"monster": "monster.global.fixture_no_max", "crowns": {"min": 0}, "entries": [], "first_kill": [],
+     "pity": [{"item": ORE, "kills": 10}]}, pity=[(ORE, 0)])
+put(S + "drops/bad.json", bad)
+put(S + "drops/no-id.json", {"schema": "drops/1", "tables": []})
+put(S + "tuning/economy-bad.json", {"schema": "tuning.economy/1", "id": "tuning.foundry.economy", "zone": "foundry",
+    "price_list": [], "items": {
+    ORE: dict(bound="yes", collector_price=0, collector_weekly_cap=2.5),
+    INGOT: dict(bound=False, collector_price=None)}})
+put(S + "tuning/economy-no-id.json", {"schema": "tuning.economy/1", "zone": "global", "items": {}, "anchors": {}})
+# Q12 is narrow: "anchors" in any other schema is not exempt, so this id
+# duplicates the curve's.
+put(S + "tuning/anchored.json", {"schema": "monster/9", "anchors": {"id": "fixture.fail.old"}})
+put(S + "tuning/stray-drops.json", drops("drops.global.fixture_stray", table("monster.global.fixture_stray_drop", 0, 0)))
+put(S + "drops/misplaced.json", items(("item.global.fixture_misplaced_in_drops", "Misplaced", "Item file in the drops directory.")))
+put(S + "actions/stray-economy.json", econ("global", [(ORE, False, None, None)], ident="tuning.global.economy_stray"))
+
+# provenance: drop and economy files carry ids the register must hold; an id
+# inside an economy file's anchors does not need a row.
+put("provenance/pass/" + DP, drops("drops.global.fixture", table("monster.global.fixture_rat", 1, 1)))
+put("provenance/pass/" + GEP, GLOBAL_ECON)
+put("provenance/pass/content/provenance.json", {"schema": "provenance/2", "rows": [
+    row("fixture.pass.xp_curve", CP, result="waived", waiver=W),
+    row("fixture.pass.xp_curve_ref", CP, "/reference_action"),
+    row(ORE, IP, "/items/0", revision=None, kind="item"),
+    row(INGOT, IP, "/items/1", revision=None, kind="item"),
+    row("action.global.fixture_dig_ore", AP, "/actions/0", revision=None, kind="action"),
+    row("action.global.fixture_smelt_ingot", AP, "/actions/1", revision=None, kind="action"),
+    row("drops.global.fixture", DP, revision=None, kind="drops"),
+    row("tuning.global.economy", GEP, revision=None)]})
+put("provenance/fail/" + DP, drops("drops.global.fixture_orphan", table("monster.global.fixture_rat", 1, 1)))
+put("provenance/fail/" + GEP, econ("global", []))
+
+# references: drop tables and zone_pity name monsters and items that exist;
+# economy files name items that exist.
+put("references/pass/" + MP, LEDGER_MONSTERS)
+put("references/pass/" + DP, drops("drops.thunderhead.fixture", table(RAT, 1, 2, [(ORE, 0.5, 1, 1)]),
+                                   table(KING, 9, 9, first_kill=[INGOT]), pity=[(ORE, 10)]))
+put("references/pass/" + TEP, econ("thunderhead", [(ORE, False, 2, 10), (INGOT, False, None, None)]))
+put(R + "monsters/fixture.json", LEDGER_MONSTERS)
+put(R + "drops/fixture.json", drops("drops.thunderhead.fixture",
+    table(RAT, 1, 2, [(ORE, 0.5, 1, 1)]),
+    table("monster.thunderhead.fixture_ghost_monster", 1, 2),
+    table("monster.global.fixture_stray_monster", 1, 2),
+    table(BIG, 1, 2, [("item.thunderhead.fixture_ghost_entry", 0.5, 1, 1)]),
+    table(KING, 9, 9, first_kill=["item.thunderhead.fixture_ghost_first", INGOT]),
+    pity=[("item.thunderhead.fixture_ghost_pity", 10)]))
+put(R + "tuning/stray-monsters.json", monsters(mon("monster.global.fixture_stray_monster", 1, 1, 10)))
+put(R + "tuning/economy-thunderhead.json", econ("thunderhead", [(ORE, False, 2, 10),
+    ("item.thunderhead.fixture_ghost_priced", False, 3, 1), (RAT, False, None, None)]))
+
+# drops pass: thunderhead keeps every rule; global breaks the page rules,
+# which do not apply to it. The faucet NOTE lines are pinned in
+# expected-notes.txt.
+put("drops/pass/" + CP, PC)
+put("drops/pass/" + IP, LEDGER_ITEMS)
+put("drops/pass/" + MP, monsters(*(LEDGER_MONSTER_LIST + [GLOBAL_MONSTER])))
+put("drops/pass/" + DP, LEDGER_DROPS)
+put("drops/pass/content/drops/global.json", GLOBAL_DROPS)
+put("drops/pass/" + TEP, LEDGER_ECON)
+put("drops/pass/" + GEP, GLOBAL_ECON)
+# Created empty once; run.py --refresh-expected fills it. Never overwritten
+# here, so regenerating keeps the pinned figures for the diff to show.
+if not os.path.exists(os.path.join(F, "drops/pass/expected-notes.txt")):
+    put("drops/pass/expected-notes.txt", "")
+
+# drops fail: the drop-table, zone_pity and economy rules, on top of a zone
+# that keeps the Ledger Page rules, plus files that are not checkable.
+DF = "drops/fail/"
+CRAB = "monster.thunderhead.fixture_crab"
+put(DF + CP, PC)
+put(DF + IP, LEDGER_ITEMS)
+put(DF + MP, monsters(*(LEDGER_MONSTER_LIST + [mon(CRAB, 3, 6, 36)])))
+put(DF + DP, drops("drops.thunderhead.fixture", *(LEDGER_TABLES + [
+    table(CRAB, 5, 2, [(ORE, 0.5, 3, 1)], first_kill=[INGOT])]),
+    # INGOT drops only from the boss; MEMO from no table in this file.
+    pity=LEDGER_PITY + [(INGOT, 50)]))
+put(DF + "content/drops/dupe.json", drops("drops.thunderhead.fixture_dupe", table(RAT, 1, 1, [(MEMO, 0.1, 1, 1)]),
+                                         pity=[(MEMO, 20), (ORE, 20)]))
+put(DF + "content/drops/future.json", drops("drops.global.fixture_future", table("monster.global.fixture_future", 1, 1), schema="drops/2"))
+put(DF + "content/drops/broken.json", drops("drops.global.fixture_broken", table("monster.global.fixture_broken", 1, 1, [(ORE, 0, 1, 1)])))
+put(DF + TEP, econ("thunderhead", [(p, True, None, None) for p in PAGE]
+                  + [(MEMO, False, 40, None), (ORE, True, 5, 5), (INGOT, False, None, 10)]))
+put(DF + "content/tuning/economy-thunderhead-2.json", econ("thunderhead", [], ident="tuning.cinderworks.economy"))
+b = econ("cinderworks", []); del b["anchors"]
+put(DF + "content/tuning/economy-broken.json", b)
+
+# drops fail-ledger: every Ledger Page rule broken, across thunderhead,
+# cinderworks and rustmoor (fixture names only).
+DL = "drops/fail-ledger/"
+T = ["item.thunderhead.fixture_ledger_page_t%d" % n for n in range(1, 8)]
+LOOSE = "item.thunderhead.fixture_ledger_page_loose"
+C = ["item.cinderworks.fixture_ledger_page_c%d" % n for n in range(1, 6)]
+HARPY, GULL, BARON = ("monster.thunderhead.fixture_harpy", "monster.thunderhead.fixture_gull",
+                      "monster.thunderhead.fixture_baron")
+SOOT, BELLOWS = "monster.cinderworks.fixture_soot", "monster.cinderworks.fixture_bellows"
+SCRAP = "monster.rustmoor.fixture_scrap_rat"
+put(DL + IP, items(*[(p, "Page", "Fixture page, torn for a validator.") for p in T + [LOOSE] + C]))
+put(DL + MP, monsters(mon(HARPY, 45, 90, 36), mon(GULL, 50, 90, 36), mon(BARON, 60, 900, 60, boss=True),
+                      mon(SOOT, 20, 25, 36), mon(BELLOWS, 40, 900, 60, boss=True),
+                      mon(SCRAP, 2, 6, 36)))
+put(DL + "content/drops/thunderhead.json", drops("drops.thunderhead.fixture",
+    # t1 to t3 drop from non-boss tables (3 pages, not 4); t2 has no zone_pity;
+    # t3's is 501. t3 also drops from the gull (two tables). t4 is in the
+    # boss's entries; the boss gives two pages on first kill, t5 and t1 (t1
+    # now in two tables as well).
+    table(HARPY, 1, 2, [(T[0], 0.002, 1, 1), (T[1], 0.002, 1, 1), (T[2], 0.002, 1, 1)]),
+    table(GULL, 1, 2, [(T[2], 0.002, 1, 1)]),
+    table(BARON, 9, 9, [(T[3], 0.01, 1, 1)], first_kill=[T[4], T[0]]),
+    pity=[(T[0], 400), (T[2], 501)]))
+put(DL + "content/drops/cinderworks.json", drops("drops.cinderworks.fixture",
+    # five pages drop, each with pity; the boss has no table. c1 also drops
+    # in rustmoor (two zones).
+    table(SOOT, 1, 2, [(p, 0.001, 1, 1) for p in C]),
+    pity=[(p, 100) for p in C]))
+put(DL + "content/drops/rustmoor.json", drops("drops.rustmoor.fixture",
+    # rustmoor: one page (another zone's), with pity; no boss.
+    table(SCRAP, 1, 2, [(C[0], 0.001, 1, 1)]), pity=[(C[0], 100)]))
+put(DL + TEP, econ("thunderhead", [(T[0], True, None, None), (T[1], False, None, None),
+                                   (T[2], True, 30, 1), (T[3], True, None, None), (T[5], True, None, None),
+                                   (T[6], True, None, None)]))

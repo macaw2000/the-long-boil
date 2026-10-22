@@ -1,0 +1,65 @@
+{
+ "schema": "drops/1",
+ "id": "drop.global.fixture_bad",
+ "tables": [
+  {
+   "monster": "monsters.global.fixture_bad_prefix",
+   "crowns": {
+    "min": -1,
+    "max": 2.5
+   },
+   "entries": [],
+   "first_kill": []
+  },
+  {
+   "monster": "monster.global.fixture_rat",
+   "crowns": {
+    "min": 0,
+    "max": 1
+   },
+   "entries": [
+    {
+     "item": "item.global.fixture_copper_ore",
+     "chance": 0,
+     "qty_min": 0,
+     "qty_max": 1
+    },
+    {
+     "item": "item.global.fixture_brass_ingot",
+     "chance": 1.5,
+     "qty_min": 1,
+     "qty_max": 1.5
+    },
+    {
+     "item": "action.global.fixture_x",
+     "chance": 0.5,
+     "qty_min": 1,
+     "qty_max": 1
+    }
+   ],
+   "first_kill": [
+    7
+   ]
+  },
+  {
+   "monster": "monster.global.fixture_no_max",
+   "crowns": {
+    "min": 0
+   },
+   "entries": [],
+   "first_kill": [],
+   "pity": [
+    {
+     "item": "item.global.fixture_copper_ore",
+     "kills": 10
+    }
+   ]
+  }
+ ],
+ "zone_pity": [
+  {
+   "item": "item.global.fixture_copper_ore",
+   "kills": 0
+  }
+ ]
+}

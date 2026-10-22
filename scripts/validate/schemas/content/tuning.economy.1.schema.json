@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tuning.economy/1",
+  "title": "Zone economy, version 1",
+  "description": "A file under content/tuning/, one per zone (work order 007, scope 2), for example economy-rustmoor.json. 'id' is tuning.<zone>.economy (Jeremy, answer to work order 007 Q1); the drops check fails it when its zone differs from 'zone'. 'zone' names the zone the file belongs to (one of rustmoor, cinderworks, thunderhead, global, the same list as item ids); work order 007 says 'one file per zone' but names no field for it, so this one is added (accepted, Jeremy's answer to work order 007 Q2). 'items' maps an item id to {bound, collector_price, collector_weekly_cap}: bound, a boolean, true when the item cannot be traded or sold; collector_price, the Crowns an NPC collector pays per unit, an integer >= 1, or null if collectors will not buy it; collector_weekly_cap, the units a collector buys per player per week, an integer >= 1, or null. 'anchors' is an object for the draftsman's stated assumptions, free in shape, which no check reads; an 'id' inside it is not a content id (Jeremy, answer to work order 007 Q12). Whether each item exists, that price and cap are null together or set together, that a bound item has no collector price, one file per zone, and the Ledger Page rules are checked in code (the drops and references checks), not here. 'revision' is optional and exists only so a register row's revision can match the file.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "zone",
+    "items",
+    "anchors"
+  ],
+  "properties": {
+    "schema": {
+      "const": "tuning.economy/1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^tuning\\.(rustmoor|cinderworks|thunderhead|global)\\.economy$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "zone": {
+      "enum": [
+        "rustmoor",
+        "cinderworks",
+        "thunderhead",
+        "global"
+      ]
+    },
+    "items": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/economy"
+      }
+    },
+    "anchors": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "economy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bound",
+        "collector_price",
+        "collector_weekly_cap"
+      ],
+      "properties": {
+        "bound": {
+          "type": "boolean"
+        },
+        "collector_price": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "collector_weekly_cap": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

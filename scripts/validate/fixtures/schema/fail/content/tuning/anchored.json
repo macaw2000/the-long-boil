@@ -1,0 +1,6 @@
+{
+ "schema": "monster/9",
+ "anchors": {
+  "id": "fixture.fail.old"
+ }
+}

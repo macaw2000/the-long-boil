@@ -1,0 +1,23 @@
+{
+ "schema": "drops/1",
+ "id": "drops.global.fixture_broken",
+ "tables": [
+  {
+   "monster": "monster.global.fixture_broken",
+   "crowns": {
+    "min": 1,
+    "max": 1
+   },
+   "entries": [
+    {
+     "item": "item.global.fixture_copper_ore",
+     "chance": 0,
+     "qty_min": 1,
+     "qty_max": 1
+    }
+   ],
+   "first_kill": []
+  }
+ ],
+ "zone_pity": []
+}

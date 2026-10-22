@@ -11,7 +11,8 @@ fails when:
 - two rows share a path and both have a null pointer.
 
 Content ids are every "id" at any depth in every content file (everything
-under content/ except the register), the same set the schema check uses.
+under content/ except the register), the same set the schema check uses: an
+"id" inside a zone economy file's "anchors" is not one (lib.ID_EXEMPT_KEYS).
 
 Usage: python3 scripts/validate/check_provenance.py [--root DIR]
 """
@@ -75,7 +76,7 @@ def run(root):
                         "cannot collect ids, %s" % error)
             continue
         parsed[path] = data
-        for _pointer, value in lib.collect_ids(data):
+        for _pointer, value in lib.content_ids(data):
             if isinstance(value, str):
                 content_ids.setdefault(value, set()).add(path)
 

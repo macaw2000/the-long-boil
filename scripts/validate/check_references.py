@@ -1,13 +1,22 @@
-"""Check: references (work order 003, scope 3).
+"""Check: references (work order 003, scope 3; extended by work order 007,
+scope 3).
 
 Every item an action names, in its inputs or its outputs, must be the id of
 an item defined in an item file under content/items/ (an entry of a file's
 "items" list). An id that exists anywhere else in the tree, an action's id for
 instance, does not count.
 
-Ids are collected leniently: an item file with shape errors still contributes
-the ids it has, and an action file with shape errors still has its references
-checked. The schema check reports the shape errors themselves.
+Work order 007: every monster a drop table names (drops/*) must be the id of a
+monster defined in a monster file under content/monsters/ (an entry of a
+file's "monsters" list), and every item it names, in a table's entries or
+first_kill or in the file's zone_pity, must be an item as above. Every item
+an economy file (tuning.economy/*) lists under "items" must be an item as
+above.
+
+Ids are collected leniently: an item or monster file with shape errors still
+contributes the ids it has, and an action, drop or economy file with shape
+errors still has its references checked. The schema check reports the shape
+errors themselves.
 
 Usage: python3 scripts/validate/check_references.py [--root DIR]
 """
@@ -23,6 +32,10 @@ CHECK = "references"
 ITEMS_DIR = "content/items/"
 ITEM_SCHEMA_PREFIX = "item/"
 ACTION_SCHEMA_PREFIX = "action/"
+MONSTERS_DIR = "content/monsters/"
+MONSTER_SCHEMA_PREFIX = "monster/"
+DROPS_SCHEMA_PREFIX = "drops/"
+ECONOMY_SCHEMA_PREFIX = "tuning.economy/"
 
 
 def _declared(data):
@@ -38,30 +51,110 @@ def _entries(data, key):
     return [(i, e) for i, e in enumerate(value) if isinstance(e, dict)]
 
 
-def item_ids(root):
-    """{item id: path} for every item in an item file under content/items/."""
+def _defined_ids(root, directory, prefix, key):
     out = {}
     for path in lib.content_files(root):
-        if not path.startswith(ITEMS_DIR):
+        if not path.startswith(directory):
             continue
         data, error = lib.load_json(root, path)
-        if error or not _declared(data).startswith(ITEM_SCHEMA_PREFIX):
+        if error or not _declared(data).startswith(prefix):
             continue
-        for _index, item in _entries(data, "items"):
-            ident = item.get("id")
+        for _index, entry in _entries(data, key):
+            ident = entry.get("id")
             if isinstance(ident, str):
                 out.setdefault(ident, path)
     return out
 
 
+def item_ids(root):
+    """{item id: path} for every item in an item file under content/items/."""
+    return _defined_ids(root, ITEMS_DIR, ITEM_SCHEMA_PREFIX, "items")
+
+
+def monster_ids(root):
+    """{monster id: path} for every monster in a monster file under
+    content/monsters/."""
+    return _defined_ids(root, MONSTERS_DIR, MONSTER_SCHEMA_PREFIX, "monsters")
+
+
+def _unknown_item(report, path, pointer, named, ident):
+    report.fail("unknown-item", path,
+                "%s names %r, which no item file under %s defines"
+                % (pointer, named, ITEMS_DIR), ident)
+
+
+def check_drops(report, path, data, items, monsters):
+    """Returns the number of references checked in one drops/* file."""
+    references = 0
+    for index, table in _entries(data, "tables"):
+        named = table.get("monster")
+        ident = named if isinstance(named, str) else None
+        if isinstance(named, str):
+            references += 1
+            if named not in monsters:
+                report.fail("unknown-monster", path,
+                            "/tables/%d/monster names %r, which no monster file "
+                            "under %s defines" % (index, named, MONSTERS_DIR), ident)
+        for slot, entry in _entries(table, "entries"):
+            item = entry.get("item")
+            if not isinstance(item, str):
+                continue  # the schema check reports this
+            references += 1
+            if item not in items:
+                _unknown_item(report, path, "/tables/%d/entries/%d/item" % (index, slot),
+                              item, ident)
+        first = table.get("first_kill")
+        for slot, item in enumerate(first if isinstance(first, list) else []):
+            if not isinstance(item, str):
+                continue
+            references += 1
+            if item not in items:
+                _unknown_item(report, path, "/tables/%d/first_kill/%d" % (index, slot),
+                              item, ident)
+    file_id = data.get("id") if isinstance(data.get("id"), str) else None
+    for slot, entry in _entries(data, "zone_pity"):
+        item = entry.get("item")
+        if not isinstance(item, str):
+            continue
+        references += 1
+        if item not in items:
+            _unknown_item(report, path, "/zone_pity/%d/item" % slot, item, file_id)
+    return references
+
+
+def check_economy(report, path, data, items):
+    """Returns the number of references checked in one tuning.economy/* file."""
+    listed = data.get("items") if isinstance(data, dict) else None
+    if not isinstance(listed, dict):
+        return 0
+    for item in listed:
+        if item not in items:
+            _unknown_item(report, path, "/items/%s" % lib.escape_pointer_token(item),
+                          item, item)
+    return len(listed)
+
+
 def run(root):
     report = lib.Report(CHECK)
     items = item_ids(root)
+    monsters = monster_ids(root)
     action_files = 0
     references = 0
+    drop_files = drop_refs = economy_files = economy_refs = 0
     for path in lib.content_files(root):
         data, error = lib.load_json(root, path)
-        if error or not _declared(data).startswith(ACTION_SCHEMA_PREFIX):
+        if error:
+            continue
+        declared = _declared(data)
+        if declared.startswith(DROPS_SCHEMA_PREFIX):
+            drop_files += 1
+            drop_refs += check_drops(report, path, data, items, monsters)
+            continue
+        if declared.startswith(ECONOMY_SCHEMA_PREFIX):
+            economy_files += 1
+            economy_refs += check_economy(report, path, data, items)
+            continue
+        if not declared.startswith(ACTION_SCHEMA_PREFIX):
             continue
         action_files += 1
         for index, action in _entries(data, "actions"):
@@ -80,6 +173,9 @@ def run(root):
                             ident)
     report.note("%d action file(s), %d item reference(s), %d item(s) defined"
                 % (action_files, references, len(items)))
+    report.note("%d drop file(s), %d monster and item reference(s), %d monster(s) "
+                "defined; %d economy file(s), %d item reference(s)"
+                % (drop_files, drop_refs, len(monsters), economy_files, economy_refs))
     return report
 
 

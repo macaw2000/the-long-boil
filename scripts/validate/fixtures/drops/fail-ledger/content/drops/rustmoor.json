@@ -1,0 +1,28 @@
+{
+ "schema": "drops/1",
+ "id": "drops.rustmoor.fixture",
+ "tables": [
+  {
+   "monster": "monster.rustmoor.fixture_scrap_rat",
+   "crowns": {
+    "min": 1,
+    "max": 2
+   },
+   "entries": [
+    {
+     "item": "item.cinderworks.fixture_ledger_page_c1",
+     "chance": 0.001,
+     "qty_min": 1,
+     "qty_max": 1
+    }
+   ],
+   "first_kill": []
+  }
+ ],
+ "zone_pity": [
+  {
+   "item": "item.cinderworks.fixture_ledger_page_c1",
+   "kills": 100
+  }
+ ]
+}

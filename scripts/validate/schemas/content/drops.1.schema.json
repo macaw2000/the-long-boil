@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "drops/1",
+  "title": "Drop tables, version 1",
+  "description": "A file under content/drops/ (work order 007, scope 1, with Jeremy's answers to its Q1 and Q6). 'id' is drops.<zone>.<name>, zone one of rustmoor, cinderworks, thunderhead, global. 'tables' holds the drop tables, one per monster. Each table names a monster id; crowns, {min, max}, the Crowns paid per kill, integers with min >= 0 and max >= min; entries, a list of {item, chance, qty_min, qty_max}, each rolled independently per kill, with 0 < chance <= 1 and integer quantities qty_min >= 1 and qty_max >= qty_min; and first_kill, a list of item ids given once, on the player's first kill (bosses only). 'zone_pity' is a list of {item, kills}: the item is guaranteed within that many kills of any monster in the zone, not of one monster; each item must be one a non-boss table in this file drops. The orderings, 'bosses only', 'one per monster', the zone_pity rule, whether each named monster and item exists, and the Ledger Page rules are checked in code (the drops and references checks), not here. 'revision' is optional and exists only so a register row's revision can match the file.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "tables",
+    "zone_pity"
+  ],
+  "properties": {
+    "schema": {
+      "const": "drops/1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^drops\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "tables": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/table"
+      }
+    },
+    "zone_pity": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "item",
+          "kills"
+        ],
+        "properties": {
+          "item": {
+            "$ref": "#/$defs/item_id"
+          },
+          "kills": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "item_id": {
+      "type": "string",
+      "pattern": "^item\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"
+    },
+    "table": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "monster",
+        "crowns",
+        "entries",
+        "first_kill"
+      ],
+      "properties": {
+        "monster": {
+          "type": "string",
+          "pattern": "^monster\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"
+        },
+        "crowns": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "min",
+            "max"
+          ],
+          "properties": {
+            "min": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "item",
+              "chance",
+              "qty_min",
+              "qty_max"
+            ],
+            "properties": {
+              "item": {
+                "$ref": "#/$defs/item_id"
+              },
+              "chance": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 1
+              },
+              "qty_min": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "qty_max": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        },
+        "first_kill": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/item_id"
+          }
+        }
+      }
+    }
+  }
+}
