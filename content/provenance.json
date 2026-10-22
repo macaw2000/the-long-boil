@@ -644,7 +644,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -666,8 +666,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: page roll rule and pity slack against the main-skill share need a ruling; Rat Scrap mostly unsold."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T14:49:32Z",
       "history": [
         {
           "at": "2026-10-22T00:51:03Z",
@@ -683,6 +683,11 @@
           "at": "2026-10-22T14:47:13Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T14:49:32Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1233,7 +1238,7 @@
       "pointer": "/items/14",
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1255,8 +1260,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T14:49:32Z",
       "history": [
         {
           "at": "2026-10-22T00:51:03Z",
@@ -1272,6 +1277,11 @@
           "at": "2026-10-22T14:47:13Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T14:49:32Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1282,7 +1292,7 @@
       "pointer": "/items/15",
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1304,8 +1314,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T14:49:32Z",
       "history": [
         {
           "at": "2026-10-22T00:51:03Z",
@@ -1321,6 +1331,11 @@
           "at": "2026-10-22T14:47:13Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T14:49:32Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1331,7 +1346,7 @@
       "pointer": "/items/16",
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1353,8 +1368,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T14:49:32Z",
       "history": [
         {
           "at": "2026-10-22T00:51:03Z",
@@ -1370,6 +1385,11 @@
           "at": "2026-10-22T14:47:13Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T14:49:32Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1380,7 +1400,7 @@
       "pointer": "/items/17",
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1402,8 +1422,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T14:49:32Z",
       "history": [
         {
           "at": "2026-10-22T00:51:03Z",
@@ -1419,6 +1439,11 @@
           "at": "2026-10-22T14:47:13Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T14:49:32Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1429,7 +1454,7 @@
       "pointer": "/items/18",
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1451,8 +1476,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T14:49:32Z",
       "history": [
         {
           "at": "2026-10-22T00:51:03Z",
@@ -1468,6 +1493,11 @@
           "at": "2026-10-22T14:47:13Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T14:49:32Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1478,7 +1508,7 @@
       "pointer": "/items/12",
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1500,8 +1530,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T14:49:32Z",
       "history": [
         {
           "at": "2026-10-22T00:51:03Z",
@@ -1517,6 +1547,11 @@
           "at": "2026-10-22T14:47:13Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T14:49:32Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -1527,7 +1562,7 @@
       "pointer": "/items/13",
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -1549,8 +1584,8 @@
         "verdict": "pass",
         "notes": ""
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T14:49:32Z",
       "history": [
         {
           "at": "2026-10-22T00:51:03Z",
@@ -1566,6 +1601,11 @@
           "at": "2026-10-22T14:47:13Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T14:49:32Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     },
@@ -2049,7 +2089,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "reviewed",
+      "status": "approved",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -2071,8 +2111,8 @@
         "verdict": "pass",
         "notes": "Pass with notes: Cleaver price likely to collapse; first-kill vs entries roll needs a rule."
       },
-      "approved_by": null,
-      "approved_at": null,
+      "approved_by": "jeremy",
+      "approved_at": "2026-10-22T14:49:32Z",
       "history": [
         {
           "at": "2026-10-22T00:51:03Z",
@@ -2088,6 +2128,11 @@
           "at": "2026-10-22T14:47:13Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-22T14:49:32Z",
+          "status": "approved",
+          "by": "jeremy"
         }
       ]
     }
