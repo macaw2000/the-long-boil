@@ -320,7 +320,7 @@ Paying off Arrears in Crowns is also a new Crown sink, and the Assayer tracks it
 
 ### Ledger Pages and the Commonplace Book
 
-Hester's notebook is the spine players can hold. The capstone holds 24 Ledger Pages: 3 from boss first-kills, 9 from storylets, and 12 as rare zone drops (4 per zone). A zone's drop pages arrive in a fixed order on one shared pity timer, which guarantees the next page within 1,000 kills of any monster in that zone, so nobody grinds forever for a story beat or has to go back to a monster they have outgrown. At Rustmoor's pace that spreads the four pages across the zone's two weeks. Pages are bound to the player and read in Hester's Ledger, a screen styled as her notebook. Every lore fact a player uncovers is written into the Commonplace Book, a re-readable codex.
+Hester's notebook is the spine players can hold. The capstone holds 24 Ledger Pages: 3 from boss first-kills, 9 from storylets, and 12 as rare zone drops (4 per zone). A zone's drop pages arrive in a fixed order on one shared pity timer, which guarantees the next page within 1,000 kills of any monster in that zone, so nobody grinds forever for a story beat or has to go back to a monster they have outgrown. At Rustmoor's pace that spreads the four pages across the zone's two weeks. Every kill in the zone, boss attempts included, both advances the timer and rolls a small chance for the next page. Pages are bound to the player and read in Hester's Ledger, a screen styled as her notebook. Every lore fact a player uncovers is written into the Commonplace Book, a re-readable codex.
 
 ### Story rewards and the economy
 
@@ -380,7 +380,7 @@ Logging off leaves 12 hours of steam, shown as a pressure gauge; at zero your Ti
 
 ### Combat
 
-Combat is automatic: pick a zone, a loadout, and triggers ("eat a Ration below 40% HP"), then watch or walk away. Monsters are weak to Melee, Marksmanship, or Aetherics, so loadouts matter. A knockout respawns in 60 seconds and resumes the queue, so offline hours are never wasted. Bosses are fought on purpose: a boss attempt is a separate queue item, and a lost fight spends the attempt and pays no XP. Attempts can be queued again, so a boss pays XP no faster than the zone's best monster; players come back for its drop, not its XP.
+Combat is automatic: pick a zone, a loadout, and triggers ("eat a Ration below 40% HP"), then watch or walk away. Monsters are weak to Melee, Marksmanship, or Aetherics, so loadouts matter. A knockout respawns in 60 seconds and resumes the queue, so offline hours are never wasted. Bosses are fought on purpose: a boss attempt is a separate queue item, and a lost fight spends the attempt and pays no XP. Attempts can be queued again, so a boss pays XP no faster than the zone's best monster; players come back for its drop, not its XP. A boss's first-kill reward replaces its ordinary drop roll on that kill.
 
 | Zone | Levels | Monsters | Boss and drop | Act | Ledger Pages |
 | --- | --- | --- | --- | --- | --- |

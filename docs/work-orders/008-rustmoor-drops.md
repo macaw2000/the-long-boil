@@ -53,6 +53,15 @@ Jeremy set these on 22 October 2026, after the inspector's review. The first two
 - **Ledger Page names** stay "Rustmoor Drop 1–4" until the 24-page reading order is set.
 - **Carried forward:** Pip's first bill is 15 Crowns, so first-session scrap can pay it (for the scrivener). Rat Scrap needs a use beyond collectors, such as recipes (for a later work order).
 
+## Settled after the second review
+
+Jeremy set these on 22 October 2026. The first and third are recorded in GDD sections 5 and 6.
+
+- **Any Rustmoor kill rolls for the next page,** boss attempts included, and every kill advances the shared counter. The per-rat page entries in the drops file are read as zone-wide.
+- **Accepted gap:** a player who puts nearly all combat XP into one skill may leave Rustmoor before the counter guarantees all four pages. Revisit when the combat XP split stops being provisional.
+- **A boss's first-kill reward replaces its ordinary roll** on that kill, so the first Scrapjaw win gives exactly one Cleaver.
+- **Carried forward to the combat-stats work order:** Scrapjaw's Cleaver needs level 20 to equip and is outclassed by Cinderworks gear, so its falling price harms nothing.
+
 ## Clearance
 
 Act I only. Nothing above the Act I slice, and nothing about any Ledger Page's contents.
