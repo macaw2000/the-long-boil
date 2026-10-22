@@ -437,7 +437,7 @@ Phones use a bottom tab bar with five tabs: Workshop, Story, Exchange, Guild, an
 
 1. Ada signs in with Discord. The first screen is a solicitor's letter on Sprocket Row: No. 9 is hers, contents included.
 2. Professor Brassbuckle peels the Gauger tape off the Boiler. The Boiler gauge fills to 12 hours, and a one-line tip explains that this is how long her Tinker works without her.
-3. Brassbuckle walks her through Prospecting copper, smelting brass, and tinkering a Brass Spanner. He leaves her 50 Brass Ingots and a crate of Rations from the workshop's old stock, so Ada queues 50 more spanners and watches the first few land.
+3. Brassbuckle walks her through Prospecting copper, smelting brass, and tinkering a Brass Spanner. She leaves her 50 Brass Ingots and a crate of Rations from the workshop's old stock, so Ada queues 50 more spanners and watches the first few land.
 4. Pip Tumbler's first letter arrives: a bill for the workshop's back rent. The Arrears dial twitches to life, at 0, with a tip.
 5. Rust Rats have been raiding the Row. Ada equips the spanner, sets one trigger ("eat a Ration below 40% HP"), and wins her first fight in Rustmoor.
 6. She sells the rats' scrap at the Counting-House window and pays the bill.
