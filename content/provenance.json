@@ -14,7 +14,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T02:27:53Z",
+        "run": "2026-10-23T15:28:00Z",
         "checks": [
           "schema",
           "provenance",
@@ -34,7 +34,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass: Tallow's House in the third person is in voice; needle.arrears >= 1 is the right gate; a single option is allowed by letter/1. Reviewed files as of the 2026-10-23T02:27:53Z validator run."
+        "notes": "Pass: the 'Settled after the re-review' wording is applied and reads well. Reviewed files as of the 2026-10-23T15:28:00Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -53,6 +53,21 @@
           "at": "2026-10-23T14:57:38Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T15:27:52Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T15:28:00Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T15:29:00Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ]
     },
@@ -69,7 +84,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T14:57:30Z",
+        "run": "2026-10-23T15:28:00Z",
         "checks": [
           "schema",
           "provenance",
@@ -89,7 +104,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass with notes: the prose never states Tallow's 600-Crown price; suggested line naming it. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+        "notes": "Pass: the 'Settled after the re-review' wording is applied and reads well. Reviewed files as of the 2026-10-23T15:28:00Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -116,6 +131,21 @@
         },
         {
           "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T15:27:52Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T15:28:00Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T15:29:00Z",
           "status": "reviewed",
           "by": "inspector"
         }
@@ -879,7 +909,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T14:57:30Z",
+        "run": "2026-10-23T15:28:00Z",
         "checks": [
           "schema",
           "provenance",
@@ -899,7 +929,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass with notes: option 1's label says 'against your account', which a player on Tallow's road may read as paying down the 600-Crown debt. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+        "notes": "Pass: the 'Settled after the re-review' wording is applied and reads well. Reviewed files as of the 2026-10-23T15:28:00Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -926,6 +956,21 @@
         },
         {
           "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T15:27:52Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T15:28:00Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T15:29:00Z",
           "status": "reviewed",
           "by": "inspector"
         }

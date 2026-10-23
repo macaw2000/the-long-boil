@@ -12,10 +12,10 @@
   "nerve": 1,
   "sender": "Silas Tallow",
   "weight": 1,
-  "description": "The letter is on Counting-House paper so thick it arrives folded only once. \"Master Tallow presents his compliments, and observes that Gaugehill silver has lately been reaching Rustmoor. Crested spoons, three, would be accepted against your account at the House's valuation. The House does not ask where you found them. The House knows where you found them.\"",
+  "description": "The letter is on Counting-House paper so thick it arrives folded only once. \"Master Tallow presents his compliments, and observes that Gaugehill silver has lately been reaching Rustmoor. Crested spoons, three, would be accepted against your name in the House's books at its valuation. The House does not ask where you found them. The House knows where you found them.\"",
   "options": [
     {
-      "label": "Send three crested spoons to the Counting-House, against your account.",
+      "label": "Send three crested spoons to the Counting-House, against your name in the House's books.",
       "success": {
         "text": "The spoons go up the tube rattling like a tea service in a cab. The reply is a printed slip with two figures filled in by hand, and the second is smaller than the first. The Arrears dial under your portrait drops two marks. Tallow, you imagine, is holding a spoon to the light and reading the crest.",
         "changes": {

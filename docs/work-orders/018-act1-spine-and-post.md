@@ -94,3 +94,11 @@ Jeremy accepted every recommendation on 23 October 2026, after the inspector's r
 - **scrapjaws_den requires cooking 5,** not 10, so a player who beats Scrapjaw early is less likely to hold a page they cannot read.
 - **The Stokers' road is certain at `favour.stokers >= 2`,** as a fourth option beside the Smithing challenge, as the Board road is certain at `favour.board >= 1`.
 - **The validators check for "knock"** in content cleared below Act II.
+
+## Settled after the re-review
+
+Jeremy accepted both recommendations on 23 October 2026:
+
+- **Tallow names his price:** in foundry_pass, "Silas Tallow names a figure as if it were the weather." becomes "\"Six hundred Crowns,\" says Silas Tallow, as if it were the weather."
+- **"Account" means the Crown debt only:** the Arrears letters say "against your name in the House's books" where they said "against your account" (night_clerks option 1's label; crested_spoons' "accepted against your account").
+- **Open:** the unpaid Foundry Pass debt, like the back rent, has no consequence yet.

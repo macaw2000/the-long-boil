@@ -15,7 +15,7 @@
   "description": "Pip has written on the back of a Counting-House circular. \"The Counting-House night clerks eat out of a drawer, and the drawer is empty. The House buys Rations for them at its own price, and it will set that against your name in the House's books instead of paying you, which is how the House likes to pay anybody. Five would do. Ten would do better. Pip.\"",
   "options": [
     {
-      "label": "Send five Rustmoor Rations to the night clerks, against your account.",
+      "label": "Send five Rustmoor Rations to the night clerks, against your name in the House's books.",
       "success": {
         "text": "The Rations go off in a canister marked FRAGILE, which they are not. The receipt comes back on Counting-House paper, entered and initialled. The Arrears dial under your portrait drops a mark. Somewhere at the Brass Exchange, a clerk is eating your stew.",
         "changes": {

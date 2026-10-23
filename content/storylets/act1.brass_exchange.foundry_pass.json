@@ -43,7 +43,7 @@
     {
       "label": "Cross the floor to Silas Tallow and take a pass on the Counting-House's terms.",
       "success": {
-        "text": "Silas Tallow names a figure as if it were the weather. You agree to it, which is not the same as having it, and he knows that too. The pass is yours at once; the figure goes onto your account, to be settled at the Counting-House window when you have it. On the way out, the Arrears dial under your portrait ticks up twice and settles.",
+        "text": "\"Six hundred Crowns,\" says Silas Tallow, as if it were the weather. You agree to it, which is not the same as having it, and he knows that too. The pass is yours at once; the figure goes onto your account, to be settled at the Counting-House window when you have it. On the way out, the Arrears dial under your portrait ticks up twice and settles.",
         "changes": {
           "item.rustmoor.foundry_pass": 1,
           "needle.arrears": "+2",
