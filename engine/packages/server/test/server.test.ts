@@ -187,3 +187,19 @@ describe("what the client reads", () => {
     expect((await call("GET", `/tinkers/${created.id}`)).body.events).toEqual([]);
   });
 });
+
+describe("a browser client on another origin", () => {
+  it("is allowed every method the client uses", async () => {
+    const browser = buildApi({ db, content, now: () => clock, corsOrigins: ["http://localhost:8081"] });
+    for (const method of ["GET", "POST", "PUT", "DELETE"]) {
+      const response = await browser.inject({
+        method: "OPTIONS",
+        url: "/tinkers/1/queue",
+        headers: { origin: "http://localhost:8081", "access-control-request-method": method, "access-control-request-headers": "content-type" },
+      });
+      expect(response.statusCode).toBe(204);
+      expect(String(response.headers["access-control-allow-methods"])).toContain(method);
+    }
+    await browser.close();
+  });
+});

@@ -33,7 +33,8 @@ export interface ApiOptions {
 
 export function buildApi({ db, content, now = Date.now, corsOrigins = [], trading = GDD_TRADING }: ApiOptions): FastifyInstance {
   const app = Fastify();
-  if (corsOrigins.length) app.register(cors, { origin: corsOrigins });
+  // The plugin allows only GET, HEAD and POST by default; the queue, weapons, orders and letters also use PUT and DELETE.
+  if (corsOrigins.length) app.register(cors, { origin: corsOrigins, methods: ["GET", "HEAD", "POST", "PUT", "DELETE"] });
 
   app.setErrorHandler((error, _request, reply) => {
     if (error instanceof NotFound) return reply.code(404).send({ error: error.message });
