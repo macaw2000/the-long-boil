@@ -1,0 +1,36 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.wait",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {
+  "record.fixture_visits": ">=2"
+ },
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Wait",
+   "requires": {
+    "record.fixture_visits": ">=5"
+   },
+   "success": {
+    "text": "You wait.",
+    "changes": {
+     "lore.fixture_notes": "+1"
+    }
+   }
+  },
+  {
+   "label": "Leave",
+   "success": {
+    "text": "You leave.",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   }
+  }
+ ]
+}

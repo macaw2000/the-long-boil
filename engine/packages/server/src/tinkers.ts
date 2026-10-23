@@ -186,7 +186,7 @@ export async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state:
 }
 
 export async function loadStory(tx: Tx, tinkerId: number): Promise<StoryState> {
-  const row = (await tx.query("SELECT nerve, nerve_at, post_at, hand, needle_at FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
+  const row = (await tx.query("SELECT nerve, nerve_at, post_at, hand, needle_at, check_in_at FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
   const qualities: Record<string, number> = {};
   for (const quality of (await tx.query("SELECT name, value FROM qualities WHERE tinker_id = $1", [tinkerId])).rows) {
     qualities[quality.name] = quality.value;
@@ -198,6 +198,7 @@ export async function loadStory(tx: Tx, tinkerId: number): Promise<StoryState> {
     needleAt: row.needle_at,
     hand: row.hand,
     postAt: row.post_at.getTime(),
+    checkInAt: row.check_in_at ? row.check_in_at.getTime() : null,
   };
 }
 
@@ -211,13 +212,14 @@ export async function saveStory(tx: Tx, tinkerId: number, before: StoryState, af
       [tinkerId, name, value],
     );
   }
-  await tx.query("UPDATE tinkers SET nerve = $2, nerve_at = $3, post_at = $4, hand = $5, needle_at = $6 WHERE id = $1", [
+  await tx.query("UPDATE tinkers SET nerve = $2, nerve_at = $3, post_at = $4, hand = $5, needle_at = $6, check_in_at = $7 WHERE id = $1", [
     tinkerId,
     after.nerve,
     new Date(after.nerveAt),
     new Date(after.postAt),
     JSON.stringify(after.hand),
     JSON.stringify(after.needleAt),
+    after.checkInAt === null ? null : new Date(after.checkInAt),
   ]);
 }
 
@@ -255,7 +257,10 @@ export async function advance(tx: Tx, content: GameContent, tinkerId: number, no
   const loaded = await lockAndLoad(tx, tinkerId);
   const resolved = refill ? rules.checkIn(loaded.state, content.rules, now) : rules.resolve(loaded.state, content.rules, now);
   const storyBefore = await loadStory(tx, tinkerId);
-  const refreshed = rules.refreshStory(storyBefore, resolved.state, content.rules, now);
+  // A check-in may count as a visit first, so a scene gated on visits opens as the player arrives.
+  const counted = refill ? rules.countCheckIn(storyBefore, now) : { story: storyBefore, event: null };
+  const refreshed = rules.refreshStory(counted.story, resolved.state, content.rules, now);
+  if (counted.event) refreshed.events.unshift(counted.event);
   const state = { ...resolved.state, rng: refreshed.tinker.rng };
   const version = content.rules.version;
   const entries: LogEntry[] = [
@@ -377,6 +382,33 @@ export async function listTinkers(db: Db, login: string): Promise<{ id: number; 
   return rows.map((row) => ({ id: Number(row.id), name: row.name }));
 }
 
+/**
+ * Runs a change to the Tinker's own state at a check-in: brings it up to now
+ * (counting the visit, like every check-in), applies the change, and logs it.
+ */
+async function atCheckIn(
+  db: Db,
+  content: GameContent,
+  tinkerId: number,
+  now: number,
+  change: (state: TinkerState) => TinkerState,
+  entry: LogEntry,
+): Promise<Outcome> {
+  return withTransaction(db, async (tx) => {
+    const advanced = await advance(tx, content, tinkerId, now, true);
+    let changed: TinkerState;
+    try {
+      changed = change(advanced.state);
+    } catch (error) {
+      throw new BadRequest((error as Error).message);
+    }
+    const version = content.rules.version;
+    const seq = await appendEvents(tx, tinkerId, advanced.seq, [entry], version);
+    await saveState(tx, tinkerId, await lockAndLoad(tx, tinkerId), changed, seq, version);
+    return outcome(await view(tx, tinkerId, content), advanced.events, advanced.trades, advanced.storyEvents);
+  });
+}
+
 /** Sets the queue at a check-in: resolves first, so time already spent is kept. */
 export async function setQueue(db: Db, content: GameContent, tinkerId: number, queue: QueueEntry[], now: number): Promise<Outcome> {
   for (const entry of queue) {
@@ -384,59 +416,15 @@ export async function setQueue(db: Db, content: GameContent, tinkerId: number, q
       throw new BadRequest(`unknown action or monster ${entry.actionId}`);
     }
   }
-  return withTransaction(db, async (tx) => {
-    const trades = await settle(tx, content, tinkerId, now);
-    const loaded = await lockAndLoad(tx, tinkerId);
-    const resolved = rules.checkIn(loaded.state, content.rules, now);
-    let queued: TinkerState;
-    try {
-      queued = rules.setQueue(resolved.state, queue);
-    } catch (error) {
-      throw new BadRequest((error as Error).message);
-    }
-    const version = content.rules.version;
-    const seq = await appendEvents(
-      tx,
-      tinkerId,
-      loaded.lastSeq,
-      [
-        ...fromRules(resolved.events),
-        { type: "checked_in", at: now, payload: { steamUntil: resolved.state.steamUntil } },
-        { type: "queue_set", at: now, payload: { queue } },
-      ],
-      version,
-    );
-    await saveState(tx, tinkerId, loaded, queued, seq, version);
-    return outcome(await view(tx, tinkerId, content), resolved.events, trades);
-  });
+  return atCheckIn(db, content, tinkerId, now, (state) => rules.setQueue(state, queue), { type: "queue_set", at: now, payload: { queue } });
 }
 
 /** Equips a held weapon at a check-in: resolves first, so the fight under way finishes with the old one. */
 export async function equip(db: Db, content: GameContent, tinkerId: number, item: string, now: number): Promise<Outcome> {
-  return withTransaction(db, async (tx) => {
-    const trades = await settle(tx, content, tinkerId, now);
-    const loaded = await lockAndLoad(tx, tinkerId);
-    const resolved = rules.checkIn(loaded.state, content.rules, now);
-    let equipped: TinkerState;
-    try {
-      equipped = rules.equip(resolved.state, content.rules, item);
-    } catch (error) {
-      throw new BadRequest((error as Error).message);
-    }
-    const version = content.rules.version;
-    const seq = await appendEvents(
-      tx,
-      tinkerId,
-      loaded.lastSeq,
-      [
-        ...fromRules(resolved.events),
-        { type: "checked_in", at: now, payload: { steamUntil: resolved.state.steamUntil } },
-        { type: "weapon_equipped", at: now, payload: { item } },
-      ],
-      version,
-    );
-    await saveState(tx, tinkerId, loaded, equipped, seq, version);
-    return outcome(await view(tx, tinkerId, content), resolved.events, trades);
+  return atCheckIn(db, content, tinkerId, now, (state) => rules.equip(state, content.rules, item), {
+    type: "weapon_equipped",
+    at: now,
+    payload: { item },
   });
 }
 

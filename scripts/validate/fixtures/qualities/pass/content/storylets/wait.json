@@ -1,0 +1,46 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.wait",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {
+  "record.fixture_visits": ">=2"
+ },
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Wait",
+   "requires": {
+    "record.fixture_visits": ">=3"
+   },
+   "success": {
+    "text": "You wait.",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   }
+  },
+  {
+   "label": "Count",
+   "challenge": {
+    "quality": "record.fixture_visits",
+    "difficulty": 2
+   },
+   "success": {
+    "text": "You count.",
+    "changes": {
+     "lore.fixture_notes": "+1"
+    }
+   },
+   "failure": {
+    "text": "You lose count.",
+    "changes": {
+     "needle.fixture_scald": "+1"
+    }
+   }
+  }
+ ]
+}

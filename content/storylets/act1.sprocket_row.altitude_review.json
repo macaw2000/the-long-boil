@@ -4,7 +4,7 @@
   "act": 1,
   "location": "sprocket_row",
   "reveal_layer": 1,
-  "requires": { "prologue.progress": ">=100", "act1.progress": "==0" },
+  "requires": { "prologue.progress": ">=100", "act1.progress": "==0", "record.check_ins": ">=2" },
   "nerve": 1,
   "description": "The Gazette's front page announces an Altitude Review in the tone it saves for good weather: routine, overdue, nothing to trouble the reader. Brassbuckle reads it at your bench, then reads it again, slower, as if the type might rearrange itself. Out in Sprocket Row a newsboy is shouting the headline, and nobody is buying. Without looking up, Brassbuckle says you might spend an hour picking over the loose top of the Rustmoor tip while the town makes up its mind. Bent nails sell by weight, and an hour of it will teach your eye what is worth bending down for.",
   "options": [

@@ -1,0 +1,44 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.record",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {
+  "record.fixture_visits": ">=1"
+ },
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Sign the book",
+   "success": {
+    "text": "You sign.",
+    "changes": {
+     "record.fixture_visits": "+1",
+     "flag.fixture_seen": 1
+    }
+   }
+  },
+  {
+   "label": "Tear the page",
+   "challenge": {
+    "quality": "smithing",
+    "difficulty": 5
+   },
+   "success": {
+    "text": "It tears.",
+    "changes": {
+     "lore.fixture_notes": "+1"
+    }
+   },
+   "failure": {
+    "text": "You are caught.",
+    "changes": {
+     "record.fixture_visits": 0
+    }
+   }
+  }
+ ]
+}

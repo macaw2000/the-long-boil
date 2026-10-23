@@ -83,3 +83,10 @@ Jeremy set these on 22 October 2026:
 - **rat_nests requires Scavenging 3** (`"scavenging": ">=3"`), alongside its `act1.progress` gate. A player cannot reach it at Scavenging 1 in the first sitting; about 15 minutes of the level 1 action unlocks it, and the hand search is 45% there and 60% at Scavenging 4.
 - **altitude_review:** "and an hour of it will teach your eye what is worth bending down for", so "it" no longer reads as the nails.
 - **Left as drafted:** Brassbuckle's line does not name the skill, and no UI tip is added for now.
+
+## Settled after the 48-hour assay
+
+Jeremy set these on 22 October 2026, after the assayer's walk of the first playable slice:
+
+- **Act I waits for the next visit.** altitude_review also requires `"record.check_ins": ">=2"`, so the first session ends after the Prologue and Act I opens at the first check-in after it. `record.check_ins` is a new engine-set quality in the registry: the engine counts a check-in as a visit when it comes at least an hour after the last counted one. With the Prologue's two scenes spent, the first session ends at Nerve 8.
+- **rat_nests at 45% after Brassbuckle's hour is accepted** as it stands.

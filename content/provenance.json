@@ -274,7 +274,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T01:15:32Z",
+        "run": "2026-10-23T02:00:58Z",
         "checks": [
           "schema",
           "provenance",
@@ -289,7 +289,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass. Reviewed files as of the 2026-10-23T01:15:32Z validator run."
+        "notes": "Pass with notes: the record.check_ins gate is applied as settled in 016; no line reads untrue at a later visit; no dead end. Engine notes (not content faults): check-ins from the Exchange also count, so a first sitting over an hour can open Act I; existing dev Tinkers are not backfilled. Reviewed files as of the 2026-10-23T02:00:58Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -336,6 +336,21 @@
         },
         {
           "at": "2026-10-23T01:18:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T02:00:58Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:00:58Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T02:03:16Z",
           "status": "reviewed",
           "by": "inspector"
         }

@@ -1,0 +1,24 @@
+{
+ "schema": "letter/1",
+ "id": "act1.fixture_yard.record_letter",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {},
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Visit",
+   "success": {
+    "text": "You visit.",
+    "changes": {
+     "record.fixture_visits": "+2"
+    }
+   }
+  }
+ ],
+ "sender": "A fixture neighbour",
+ "weight": 1
+}

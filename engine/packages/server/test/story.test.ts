@@ -36,10 +36,30 @@ const ids = (scenes: { id: string }[]) => scenes.map((scene) => scene.id);
 describe("the first session's story", () => {
   let id: number;
 
+  it("counts the first check-in as a visit, and a reload within the hour as none", async () => {
+    const kit = (await call("POST", "/tinkers", { login: "visits@example.com", name: "Vi" })).body.tinker.id;
+    const visits = async () => (await call("GET", `/tinkers/${kit}/story`)).body.view.qualities["record.check_ins"];
+    await call("POST", `/tinkers/${kit}/check-in`);
+    expect(await visits()).toBe(1);
+    clock += 30 * MINUTE;
+    await call("POST", `/tinkers/${kit}/check-in`);
+    expect(await visits()).toBe(1);
+    clock += 30 * MINUTE;
+    const counted = await call("POST", `/tinkers/${kit}/check-in`);
+    expect(counted.body.story).toContainEqual(expect.objectContaining({ type: "check_in_counted", qualities: { "record.check_ins": 2 } }));
+    expect(await visits()).toBe(2);
+    clock += 60 * MINUTE;
+    await call("PUT", `/tinkers/${kit}/queue`, { queue: [{ actionId: "action.rustmoor.prospect_copper", remaining: 1 }] });
+    expect(await visits()).toBe(3);
+  });
+
   it("starts with full Nerve and Pip's bill in the tube", async () => {
     id = (await call("POST", "/tinkers", { login: "ada@example.com", name: "Ada" })).body.tinker.id;
     const checked = await call("POST", `/tinkers/${id}/check-in`);
-    expect(checked.body.story).toEqual([expect.objectContaining({ type: "letter_arrived", letter: LETTER })]);
+    expect(checked.body.story).toEqual([
+      expect.objectContaining({ type: "check_in_counted", qualities: { "record.check_ins": 1 } }),
+      expect.objectContaining({ type: "letter_arrived", letter: LETTER }),
+    ]);
     expect(checked.body.tinker.story).toMatchObject({ nerve: 10, nerveCap: 10, nextNerveAt: null, letters: 1, backRent: 0 });
     const { body } = await call("GET", `/tinkers/${id}/story`);
     expect(ids(body.view.letters)).toEqual([LETTER]);
@@ -56,7 +76,7 @@ describe("the first session's story", () => {
     expect(played.body.view).toMatchObject({ nerve: 9, backRent: 15, letters: [] });
     expect(new Date(played.body.view.nextNerveAt).getTime()).toBe(clock + 36 * MINUTE);
     expect(ids(played.body.view.storylets)).toEqual(["prologue.sprocket_row.brass_plate"]);
-    expect(played.body.view.qualities).toEqual({ "flag.owes_back_rent": 1, "prologue.progress": 50 });
+    expect(played.body.view.qualities).toEqual({ "record.check_ins": 1, "flag.owes_back_rent": 1, "prologue.progress": 50 });
   });
 
   it("refuses a letter not in hand, a scene not open, and a missing option", async () => {
@@ -115,6 +135,7 @@ describe("the first session's story", () => {
     for (const { type, payload } of rows) {
       if (type === "scene_played" || type === "back_rent_paid") Object.assign(qualities, payload.qualities);
       if (type === "needle_fell") qualities[payload.needle] = payload.value;
+      if (type === "check_in_counted") Object.assign(qualities, payload.qualities);
     }
     // An absent quality is 0, so zeros are dropped on both sides.
     const nonZero = (entries: [string, number][]) => Object.fromEntries(entries.filter(([, value]) => value !== 0));

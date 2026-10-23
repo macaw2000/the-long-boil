@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   NERVE_CAP,
   backRentOwed,
+  countCheckIn,
   discardLetter,
   meets,
   newStory,
@@ -112,10 +113,29 @@ describe("the Needles", () => {
   });
 });
 
+describe("visits", () => {
+  it("counts a check-in as a visit only an hour or more after the last counted one", () => {
+    let story = newStory(0);
+    const count = (at: number) => (story = countCheckIn(story, at).story).qualities["record.check_ins"];
+    expect(count(0)).toBe(1);
+    expect(count(59 * MINUTE)).toBe(1);
+    expect(count(60 * MINUTE)).toBe(2);
+    expect(count(61 * MINUTE)).toBe(2);
+    expect(countCheckIn(story, 3 * HOUR).event).toEqual({ type: "check_in_counted", at: 3 * HOUR, qualities: { "record.check_ins": 3 } });
+  });
+
+  it("never lets a story outcome set a record", () => {
+    const tinker = newTinker({}, 0, 0, 1);
+    const scene = { id: "test.x.y", act: 0, location: "x", requires: {}, nerve: 1, description: "d", options: [{ label: "l", success: { text: "t", changes: { "record.check_ins": 9 } } }] };
+    const rigged = { ...content, storylets: new Map([[scene.id, scene]]) };
+    expect(() => playScene(newStory(0), tinker, rigged, "storylet", scene.id, 0, 0)).toThrow(/cannot set record.check_ins/);
+  });
+});
+
 describe("the first storylets, end to end", () => {
   it("walks the Prologue and Act I chain in order, gated on Scavenging 3 for rat_nests", () => {
     const tinker = newTinker({}, 0, 0, 5);
-    let story = refreshStory(newStory(0), tinker, content, 0).story;
+    let story = refreshStory(countCheckIn(newStory(0), 0).story, tinker, content, 0).story;
     let t = 0;
     const play = (kind: "storylet" | "letter", id: string, option: number) => {
       t += 10 * HOUR;
@@ -131,6 +151,8 @@ describe("the first storylets, end to end", () => {
     expect(backRentOwed(story)).toBe(15);
     expect(visible()).toEqual(["prologue.sprocket_row.brass_plate"]);
     play("storylet", "prologue.sprocket_row.brass_plate", 0);
+    // Act I waits for the next visit (Jeremy, after the 48-hour assay).
+    story = countCheckIn(story, t + HOUR).story;
     expect(visible()).toEqual(["act1.sprocket_row.altitude_review"]);
     play("storylet", "act1.sprocket_row.altitude_review", 0);
     play("storylet", "act1.lowvents.the_list", 0);

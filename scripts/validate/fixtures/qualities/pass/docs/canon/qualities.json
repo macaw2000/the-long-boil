@@ -50,6 +50,13 @@
     1
    ],
    "set_by": "fixture: choices"
+  },
+  "record": {
+   "range": [
+    0,
+    null
+   ],
+   "set_by": "fixture: the engine, never by a storylet"
   }
  },
  "qualities": {
@@ -78,6 +85,9 @@
   "flag": [
    "flag.fixture_seen",
    "flag.fixture_never"
+  ],
+  "record": [
+   "record.fixture_visits"
   ]
  }
 }

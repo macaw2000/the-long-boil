@@ -9,7 +9,8 @@
     "needle": { "range": [0, 8], "set_by": "failed or risky storylets; falls 1 per 24h" },
     "progress": { "range": [0, 100], "set_by": "storylets" },
     "lore": { "range": [0, 24], "set_by": "storylets, boss first-kills, rare drops" },
-    "flag": { "range": [0, 1], "set_by": "choices" }
+    "flag": { "range": [0, 1], "set_by": "choices" },
+    "record": { "range": [0, null], "set_by": "the engine, never by a storylet: record.check_ins counts visits, a check-in at least an hour after the last counted one (Jeremy, 22 October 2026, after the 48-hour assay)" }
   },
   "qualities": {
     "skill": [
@@ -29,6 +30,7 @@
     ],
     "lore": ["lore.whistle_notations", "lore.ledger_pages"],
     "nerve": ["nerve"],
+    "record": ["record.check_ins"],
     "flag": ["flag.asked_brassbuckle_plate", "flag.back_rent_reduced", "flag.kept_brass_plate", "flag.owes_back_rent", "flag.own_reading"]
   },
   "open_questions": [

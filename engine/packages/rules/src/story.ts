@@ -21,6 +21,13 @@ export const NEEDLES = ["needle.scald", "needle.arrears", "needle.notice", "need
 /** GDD section 5, The Pneumatic Post: "You hold up to 3, and a new one arrives every 2 hours". */
 export const HAND_SIZE = 3;
 export const POST_MS = 2 * HOUR_MS;
+/**
+ * A check-in counts as a new visit for record.check_ins when it comes at
+ * least an hour after the last counted one, so a reload is not a visit.
+ * (The hour is an engine choice; the registry says only that the engine counts.)
+ */
+export const VISIT_GAP_MS = HOUR_MS;
+export const CHECK_INS = "record.check_ins";
 /** Work order 016: the back rent is 15 Crowns; a successful repair takes 10 off. */
 export const BACK_RENT = 15;
 export const BACK_RENT_REDUCTION = 10;
@@ -67,6 +74,8 @@ export interface StoryState {
   hand: string[];
   /** When the Post's current 2-hour interval started. */
   postAt: number;
+  /** When the last counted visit began, or null before the first. */
+  checkInAt: number | null;
 }
 
 export type StoryEvent =
@@ -86,11 +95,12 @@ export type StoryEvent =
       items: Record<string, number>;
       crowns: number;
     }
-  | { type: "letter_discarded"; at: number; letter: string };
+  | { type: "letter_discarded"; at: number; letter: string }
+  | { type: "check_in_counted"; at: number; qualities: Record<string, number> };
 
 /** A fresh Tinker's story: full Nerve, and Pip's first letter already in the tube. */
 export function newStory(now: number): StoryState {
-  return { qualities: {}, nerve: NERVE_CAP, nerveAt: now, needleAt: {}, hand: [], postAt: now - POST_MS };
+  return { qualities: {}, nerve: NERVE_CAP, nerveAt: now, needleAt: {}, hand: [], postAt: now - POST_MS, checkInAt: null };
 }
 
 export function cloneStory(story: StoryState): StoryState {
@@ -293,7 +303,7 @@ export function playScene(
       if (next !== held) items[name] = next - held;
       continue;
     }
-    if (!name.includes(".") || name === "nerve") throw new StoryRefusal(`a story outcome cannot set ${name}`);
+    if (!name.includes(".") || name === "nerve" || name.startsWith("record.")) throw new StoryRefusal(`a story outcome cannot set ${name}`);
     const [min, max] = rangeOf(name);
     const before = story.qualities[name] ?? 0;
     const next = Math.min(max, Math.max(min, typeof change === "number" ? change : before + Number(change)));
@@ -319,6 +329,15 @@ export function discardLetter(previous: StoryState, letterId: string, now: numbe
   if (previous.hand.length >= HAND_SIZE) story.postAt = now;
   const event: StoryEvent = { type: "letter_discarded", at: now, letter: letterId };
   return { story, event };
+}
+
+/** Counts a check-in as a visit when it is the first, or an hour or more after the last counted one. */
+export function countCheckIn(previous: StoryState, now: number): { story: StoryState; event: StoryEvent | null } {
+  if (previous.checkInAt !== null && now - previous.checkInAt < VISIT_GAP_MS) return { story: previous, event: null };
+  const story = cloneStory(previous);
+  story.checkInAt = now;
+  story.qualities[CHECK_INS] = (story.qualities[CHECK_INS] ?? 0) + 1;
+  return { story, event: { type: "check_in_counted", at: now, qualities: { [CHECK_INS]: story.qualities[CHECK_INS] } } };
 }
 
 /** What the back rent still costs (work order 016): 0 when nothing is owed. */

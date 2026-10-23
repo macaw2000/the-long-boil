@@ -1,0 +1,34 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.gated",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {
+  "record.fixture_visits": ">=2",
+  "flag.fixture_never": "==1"
+ },
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "A",
+   "success": {
+    "text": "A.",
+    "changes": {
+     "lore.fixture_notes": "+1"
+    }
+   }
+  },
+  {
+   "label": "B",
+   "success": {
+    "text": "B.",
+    "changes": {
+     "lore.fixture_notes": "+1"
+    }
+   }
+  }
+ ]
+}

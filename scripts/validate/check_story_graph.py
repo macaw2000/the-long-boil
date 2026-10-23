@@ -57,12 +57,14 @@ SET_BY_GAME = {
     "needle": False,    # "failed or risky storylets; falls 1 per 24h" (falling only lowers it)
     "progress": False,  # "storylets"
     "flag": None,       # "choices": open question, whether only storylet choices
+    "record": True,     # "the engine, never by a storylet" (record.check_ins counts visits)
     "nerve": None,      # no "types" entry; open question in the registry itself
 }
 
 # A fresh Tinker's value for each type: the bottom of the type's range in
-# docs/canon/qualities.json (skills start at level 1, everything else at 0).
-# None where the registry gives no range (nerve).
+# docs/canon/qualities.json (skills start at level 1, everything else at 0;
+# record's range is [0, null], so a fresh record is 0). None where the
+# registry gives no range (nerve).
 
 OPS = {">=": operator.ge, "<=": operator.le, "==": operator.eq,
        ">": operator.gt, "<": operator.lt}

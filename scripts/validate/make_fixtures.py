@@ -845,12 +845,15 @@ REG = {"schema": "qualities/1", "source": "Validator fixture. Not canon.",
                  "needle": {"range": [0, 8], "set_by": "fixture: storylets"},
                  "progress": {"range": [0, 100], "set_by": "fixture: storylets"},
                  "lore": {"range": [0, 24], "set_by": "fixture: storylets, drops"},
-                 "flag": {"range": [0, 1], "set_by": "fixture: choices"}},
+                 "flag": {"range": [0, 1], "set_by": "fixture: choices"},
+                 "record": {"range": [0, None], "set_by": "fixture: the engine, never by a storylet"}},
        "qualities": {"skill": ["smithing", "tinkering"], "favour": ["favour.fixture_guild"],
                      "needle": ["needle.fixture_scald", "needle.fixture_haze"],
                      "progress": ["progress.fixture_one", "progress.fixture_two", "progress.fixture_loop"],
                      "lore": ["lore.fixture_notes"], "nerve": ["nerve"],
-                     "flag": ["flag.fixture_seen", "flag.fixture_never"]}}
+                     "flag": ["flag.fixture_seen", "flag.fixture_never"],
+                     "record": ["record.fixture_visits"]}}
+RECORD = "record.fixture_visits"
 REGP, STYP = "docs/canon/qualities.json", "docs/canon/style.md"
 STYLE_MD = ('# Fixture house style\n\nValidator fixture. Not canon.\n\n## Banned\n\n'
             '"tapestry", "testament to", "delve", "a sense of", "little did you know", '
@@ -925,6 +928,19 @@ put(QF + LTP + "unknown.json", letter("act1.fixture_yard.unknown_letter", 1, "fi
 qs = storylet("act1.fixture_yard.misshapen", 1, "fixture_yard", 0, {"smithing": ">=1"}, [
     opt("Only", oc("Done.", {"progress.fixture_nowhere": "+1"}))], nerve=9)
 put(QF + STP + "misshapen.json", qs)
+# qualities pass: a record is read in a requires and as a challenge, never changed.
+put(QP + STP + "wait.json", storylet("act1.fixture_yard.wait", 1, "fixture_yard", 0, {RECORD: ">=2"}, [
+    opt("Wait", oc("You wait.", {"flag.fixture_seen": 1}), requires={RECORD: ">=3"}),
+    opt("Count", oc("You count.", {"lore.fixture_notes": "+1"}), challenge=(RECORD, 2),
+        failure=oc("You lose count.", {"needle.fixture_scald": "+1"}))]))
+# qualities fail: outcomes that change a record (set-by-engine-only), by
+# adjustment and by set, on success and failure, and in a letter.
+put(QF + STP + "record.json", storylet("act1.fixture_yard.record", 1, "fixture_yard", 0, {RECORD: ">=1"}, [
+    opt("Sign the book", oc("You sign.", {RECORD: "+1", "flag.fixture_seen": 1})),
+    opt("Tear the page", oc("It tears.", {"lore.fixture_notes": "+1"}), challenge=("smithing", 5),
+        failure=oc("You are caught.", {RECORD: 0}))]))
+put(QF + LTP + "record.json", letter("act1.fixture_yard.record_letter", 1, "fixture_yard", 0, {}, [
+    opt("Visit", oc("You visit.", {RECORD: "+2"}))]))
 # qualities fail-registry: no docs/canon/qualities.json under the root.
 put("qualities/fail-registry/" + STP + "door.json", GOOD_PROLOGUE)
 
@@ -946,6 +962,11 @@ put(GP_ + STP + "calm.json", storylet("act1.fixture_yard.calm", 1, "fixture_yard
     {"needle.fixture_scald": "<=3", "progress.fixture_two": "==50"}, [
     opt("Rest", oc("You rest.", {"needle.fixture_scald": "-1"})),
     opt("Work", oc("You work.", {"progress.fixture_two": "+1"}), requires={"smithing": ">=5"})]))
+# story_graph pass: a record requirement no outcome sets is met, since the
+# engine sets records (not set-by-unknown, not never-set, not unreachable).
+put(GP_ + STP + "wait.json", storylet("act1.fixture_yard.wait", 1, "fixture_yard", 0, {RECORD: ">=2"}, [
+    opt("Wait", oc("You wait.", {"lore.fixture_notes": "+1"}), requires={RECORD: ">=5"}),
+    opt("Leave", oc("You leave.", {"flag.fixture_seen": 1}))]))
 # story_graph fail: never set; a flag no outcome sets (set-by-unknown); a
 # storylet that only it can unlock; an option needing a needle (haze) that
 # outcomes only ever lower; an outcome that changes nothing; a storylet/0 and a misshapen
@@ -966,6 +987,11 @@ put(GF + STP + "dead.json", storylet("act1.fixture_yard.dead", 1, "fixture_yard"
         requires={"needle.fixture_haze": ">=5"}),
     opt("Try", oc("It works.", {"lore.fixture_notes": "+1"}), challenge=("smithing", 5),
         failure=oc("It does not.", {}))]))
+# A storylet needing a record and the unset flag: only the flag is named as
+# blocking, so the record is held to be met.
+put(GF + STP + "gated.json", storylet("act1.fixture_yard.gated", 1, "fixture_yard", 0,
+    {RECORD: ">=2", "flag.fixture_never": "==1"}, [
+    opt("A", oc("A.", {"lore.fixture_notes": "+1"})), opt("B", oc("B.", {"lore.fixture_notes": "+1"}))]))
 put(GF + STP + "old.json", storylet("act1.fixture_yard.old", 1, "fixture_yard", 0, {}, [], schema="storylet/0"))
 put(GF + LTP + "misshapen.json", letter("act1.fixture_yard.misshapen", 1, "fixture_yard", 0, {}, [], weight=-1))
 
