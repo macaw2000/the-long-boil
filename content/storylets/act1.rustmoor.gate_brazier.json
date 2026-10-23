@@ -1,0 +1,32 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.rustmoor.gate_brazier",
+  "act": 1,
+  "location": "rustmoor",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": ">=15", "scavenging": ">=3" },
+  "nerve": 1,
+  "description": "At the tip gate, where Rustmoor's chains bolt onto the city's outer rim, the pickers keep a brazier going in an oil drum. It is the only warm thing on the tip after dark, and it has rules: you feed it or you stand at the back, and nobody asks what is in your sack. Tonight its grate has burned through again, and the fire sits on the bottom of the drum, sulking.",
+  "options": [
+    {
+      "label": "Go out along the heaps and find enough sound iron to bend a new grate.",
+      "challenge": { "quality": "scavenging", "difficulty": 12 },
+      "success": {
+        "text": "Half a bedstead, a mangle roller and the fire-irons from some Gaugehill drawing room make a grate that will see out the week. The pickers watch you fit it without offering to help, which is the custom. Then they move up and leave you the front place, which is also the custom, and you sit with your hands out until they stop aching.",
+        "changes": { "needle.scald": "-2" }
+      },
+      "failure": {
+        "text": "The bedstead you choose has opinions about being bent and expresses them with a spring. You come back with a cut thumb, a bruised shin and nothing fit for a grate. The pickers make room for you at the back, where it is cold, and pass you a rag for the thumb without comment.",
+        "changes": { "needle.scald": "+1" }
+      }
+    },
+    {
+      "label": "Feed the drum three lumps of coal and take a place at the front.",
+      "requires": { "item.rustmoor.coal": ">=3" },
+      "success": {
+        "text": "The coal catches even on a broken grate, and the drum begins to roar like something being paid properly. Nobody thanks you. Somebody shifts along to make room, and somebody else hands you a tin cup of tea that tastes of the tin. You drink it with your boots almost in the fire.",
+        "changes": { "item.rustmoor.coal": "-3", "needle.scald": "-1" }
+      }
+    }
+  ]
+}

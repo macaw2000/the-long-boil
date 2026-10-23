@@ -1,0 +1,28 @@
+{
+  "schema": "letter/1",
+  "id": "act1.brass_exchange.tallows_reminder",
+  "act": 1,
+  "location": "brass_exchange",
+  "reveal_layer": 1,
+  "requires": { "flag.owes_foundry_pass": "==1" },
+  "nerve": 1,
+  "sender": "Silas Tallow",
+  "weight": 1,
+  "description": "Counting-House paper, folded once, and a single line in a clerk's copperplate above Tallow's own initials. \"Master Tallow begs to remind you that one Foundry Pass stands against your name in the House's books at six hundred Crowns, settled at the Counting-House window, any weekday. The House does not hurry its customers. It finds they hurry themselves, given time.\"",
+  "options": [
+    {
+      "label": "Reply in your best hand, naming the day you will settle at the Counting-House window.",
+      "success": {
+        "text": "The answer comes back on a printed slip: your day, entered in the House's books, and initialled. Nothing else. It is the first time a date has ever felt like a debt in its own right. You pin the slip above the vice, like a price ticket on the rest of your week.",
+        "changes": {}
+      }
+    },
+    {
+      "label": "Use the reminder to light the workshop stove, and sit by it a while.",
+      "success": {
+        "text": "Counting-House paper burns slowly and very evenly, like money. You sit by the stove until your hands are warm. The House, which has never in its history been answered with silence, enters your silence too, and the Arrears dial under your portrait ticks up a mark.",
+        "changes": { "needle.arrears": "+1", "needle.scald": "-1" }
+      }
+    }
+  ]
+}

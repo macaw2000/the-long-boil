@@ -1,0 +1,32 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.sprocket_row.tube_bend",
+  "act": 1,
+  "location": "sprocket_row",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": ">=5" },
+  "nerve": 1,
+  "description": "Most evenings, at about the same hour, the Post terminal on Sprocket Row chokes. The main tube climbs from Pip's counter, turns a hard corner under the eaves, and the corner is where canisters go to reconsider. Pip stands beneath it prodding with a broom handle. A queue forms. Everyone in the queue has a theory about the bend and is happy to share it, and Pip has heard every theory twice.",
+  "options": [
+    {
+      "label": "Climb onto the counter and take the bend's inspection plate off with your No. 4 spanner.",
+      "challenge": { "quality": "tinkering", "difficulty": 12 },
+      "success": {
+        "text": "Behind the plate are three canisters wedged nose to tail and a nest of straw that some pigeon had plans for. You clear the lot and reseat the plate on fresh washers, and the queue's post goes up the tube with a sound like a drawn breath. Pip pours you the first cup from the urn and, for once, says nothing at all. You drink it sitting on the counter.",
+        "changes": { "needle.scald": "-1" }
+      },
+      "failure": {
+        "text": "The plate comes away, and so do the three canisters behind it, all at once and all onto you. One of them is a parcel of horseshoe nails for somebody further up the Row. Pip helps you down, picks nails out of your collar, and says the bend has always been like that, in the voice of someone who thinks you have made it worse.",
+        "changes": { "needle.scald": "+1" }
+      }
+    },
+    {
+      "label": "Give Pip twenty Brass Ingots to have a proper elbow-plate cast for the corner.",
+      "requires": { "item.rustmoor.brass_ingot": ">=20", "favour.stokers": "<=1" },
+      "success": {
+        "text": "Pip weighs the ingots in both hands, as if they might be counterfeit, then stacks them under the counter. \"The Lowvents will hear the Row's post was mended out of your pocket,\" Pip says. This means Pip will tell them. The bend still chokes, for now, but it chokes with a better class of hope.",
+        "changes": { "item.rustmoor.brass_ingot": "-20", "favour.stokers": "+1" }
+      }
+    }
+  ]
+}

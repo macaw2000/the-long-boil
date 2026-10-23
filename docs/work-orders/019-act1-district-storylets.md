@@ -53,3 +53,35 @@ Draft with your best proposal and list each under "New qualities" or "Invented d
 ## Hand back
 
 - What your own "What you hand back" section asks for, with the validator output verbatim, each scene's gate and why, and a table of every item cost and reward for the draftsman.
+
+## Settled after the draftsman's review
+
+Jeremy accepted every recommendation on 23 October 2026:
+
+- **Take the draftsman's 19 changes** (its review, "Exact changes for the scrivener"): district scenes raise a faction's Favour to 2 at most (each Favour option requires `favour.X <= 1`); a Favour point bought with items costs 20 Brass Ingots, 20 Rations or 14 Coal (GDD appendix A.2); both Coal rewards go (stair_lamp's success becomes `needle.scald: "-1"`, vent_slate's small vent `{}`); certain, item-free Favour options cost `+2` on a Needle; options that spend Favour require `favour.X >= 1`.
+- **Stokers' Favour 2 from district scenes alone is accepted;** foundry_pass itself still opens at `act1.progress` 70.
+- **Story Ration costs spend the bound starter crate first,** as the engine does now.
+- **gate_brazier and crooked_balance challenges go from difficulty 6 to 12,** so Needle relief stays uncertain to the top of the band.
+- **crooked_balance's challenge uses Tinkering, not Calibrating,** which nothing in this build trains.
+- **District scenes stay open into Act II** for now; revisit when Act II districts exist.
+- **No district scene is one-shot.**
+- **vent_slate's small-vent option is cut** (Jeremy, the same day): an empty option in a repeatable storylet only wastes Nerve, and the leads-nowhere rule rightly fails it. The scene keeps the top-vent challenge and the twenty-ingot option.
+
+## Settled after review
+
+Jeremy accepted every recommendation on 23 October 2026, after the inspector's review:
+
+- **Take the inspector's fixes:**
+  - public_urn requires `"act1.progress": ">=70"`; gaugers_in_pairs requires `">=40"`.
+  - Challenges that compete with a cheap item option pay -2 on success: gate_brazier `"needle.scald": "-2"`, crooked_balance `"needle.arrears": "-2"`, public_urn `"needle.notice": "-2"`.
+  - stair_lamp description: "Halfway down the long stair, the lamp on the landing is out again; it goes out more often than it stays lit."
+  - vent_slate: `"favour.stokers": "<=1"` moves into the storylet's own requires, so it closes cleanly at Favour 2; the ingot option's success says "Next time you come down the stair, a Stoker you do not know stands aside for you on the landing."
+  - coal_count: description "beside a lathe that turns only when somebody makes it"; success "the lathe turns again, grudgingly, throwing off a cloud of dust that might once have been somebody's apprentice project"; option 3 label "Tell the clerk, plainly, that the lathe turns only for inspections."; and "Whenever a Board clerk comes down from Gaugehill to count the Polytechnic's coal" for "Once a fortnight a Board clerk".
+  - gate_brazier success: "make a grate that will see out the week".
+  - crooked_balance: "and the balance is out again".
+  - rooks_table option 2: changes `{"favour.gaugers": "+1", "needle.arrears": "+2"}`; "By the time she closes the notebook, the afternoon's trading has gone on without you, and not in your favour." replaces the "more than one list" line. Cooperating with Rook never raises Notice.
+- **Every Scald-relief challenge stays uncertain to the top of the band:** tube_bend and stair_lamp go from difficulty 8 to 12.
+- **tallows_reminder** drops the "where it can watch you work" echo of back_rent for a line of its own.
+- **The "top of the slate" job may repeat;** the Favour cap allows two wins.
+- **The four idioms the inspector could not clear stay** as written.
+- **Open:** the Crown price of one Arrears mark at the Counting-House window, to be set when that payment is built; Rat Scrap for Arrears is revisited then.

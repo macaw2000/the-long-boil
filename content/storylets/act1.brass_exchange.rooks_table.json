@@ -1,0 +1,35 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.brass_exchange.rooks_table",
+  "act": 1,
+  "location": "brass_exchange",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": ">=50" },
+  "nerve": 1,
+  "description": "At four o'clock Inspector Rook takes her tea at a table by the Exchange urn, with a view of the whole trading floor and of the door you have just come through. The table has two chairs. The second is always empty, and always, somehow, pointed at you. Her notebook lies closed beside the sugar. Her pencil does not.",
+  "options": [
+    {
+      "label": "Take the empty chair and answer her questions plainly, whatever they are.",
+      "requires": { "favour.stokers": ">=1" },
+      "success": {
+        "text": "Rook asks where you were on Tuesday, what you paid for your last sack of coal, and whether Mother Ash takes sugar. You answer all three. She writes down none of it, which is somehow worse, and pours you a cup. By supper somebody in the Lowvents has heard where you took your tea.",
+        "changes": { "needle.notice": "-1", "favour.stokers": "-1" }
+      }
+    },
+    {
+      "label": "Take the empty chair and give her your own reading from the bottom rim, figure by figure.",
+      "requires": { "flag.own_reading": "==1", "favour.gaugers": "<=1" },
+      "success": {
+        "text": "Rook copies your figures into her notebook in a column of their own, ruled with the edge of the sugar tongs. When you have finished she reads them back to you in her flat voice. \"Thank you,\" she says. By the time she closes the notebook, the afternoon's trading has gone on without you, and not in your favour.",
+        "changes": { "favour.gaugers": "+1", "needle.arrears": "+2" }
+      }
+    },
+    {
+      "label": "Sit two tables away and let her watch you trade honestly all afternoon.",
+      "success": {
+        "text": "You trade honestly all afternoon, under the eye of the Gaugers' most honest officer, which turns out to be expensive. Every broker on the floor can see who is watching you, and every one of them prices it in. When Rook leaves at five she touches her hat to you. It cost rather more than a cup of tea.",
+        "changes": { "needle.notice": "-1", "needle.arrears": "+1" }
+      }
+    }
+  ]
+}

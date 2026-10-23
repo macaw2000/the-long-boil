@@ -1,0 +1,48 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.brass_exchange.crooked_balance",
+  "act": 1,
+  "location": "brass_exchange",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": ">=30" },
+  "nerve": 1,
+  "description": "The queue at the Counting-House window never ends; it only changes hats. Behind the grille the clerks weigh every Crown on a brass balance before they will take it, and the balance is out again. Everyone in the queue can see that it is out, by a hair, in the House's favour. The clerks have been trained not to see it. The queue has been trained not to mention it.",
+  "options": [
+    {
+      "label": "Offer to true the clerks' balance, against your name in the House's books.",
+      "requires": { "needle.arrears": ">=1" },
+      "challenge": { "quality": "tinkering", "difficulty": 12 },
+      "success": {
+        "text": "The clerk lets you behind the grille, which is irregular, and watches you nudge the counterpoise a hair to the left, which is more irregular still. The balance settles dead level. He initials a slip and sets it against your name. The queue says nothing, loudly.",
+        "changes": { "needle.arrears": "-2" }
+      },
+      "failure": {
+        "text": "The counterpoise turns out to be soldered in place, and soldered rather well. You unsolder it. The House charges you for the solder, for the clerk's time, and for a new counterpoise, and enters all three against your name in a fine hand.",
+        "changes": { "needle.arrears": "+1" }
+      }
+    },
+    {
+      "label": "Tip twenty pieces of Rat Scrap onto the counter, to be set against your name.",
+      "requires": { "needle.arrears": ">=1", "item.rustmoor.rat_scrap": ">=20" },
+      "success": {
+        "text": "The clerk weighs your scrap on the crooked balance, naturally, and enters a figure that is fair to within a hair. You know which way the hair goes. Still, the slip comes back initialled, and the Arrears dial under your portrait drops a mark.",
+        "changes": { "item.rustmoor.rat_scrap": "-20", "needle.arrears": "-1" }
+      }
+    },
+    {
+      "label": "Send twenty Rations through the grille for the clerks' drawer, with your compliments.",
+      "requires": { "item.rustmoor.rustmoor_ration": ">=20", "favour.counting_house": "<=1" },
+      "success": {
+        "text": "The Rations vanish below the counter with a speed that suggests the drawer was empty again. Nothing is entered against your name, for or against. But the clerk at the window, next time you reach it, calls you by your name instead of your number, and at the Counting-House that is a kind of credit.",
+        "changes": { "item.rustmoor.rustmoor_ration": "-20", "favour.counting_house": "+1" }
+      }
+    },
+    {
+      "label": "Give up your place, and let a broker stand you a hot lunch on account.",
+      "success": {
+        "text": "The broker talks prices for an hour and you eat pie for an hour, and both of you are content. At the end he signs the bill with your name under his, in the manner of brokers. The pie was very good. You will be paying for it for some time.",
+        "changes": { "needle.scald": "-1", "needle.arrears": "+1" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.sprocket_row.public_urn",
+  "act": 1,
+  "location": "sprocket_row",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": ">=70" },
+  "nerve": 1,
+  "description": "The public urn at the end of Sprocket Row is where the Row does its thinking, out loud. Lately it has been thinking about you: the lamp at No. 9 burning late, the Inspector seen on the Row, the Gazette paper in your bin. The urn's tap drips into a bucket, and the bucket is emptied by whoever is losing the argument. This evening the bucket is nearly full.",
+  "options": [
+    {
+      "label": "Mend the urn's dripping tap, and let the work do your talking for you.",
+      "challenge": { "quality": "tinkering", "difficulty": 12 },
+      "success": {
+        "text": "A new washer cut from a boot-tongue, a quarter-turn on the gland nut, and the drip stops. The Row watches the bucket for some time, in case it starts again. It does not. A Tinker who mends the urn, the Row decides, is a Tinker with nothing much to hide, and the talk drifts off towards the price of tea.",
+        "changes": { "needle.notice": "-2" }
+      },
+      "failure": {
+        "text": "The gland nut gives a quarter-turn too far and the urn says what it thinks of you in boiling water. The Row is very kind about it. The Row will also be talking about it for a week, and about the lamp at No. 9, and about why your hands were shaking.",
+        "changes": { "needle.scald": "+1", "needle.notice": "+1" }
+      }
+    },
+    {
+      "label": "Tell them a dull lie about a commission for spanners, and produce three Brass Spanners as proof.",
+      "requires": { "item.rustmoor.brass_spanner": ">=3" },
+      "success": {
+        "text": "Nothing quiets a rumour like a dull explanation with evidence. Three Brass Spanners pass from hand to hand round the urn and are pronounced sound. A neighbour asks if you would do her one at cost. You let her keep it. The lamp at No. 9, the Row agrees, is only spanners after all.",
+        "changes": { "item.rustmoor.brass_spanner": "-3", "needle.notice": "-1" }
+      }
+    },
+    {
+      "label": "Tell them, near enough, what you found in Rustmoor, and let the Row talk.",
+      "requires": { "favour.stokers": "<=1" },
+      "success": {
+        "text": "You keep it to what anyone could check: torn charts, two columns, a number that is not the Gazette's. The Row goes very quiet and then very loud. By morning Pip has carried it to the Lowvents, where it arrives as gospel. On Gaugehill it arrives as a name.",
+        "changes": { "favour.stokers": "+1", "needle.notice": "+2" }
+      }
+    },
+    {
+      "label": "Take your cup to the step and sit, and let the talk go round you.",
+      "success": {
+        "text": "You sit with your back to the warm brick and your cup in both hands, and the Row talks about you to your face as though you were the weather. It is surprisingly restful. It is also, you notice, rather thorough.",
+        "changes": { "needle.scald": "-1", "needle.notice": "+1" }
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.lowvents.stair_lamp",
+  "act": 1,
+  "location": "lowvents",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": ">=5" },
+  "nerve": 1,
+  "description": "Halfway down the long stair, the lamp on the landing is out again; it goes out more often than it stays lit. The Stokers coming off shift pass it by memory, sacks of coal on their shoulders, counting steps under their breath. Somebody has chalked an arrow on the wall beneath it, pointing down, which is accurate and no help at all. The burner is within reach if you stand on the rail, and the rail is within reach of the Lowvents.",
+  "options": [
+    {
+      "label": "Stand on the rail and coax the landing lamp's burner back to life by feel.",
+      "challenge": { "quality": "tinkering", "difficulty": 12 },
+      "success": {
+        "text": "The jet is furred with soot as thick as felt. You clear it with a hairpin borrowed from the dark, and the lamp catches with a soft cough and a circle of yellow light. The next Stoker up the stair stops, looks at it, looks at you, and hands you up the heel of her bread and a swallow of cold tea from her can.",
+        "changes": { "needle.scald": "-1" }
+      },
+      "failure": {
+        "text": "The burner catches all at once, a hand's breadth from your face, and goes out again just as quickly. You climb down smelling of singed wool, with the arrow on the wall still pointing helpfully down. A Stoker passing below asks whether you meant to do that. You tell her yes.",
+        "changes": { "needle.scald": "+1" }
+      }
+    },
+    {
+      "label": "Take a Stoker's coal sack on your own shoulder for the rest of the way down.",
+      "requires": { "favour.stokers": "<=1" },
+      "success": {
+        "text": "The sack is heavier than it looks, and the stair is longer than it was on the way up. At the bottom the Stoker takes it back without thanks and without effort. Your back will tell you about it for a day. The Lowvents, which counts that sort of thing, will tell each other for longer.",
+        "changes": { "favour.stokers": "+1", "needle.scald": "+2" }
+      }
+    }
+  ]
+}

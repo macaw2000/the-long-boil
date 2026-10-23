@@ -1,0 +1,41 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.polytechnic.demonstration_boiler",
+  "act": 1,
+  "location": "polytechnic",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": ">=10" },
+  "nerve": 1,
+  "description": "At the front of Brassbuckle's lecture hall stands a demonstration boiler older than the benches, with a safety valve that sticks every third lecture. Brassbuckle has given up hoping it will not and taken to borrowing you instead. Forty first-years sit in rising rows with their pencils up. The pressure needle is climbing. Brassbuckle is talking about something else entirely, as she does.",
+  "options": [
+    {
+      "label": "Free the sticking valve in front of forty first-years, and explain each step as you go.",
+      "requires": { "favour.polytechnic": "<=1" },
+      "challenge": { "quality": "tinkering", "difficulty": 10 },
+      "success": {
+        "text": "The valve lifts with a clean shriek and drops back on its seat, and the needle falls like a dropped stitch. Forty pencils move at once. Brassbuckle says, \"Exactly so,\" as though she had arranged it, and afterwards, in the corridor, tells you that you explain things nearly as well as she does. She seems to mean it as a warning.",
+        "changes": { "favour.polytechnic": "+1" }
+      },
+      "failure": {
+        "text": "The valve lets go before you have finished explaining it, and the front row learns what a safety valve is for in the most memorable way available. Nobody is hurt but you, and you only in the wrist. Brassbuckle sends you to the porter for clean linen and finishes the lecture over the hiss.",
+        "changes": { "needle.scald": "+1" }
+      }
+    },
+    {
+      "label": "Promise the first-years a crate of twenty Rations if they can tell you why it sticks.",
+      "requires": { "item.rustmoor.rustmoor_ration": ">=20", "favour.polytechnic": "<=1" },
+      "success": {
+        "text": "Thirty-nine wrong answers and one right one, from a girl at the back who has clearly been waiting all term to be asked. You pay out the Rations at the door. Brassbuckle watches the crate empty and says the Polytechnic has never been short of appetite, only of people willing to feed it.",
+        "changes": { "item.rustmoor.rustmoor_ration": "-20", "favour.polytechnic": "+1" }
+      }
+    },
+    {
+      "label": "Take a seat at the back of the hall and let Brassbuckle manage her own boiler.",
+      "requires": { "favour.polytechnic": ">=1" },
+      "success": {
+        "text": "The valve sticks, the needle climbs, and Brassbuckle frees it herself with one blow of a lecture pointer, without breaking her sentence. You sit in the warm at the back and listen to a lecture you once took notes on. It is restful. Brassbuckle's glance, when it reaches the back row, is less so.",
+        "changes": { "needle.scald": "-1", "favour.polytechnic": "-1" }
+      }
+    }
+  ]
+}

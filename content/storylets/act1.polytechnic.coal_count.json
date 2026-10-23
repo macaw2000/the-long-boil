@@ -1,0 +1,49 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.polytechnic.coal_count",
+  "act": 1,
+  "location": "polytechnic",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": ">=40", "tinkering": ">=12" },
+  "nerve": 1,
+  "description": "Whenever a Board clerk comes down from Gaugehill to count the Polytechnic's coal, Brassbuckle wants every workshop on his route to look busy and solvent while he does it. She has asked you to be busy and solvent in Workshop 3, conspicuously, beside a lathe that turns only when somebody makes it. His footsteps are already on the stair.",
+  "options": [
+    {
+      "label": "Get the old lathe turning before the clerk reaches the door of Workshop 3.",
+      "requires": { "favour.polytechnic": "<=1" },
+      "challenge": { "quality": "tinkering", "difficulty": 16 },
+      "success": {
+        "text": "The belt bites, the headstock groans, and the lathe turns again, grudgingly, throwing off a cloud of dust that might once have been somebody's apprentice project. The clerk writes \"Workshop 3, in use\" and moves on. Brassbuckle, passing in his wake, mouths a word at you that might be \"splendid\".",
+        "changes": { "favour.polytechnic": "+1" }
+      },
+      "failure": {
+        "text": "The belt bites, the headstock groans, and the belt leaves the pulley at speed and finds your knuckles on the way out. The clerk arrives to find you sucking your hand beside a silent lathe. He writes \"Workshop 3\" and a word you cannot read upside down. Brassbuckle sends you a look down the corridor.",
+        "changes": { "needle.scald": "+1" }
+      }
+    },
+    {
+      "label": "Bring fourteen lumps of your own coal for the Polytechnic's bunker, so the count comes out right.",
+      "requires": { "item.rustmoor.coal": ">=14", "favour.polytechnic": "<=1" },
+      "success": {
+        "text": "You tip it into the bunker ten minutes before the clerk arrives, and he counts it with the rest, and the figure comes out a little healthier than it has any right to. Brassbuckle does not thank you. She makes you tea in her own pot, which you have never seen her do for anyone.",
+        "changes": { "item.rustmoor.coal": "-14", "favour.polytechnic": "+1" }
+      }
+    },
+    {
+      "label": "Tell the clerk, plainly, that the lathe turns only for inspections.",
+      "requires": { "favour.board": "<=1", "favour.polytechnic": ">=1" },
+      "success": {
+        "text": "The clerk looks at you over his spectacles for a long moment, then writes it down exactly as you said it, and thanks you for your candour in a tone that suggests he does not hear much of it. Brassbuckle hears about it by lunchtime. She does not mention it. She does not mention anything.",
+        "changes": { "favour.board": "+1", "favour.polytechnic": "-1" }
+      }
+    },
+    {
+      "label": "Spend the visit in the Polytechnic tea room, well out of the clerk's way.",
+      "requires": { "favour.polytechnic": ">=1" },
+      "success": {
+        "text": "The tea room has a fire, a kettle and a copy of the Gazette nobody has finished. You finish it. When you come out the clerk has gone, the coal has been counted, and Brassbuckle, standing in the corridor with her arms folded, would like a word about what busy and solvent means.",
+        "changes": { "needle.scald": "-1", "favour.polytechnic": "-1" }
+      }
+    }
+  ]
+}
