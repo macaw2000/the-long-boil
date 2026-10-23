@@ -101,10 +101,9 @@ describe("the Counting-House", () => {
 });
 
 describe("the trading gate", () => {
-  it("counts every untrained skill as level 1", () => {
-    const fresh = totalLevel({}, content);
-    expect(fresh).toBeGreaterThanOrEqual(12);
-    expect(totalLevel({ tinkering: 450 }, content)).toBe(fresh + 2);
+  it("counts all sixteen GDD skills, an untrained one as level 1", () => {
+    expect(totalLevel({}, content)).toBe(16);
+    expect(totalLevel({ tinkering: 450, lumbering: 16 }, content)).toBe(16 + 2 + 1);
   });
 
   it("needs total level 50 and an account two days old", () => {

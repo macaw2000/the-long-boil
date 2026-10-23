@@ -95,6 +95,14 @@ export function collectorWeek(at: number): number {
   return (day - ((day - 4 + 7 * 1_000_000) % 7)) * DAY_MS;
 }
 
+/** GDD section 6, Skills: "Sixteen skills, each levelled 1 to 100". */
+export const GDD_SKILLS = [
+  "prospecting", "lumbering", "scavenging",
+  "smithing", "tinkering", "tailoring", "cooking", "tea_blending",
+  "calibrating",
+  "vitality", "pressure", "precision", "melee", "fortitude", "marksmanship", "aetherics",
+] as const;
+
 /** Every skill the content trains, with the combat skills. */
 export function skillNames(content: Content): string[] {
   const names = new Set<string>(COMBAT_SKILLS);
@@ -102,9 +110,14 @@ export function skillNames(content: Content): string[] {
   return [...names].sort();
 }
 
-/** Total level: every trained skill's level, an untrained skill counting 1. */
+/**
+ * Total level: all sixteen of the GDD's skills, an untrained one counting 1
+ * (settled by Jeremy on 22 October 2026, after the 48-hour assay), plus any
+ * skill the content trains that the list does not name.
+ */
 export function totalLevel(skillXp: Record<string, number>, content: Content): number {
-  return skillNames(content).reduce((sum, skill) => sum + levelFor(skillXp[skill] ?? 0, content), 0);
+  const skills = new Set<string>([...GDD_SKILLS, ...skillNames(content)]);
+  return [...skills].reduce((sum, skill) => sum + levelFor(skillXp[skill] ?? 0, content), 0);
 }
 
 export interface TradingGate {

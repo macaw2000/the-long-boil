@@ -93,7 +93,7 @@ describe("the trading gate", () => {
     expect(refused.body.error).toMatch(/total level 50/);
     const market = (await call("GET", `/tinkers/${id}/market`, undefined, gated)).body;
     expect(market.canTrade).toBe(false);
-    expect(market.totalLevel).toBeGreaterThanOrEqual(12);
+    expect(market.totalLevel).toBe(16);
   });
 });
 
