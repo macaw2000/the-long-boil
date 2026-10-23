@@ -1,7 +1,7 @@
 # Work order 019: Act I district storylets, and Tallow's reminder
 
 **Agent:** `scrivener`, with numbers reviewed by the `draftsman`
-**Status:** draft, for Jeremy to read before it runs
+**Status:** ready to run
 **Act:** Act I. **Locations:** Sprocket Row, Rustmoor, the Lowvents, the Polytechnic, the Brass Exchange. **Clearance:** Layer 1.
 **Blocks:** story pace. The Act I assay (21-day walk, after work order 018) measured about 1 story action a day against GDD section 5's 25 to 30. Most days nothing was open; Nerve sat full.
 
