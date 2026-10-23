@@ -1,20 +1,25 @@
-// The HTTP API for the first playable slice. WebSockets (GDD section 10)
-// come with the client; these routes are what it will call.
+// The HTTP API for the first playable slice. The client polls GET
+// /tinkers/:id while open; WebSockets (GDD section 10) replace the polling
+// when the Exchange needs pushed fills.
 
+import cors from "@fastify/cors";
 import Fastify, { type FastifyInstance } from "fastify";
 import type { GameContent } from "./content-loader.js";
 import type { Db } from "./db.js";
-import { BadRequest, NotFound, checkIn, createTinker, equip, setQueue } from "./tinkers.js";
+import { BadRequest, NotFound, checkIn, createTinker, equip, listTinkers, look, setQueue } from "./tinkers.js";
 
 export interface ApiOptions {
   db: Db;
   content: GameContent;
   /** Injected so tests can move time. */
   now?: () => number;
+  /** Origins allowed to call the API from a browser: the Expo dev server, in development. */
+  corsOrigins?: string[];
 }
 
-export function buildApi({ db, content, now = Date.now }: ApiOptions): FastifyInstance {
+export function buildApi({ db, content, now = Date.now, corsOrigins = [] }: ApiOptions): FastifyInstance {
   const app = Fastify();
+  if (corsOrigins.length) app.register(cors, { origin: corsOrigins });
 
   app.setErrorHandler((error, _request, reply) => {
     if (error instanceof NotFound) return reply.code(404).send({ error: error.message });
@@ -30,7 +35,15 @@ export function buildApi({ db, content, now = Date.now }: ApiOptions): FastifyIn
     actions: [...content.rules.actions.values()],
     monsters: [...content.rules.monsters.values()],
     weapons: [...content.rules.weapons.values()],
+    items: [...content.items.values()],
+    totalXp: content.rules.totalXp,
   }));
+
+  app.get<{ Params: { login: string } }>("/accounts/:login/tinkers", async (request) => ({
+    tinkers: await listTinkers(db, request.params.login),
+  }));
+
+  app.get<{ Params: { id: string } }>("/tinkers/:id", async (request) => look(db, content, Number(request.params.id), now()));
 
   app.post<{ Body: { login: string; name: string } }>(
     "/tinkers",

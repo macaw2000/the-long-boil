@@ -33,6 +33,12 @@ export interface TinkerView {
 export interface Outcome {
   tinker: TinkerView;
   events: GameEvent[];
+  /** The events folded into the While You Were Away ledger. */
+  ledger: rules.Ledger;
+}
+
+function outcome(tinker: TinkerView, events: GameEvent[]): Outcome {
+  return { tinker, events, ledger: rules.summarize(events) };
 }
 
 interface Loaded {
@@ -236,7 +242,7 @@ export async function createTinker(db: Db, content: GameContent, login: string, 
       version,
     );
     await tx.query("UPDATE tinkers SET last_seq = $2 WHERE id = $1", [tinkerId, seq]);
-    return { tinker: await view(tx, tinkerId, content), events: [] };
+    return outcome(await view(tx, tinkerId, content), []);
   });
 }
 
@@ -254,8 +260,34 @@ export async function checkIn(db: Db, content: GameContent, tinkerId: number, no
       version,
     );
     await saveState(tx, tinkerId, loaded, state, seq, version);
-    return { tinker: await view(tx, tinkerId, content), events };
+    return outcome(await view(tx, tinkerId, content), events);
   });
+}
+
+/**
+ * A look while the Tinker is present: resolves up to now without refilling
+ * the Boiler, so a client can watch the work land between check-ins.
+ */
+export async function look(db: Db, content: GameContent, tinkerId: number, now: number): Promise<Outcome> {
+  return withTransaction(db, async (tx) => {
+    const loaded = await lockAndLoad(tx, tinkerId);
+    const { state, events } = rules.resolve(loaded.state, content.rules, now);
+    const version = content.rules.version;
+    const seq = await appendEvents(tx, tinkerId, loaded.lastSeq, fromRules(events), version);
+    await saveState(tx, tinkerId, loaded, state, seq, version);
+    return outcome(await view(tx, tinkerId, content), events);
+  });
+}
+
+/** The Tinkers on one account, oldest first; an unknown login has none. */
+export async function listTinkers(db: Db, login: string): Promise<{ id: number; name: string }[]> {
+  const rows = (
+    await db.query(
+      "SELECT t.id, t.name FROM tinkers t JOIN accounts a ON a.id = t.account_id WHERE a.login = $1 ORDER BY t.id",
+      [login],
+    )
+  ).rows;
+  return rows.map((row) => ({ id: Number(row.id), name: row.name }));
 }
 
 /** Sets the queue at a check-in: resolves first, so time already spent is kept. */
@@ -287,7 +319,7 @@ export async function setQueue(db: Db, content: GameContent, tinkerId: number, q
       version,
     );
     await saveState(tx, tinkerId, loaded, queued, seq, version);
-    return { tinker: await view(tx, tinkerId, content), events: resolved.events };
+    return outcome(await view(tx, tinkerId, content), resolved.events);
   });
 }
 
@@ -315,7 +347,7 @@ export async function equip(db: Db, content: GameContent, tinkerId: number, item
       version,
     );
     await saveState(tx, tinkerId, loaded, equipped, seq, version);
-    return { tinker: await view(tx, tinkerId, content), events: resolved.events };
+    return outcome(await view(tx, tinkerId, content), resolved.events);
   });
 }
 

@@ -1,0 +1,118 @@
+// The server's HTTP API, as the client sees it. The shapes mirror
+// packages/server/src/tinkers.ts and packages/rules/src/ledger.ts.
+
+const BASE = process.env.EXPO_PUBLIC_API_URL ?? "http://127.0.0.1:3000";
+
+export interface ItemStack {
+  item: string;
+  qty: number;
+}
+
+export interface Action {
+  id: string;
+  skill: string;
+  level_required: number;
+  seconds: number;
+  xp: number;
+  inputs: ItemStack[];
+  outputs: ItemStack[];
+}
+
+export interface Monster {
+  id: string;
+  name: string;
+  flavour: string;
+  level: number;
+  boss: boolean;
+  weakness: string;
+  seconds_per_kill: number;
+}
+
+export interface Weapon {
+  item: string;
+  style: string;
+  level_required: number;
+  power: number;
+  accuracy: number;
+}
+
+export interface Item {
+  id: string;
+  name: string;
+  flavour: string;
+}
+
+export interface Content {
+  version: string;
+  actions: Action[];
+  monsters: Monster[];
+  weapons: Weapon[];
+  items: Item[];
+  totalXp: number[];
+}
+
+export interface QueueEntry {
+  actionId: string;
+  remaining: number;
+}
+
+export interface Tinker {
+  id: number;
+  name: string;
+  crowns: number;
+  inventory: { item: string; qty: number; bound: boolean }[];
+  skills: { skill: string; xp: number; level: number }[];
+  queue: QueueEntry[];
+  progressMs: number;
+  steamUntil: string;
+  resolvedTo: string;
+  weapon: string | null;
+  bossesBeaten: string[];
+}
+
+export interface LedgerLine {
+  id: string;
+  count: number;
+  won: number;
+  xp: Record<string, number>;
+  crowns: number;
+  consumed: Record<string, number>;
+  produced: Record<string, number>;
+}
+
+export interface Ledger {
+  from: number | null;
+  to: number | null;
+  lines: LedgerLine[];
+  crowns: number;
+  levelUps: { skill: string; level: number }[];
+  stalls: { actionId: string; reason: string }[];
+  boilerDryAt: number | null;
+}
+
+export interface Outcome {
+  tinker: Tinker;
+  ledger: Ledger;
+}
+
+async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+  const response = await fetch(`${BASE}${path}`, {
+    method,
+    headers: body === undefined ? {} : { "content-type": "application/json" },
+    body: body === undefined ? null : JSON.stringify(body),
+  });
+  const json = await response.json();
+  if (!response.ok) throw new Error(json.error ?? `${method} ${path} failed with ${response.status}`);
+  return json as T;
+}
+
+export const api = {
+  content: () => request<Content>("GET", "/content"),
+  listTinkers: (login: string) =>
+    request<{ tinkers: { id: number; name: string }[] }>("GET", `/accounts/${encodeURIComponent(login)}/tinkers`),
+  createTinker: (login: string, name: string) => request<Outcome>("POST", "/tinkers", { login, name }),
+  checkIn: (id: number) => request<Outcome>("POST", `/tinkers/${id}/check-in`),
+  look: (id: number) => request<Outcome>("GET", `/tinkers/${id}`),
+  setQueue: (id: number, queue: QueueEntry[]) => request<Outcome>("PUT", `/tinkers/${id}/queue`, { queue }),
+  equip: (id: number, item: string) => request<Outcome>("PUT", `/tinkers/${id}/weapon`, { item }),
+};

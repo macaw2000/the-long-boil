@@ -13,9 +13,17 @@ export interface StartStack {
   bound: boolean;
 }
 
+export interface ItemInfo {
+  id: string;
+  name: string;
+  flavour: string;
+}
+
 export interface GameContent {
   rules: Content;
   start: { inventory: StartStack[]; crowns: number };
+  /** Names and flavour lines, for the client; the rules never read them. */
+  items: ReadonlyMap<string, ItemInfo>;
 }
 
 export const DEFAULT_CONTENT_DIR = join(import.meta.dirname, "../../../../content");
@@ -58,5 +66,6 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
       combat: readJson(join(dir, "tuning", "combat.json")).constants,
     }),
     start: { inventory: start.inventory, crowns: start.crowns },
+    items: new Map(all("items", "items").map((item: ItemInfo) => [item.id, { id: item.id, name: item.name, flavour: item.flavour }])),
   };
 }

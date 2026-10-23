@@ -159,3 +159,31 @@ describe("the rules the database enforces", () => {
     expect(Number(rows[0].qty)).toBe(Math.floor((2 * 3600) / 54));
   });
 });
+
+describe("what the client reads", () => {
+  it("serves item names with the content", async () => {
+    const { body } = await call("GET", "/content");
+    expect(body.items).toContainEqual(expect.objectContaining({ id: "item.rustmoor.brass_spanner", name: "Brass Spanner" }));
+    expect(body.totalXp[2]).toBe(16);
+  });
+
+  it("lists an account's Tinkers, and none for an unknown login", async () => {
+    await call("POST", "/tinkers", { login: "list@example.com", name: "First" });
+    await call("POST", "/tinkers", { login: "list@example.com", name: "Second" });
+    const { body } = await call("GET", "/accounts/list@example.com/tinkers");
+    expect(body.tinkers.map((tinker: { name: string }) => tinker.name)).toEqual(["First", "Second"]);
+    expect((await call("GET", "/accounts/nobody@example.com/tinkers")).body.tinkers).toEqual([]);
+  });
+
+  it("shows work landing on a look without refilling the Boiler", async () => {
+    const created = (await call("POST", "/tinkers", { login: "look@example.com", name: "Lou" })).body.tinker;
+    await call("PUT", `/tinkers/${created.id}/queue`, { queue: [{ actionId: "action.rustmoor.prospect_copper", remaining: 100 }] });
+    clock += 10 * 60_000;
+    const { status, body } = await call("GET", `/tinkers/${created.id}`);
+    expect(status).toBe(200);
+    expect(body.ledger.lines).toEqual([expect.objectContaining({ id: "action.rustmoor.prospect_copper", count: 11 })]);
+    expect(body.tinker.inventory).toContainEqual({ item: "item.rustmoor.copper", qty: 11, bound: false });
+    expect(body.tinker.steamUntil).toBe(created.steamUntil);
+    expect((await call("GET", `/tinkers/${created.id}`)).body.events).toEqual([]);
+  });
+});

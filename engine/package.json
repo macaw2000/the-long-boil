@@ -1,12 +1,15 @@
 {
   "name": "the-long-boil-engine",
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "tsc -b packages/rules packages/server",
     "test": "vitest run",
-    "typecheck": "tsc -b packages/rules packages/server --pretty",
-    "start": "npm run build && node packages/server/dist/main.js"
+    "typecheck": "tsc -b packages/rules packages/server --pretty && npm run typecheck -w @long-boil/client",
+    "start": "npm run build && node packages/server/dist/main.js",
+    "client": "npm run web -w @long-boil/client"
   },
   "devDependencies": {
     "@types/node": "22.19.1",
