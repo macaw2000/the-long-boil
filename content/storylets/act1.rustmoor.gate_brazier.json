@@ -10,10 +10,10 @@
   "options": [
     {
       "label": "Go out along the heaps and find enough sound iron to bend a new grate.",
-      "challenge": { "quality": "scavenging", "difficulty": 12 },
+      "challenge": { "quality": "scavenging", "difficulty": 8 },
       "success": {
         "text": "Half a bedstead, a mangle roller and the fire-irons from some Gaugehill drawing room make a grate that will see out the week. The pickers watch you fit it without offering to help, which is the custom. Then they move up and leave you the front place, which is also the custom, and you sit with your hands out until they stop aching.",
-        "changes": { "needle.scald": "-2" }
+        "changes": { "needle.scald": "-1" }
       },
       "failure": {
         "text": "The bedstead you choose has opinions about being bent and expresses them with a spring. You come back with a cut thumb, a bruised shin and nothing fit for a grate. The pickers make room for you at the back, where it is cold, and pass you a rag for the thumb without comment.",

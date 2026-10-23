@@ -901,6 +901,22 @@ put(SS + "letters/old.json", letter("act1.fixture_yard.old_letter", 1, "fixture_
 put(SS + "letters/a-storylet.json", storylet("act1.fixture_yard.stray_storylet", 1, "fixture_yard", 0, {}, [
     opt("A", oc("A.", {"flag.fixture_seen": 1})), opt("B", oc("B.", {"flag.fixture_seen": 0}))]))
 
+# Storylet cooldowns (work order 019, settled after the district re-walk):
+# storylet/1 takes an optional whole-hour cooldown_hours of at least 1;
+# letter/1 does not take it (a letter is one-shot once answered).
+def cooled(ident, hours):
+    s = storylet(ident, 1, "fixture_yard", 0, {}, [
+        opt("A", oc("A.", {"flag.fixture_seen": 1})), opt("B", oc("B.", {"flag.fixture_seen": 0}))])
+    s["cooldown_hours"] = hours
+    return s
+put("schema/pass/" + STP + "daily.json", cooled("act1.fixture_yard.daily", 24))
+put(SS + "storylets/cooldown-zero.json", cooled("act1.fixture_yard.cooldown_zero", 0))
+put(SS + "storylets/cooldown-fraction.json", cooled("act1.fixture_yard.cooldown_fraction", 1.5))
+lc = letter("act1.fixture_yard.cooled_letter", 1, "fixture_yard", 0, {}, [
+    opt("A", oc("A.", {"flag.fixture_seen": 1}))])
+lc["cooldown_hours"] = 24
+put(SS + "letters/cooled.json", lc)
+
 # qualities pass: skills, favour, needle, progress, flag and an item id.
 QP = "qualities/pass/"
 put(QP + REGP, REG)

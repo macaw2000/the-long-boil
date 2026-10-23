@@ -3,6 +3,7 @@ FAIL schema/id-form content/storylets/mismatch.json id=act2.fixture_docks.mismat
 FAIL schema/shape content/letters/bad.json id=act1.fixture_yard.bad_letter : /: missing required field 'sender'
 FAIL schema/shape content/letters/bad.json id=act1.fixture_yard.bad_letter : /options: more than 2 items
 FAIL schema/shape content/letters/bad.json id=act1.fixture_yard.bad_letter : /weight: must be greater than 0
+FAIL schema/shape content/letters/cooled.json id=act1.fixture_yard.cooled_letter : /cooldown_hours: field 'cooldown_hours' is not allowed by this schema
 FAIL schema/shape content/storylets/bad.json id=act9.Fixture Yard.bad : /act: above maximum 3
 FAIL schema/shape content/storylets/bad.json id=act9.Fixture Yard.bad : /id: does not match pattern ^(prologue|act[1-3])\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$
 FAIL schema/shape content/storylets/bad.json id=act9.Fixture Yard.bad : /location: does not match pattern ^[a-z][a-z0-9_]*$
@@ -15,6 +16,8 @@ FAIL schema/shape content/storylets/bad.json id=act9.Fixture Yard.bad : /options
 FAIL schema/shape content/storylets/bad.json id=act9.Fixture Yard.bad : /requires/progress.fixture_one: does not match pattern ^(>=|<=|==|>|<)(0|[1-9][0-9]*)$
 FAIL schema/shape content/storylets/bad.json id=act9.Fixture Yard.bad : /reveal_layer: above maximum 3
 FAIL schema/shape content/storylets/bad.json id=act9.Fixture Yard.bad : /tags: field 'tags' is not allowed by this schema
+FAIL schema/shape content/storylets/cooldown-fraction.json id=act1.fixture_yard.cooldown_fraction : /cooldown_hours: expected integer, got number
+FAIL schema/shape content/storylets/cooldown-zero.json id=act1.fixture_yard.cooldown_zero : /cooldown_hours: below minimum 1
 FAIL schema/shape content/storylets/options.json id=act1.fixture_yard.options : /options/0: field 'failure' requires field 'challenge'
 FAIL schema/shape content/storylets/options.json id=act1.fixture_yard.options : /options/1: missing required field 'success'
 FAIL schema/shape content/storylets/options.json id=act1.fixture_yard.options : /options/2/success: missing required field 'text'

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "storylet/1",
   "title": "Storylet, version 1",
-  "description": "One storylet per file under content/storylets/ (work order 015, scope 1; GDD section 5, Storylets). 'id' is act.location.name: act is 'prologue' for act 0, else act1 to act3, and must agree with 'act'; location must equal 'location' (the schema check's id-form rule). 'act' is 0 for the Prologue, then 1 to 3. 'reveal_layer' is 0 (no reveal) to 3; the reveal check holds it at or below 'act'. 'requires' maps a quality name to a condition string: one of >=, <=, ==, >, < followed by a whole number, e.g. \">=30\" (the GDD example's form); an empty object means no requirement. Each option has a 'label', an optional 'requires', and either a certain outcome, written 'success' alone as in the GDD example, or a 'challenge' {quality, difficulty} with both 'success' and 'failure'. Each outcome is {text, changes}: 'changes' maps a quality name to either a signed string \"+N\" or \"-N\" (adjust by N) or a non-negative integer (set to it), as in the GDD example. Whether each named quality exists is the qualities check's job; reachability is the story_graph check's; word limits and banned words are the style check's. 'revision' is optional and exists only so a register row's revision can match the file. Nerve is 1 to 3.",
+  "description": "One storylet per file under content/storylets/ (work order 015, scope 1; GDD section 5, Storylets). 'id' is act.location.name: act is 'prologue' for act 0, else act1 to act3, and must agree with 'act'; location must equal 'location' (the schema check's id-form rule). 'act' is 0 for the Prologue, then 1 to 3. 'reveal_layer' is 0 (no reveal) to 3; the reveal check holds it at or below 'act'. 'requires' maps a quality name to a condition string: one of >=, <=, ==, >, < followed by a whole number, e.g. \">=30\" (the GDD example's form); an empty object means no requirement. Each option has a 'label', an optional 'requires', and either a certain outcome, written 'success' alone as in the GDD example, or a 'challenge' {quality, difficulty} with both 'success' and 'failure'. Each outcome is {text, changes}: 'changes' maps a quality name to either a signed string \"+N\" or \"-N\" (adjust by N) or a non-negative integer (set to it), as in the GDD example. Whether each named quality exists is the qualities check's job; reachability is the story_graph check's; word limits and banned words are the style check's. 'revision' is optional and exists only so a register row's revision can match the file. Nerve is 1 to 3. 'cooldown_hours' is optional (work order 019, settled after the district re-walk): a whole number of hours, at least 1; once the storylet is played, the engine keeps it closed that long. Leaving it out means no cooldown. Letters do not carry it: a letter is one-shot once answered.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -49,6 +49,10 @@
       "type": "integer",
       "minimum": 1,
       "maximum": 3
+    },
+    "cooldown_hours": {
+      "type": "integer",
+      "minimum": 1
     },
     "description": {
       "type": "string",

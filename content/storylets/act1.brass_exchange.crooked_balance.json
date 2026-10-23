@@ -6,6 +6,7 @@
   "reveal_layer": 1,
   "requires": { "act1.progress": ">=30" },
   "nerve": 1,
+  "cooldown_hours": 24,
   "description": "The queue at the Counting-House window never ends; it only changes hats. Behind the grille the clerks weigh every Crown on a brass balance before they will take it, and the balance is out again. Everyone in the queue can see that it is out, by a hair, in the House's favour. The clerks have been trained not to see it. The queue has been trained not to mention it.",
   "options": [
     {

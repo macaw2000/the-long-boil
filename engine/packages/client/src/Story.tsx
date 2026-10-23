@@ -120,9 +120,15 @@ export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (o
         <Card key={scene.id} scene={scene} nerve={view.nerve} busy={busy} onPlay={(option) => act(api.play(tinkerId, "storylet", scene.id, option))} />
       ))}
 
-      {view.upcoming.length > 0 && (
+      {(view.upcoming.length > 0 || view.cooling.length > 0) && (
         <View style={ui.panel}>
           <Text style={[ui.heading, { fontSize: 15 }]}>Coming up</Text>
+          {view.cooling.map((scene) => (
+            <Text key={scene.id} style={ui.muted}>
+              {titleCase(scene.location.replace(/_/g, " "))} again from{" "}
+              {new Date(scene.opensAt).toLocaleString([], { weekday: "short", hour: "2-digit", minute: "2-digit" })}.
+            </Text>
+          ))}
           {view.upcoming.map((scene) => (
             <Text key={scene.id} style={ui.muted}>
               Something waits in {titleCase(scene.location.replace(/_/g, " "))}: needs{" "}

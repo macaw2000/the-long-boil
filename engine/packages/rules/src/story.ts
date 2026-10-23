@@ -59,6 +59,8 @@ export interface Scene {
   nerve: number;
   description: string;
   options: StoryOption[];
+  /** Storylets only: once played, closed this long (work order 019). */
+  cooldown_hours?: number;
   /** Letters only. */
   sender?: string;
   weight?: number;
@@ -80,6 +82,8 @@ export interface StoryState {
   checkInAt: number | null;
   /** Letters answered; they never return to the deck (work order 018). */
   answered: string[];
+  /** When each storylet with a cooldown was last played. */
+  playedAt: Record<string, number>;
 }
 
 export type StoryEvent =
@@ -104,11 +108,11 @@ export type StoryEvent =
 
 /** A fresh Tinker's story: full Nerve, and Pip's first letter already in the tube. */
 export function newStory(now: number): StoryState {
-  return { qualities: {}, nerve: NERVE_CAP, nerveAt: now, needleAt: {}, hand: [], postAt: now - POST_MS, checkInAt: null, answered: [] };
+  return { qualities: {}, nerve: NERVE_CAP, nerveAt: now, needleAt: {}, hand: [], postAt: now - POST_MS, checkInAt: null, answered: [], playedAt: {} };
 }
 
 export function cloneStory(story: StoryState): StoryState {
-  return { ...story, qualities: { ...story.qualities }, needleAt: { ...story.needleAt }, hand: [...story.hand], answered: [...story.answered] };
+  return { ...story, qualities: { ...story.qualities }, needleAt: { ...story.needleAt }, hand: [...story.hand], answered: [...story.answered], playedAt: { ...story.playedAt } };
 }
 
 const RANGES: [string, number, number][] = [
@@ -263,6 +267,14 @@ function earned(name: string): boolean {
   return !name.includes(".") || name.startsWith("item.") || name.startsWith("record.");
 }
 
+/** When a storylet's cooldown ends, or null when it is not cooling down. */
+export function coolsUntil(scene: Scene, story: StoryState, now: number): number | null {
+  const played = story.playedAt[scene.id];
+  if (!scene.cooldown_hours || played === undefined) return null;
+  const until = played + scene.cooldown_hours * HOUR_MS;
+  return until > now ? until : null;
+}
+
 export interface UpcomingScene {
   id: string;
   location: string;
@@ -276,15 +288,25 @@ export interface UpcomingScene {
  * a locked beat can show its gate without being spoiled.
  */
 export function upcomingStorylets(tinker: TinkerState, story: StoryState, content: Content): UpcomingScene[] {
-  return [...content.storylets.values()].flatMap((scene) => {
+  return [...content.storylets.values()].flatMap((scene): UpcomingScene[] => {
     const needs = unmet(scene.requires, tinker, story, content);
     return needs.length > 0 && needs.every(([name]) => earned(name)) ? [{ id: scene.id, location: scene.location, needs }] : [];
   });
 }
 
-/** Storylets the Tinker can see now: every one whose requirements hold. */
-export function availableStorylets(tinker: TinkerState, story: StoryState, content: Content): Scene[] {
-  return [...content.storylets.values()].filter((scene) => unmet(scene.requires, tinker, story, content).length === 0);
+/** Storylets the Tinker can see now: every one whose requirements hold and that is not cooling down. */
+export function availableStorylets(tinker: TinkerState, story: StoryState, content: Content, now = Number.NEGATIVE_INFINITY): Scene[] {
+  return [...content.storylets.values()].filter(
+    (scene) => unmet(scene.requires, tinker, story, content).length === 0 && coolsUntil(scene, story, now) === null,
+  );
+}
+
+/** Storylets open but for their cooldown, with when each opens again. */
+export function coolingStorylets(tinker: TinkerState, story: StoryState, content: Content, now: number): { id: string; location: string; opensAt: number }[] {
+  return [...content.storylets.values()].flatMap((scene) => {
+    const until = coolsUntil(scene, story, now);
+    return until !== null && unmet(scene.requires, tinker, story, content).length === 0 ? [{ id: scene.id, location: scene.location, opensAt: until }] : [];
+  });
 }
 
 /**
@@ -308,6 +330,7 @@ export function playScene(
   if (kind === "storylet" && unmet(scene.requires, previousTinker, previous, content).length) {
     throw new StoryRefusal(`${sceneId} is not open to you now`);
   }
+  if (kind === "storylet" && coolsUntil(scene, previous, now) !== null) throw new StoryRefusal(`${sceneId} is closed until later`);
   const option = scene.options[optionIndex];
   if (!option) throw new StoryRefusal(`${sceneId} has no option ${optionIndex}`);
   if (unmet(option.requires, previousTinker, previous, content).length) throw new StoryRefusal("that option is not open to you");
@@ -353,6 +376,7 @@ export function playScene(
     story.hand = story.hand.filter((id) => id !== sceneId);
     story.answered.push(sceneId);
   }
+  if (kind === "storylet" && scene.cooldown_hours) story.playedAt[sceneId] = now;
 
   const event: StoryEvent = { type: "scene_played", at: now, kind, scene: sceneId, option: optionIndex, nerve: scene.nerve, challenge, success, qualities, items, crowns: 0 };
   return { story, tinker, event, outcome };

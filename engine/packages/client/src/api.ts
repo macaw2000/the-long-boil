@@ -146,6 +146,7 @@ export interface StoryView {
   letters: SceneView[];
   storylets: SceneView[];
   upcoming: { id: string; location: string; needs: [string, string, number][] }[];
+  cooling: { id: string; location: string; opensAt: string }[];
   backRent: number;
   debts: { id: string; label: string; crowns: number }[];
 }

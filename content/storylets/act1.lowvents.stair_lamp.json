@@ -10,7 +10,7 @@
   "options": [
     {
       "label": "Stand on the rail and coax the landing lamp's burner back to life by feel.",
-      "challenge": { "quality": "tinkering", "difficulty": 12 },
+      "challenge": { "quality": "tinkering", "difficulty": 8 },
       "success": {
         "text": "The jet is furred with soot as thick as felt. You clear it with a hairpin borrowed from the dark, and the lamp catches with a soft cough and a circle of yellow light. The next Stoker up the stair stops, looks at it, looks at you, and hands you up the heel of her bread and a swallow of cold tea from her can.",
         "changes": { "needle.scald": "-1" }

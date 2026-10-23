@@ -10,7 +10,7 @@
   "options": [
     {
       "label": "Climb onto the counter and take the bend's inspection plate off with your No. 4 spanner.",
-      "challenge": { "quality": "tinkering", "difficulty": 12 },
+      "challenge": { "quality": "tinkering", "difficulty": 8 },
       "success": {
         "text": "Behind the plate are three canisters wedged nose to tail and a nest of straw that some pigeon had plans for. You clear the lot and reseat the plate on fresh washers, and the queue's post goes up the tube with a sound like a drawn breath. Pip pours you the first cup from the urn and, for once, says nothing at all. You drink it sitting on the counter.",
         "changes": { "needle.scald": "-1" }

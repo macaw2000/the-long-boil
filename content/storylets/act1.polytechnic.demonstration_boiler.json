@@ -6,6 +6,7 @@
   "reveal_layer": 1,
   "requires": { "act1.progress": ">=10" },
   "nerve": 1,
+  "cooldown_hours": 24,
   "description": "At the front of Brassbuckle's lecture hall stands a demonstration boiler older than the benches, with a safety valve that sticks every third lecture. Brassbuckle has given up hoping it will not and taken to borrowing you instead. Forty first-years sit in rising rows with their pencils up. The pressure needle is climbing. Brassbuckle is talking about something else entirely, as she does.",
   "options": [
     {

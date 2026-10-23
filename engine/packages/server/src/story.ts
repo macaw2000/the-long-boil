@@ -32,6 +32,8 @@ export interface StoryView {
   storylets: SceneView[];
   /** Next beats held back by a skill, an item or a visit, with what they need. */
   upcoming: rules.UpcomingScene[];
+  /** Storylets closed by their cooldown, with when each opens again. */
+  cooling: { id: string; location: string; opensAt: string }[];
   backRent: number;
   debts: { id: string; label: string; crowns: number }[];
 }
@@ -49,7 +51,7 @@ function sceneView(scene: Scene, kind: "storylet" | "letter", tinker: TinkerStat
   };
 }
 
-function storyView(tinker: TinkerState, story: StoryState, content: GameContent): StoryView {
+function storyView(tinker: TinkerState, story: StoryState, content: GameContent, now: number): StoryView {
   return {
     nerve: story.nerve,
     nerveCap: rules.NERVE_CAP,
@@ -60,8 +62,11 @@ function storyView(tinker: TinkerState, story: StoryState, content: GameContent)
       const letter = content.rules.letters.get(id);
       return letter ? [sceneView(letter, "letter", tinker, story, content)] : [];
     }),
-    storylets: rules.availableStorylets(tinker, story, content.rules).map((scene) => sceneView(scene, "storylet", tinker, story, content)),
+    storylets: rules.availableStorylets(tinker, story, content.rules, now).map((scene) => sceneView(scene, "storylet", tinker, story, content)),
     upcoming: rules.upcomingStorylets(tinker, story, content.rules),
+    cooling: rules
+      .coolingStorylets(tinker, story, content.rules, now)
+      .map((scene) => ({ id: scene.id, location: scene.location, opensAt: new Date(scene.opensAt).toISOString() })),
     backRent: rules.backRentOwed(story),
     debts: rules.debtsOwed(story).map(({ id, label, crowns }) => ({ id, label, crowns })),
   };
@@ -96,7 +101,7 @@ async function storyOp(db: Db, content: GameContent, tinkerId: number, now: numb
       await saveState(tx, tinkerId, await lockAndLoad(tx, tinkerId), result.tinker, seq, version);
       await saveStory(tx, tinkerId, advanced.story, result.story);
       const done = outcome(await view(tx, tinkerId, content), advanced.events, advanced.trades, advanced.storyEvents);
-      return { ...done, view: storyView(result.tinker, result.story, content), played: result.played };
+      return { ...done, view: storyView(result.tinker, result.story, content, now), played: result.played };
     });
   } catch (error) {
     if (error instanceof rules.StoryRefusal) throw new BadRequest(error.message);

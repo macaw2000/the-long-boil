@@ -4,7 +4,7 @@
   "act": 1,
   "location": "polytechnic",
   "reveal_layer": 1,
-  "requires": { "act1.progress": ">=40", "tinkering": ">=12" },
+  "requires": { "act1.progress": ">=40", "tinkering": ">=6" },
   "nerve": 1,
   "description": "Whenever a Board clerk comes down from Gaugehill to count the Polytechnic's coal, Brassbuckle wants every workshop on his route to look busy and solvent while he does it. She has asked you to be busy and solvent in Workshop 3, conspicuously, beside a lathe that turns only when somebody makes it. His footsteps are already on the stair.",
   "options": [

@@ -84,7 +84,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T16:16:55Z",
+        "run": "2026-10-23T22:07:08Z",
         "checks": [
           "schema",
           "provenance",
@@ -104,7 +104,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass: option 1's label now reads 'against your name in the House's books', matching the fix and the 018 account rule; nothing else changed. Reviewed files as of the 2026-10-23T16:16:55Z validator run."
+        "notes": "Pass: the 019 'Settled after the district re-walk' change is applied; no line reads untrue and no option is obviously correct. Reviewed files as of the 2026-10-23T22:07:08Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -141,6 +141,21 @@
         },
         {
           "at": "2026-10-23T16:18:01Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T22:07:08Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T22:07:08Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T22:08:51Z",
           "status": "reviewed",
           "by": "inspector"
         }
@@ -519,7 +534,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T16:14:36Z",
+        "run": "2026-10-23T22:07:08Z",
         "checks": [
           "schema",
           "provenance",
@@ -539,7 +554,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass: the 019 'Settled after review' fixes are applied and read well on repeat. Reviewed files as of the 2026-10-23T16:14:36Z validator run."
+        "notes": "Pass: the 019 'Settled after the district re-walk' change is applied; no line reads untrue and no option is obviously correct. Reviewed files as of the 2026-10-23T22:07:08Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -566,6 +581,21 @@
         },
         {
           "at": "2026-10-23T16:16:13Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T22:07:08Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T22:07:08Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T22:08:51Z",
           "status": "reviewed",
           "by": "inspector"
         }
@@ -789,7 +819,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T16:14:36Z",
+        "run": "2026-10-23T22:07:08Z",
         "checks": [
           "schema",
           "provenance",
@@ -809,7 +839,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass: the 019 'Settled after review' fixes are applied and read well on repeat. Reviewed files as of the 2026-10-23T16:14:36Z validator run."
+        "notes": "Pass: the 019 'Settled after the district re-walk' change is applied; no line reads untrue and no option is obviously correct. Reviewed files as of the 2026-10-23T22:07:08Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -838,6 +868,21 @@
           "at": "2026-10-23T16:16:13Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T22:07:08Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T22:07:08Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T22:08:51Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ]
     },
@@ -854,7 +899,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T16:07:22Z",
+        "run": "2026-10-23T22:07:08Z",
         "checks": [
           "schema",
           "provenance",
@@ -874,7 +919,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass with notes: 'sticks every third lecture' makes it a recurring situation and Brassbuckle is in voice; the appetite idiom is one of four Jeremy kept as written; bound starter Rations make its Favour option cheap, which he accepted. Reviewed files as of the 2026-10-23T16:07:22Z validator run."
+        "notes": "Pass: the 019 'Settled after the district re-walk' change is applied; no line reads untrue and no option is obviously correct. Reviewed files as of the 2026-10-23T22:07:08Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -891,6 +936,21 @@
         },
         {
           "at": "2026-10-23T16:14:50Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T22:07:08Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T22:07:08Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T22:08:51Z",
           "status": "reviewed",
           "by": "inspector"
         }
@@ -1049,7 +1109,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T16:14:36Z",
+        "run": "2026-10-23T22:09:13Z",
         "checks": [
           "schema",
           "provenance",
@@ -1069,7 +1129,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass: the 019 'Settled after review' fixes are applied and read well on repeat. Reviewed files as of the 2026-10-23T16:14:36Z validator run."
+        "notes": "Pass: option 1's challenge now pays Scald -1 at difficulty 8, a real choice against three Coal; nothing else changed. Reviewed files as of the 2026-10-23T22:09:13Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -1096,6 +1156,31 @@
         },
         {
           "at": "2026-10-23T16:16:13Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T22:07:08Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T22:07:08Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T22:08:51Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T22:09:13Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T22:10:04Z",
           "status": "reviewed",
           "by": "inspector"
         }
@@ -1699,7 +1784,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T16:14:36Z",
+        "run": "2026-10-23T22:07:08Z",
         "checks": [
           "schema",
           "provenance",
@@ -1719,7 +1804,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass: the 019 'Settled after review' fixes are applied and read well on repeat. Reviewed files as of the 2026-10-23T16:14:36Z validator run."
+        "notes": "Pass: the 019 'Settled after the district re-walk' change is applied; no line reads untrue and no option is obviously correct. Reviewed files as of the 2026-10-23T22:07:08Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -1746,6 +1831,21 @@
         },
         {
           "at": "2026-10-23T16:16:13Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T22:07:08Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T22:07:08Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T22:08:51Z",
           "status": "reviewed",
           "by": "inspector"
         }

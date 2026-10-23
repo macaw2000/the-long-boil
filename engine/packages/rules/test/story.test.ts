@@ -134,6 +134,22 @@ describe("the Needles", () => {
   });
 });
 
+describe("cooldowns", () => {
+  it("closes a storylet for its cooldown_hours once played, then opens it again", () => {
+    const tinker = newTinker({}, 0, 0, 1);
+    const scene = {
+      id: "act1.test.urn", act: 1, location: "test", requires: {}, nerve: 1, description: "d", cooldown_hours: 24,
+      options: [{ label: "l", success: { text: "t", changes: { "needle.scald": "-1" } } }],
+    };
+    const rigged = { ...content, storylets: new Map([[scene.id, scene]]) };
+    const { story } = playScene(newStory(0), tinker, rigged, "storylet", scene.id, 0, 0);
+    expect(story.playedAt).toEqual({ [scene.id]: 0 });
+    expect(availableStorylets(tinker, story, rigged, 23 * HOUR)).toEqual([]);
+    expect(() => playScene(story, tinker, rigged, "storylet", scene.id, 0, 23 * HOUR)).toThrow(/closed until later/);
+    expect(availableStorylets(tinker, story, rigged, 24 * HOUR).map((s) => s.id)).toEqual([scene.id]);
+  });
+});
+
 describe("visits", () => {
   it("counts a check-in as a visit only an hour or more after the last counted one", () => {
     let story = newStory(0);
