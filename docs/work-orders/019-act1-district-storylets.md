@@ -85,3 +85,12 @@ Jeremy accepted every recommendation on 23 October 2026, after the inspector's r
 - **The "top of the slate" job may repeat;** the Favour cap allows two wins.
 - **The four idioms the inspector could not clear stay** as written.
 - **Open:** the Crown price of one Arrears mark at the Counting-House window, to be set when that payment is built; Rat Scrap for Arrears is revisited then.
+
+## Settled after the district re-walk
+
+Jeremy accepted every recommendation on 23 October 2026, after the assayer's re-walk measured about 1.5 story actions a day for a player who plays only what pays, and two unlimited repeat loops:
+
+- **A storylet may carry a cooldown** (`cooldown_hours`, an engine rule): once played, it stays closed that long. demonstration_boiler and crooked_balance get `"cooldown_hours": 24`, once a day.
+- **The Scald-relief challenges go back from difficulty 12 to 8:** tube_bend, stair_lamp and gate_brazier. At 12 a balanced player never reached even odds. crooked_balance (Arrears) stays at 12.
+- **coal_count's gate drops from Tinkering 12 to 6,** so a balanced player sees it.
+- **Needles should rise often enough in Rustmoor that relieving them matters,** and **district scenes need rewards worth having** (GDD section 5: Curios, collector-bought and capped; Lore). Both go to work order 020, drafted for Jeremy to read first.

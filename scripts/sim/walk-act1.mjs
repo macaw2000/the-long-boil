@@ -29,6 +29,22 @@
 //   when its shown odds are 0.5 or better, otherwise the first option that is
 //   certain and open. Letters are answered; one the engine refuses (its
 //   requirements lapsed while it sat in hand) is discarded.
+// - Order at a sitting: letters, then spine beats (scenes that move
+//   act1.progress or prologue.progress), then district scenes with the Nerve
+//   left over (work order 019). The player reads an option's effect from its
+//   label; the sim reads it from the content file.
+// - District rule: score an outcome +1 per Favour point gained, -1 per Favour
+//   point spent, +1 per Needle point actually lowered (not below 0), -1 per
+//   Needle point raised. An item cost is allowed only if it leaves the
+//   reserve: 100 Rations, 1 Brass Spanner; ingots, coal and rat scrap have
+//   none. Take a challenge at shown odds 0.5 or better whose success scores
+//   above 0; else the certain option with the best score above 0; else skip
+//   the scene. Play the best-scoring open scene, re-score, repeat while Nerve
+//   lasts. A scene that never scores above 0 is reported as never worth it.
+//   SIM_DISTRICT=all: spends all spare Nerve, taking the best affordable option
+//   even at a score of 0 or below (an upper bound on story pace).
+// - Scrapjaw's win chance is read from the engine's /tinkers/:id/fights route,
+//   the odds the queue picker shows.
 // - Queue: slot 1 is one production task sized to half the time until the
 //   next sitting (GDD section 6's balanced player; capped at the 12-hour
 //   Boiler); slot 2 fights for the rest. Slot 1, first that applies:
@@ -59,6 +75,9 @@ const BOSS_MIN = Number(process.env.SIM_BOSS_MIN ?? 0.4);
 // "balanced" (default): slot 2 always fights. "focused": once melee has reached the next weapon's level, the
 // weapon chain takes both slots (prospect then smelt, or smelt then prospect) and fighting waits for the forge.
 const POLICY = process.env.SIM_POLICY ?? "balanced";
+// "wanted" (default): district scenes only when an option scores above 0. "all": spend every spare Nerve on
+// district scenes, taking the best-scoring affordable option even at 0 or below (a challenge still needs 0.5).
+const DISTRICT_MODE = process.env.SIM_DISTRICT ?? "wanted";
 
 const MIN = 60_000;
 const HOUR = 60 * MIN;
@@ -83,10 +102,10 @@ const R = content.rules;
 
 const BEATS = [
   ["act1.sprocket_row.altitude_review", "record.check_ins >= 2"],
-  ["act1.lowvents.the_list", ""],
-  ["act1.polytechnic.sealed_lab", ""],
-  ["act1.rustmoor.rat_nests", "scavenging >= 3"],
-  ["act1.lowvents.bottom_rim", ""],
+  ["act1.lowvents.the_list", "record.check_ins >= 3"],
+  ["act1.polytechnic.sealed_lab", "record.check_ins >= 4"],
+  ["act1.rustmoor.rat_nests", "record.check_ins >= 5"],
+  ["act1.lowvents.bottom_rim", "record.check_ins >= 6"],
   ["act1.brass_exchange.rooks_question", "tinkering >= 6"],
   ["act1.rustmoor.rook_at_the_tip", "scavenging >= 9"],
   ["act1.rustmoor.scrapjaws_den", "cooking >= 5"],
@@ -103,6 +122,13 @@ const GATES = [
 ];
 const WEAPONS = [I("iron_crowbar"), I("riveting_hammer"), I("steel_blade")]; // melee, in order
 const GROCER = { [I("barley_meal")]: 2, [I("salt_pork")]: 4 };
+
+// Spine scenes move a progress quality; every other storylet is a repeatable district scene.
+const SPINE = new Set(
+  [...R.storylets.values()].filter((s) => s.options.some((o) => [o.success, o.failure].some((x) => x && ("act1.progress" in x.changes || "prologue.progress" in x.changes)))).map((s) => s.id),
+);
+const DISTRICT = [...R.storylets.values()].filter((s) => !SPINE.has(s.id)).map((s) => s.id);
+const RESERVE = { [I("rustmoor_ration")]: 100, [I("brass_spanner")]: 1 };
 
 const hhmm = (t) => new Date(t).toISOString().slice(5, 16).replace("T", " ");
 const dayOf = (t) => ((t - T0) / DAY).toFixed(2);
@@ -141,6 +167,7 @@ async function runCadence(perDay) {
   const sittings = []; // { at, nerveBefore, nerveAfter }
   const stalls = [];
   const refusals = [];
+  const districtSeen = {}; // id -> { open: sittings seen open, worth: sittings it scored above 0, played, options }
 
   const held = (t, item) => t.inventory.filter((s) => s.item === item).reduce((n, s) => n + s.qty, 0);
   const heldUnbound = (t, item) => t.inventory.filter((s) => s.item === item && !s.bound).reduce((n, s) => n + s.qty, 0);
@@ -152,19 +179,72 @@ async function runCadence(perDay) {
     return o;
   };
 
+  // Scores an outcome's changes for the district rule; null when an item cost breaks a reserve.
+  function score(changes, view, t) {
+    let v = 0;
+    for (const [name, change] of Object.entries(changes)) {
+      const d = typeof change === "number" ? null : Number(change);
+      if (name.startsWith("item.")) {
+        if (d < 0 && held(t, name) + d < (RESERVE[name] ?? 0)) return null;
+        continue;
+      }
+      const cur = view.qualities[name] ?? 0;
+      if (name.startsWith("needle.")) v += d < 0 ? Math.min(-d, cur) : -d;
+      else if (name.startsWith("favour.")) v += d;
+    }
+    return v;
+  }
+
+  function bestDistrict(view, t) {
+    let best = null;
+    for (const s of view.storylets) {
+      if (SPINE.has(s.id) || s.nerve > view.nerve) continue;
+      const src = R.storylets.get(s.id);
+      let pick = null;
+      s.options.forEach((o, i) => {
+        if (!o.available) return;
+        const sc = score(src.options[i].success.changes, view, t);
+        if (sc === null || (sc <= 0 && DISTRICT_MODE !== "all")) return;
+        if (o.challenge && o.challenge.odds < 0.5) return;
+        if (o.challenge) {
+          if ((!pick || (pick.challenge === false && sc > 0) || sc > pick.score)) pick = { option: i, score: sc, challenge: true };
+        } else if (!pick || (!pick.challenge && sc > pick.score)) pick = { option: i, score: sc, challenge: false };
+      });
+      districtSeen[s.id] ??= { open: 0, worth: 0, played: 0, options: {} };
+      if (pick && (!best || pick.score > best.score)) best = { scene: s, ...pick };
+      if (pick && DISTRICT_MODE === "all" && best && pick.score === best.score && (districtSeen[s.id]?.played ?? 0) < (districtSeen[best.scene.id]?.played ?? 0)) best = { scene: s, ...pick };
+    }
+    return best;
+  }
+
   async function playStory(id) {
+    let tinkerNow = (await ok("GET", `/tinkers/${id}`)).tinker;
     let view = (await ok("GET", `/tinkers/${id}/story`)).view;
+    for (const s of view.storylets) if (!SPINE.has(s.id)) {
+      districtSeen[s.id] ??= { open: 0, worth: 0, played: 0, options: {} };
+      districtSeen[s.id].open += 1;
+      if (bestDistrict({ ...view, storylets: [s], nerve: Math.max(view.nerve, 1) }, tinkerNow)) districtSeen[s.id].worth += 1;
+    }
     const before = view.nerve;
     for (const s of view.storylets) seenOpen[s.id] ??= clock;
     const refused = new Set(); // scenes the engine refused this sitting, such as a letter whose requirements lapsed in hand
     for (;;) {
       const letter = view.letters.find((l) => l.nerve <= view.nerve && !refused.has(l.id));
-      const storylet = view.storylets.find((s) => !refused.has(s.id));
-      const scene = letter ? { ...letter, kind: "letter" } : storylet ? { ...storylet, kind: "storylet" } : null;
+      const storylet = view.storylets.find((s) => SPINE.has(s.id) && s.nerve <= view.nerve && !refused.has(s.id));
+      let scene = letter ? { ...letter, kind: "letter" } : storylet ? { ...storylet, kind: "storylet" } : null;
+      let choice = -1;
+      if (scene) {
+        choice = scene.options.findIndex((o) => o.available && o.challenge && o.challenge.odds >= 0.5);
+        if (choice < 0) choice = scene.options.findIndex((o) => o.available && !o.challenge);
+        if (choice < 0) choice = scene.options.findIndex((o) => o.available);
+      } else {
+        const pick = bestDistrict(view, tinkerNow);
+        if (pick) {
+          scene = { ...pick.scene, kind: "storylet", district: true };
+          choice = pick.option;
+        }
+      }
       if (!scene || view.nerve < scene.nerve) break;
-      let choice = scene.options.findIndex((o) => o.available && o.challenge && o.challenge.odds >= 0.5);
-      if (choice < 0) choice = scene.options.findIndex((o) => o.available && !o.challenge);
-      if (choice < 0) choice = scene.options.findIndex((o) => o.available);
       const r = await call("POST", `/tinkers/${id}/story`, { kind: scene.kind, scene: scene.id, option: choice });
       if (r.status !== 200) {
         note(`story refused ${scene.id} option ${choice}: ${r.body.error}`);
@@ -177,7 +257,13 @@ async function runCadence(perDay) {
         continue;
       }
       const p = r.body.played;
-      scenes.push({ at: clock, id: scene.id, kind: scene.kind, option: choice, success: p.success, odds: p.odds, nerve: scene.nerve });
+      scenes.push({ at: clock, id: scene.id, kind: scene.district ? "district" : scene.kind, option: choice, success: p.success, odds: p.odds, nerve: scene.nerve, changes: r.body.events?.find?.((e) => e.type === "scene_played") ?? null });
+      if (scene.district) {
+        const d = districtSeen[scene.id];
+        d.played += 1;
+        d.options[choice] = (d.options[choice] ?? 0) + 1;
+      }
+      tinkerNow = r.body.tinker;
       note(`played ${scene.kind} ${scene.id} option ${choice} "${scene.options[choice].label.slice(0, 50)}"${p.odds !== null ? ` at ${Math.round(p.odds * 100)}%` : ""}: ${p.success ? "success" : "FAILED"}; Nerve ${r.body.view.nerve}`);
       view = r.body.view;
       for (const s of view.storylets) seenOpen[s.id] ??= clock;
@@ -231,6 +317,11 @@ async function runCadence(perDay) {
       if (!best || rate > best.rate) best = { m, plan, rate };
     }
     return best;
+  }
+
+  async function bossShown(id) {
+    const f = (await ok("GET", `/tinkers/${id}/fights`)).fights.find((x) => x.monsterId === SCRAPJAW);
+    return f && f.ready ? { win: f.winChance, rations: f.rations } : { win: 0, rations: 0 };
   }
 
   function bossChance(t) {
@@ -350,7 +441,7 @@ async function runCadence(perDay) {
     const progress = view.qualities["act1.progress"] ?? 0;
 
     let slot = null;
-    const boss = bossChance(t);
+    const boss = await bossShown(main);
     if (!t.bossesBeaten.includes(SCRAPJAW)) bossChecks.push({ at: clock, win: boss.win, rations: boss.rations, weapon: t.weapon, melee: lvl(t, "melee") });
     const fight = bestFight(t);
     if (!t.bossesBeaten.includes(SCRAPJAW) && boss.win >= BOSS_MIN && boss.rations === 3 && held(t, RATION) >= 9) {
@@ -405,7 +496,9 @@ async function runCadence(perDay) {
   const gateMet = {};
   for (const e of ev) if (e.type === "level_up") gateMet[`${e.payload.skill} >= ${e.payload.level}`] ??= new Date(e.at).getTime();
   const checkIns = ev.filter((e) => e.type === "check_in_counted");
-  gateMet["record.check_ins >= 2"] = checkIns[1] ? new Date(checkIns[1].at).getTime() : null;
+  for (let n = 2; n <= 6; n++) gateMet[`record.check_ins >= ${n}`] = checkIns[n - 1] ? new Date(checkIns[n - 1].at).getTime() : null;
+  // Needles and Favour after each sitting, from the story view.
+  const needleTrack = sittings.map((s) => ({ at: s.at, q: Object.fromEntries(Object.entries(s.qualities).filter(([k]) => k.startsWith("needle.") || k.startsWith("favour."))) }));
   const bossEv = ev.filter((e) => e.type === "boss_attempted");
   const firstWin = bossEv.find((e) => e.payload.won);
   gateMet["ledger_page_1 (Scrapjaw's first kill)"] = firstWin ? new Date(firstWin.at).getTime() : null;
@@ -414,7 +507,7 @@ async function runCadence(perDay) {
 
   await app.close();
   await db.end();
-  return { perDay, notes, refusals, scenes, seenOpen, gateMet, bossChecks, bossEv, sittings, horizon, foundryAt, end, kills, stalls };
+  return { perDay, notes, refusals, districtSeen, needleTrack, scenes, seenOpen, gateMet, bossChecks, bossEv, sittings, horizon, foundryAt, end, kills, stalls };
 }
 
 const wanted = process.argv.slice(2).length ? process.argv.slice(2).map(Number) : [2, 3, 4];
@@ -423,7 +516,7 @@ for (const perDay of wanted) results.push(await runCadence(perDay));
 
 const lvlOf = (end, skill) => end.skills.find((s) => s.skill === skill)?.level ?? 1;
 for (const r of results) {
-  console.log(`\n=============== ${r.perDay} check-ins a day, ${DAYS}-day horizon, boss threshold ${BOSS_MIN}, policy ${POLICY} ===============`);
+  console.log(`\n=============== ${r.perDay} check-ins a day, ${DAYS}-day horizon, boss threshold ${BOSS_MIN}, policy ${POLICY}, district ${DISTRICT_MODE} ===============`);
   if (VERBOSE) for (const n of r.notes) console.log(n);
   console.log("-- Act I beats (measured; day = days since the first session, Thursday 18:00)");
   for (const [id, gate] of BEATS) {
@@ -436,9 +529,21 @@ for (const r of results) {
   const days = (r.horizon - T0) / DAY;
   const byKind = (k) => r.scenes.filter((s) => s.kind === k).length;
   const nerve = r.scenes.reduce((n, s) => n + s.nerve, 0);
-  console.log(`-- story pace (measured): ${r.scenes.length} story actions (${byKind("storylet")} storylets, ${byKind("letter")} letters), ${nerve} Nerve, over ${days.toFixed(2)} days = ${(r.scenes.length / days).toFixed(2)} a day`);
+  console.log(`-- story pace (measured): ${r.scenes.length} story actions (${byKind("storylet")} spine, ${byKind("district")} district, ${byKind("letter")} letters), ${nerve} Nerve, over ${days.toFixed(2)} days = ${(r.scenes.length / days).toFixed(2)} a day`);
+  const sitN = r.sittings.length;
+  const left = r.sittings.reduce((n, s) => n + s.nerveAfter, 0);
+  console.log(`   Nerve left unspent after sittings: ${(left / sitN).toFixed(1)} on average over ${sitN} sittings`);
+  console.log("-- district scenes (measured): sittings open / sittings it scored above 0 at the start / times played {option: count}");
+  for (const id of DISTRICT) {
+    const d = r.districtSeen[id];
+    console.log(`   ${id.split(".").slice(1).join(".").padEnd(36)} ${d ? `${String(d.open).padStart(3)} / ${String(d.worth).padStart(3)} / ${String(d.played).padStart(3)} ${JSON.stringify(d.options)}` : "never open"}`);
+  }
+  const last = r.needleTrack.at(-1);
+  const peakQ = {};
+  for (const s of r.needleTrack) for (const [k, v] of Object.entries(s.q)) peakQ[k] = Math.max(peakQ[k] ?? 0, v);
+  console.log(`   Needles and Favour at the end ${JSON.stringify(last?.q)}; peaks ${JSON.stringify(peakQ)}`);
   const perDayCount = {};
-  for (const s of r.scenes) perDayCount[Math.floor((s.at - T0) / DAY)] = (perDayCount[Math.floor((s.at - T0) / DAY)] ?? 0) + 1;
+  for (const s of r.scenes.filter((x) => x.at > T0 + HOUR)) perDayCount[Math.floor((s.at - T0) / DAY)] = (perDayCount[Math.floor((s.at - T0) / DAY)] ?? 0) + 1;
   console.log(`   actions by day: ${JSON.stringify(perDayCount)}`);
   console.log(`   letters played: ${r.scenes.filter((s) => s.kind === "letter").map((s) => `${s.id.split(".").pop()}@d${dayOf(s.at)}`).join(", ")}`);
   console.log(`-- Scrapjaw (measured): ${r.bossEv.length} attempts; ${r.bossEv.map((e) => `d${dayOf(new Date(e.at).getTime())} ${e.payload.won ? "WON" : "lost"} ${Math.round(e.payload.winChance * 100)}%`).join(", ") || "none"}`);
