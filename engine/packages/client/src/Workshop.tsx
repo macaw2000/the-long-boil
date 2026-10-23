@@ -9,7 +9,7 @@ import { api, type Content, type Ledger as LedgerData, type Outcome, type QueueE
 import { Exchange } from "./Exchange";
 import { Story } from "./Story";
 import { duration, levelProgress, namer, seconds, titleCase, tradeLine } from "./format";
-import { Ledger } from "./Ledger";
+import { Ledger, STALL_REASONS } from "./Ledger";
 import { QueuePicker } from "./QueuePicker";
 import { colors, ui } from "./theme";
 
@@ -36,7 +36,13 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
       );
       const ups = ledger.levelUps.map((up) => `${titleCase(up.skill)} reached ${up.level}`);
       const fills = trades.map((note) => tradeLine(note, name));
-      if (lines.length || ups.length || fills.length) setRecent((previous) => [...fills, ...ups, ...lines, ...previous].slice(0, 8));
+      // A job that cannot run is taken off the queue; say so, or it seems to vanish.
+      const stalls = ledger.stalls.map(
+        (stall) => `${name(stall.actionId)} was taken off the queue: it ${STALL_REASONS[stall.reason] ?? stall.reason}.`,
+      );
+      if (stalls.length || lines.length || ups.length || fills.length) {
+        setRecent((previous) => [...stalls, ...fills, ...ups, ...lines, ...previous].slice(0, 8));
+      }
     },
     [name],
   );

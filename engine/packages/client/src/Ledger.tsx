@@ -5,7 +5,7 @@ import type { Ledger as LedgerData, TradeNote } from "./api";
 import { duration, titleCase, tradeLine } from "./format";
 import { colors, ui } from "./theme";
 
-const STALL_REASONS: Record<string, string> = {
+export const STALL_REASONS: Record<string, string> = {
   inputs: "ran out of materials",
   level: "needs a higher level",
   unknown_action: "is no longer known",

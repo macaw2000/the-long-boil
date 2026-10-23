@@ -68,6 +68,26 @@ export function QueuePicker({
 
   const parsed = Number(count);
   const valid = chosen !== null && Number.isInteger(parsed) && parsed >= 1;
+  const warning = chosen === null ? null : startWarning(chosen);
+
+  /**
+   * Why a job could not start if it reached the front of the queue now. The
+   * queue takes such a job off rather than wait, so say it before it is queued.
+   * Materials may still come from the job queued ahead of it.
+   */
+  function startWarning(id: string): string | null {
+    const action = content.actions.find((candidate) => candidate.id === id);
+    if (action) {
+      if ((levels.get(action.skill) ?? 1) < action.level_required) return `needs ${titleCase(action.skill)} ${action.level_required}`;
+      const missing = action.inputs.filter((input) => (held.get(input.item) ?? 0) < input.qty).map((input) => name(input.item));
+      if (missing.length === 0) return null;
+      const ahead = tinker.queue.length > 0 ? " unless the job ahead of it makes some first" : "";
+      return `you hold no ${missing.join(" or ")}, so it will be taken off the queue${ahead}`;
+    }
+    const outlook = fights.get(id);
+    if (outlook && !outlook.ready) return `${NOT_READY[outlook.reason] ?? outlook.reason}, or it will be taken off the queue`;
+    return null;
+  }
 
   return (
     <View style={[ui.panel, { borderColor: colors.brass }]}>
@@ -132,6 +152,8 @@ export function QueuePicker({
           <Text style={ui.muted}>Cancel</Text>
         </Pressable>
       </View>
+      {warning && <Text style={[ui.muted, { color: colors.copper }]}>Careful: {warning}.</Text>}
+      {tinker.queue.length === 1 && <Text style={ui.muted}>This goes second, after {name(tinker.queue[0]!.actionId)} finishes.</Text>}
     </View>
   );
 }
