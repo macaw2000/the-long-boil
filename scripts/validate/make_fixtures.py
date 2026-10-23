@@ -941,6 +941,12 @@ put(QF + STP + "record.json", storylet("act1.fixture_yard.record", 1, "fixture_y
         failure=oc("You are caught.", {RECORD: 0}))]))
 put(QF + LTP + "record.json", letter("act1.fixture_yard.record_letter", 1, "fixture_yard", 0, {}, [
     opt("Visit", oc("You visit.", {RECORD: "+2"}))]))
+# qualities fail: a storylet outcome that changes a skill (set-by-idle-loop-only);
+# the skill read in its requires and as a challenge is not a failure.
+put(QF + STP + "skill.json", storylet("act1.fixture_yard.skill", 1, "fixture_yard", 0, {"smithing": ">=1"}, [
+    opt("Practise at the anvil", oc("Your arm learns.", {"smithing": "+1"})),
+    opt("Look on", oc("You watch.", {"flag.fixture_seen": 1}), challenge=("smithing", 5),
+        failure=oc("You look away.", {"needle.fixture_scald": "+1"}))]))
 # qualities fail-registry: no docs/canon/qualities.json under the root.
 put("qualities/fail-registry/" + STP + "door.json", GOOD_PROLOGUE)
 

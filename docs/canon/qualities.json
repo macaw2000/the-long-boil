@@ -10,7 +10,7 @@
     "progress": { "range": [0, 100], "set_by": "storylets" },
     "lore": { "range": [0, 24], "set_by": "storylets, boss first-kills, rare drops" },
     "flag": { "range": [0, 1], "set_by": "choices" },
-    "record": { "range": [0, null], "set_by": "the engine, never by a storylet: record.check_ins counts visits, a check-in at least an hour after the last counted one (Jeremy, 22 October 2026, after the 48-hour assay)" }
+    "record": { "range": [0, null], "set_by": "the engine, never by a storylet: record.check_ins counts visits, a workshop check-in at least an hour after the last counted one; the queue, a weapon change and the Exchange do not count (Jeremy, 22 October 2026)" }
   },
   "qualities": {
     "skill": [

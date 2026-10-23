@@ -8,7 +8,9 @@ quality; "changes" covers every key of every outcome's changes.
 
 Fails as well when an outcome changes a quality whose type
 docs/canon/qualities.json says no storylet sets (NOT_SET_BY_STORY below):
-set-by-engine-only. A letter is a short storylet and is held to the same rule.
+set-by-engine-only for a record, set-by-idle-loop-only for a skill. A letter is
+a short storylet and is held to the same rule. Reading a skill (a requires or
+a challenge quality) is still allowed.
 
 Files are read leniently: a story file that does not match its schema still
 has every name it does hold checked (the schema check reports the shape).
@@ -31,11 +33,12 @@ CHECK = "qualities"
 
 # Quality types no storylet or letter outcome may change, read from each
 # type's "set_by" text in docs/canon/qualities.json. The registry has no
-# machine-readable field for this; each entry below is a reading of its text.
-# "skill" ("the idle loop, never by a storylet") is not listed yet: whether to
-# enforce it is an open question for Jeremy.
+# machine-readable field for this; each entry below is a reading of its text,
+# mapped to (failure code, quoted set_by text). "skill" added on Jeremy's
+# approval, 22 October 2026.
 NOT_SET_BY_STORY = {
-    "record": "the engine, never by a storylet",
+    "record": ("set-by-engine-only", "the engine, never by a storylet"),
+    "skill": ("set-by-idle-loop-only", "the idle loop, never by a storylet"),
 }
 
 
@@ -56,10 +59,10 @@ def run(root):
                 continue  # the schema check reports a non-string challenge quality
             kind = names.get(name)
             if role == "changes" and kind in NOT_SET_BY_STORY:
-                report.fail("set-by-engine-only", path,
+                code, set_by = NOT_SET_BY_STORY[kind]
+                report.fail(code, path,
                             "%s changes %r, a %s quality; %s says it is set by \"%s\""
-                            % (pointer, name, kind, story.REGISTRY_PATH,
-                               NOT_SET_BY_STORY[kind]), ident)
+                            % (pointer, name, kind, story.REGISTRY_PATH, set_by), ident)
                 continue
             if name in names or name in items:
                 continue

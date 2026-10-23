@@ -1,0 +1,43 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.skill",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {
+  "smithing": ">=1"
+ },
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Practise at the anvil",
+   "success": {
+    "text": "Your arm learns.",
+    "changes": {
+     "smithing": "+1"
+    }
+   }
+  },
+  {
+   "label": "Look on",
+   "challenge": {
+    "quality": "smithing",
+    "difficulty": 5
+   },
+   "success": {
+    "text": "You watch.",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   },
+   "failure": {
+    "text": "You look away.",
+    "changes": {
+     "needle.fixture_scald": "+1"
+    }
+   }
+  }
+ ]
+}

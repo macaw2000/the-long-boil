@@ -250,15 +250,17 @@ export interface Advanced {
  * Brings a Tinker up to now inside a transaction: settles the Exchange,
  * resolves the queue (refilling the Boiler when `refill`, as a check-in
  * does), and refreshes the story. Logs and saves all of it, and returns the
- * state for the operation that follows.
+ * state for the operation that follows. Only opening the workshop passes
+ * `visit`, so only it can count toward record.check_ins (Jeremy, 22 October
+ * 2026: a long first sitting must not roll into Act I through the Exchange).
  */
-export async function advance(tx: Tx, content: GameContent, tinkerId: number, now: number, refill: boolean): Promise<Advanced> {
+export async function advance(tx: Tx, content: GameContent, tinkerId: number, now: number, refill: boolean, visit = false): Promise<Advanced> {
   const trades = await settle(tx, content, tinkerId, now);
   const loaded = await lockAndLoad(tx, tinkerId);
   const resolved = refill ? rules.checkIn(loaded.state, content.rules, now) : rules.resolve(loaded.state, content.rules, now);
   const storyBefore = await loadStory(tx, tinkerId);
-  // A check-in may count as a visit first, so a scene gated on visits opens as the player arrives.
-  const counted = refill ? rules.countCheckIn(storyBefore, now) : { story: storyBefore, event: null };
+  // A workshop open may count as a visit first, so a scene gated on visits opens as the player arrives.
+  const counted = visit ? rules.countCheckIn(storyBefore, now) : { story: storyBefore, event: null };
   const refreshed = rules.refreshStory(counted.story, resolved.state, content.rules, now);
   if (counted.event) refreshed.events.unshift(counted.event);
   const state = { ...resolved.state, rng: refreshed.tinker.rng };
@@ -352,10 +354,10 @@ export async function createTinker(db: Db, content: GameContent, login: string, 
   });
 }
 
-/** A check-in: resolves everything up to now and refills the Boiler. */
+/** A check-in, made when the workshop opens: resolves everything up to now, refills the Boiler, and may count a visit. */
 export async function checkIn(db: Db, content: GameContent, tinkerId: number, now: number): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
-    const advanced = await advance(tx, content, tinkerId, now, true);
+    const advanced = await advance(tx, content, tinkerId, now, true, true);
     return outcome(await view(tx, tinkerId, content), advanced.events, advanced.trades, advanced.storyEvents);
   });
 }
@@ -382,10 +384,7 @@ export async function listTinkers(db: Db, login: string): Promise<{ id: number; 
   return rows.map((row) => ({ id: Number(row.id), name: row.name }));
 }
 
-/**
- * Runs a change to the Tinker's own state at a check-in: brings it up to now
- * (counting the visit, like every check-in), applies the change, and logs it.
- */
+/** Runs a change to the Tinker's own state at a check-in: brings it up to now, applies the change, and logs it. */
 async function atCheckIn(
   db: Db,
   content: GameContent,

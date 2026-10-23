@@ -48,8 +48,12 @@ describe("the first session's story", () => {
     const counted = await call("POST", `/tinkers/${kit}/check-in`);
     expect(counted.body.story).toContainEqual(expect.objectContaining({ type: "check_in_counted", qualities: { "record.check_ins": 2 } }));
     expect(await visits()).toBe(2);
+    // Only opening the workshop is a visit; the queue, a weapon and the Exchange are not.
     clock += 60 * MINUTE;
     await call("PUT", `/tinkers/${kit}/queue`, { queue: [{ actionId: "action.rustmoor.prospect_copper", remaining: 1 }] });
+    await call("POST", `/tinkers/${kit}/grocer`, { item: "item.rustmoor.barley_meal", qty: 1 }).catch(() => undefined);
+    expect(await visits()).toBe(2);
+    await call("POST", `/tinkers/${kit}/check-in`);
     expect(await visits()).toBe(3);
   });
 
@@ -101,6 +105,8 @@ describe("the first session's story", () => {
   });
 
   it("plays the chain in order, and the rat nests open at Scavenging 3", async () => {
+    // The next visit opens Act I.
+    await call("POST", `/tinkers/${id}/check-in`);
     const play = async (scene: string, option: number) => {
       const { status, body } = await call("POST", `/tinkers/${id}/story`, { kind: "storylet", scene, option });
       expect(status).toBe(200);
