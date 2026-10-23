@@ -124,8 +124,10 @@ describe("the first session's story", () => {
     expect(last.view.qualities["act1.progress"]).toBe(15);
     expect(last.view.needles["needle.scald"]).toBe(1);
     expect(last.tinker.skills.find((skill: { skill: string }) => skill.skill === "scavenging").level).toBeGreaterThanOrEqual(3);
-    expect(ids(last.view.storylets)).toEqual(["act1.rustmoor.rat_nests"]);
-    const hand = last.view.storylets[0].options.find((option: { challenge: unknown }) => option.challenge);
+    // District scenes (work order 019) open alongside the spine; the next beat is rat_nests.
+    expect(ids(last.view.storylets)).toContain("act1.rustmoor.rat_nests");
+    const nests = last.view.storylets.find((scene: { id: string }) => scene.id === "act1.rustmoor.rat_nests");
+    const hand = nests.options.find((option: { challenge: unknown }) => option.challenge);
     expect(hand.challenge).toMatchObject({ quality: "scavenging", difficulty: 4 });
   });
 

@@ -166,7 +166,12 @@ describe("the first storylets, end to end", () => {
       story = played.story;
       return played;
     };
-    const visible = () => availableStorylets(tinker, story, content).map((scene) => scene.id);
+    // The spine only: district scenes (work order 019) open alongside and never move progress.
+    const spine = (id: string) =>
+      content.storylets.get(id)!.options.some((option) =>
+        [option.success, option.failure].some((outcome) => outcome && Object.keys(outcome.changes).some((name) => name.endsWith(".progress"))),
+      );
+    const visible = () => availableStorylets(tinker, story, content).map((scene) => scene.id).filter(spine);
 
     expect(visible()).toEqual([]);
     play("letter", LETTER, 0);
@@ -179,7 +184,7 @@ describe("the first storylets, end to end", () => {
     play("storylet", "act1.polytechnic.sealed_lab", 1);
     expect(story.qualities["act1.progress"]).toBe(15);
     expect(visible()).toEqual([]);
-    expect(upcomingStorylets(tinker, story, content)).toEqual([
+    expect(upcomingStorylets(tinker, story, content).filter((scene) => spine(scene.id))).toEqual([
       { id: "act1.rustmoor.rat_nests", location: "rustmoor", needs: [["scavenging", ">=3", 1]] },
     ]);
     tinker.skillXp.scavenging = 152;
