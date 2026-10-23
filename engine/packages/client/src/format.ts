@@ -1,4 +1,4 @@
-import type { Content } from "./api";
+import type { Content, TradeNote } from "./api";
 
 export function titleCase(word: string): string {
   return word.charAt(0).toUpperCase() + word.slice(1);
@@ -33,4 +33,16 @@ export function levelProgress(content: Content, xp: number, level: number): { in
   const next = content.totalXp[level + 1];
   if (floor === undefined || next === undefined) return null;
   return { into: xp - floor, span: next - floor };
+}
+
+/** One line for an Exchange fill collected or an order closed. */
+export function tradeLine(note: TradeNote, name: (id: string) => string): string {
+  if (note.kind === "expired") {
+    const back = note.side === "sell" ? `${note.qty} ${name(note.item)} returned` : `${note.qty * note.price} Crowns returned`;
+    return `Your ${note.side} order for ${name(note.item)} expired; ${back}.`;
+  }
+  const total = note.qty * note.price;
+  return note.kind === "bought"
+    ? `Bought ${note.qty} ${name(note.item)} at ${note.price} (${total} Crowns).`
+    : `Sold ${note.qty} ${name(note.item)} at ${note.price}: ${total - note.tax} Crowns after ${note.tax} tax.`;
 }

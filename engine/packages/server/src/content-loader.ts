@@ -19,11 +19,35 @@ export interface ItemInfo {
   flavour: string;
 }
 
+/** An item's terms at the Counting-House window and on the Exchange (tuning.economy). */
+export interface ItemTerms {
+  bound: boolean;
+  collectorPrice: number | null;
+  collectorWeeklyCap: number | null;
+  grocerPrice: number | null;
+}
+
 export interface GameContent {
   rules: Content;
   start: { inventory: StartStack[]; crowns: number };
   /** Names and flavour lines, for the client; the rules never read them. */
   items: ReadonlyMap<string, ItemInfo>;
+  economy: ReadonlyMap<string, ItemTerms>;
+}
+
+function economyTerms(files: any[]): Map<string, ItemTerms> {
+  const terms = new Map<string, ItemTerms>();
+  for (const file of files) {
+    for (const [item, entry] of Object.entries<any>(file.items)) {
+      terms.set(item, {
+        bound: entry.bound,
+        collectorPrice: entry.collector_price ?? null,
+        collectorWeeklyCap: entry.collector_weekly_cap ?? null,
+        grocerPrice: entry.grocer_price ?? null,
+      });
+    }
+  }
+  return terms;
 }
 
 export const DEFAULT_CONTENT_DIR = join(import.meta.dirname, "../../../../content");
@@ -66,6 +90,7 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
       combat: readJson(join(dir, "tuning", "combat.json")).constants,
     }),
     start: { inventory: start.inventory, crowns: start.crowns },
+    economy: economyTerms(listJson(join(dir, "tuning")).filter((path) => readJson(path).schema?.startsWith("tuning.economy")).map(readJson)),
     items: new Map(all("items", "items").map((item: ItemInfo) => [item.id, { id: item.id, name: item.name, flavour: item.flavour }])),
   };
 }

@@ -1,11 +1,13 @@
 // The Workshop (GDD section 7, what the screen shows): skills on the left,
 // the Tinker at work in the centre, the stores on the right, and the Boiler
-// gauge on the top bar. Narrow screens stack the three columns.
+// gauge on the top bar. Narrow screens stack the three columns. A second
+// tab holds the Exchange.
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
-import { api, type Content, type Ledger as LedgerData, type Outcome, type QueueEntry, type Tinker } from "./api";
-import { duration, levelProgress, namer, seconds, titleCase } from "./format";
+import { api, type Content, type Ledger as LedgerData, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
+import { Exchange } from "./Exchange";
+import { duration, levelProgress, namer, seconds, titleCase, tradeLine } from "./format";
 import { Ledger } from "./Ledger";
 import { QueuePicker } from "./QueuePicker";
 import { colors, ui } from "./theme";
@@ -15,7 +17,8 @@ const BOILER_MS = 12 * 3_600_000;
 
 export function Workshop({ content, tinkerId, onLeave }: { content: Content; tinkerId: number; onLeave: () => void }) {
   const [tinker, setTinker] = useState<Tinker | null>(null);
-  const [away, setAway] = useState<LedgerData | null>(null);
+  const [away, setAway] = useState<{ ledger: LedgerData; trades: TradeNote[] } | null>(null);
+  const [tab, setTab] = useState<"workshop" | "exchange">("workshop");
   const [recent, setRecent] = useState<string[]>([]);
   const [picking, setPicking] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,14 +27,15 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
   const wide = useWindowDimensions().width >= 900;
 
   const noteRecent = useCallback(
-    (ledger: LedgerData) => {
+    (ledger: LedgerData, trades: TradeNote[]) => {
       const lines = ledger.lines.map((line) =>
         line.id.startsWith("monster.")
           ? `${line.count} × ${name(line.id)}${line.crowns ? `, ${line.crowns} Crowns` : ""}`
           : `${name(line.id)} × ${line.count}`,
       );
       const ups = ledger.levelUps.map((up) => `${titleCase(up.skill)} reached ${up.level}`);
-      if (lines.length || ups.length) setRecent((previous) => [...ups, ...lines, ...previous].slice(0, 8));
+      const fills = trades.map((note) => tradeLine(note, name));
+      if (lines.length || ups.length || fills.length) setRecent((previous) => [...fills, ...ups, ...lines, ...previous].slice(0, 8));
     },
     [name],
   );
@@ -47,8 +51,9 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
       .checkIn(tinkerId)
       .then((outcome) => {
         apply(outcome);
-        if (outcome.ledger.lines.length || outcome.ledger.stalls.length || outcome.ledger.boilerDryAt !== null) {
-          setAway(outcome.ledger);
+        const { ledger, trades } = outcome;
+        if (ledger.lines.length || ledger.stalls.length || ledger.boilerDryAt !== null || trades.length) {
+          setAway({ ledger, trades });
         }
       })
       .catch((reason: Error) => setError(reason.message));
@@ -61,7 +66,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
         .look(tinkerId)
         .then((outcome) => {
           apply(outcome);
-          noteRecent(outcome.ledger);
+          noteRecent(outcome.ledger, outcome.trades);
         })
         .catch((reason: Error) => setError(reason.message));
     }, LOOK_EVERY_MS);
@@ -72,7 +77,13 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
     };
   }, [tinkerId, apply, noteRecent]);
 
-  const run = (call: Promise<Outcome>) => call.then(apply).catch((reason: Error) => setError(reason.message));
+  const run = (call: Promise<Outcome>) =>
+    call
+      .then((outcome) => {
+        apply(outcome);
+        noteRecent({ ...outcome.ledger, lines: [], levelUps: [] }, outcome.trades);
+      })
+      .catch((reason: Error) => setError(reason.message));
   const setQueue = (queue: QueueEntry[]) => run(api.setQueue(tinkerId, queue));
 
   if (!tinker) {
@@ -123,7 +134,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
 
   const centre = (
     <View style={{ gap: 12 }}>
-      {away && <Ledger ledger={away} name={name} onClose={() => setAway(null)} />}
+      {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} onClose={() => setAway(null)} />}
       <View style={ui.panel}>
         <Text style={ui.heading}>At the bench</Text>
         {tinker.queue.length === 0 && <Text style={ui.muted}>The bench is idle. Queue up to two jobs.</Text>}
@@ -261,12 +272,36 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
           <Text style={ui.muted}>Leave</Text>
         </Pressable>
       </View>
+      <View style={{ flexDirection: "row", gap: 4, paddingHorizontal: 16, paddingTop: 10 }}>
+        {(["workshop", "exchange"] as const).map((choice) => (
+          <Pressable
+            key={choice}
+            onPress={() => setTab(choice)}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: tab === choice }}
+            style={{
+              paddingVertical: 6,
+              paddingHorizontal: 14,
+              borderBottomWidth: 2,
+              borderBottomColor: tab === choice ? colors.brass : "transparent",
+            }}
+          >
+            <Text style={[ui.text, { color: tab === choice ? colors.brass : colors.muted }]}>{titleCase(choice)}</Text>
+          </Pressable>
+        ))}
+      </View>
       {error && <Text style={[ui.text, { color: colors.scald, paddingHorizontal: 16, paddingTop: 8 }]}>{error}</Text>}
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 12, flexDirection: wide ? "row" : "column", alignItems: "flex-start" }}>
-        <View style={{ width: wide ? 240 : "100%" }}>{skills}</View>
-        <View style={{ flex: wide ? 1 : undefined, width: wide ? undefined : "100%" }}>{centre}</View>
-        <View style={{ width: wide ? 300 : "100%" }}>{stores}</View>
-      </ScrollView>
+      {tab === "workshop" ? (
+        <ScrollView contentContainerStyle={{ padding: 16, gap: 12, flexDirection: wide ? "row" : "column", alignItems: "flex-start" }}>
+          <View style={{ width: wide ? 240 : "100%" }}>{skills}</View>
+          <View style={{ flex: wide ? 1 : undefined, width: wide ? undefined : "100%" }}>{centre}</View>
+          <View style={{ width: wide ? 300 : "100%" }}>{stores}</View>
+        </ScrollView>
+      ) : (
+        <ScrollView contentContainerStyle={{ padding: 16 }}>
+          <Exchange content={content} tinker={tinker} name={name} run={run} />
+        </ScrollView>
+      )}
     </View>
   );
 }

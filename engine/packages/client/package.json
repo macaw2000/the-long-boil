@@ -4,6 +4,7 @@
   "main": "index.ts",
   "dependencies": {
     "@expo/metro-runtime": "57.0.17",
+    "@long-boil/rules": "0.1.0",
     "expo": "57.0.31",
     "expo-status-bar": "57.0.1",
     "react": "19.2.3",

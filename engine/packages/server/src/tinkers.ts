@@ -7,6 +7,10 @@ import * as rules from "@long-boil/rules";
 import type { GameEvent, QueueEntry, TinkerState } from "@long-boil/rules";
 import type { GameContent } from "./content-loader.js";
 import { withTransaction, type Db, type Tx } from "./db.js";
+import { appendEvents, type LogEntry } from "./events.js";
+import { NotFound, settle, type TradeNote } from "./settle.js";
+
+export { NotFound };
 
 const HOUR_MS = 3_600_000;
 
@@ -35,19 +39,21 @@ export interface Outcome {
   events: GameEvent[];
   /** The events folded into the While You Were Away ledger. */
   ledger: rules.Ledger;
+  /** Exchange fills collected and orders closed at this touch. */
+  trades: TradeNote[];
 }
 
-function outcome(tinker: TinkerView, events: GameEvent[]): Outcome {
-  return { tinker, events, ledger: rules.summarize(events) };
+export function outcome(tinker: TinkerView, events: GameEvent[], trades: TradeNote[] = []): Outcome {
+  return { tinker, events, ledger: rules.summarize(events), trades };
 }
 
-interface Loaded {
+export interface Loaded {
   state: TinkerState;
   stacks: StackView[];
   lastSeq: number;
 }
 
-async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
+export async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
   const row = (
     await tx.query(
       `SELECT progress_ms, resolved_to, steam_until, last_seq, crowns, weapon, rng, ration_debt, pity, bosses_beaten
@@ -96,7 +102,7 @@ async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
  * database keeps bound and unbound stacks apart. Gains are unbound; losses
  * use bound stock first, so a starter crate is eaten before bought food.
  */
-async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state: TinkerState, lastSeq: number, version: string) {
+export async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state: TinkerState, lastSeq: number, version: string) {
   const items = new Set([...Object.keys(loaded.state.inventory), ...Object.keys(state.inventory)]);
   for (const item of items) {
     let delta = (state.inventory[item] ?? 0) - (loaded.state.inventory[item] ?? 0);
@@ -165,25 +171,11 @@ async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state: Tinker
   );
 }
 
-type LogEntry = { type: string; at: number; payload: unknown };
-
-async function appendEvents(tx: Tx, tinkerId: number, lastSeq: number, entries: LogEntry[], version: string): Promise<number> {
-  let seq = lastSeq;
-  for (const entry of entries) {
-    seq += 1;
-    await tx.query(
-      "INSERT INTO events (tinker_id, seq, type, at, payload, content_version) VALUES ($1, $2, $3, $4, $5, $6)",
-      [tinkerId, seq, entry.type, new Date(entry.at), JSON.stringify(entry.payload), version],
-    );
-  }
-  return seq;
-}
-
-function fromRules(events: GameEvent[]): LogEntry[] {
+export function fromRules(events: GameEvent[]): LogEntry[] {
   return events.map((event) => ({ type: event.type, at: event.at, payload: event }));
 }
 
-async function view(tx: Tx, tinkerId: number, content: GameContent): Promise<TinkerView> {
+export async function view(tx: Tx, tinkerId: number, content: GameContent): Promise<TinkerView> {
   const row = (await tx.query("SELECT id, name, crowns, progress_ms, steam_until, resolved_to FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
   const loaded = await lockAndLoad(tx, tinkerId);
   return {
@@ -203,15 +195,14 @@ async function view(tx: Tx, tinkerId: number, content: GameContent): Promise<Tin
   };
 }
 
-export class NotFound extends Error {}
 
 export async function createTinker(db: Db, content: GameContent, login: string, name: string, now: number): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
     const account = (
       await tx.query(
-        `INSERT INTO accounts (login) VALUES ($1)
+        `INSERT INTO accounts (login, created_at) VALUES ($1, $2)
          ON CONFLICT (login) DO UPDATE SET login = EXCLUDED.login RETURNING id`,
-        [login],
+        [login, new Date(now)],
       )
     ).rows[0];
     const version = content.rules.version;
@@ -249,6 +240,7 @@ export async function createTinker(db: Db, content: GameContent, login: string, 
 /** A check-in: resolves everything up to now and refills the Boiler. */
 export async function checkIn(db: Db, content: GameContent, tinkerId: number, now: number): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
+    const trades = await settle(tx, content, tinkerId, now);
     const loaded = await lockAndLoad(tx, tinkerId);
     const { state, events } = rules.checkIn(loaded.state, content.rules, now);
     const version = content.rules.version;
@@ -260,7 +252,7 @@ export async function checkIn(db: Db, content: GameContent, tinkerId: number, no
       version,
     );
     await saveState(tx, tinkerId, loaded, state, seq, version);
-    return outcome(await view(tx, tinkerId, content), events);
+    return outcome(await view(tx, tinkerId, content), events, trades);
   });
 }
 
@@ -270,12 +262,13 @@ export async function checkIn(db: Db, content: GameContent, tinkerId: number, no
  */
 export async function look(db: Db, content: GameContent, tinkerId: number, now: number): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
+    const trades = await settle(tx, content, tinkerId, now);
     const loaded = await lockAndLoad(tx, tinkerId);
     const { state, events } = rules.resolve(loaded.state, content.rules, now);
     const version = content.rules.version;
     const seq = await appendEvents(tx, tinkerId, loaded.lastSeq, fromRules(events), version);
     await saveState(tx, tinkerId, loaded, state, seq, version);
-    return outcome(await view(tx, tinkerId, content), events);
+    return outcome(await view(tx, tinkerId, content), events, trades);
   });
 }
 
@@ -298,6 +291,7 @@ export async function setQueue(db: Db, content: GameContent, tinkerId: number, q
     }
   }
   return withTransaction(db, async (tx) => {
+    const trades = await settle(tx, content, tinkerId, now);
     const loaded = await lockAndLoad(tx, tinkerId);
     const resolved = rules.checkIn(loaded.state, content.rules, now);
     let queued: TinkerState;
@@ -319,13 +313,14 @@ export async function setQueue(db: Db, content: GameContent, tinkerId: number, q
       version,
     );
     await saveState(tx, tinkerId, loaded, queued, seq, version);
-    return outcome(await view(tx, tinkerId, content), resolved.events);
+    return outcome(await view(tx, tinkerId, content), resolved.events, trades);
   });
 }
 
 /** Equips a held weapon at a check-in: resolves first, so the fight under way finishes with the old one. */
 export async function equip(db: Db, content: GameContent, tinkerId: number, item: string, now: number): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
+    const trades = await settle(tx, content, tinkerId, now);
     const loaded = await lockAndLoad(tx, tinkerId);
     const resolved = rules.checkIn(loaded.state, content.rules, now);
     let equipped: TinkerState;
@@ -347,7 +342,7 @@ export async function equip(db: Db, content: GameContent, tinkerId: number, item
       version,
     );
     await saveState(tx, tinkerId, loaded, equipped, seq, version);
-    return outcome(await view(tx, tinkerId, content), resolved.events);
+    return outcome(await view(tx, tinkerId, content), resolved.events, trades);
   });
 }
 

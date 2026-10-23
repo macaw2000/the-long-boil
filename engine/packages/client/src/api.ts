@@ -42,8 +42,16 @@ export interface Item {
   flavour: string;
 }
 
+export interface ItemTerms {
+  bound: boolean;
+  collectorPrice: number | null;
+  collectorWeeklyCap: number | null;
+  grocerPrice: number | null;
+}
+
 export interface Content {
   version: string;
+  economy: Record<string, ItemTerms>;
   actions: Action[];
   monsters: Monster[];
   weapons: Weapon[];
@@ -90,9 +98,31 @@ export interface Ledger {
   boilerDryAt: number | null;
 }
 
+export type TradeNote =
+  | { kind: "bought" | "sold"; item: string; qty: number; price: number; tax: number; at: number }
+  | { kind: "expired"; side: "buy" | "sell"; item: string; qty: number; price: number; at: number };
+
 export interface Outcome {
   tinker: Tinker;
   ledger: Ledger;
+  trades: TradeNote[];
+}
+
+export type Side = "buy" | "sell";
+
+export interface MarketView {
+  canTrade: boolean;
+  refusal: string | null;
+  totalLevel: number;
+  orders: { id: number; item: string; side: Side; price: number; qtyTotal: number; qtyOpen: number; expiresAt: string }[];
+  collectorLeft: Record<string, number>;
+  weekEnds: string;
+}
+
+export interface BookLevel {
+  price: number;
+  qty: number;
+  orders: number;
 }
 
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
@@ -115,4 +145,11 @@ export const api = {
   look: (id: number) => request<Outcome>("GET", `/tinkers/${id}`),
   setQueue: (id: number, queue: QueueEntry[]) => request<Outcome>("PUT", `/tinkers/${id}/queue`, { queue }),
   equip: (id: number, item: string) => request<Outcome>("PUT", `/tinkers/${id}/weapon`, { item }),
+  market: (id: number) => request<MarketView>("GET", `/tinkers/${id}/market`),
+  book: (item: string) => request<{ item: string; bids: BookLevel[]; asks: BookLevel[] }>("GET", `/exchange/${encodeURIComponent(item)}`),
+  sellToCollector: (id: number, item: string, qty: number) => request<Outcome>("POST", `/tinkers/${id}/collector`, { item, qty }),
+  buyFromGrocer: (id: number, item: string, qty: number) => request<Outcome>("POST", `/tinkers/${id}/grocer`, { item, qty }),
+  placeOrder: (id: number, order: { item: string; side: Side; price: number; qty: number }) =>
+    request<Outcome>("POST", `/tinkers/${id}/orders`, order),
+  cancelOrder: (id: number, orderId: number) => request<Outcome>("DELETE", `/tinkers/${id}/orders/${orderId}`),
 };

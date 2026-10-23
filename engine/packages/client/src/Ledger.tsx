@@ -1,8 +1,8 @@
 // The While You Were Away ledger (GDD section 7, a normal check-in, 0:00).
 
 import { Pressable, Text, View } from "react-native";
-import type { Ledger as LedgerData } from "./api";
-import { duration, titleCase } from "./format";
+import type { Ledger as LedgerData, TradeNote } from "./api";
+import { duration, titleCase, tradeLine } from "./format";
 import { colors, ui } from "./theme";
 
 const STALL_REASONS: Record<string, string> = {
@@ -19,7 +19,17 @@ function list(counts: Record<string, number>, name: (id: string) => string): str
     .join(", ");
 }
 
-export function Ledger({ ledger, name, onClose }: { ledger: LedgerData; name: (id: string) => string; onClose: () => void }) {
+export function Ledger({
+  ledger,
+  trades,
+  name,
+  onClose,
+}: {
+  ledger: LedgerData;
+  trades: TradeNote[];
+  name: (id: string) => string;
+  onClose: () => void;
+}) {
   const span = ledger.from !== null && ledger.to !== null ? ledger.to - ledger.from : 0;
   return (
     <View style={[ui.panel, { borderColor: colors.brass }]}>
@@ -55,6 +65,11 @@ export function Ledger({ ledger, name, onClose }: { ledger: LedgerData; name: (i
           </View>
         );
       })}
+      {trades.map((note, index) => (
+        <Text key={`trade-${index}`} style={ui.text}>
+          {tradeLine(note, name)}
+        </Text>
+      ))}
       {ledger.levelUps.length > 0 && (
         <Text style={[ui.text, { color: colors.verdigris }]}>
           {ledger.levelUps.map((up) => `${titleCase(up.skill)} ${up.level}`).join(", ")}
