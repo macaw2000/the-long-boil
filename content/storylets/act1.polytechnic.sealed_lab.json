@@ -1,0 +1,31 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.polytechnic.sealed_lab",
+  "act": 1,
+  "location": "polytechnic",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": "==10" },
+  "nerve": 1,
+  "description": "Hester Vane's laboratory is locked: a new padlock on an old door, and the keyhole stopped with wax. When you asked about it this morning, Brassbuckle remembered a lecture she was late for, and went to give it at a pace just short of running. But the door has a post-drawer let into it at waist height, brass-fronted, for letters and small parcels, and the drawer is not locked. It is jammed, as if somebody shut it in a hurry and bent the runner doing it.",
+  "options": [
+    {
+      "label": "Ease the bent runner straight with your spanner and work the drawer out whole.",
+      "challenge": { "quality": "tinkering", "difficulty": 8 },
+      "success": {
+        "text": "The runner gives with a small brass sigh, and the drawer slides out as if it had never been any trouble. Inside, among pencil shavings, lies one index card: \"R.S. The Rats have it.\" Nothing else. You read it twice, pocket it, and slide the drawer home.",
+        "changes": { "act1.progress": 15 }
+      },
+      "failure": {
+        "text": "The runner comes halfway true, then springs back as bent as before, and the drawer shuts itself the last half inch with your fingers still in it. You walk back down the corridor with two knuckles skinned and your hand in your armpit. When you look back, the drawer is as shut as the door.",
+        "changes": { "needle.scald": "+1" }
+      }
+    },
+    {
+      "label": "Get the spanner behind the drawer-front and pull until something gives.",
+      "success": {
+        "text": "Something gives: the drawer-front, the runner and a fair piece of the door, in that order. You sit down hard on the corridor floor with the drawer in your lap. Inside, among pencil shavings, lies one index card: \"R.S. The Rats have it.\" You pocket it and put the drawer back as best you can, which is not very.",
+        "changes": { "needle.scald": "+1", "act1.progress": 15 }
+      }
+    }
+  ]
+}

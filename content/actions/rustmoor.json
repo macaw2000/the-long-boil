@@ -502,6 +502,62 @@
           "qty": 4
         }
       ]
+    },
+    {
+      "id": "action.rustmoor.scavenge_bent_nails",
+      "skill": "scavenging",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 9,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.rustmoor.bent_nails",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.scavenge_umbrella_ribs",
+      "skill": "scavenging",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 19,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.rustmoor.umbrella_ribs",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.scavenge_odd_spoons",
+      "skill": "scavenging",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 30,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.rustmoor.odd_spoons",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.scavenge_clock_movement",
+      "skill": "scavenging",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 42,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.rustmoor.clock_movement",
+          "qty": 1
+        }
+      ]
     }
   ]
 }

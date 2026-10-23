@@ -55,3 +55,31 @@ Jeremy set these on 22 October 2026, after the inspector's review:
 ## Hand back
 
 - What your own "What you hand back" section asks for, with the validator output verbatim.
+
+## Settled after the second review
+
+Jeremy set these on 22 October 2026, after the inspector's review of the revised drafts:
+
+- **Take the inspector's fixes.**
+  - bottom_rim: Mother Ash hands over "a sheet of brass, a riveting hammer and a dented Stokers' pocket gauge"; every outcome says "her pocket gauge". The gauge is not an item and gates nothing.
+  - sealed_lab, forced path: "You pocket it and put the drawer back", so rat_nests' "The card in your pocket" holds on every path.
+  - sealed_lab: "your spanner", not "your No. 4 spanner"; "draw the drawer" is rewritten.
+  - sealed_lab: after a failure, the retry no longer asks you to straighten a runner that has snapped.
+  - sealed_lab: Brassbuckle's dodge is no longer the weather. Give her one that belongs to the Polytechnic.
+  - sealed_lab: cut "in a quick, slanting hand". Nothing on the card invites a comparison of handwriting.
+- **rat_nests stays as drafted, at difficulty 4.** Its fail is fixed by work order 017, which gives Scavenging actions in Rustmoor so the skill can be trained before the scene.
+- **Left as drafted:** the padlock, the wax and the hurry; the R.S. lead to the Rust Rats; the clerk who asked Pip for your name; the careful option's reward; Pip's voice; `flag.own_reading` on every path; altitude_review setting no flag of its own.
+
+## Settled after work order 017
+
+Jeremy set this on 22 October 2026:
+
+- **Brassbuckle points the Tinker to Scavenging,** early enough that an hour of it fits before rat_nests (about 63 minutes of the level 1 action reaches Scavenging 4). Nothing in the first session queues Scavenging, so without the pointer a player meets rat_nests at Scavenging 1.
+
+## Settled after the third review
+
+Jeremy set these on 22 October 2026:
+
+- **rat_nests requires Scavenging 3** (`"scavenging": ">=3"`), alongside its `act1.progress` gate. A player cannot reach it at Scavenging 1 in the first sitting; about 15 minutes of the level 1 action unlocks it, and the hand search is 45% there and 60% at Scavenging 4.
+- **altitude_review:** "and an hour of it will teach your eye what is worth bending down for", so "it" no longer reads as the nails.
+- **Left as drafted:** Brassbuckle's line does not name the skill, and no UI tip is added for now.

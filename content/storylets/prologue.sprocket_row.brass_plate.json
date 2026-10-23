@@ -1,0 +1,26 @@
+{
+  "schema": "storylet/1",
+  "id": "prologue.sprocket_row.brass_plate",
+  "act": 0,
+  "location": "sprocket_row",
+  "reveal_layer": 0,
+  "requires": { "prologue.progress": "==50" },
+  "nerve": 1,
+  "description": "Clearing out the workbench, you lift a drawer lining stiff with old oil and find a brass plate the size of a playing card. Someone has scratched a gauge reading into it with a scriber, neatly, the way people write things they mean to keep. Today's Gazette lies folded on the bench beside it, Gauge Reading on the front page. The two figures are not the same. Professor Brassbuckle, who was watching you work, is suddenly very interested in the Boiler.",
+  "options": [
+    {
+      "label": "Hold up the plate and ask Brassbuckle whose hand it is.",
+      "success": {
+        "text": "Brassbuckle looks at the plate for exactly as long as it takes to decide not to. Then she asks whether you have oiled the Boiler's feed pump, whether the rats have been at the Rations, and whether you have eaten. By the time you have answered all three, the plate is back on the bench and the conversation is somewhere near the price of copper.",
+        "changes": { "flag.asked_brassbuckle_plate": 1, "prologue.progress": 100 }
+      }
+    },
+    {
+      "label": "Slip the plate into your waistcoat pocket and say nothing.",
+      "success": {
+        "text": "The plate goes into your pocket and sits there, heavier than a playing card has any right to be. Brassbuckle's shoulders come down an inch. She hands you a No. 4 spanner and points at the Boiler's feed pump, and for the rest of the evening neither of you mentions the Gazette.",
+        "changes": { "flag.kept_brass_plate": 1, "prologue.progress": 100 }
+      }
+    }
+  ]
+}

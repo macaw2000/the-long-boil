@@ -1,0 +1,26 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.lowvents.the_list",
+  "act": 1,
+  "location": "lowvents",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": "==5" },
+  "nerve": 1,
+  "description": "Nobody in the Lowvents says \"review\". They say Ballast, and then they stop talking and look at their boots. Pip Tumbler finds you outside a shuttered pie shop and says, in the level voice people use for Counting-House clerks, that the Tumbler name is on a list. In the same breath, and the same voice, Pip says the list does not officially exist.",
+  "options": [
+    {
+      "label": "Ask Pip how a list that does not exist gets written.",
+      "success": {
+        "text": "\"In pencil,\" says Pip. It is the only joke you hear in the Lowvents all evening, and neither of you laughs at it. Pip will not say who holds the pencil, or what it writes after the names.",
+        "changes": { "act1.progress": 10 }
+      }
+    },
+    {
+      "label": "Say nothing, and stand with Pip until the lamps on the stair go down.",
+      "success": {
+        "text": "You stand. Pip stands. The lamps go down one landing at a time, from the top, like a city closing its eyes. When the last one is out Pip says, \"Mind the third step,\" and goes in. It is, you gather, a kind of thank-you.",
+        "changes": { "act1.progress": 10 }
+      }
+    }
+  ]
+}

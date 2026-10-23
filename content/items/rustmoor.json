@@ -160,6 +160,26 @@
       "id": "item.rustmoor.rustmoor_ration",
       "name": "Rustmoor Ration",
       "flavour": "A wax-paper brick of whatever went into the pot, stewed until it stopped mattering."
+    },
+    {
+      "id": "item.rustmoor.bent_nails",
+      "name": "Bent Nails",
+      "flavour": "A tin of bent nails picked off the tip's loose top, sold by weight to men who straighten them."
+    },
+    {
+      "id": "item.rustmoor.umbrella_ribs",
+      "name": "Umbrella Ribs",
+      "flavour": "Steel umbrella ribs from the loose top of the tip, the silk long since gone to the rats."
+    },
+    {
+      "id": "item.rustmoor.odd_spoons",
+      "name": "Odd Spoons",
+      "flavour": "Silver spoons thrown off Gaugehill, each one crested and no two of them a pair."
+    },
+    {
+      "id": "item.rustmoor.clock_movement",
+      "name": "Clock Movement",
+      "flavour": "A clock's brass works, thrown off Gaugehill for losing two minutes a week."
     }
   ]
 }

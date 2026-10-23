@@ -1,0 +1,44 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.rustmoor.rat_nests",
+  "act": 1,
+  "location": "rustmoor",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": "==15",
+    "scavenging": ">=3"
+  },
+  "nerve": 1,
+  "description": "The card in your pocket says the Rats have it, and in Kettleport there is only one place the Rats keep anything. Everything thrown off Gaugehill lands in Rustmoor sooner or later, and the Rust Rats sort it more carefully than anyone up there ever did. Their nest under the crane gantry is the size of a hansom cab: bedsprings, umbrella ribs, a mangle, and a great deal of Board paperwork, chewed soft at the edges. The rats are out. They will not be out for long.",
+  "options": [
+    {
+      "label": "Go through the nest by hand, quickly, before the owners come home.",
+      "challenge": {
+        "quality": "scavenging",
+        "difficulty": 4
+      },
+      "success": {
+        "text": "Under the mangle, folded into the nest's floor like insulation, you find gauge charts: long ruled sheets of fathoms, torn across so that no column survives whole. You work them free one by one and are over the fence with an armful before the first squeak comes back down the gantry.",
+        "changes": {
+          "act1.progress": 20
+        }
+      },
+      "failure": {
+        "text": "You are elbow-deep in bedsprings when the first squeak comes back down the gantry, and the second, and then a great many more. You leave by the shortest road, which turns out to be over a fence topped with broken bottles. You come home with a torn coat, a cut palm, and no paper at all.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Smoke the nest out with an oily rag first, and search it at leisure.",
+      "success": {
+        "text": "The rag catches better than you meant it to. When the smoke clears you have no eyebrows to speak of and the nest to yourself. Folded into its floor are gauge charts, ruled sheets of fathoms torn across and scorched at the corners, no column whole. You take every scrap.",
+        "changes": {
+          "needle.scald": "+1",
+          "act1.progress": 20
+        }
+      }
+    }
+  ]
+}

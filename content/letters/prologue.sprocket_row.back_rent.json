@@ -1,0 +1,33 @@
+{
+  "schema": "letter/1",
+  "id": "prologue.sprocket_row.back_rent",
+  "act": 0,
+  "location": "sprocket_row",
+  "reveal_layer": 0,
+  "requires": { "prologue.progress": "==0" },
+  "nerve": 1,
+  "sender": "Pip Tumbler",
+  "weight": 1,
+  "description": "The tube above the bench coughs and drops a brass canister into the tray. Inside, on Counting-House paper, is a bill: back rent on No. 9 Sprocket Row, 15 Crowns, payable at the Counting-House window. Underneath, in smaller writing: \"The last tenant left owing. It is not your fault, but it is now your workshop. I only run the bills. Sorry. Pip Tumbler.\" The Arrears dial under your portrait twitches awake and settles at 0.",
+  "options": [
+    {
+      "label": "Spike the bill and pay it at the Counting-House window when you have the Crowns.",
+      "success": {
+        "text": "You push the bill onto the spike above the vice, where it can watch you work. Fifteen Crowns counted through the Counting-House window will take it down again. Until then it stays where it is, and so, you suspect, does Pip's apology.",
+        "changes": { "flag.owes_back_rent": 1, "prologue.progress": 50 }
+      }
+    },
+    {
+      "label": "Write back offering to work some of it off at the bench.",
+      "challenge": { "quality": "tinkering", "difficulty": 6 },
+      "success": {
+        "text": "The canister comes back within the hour holding a carriage clock that has not struck since anyone can remember, and a note: \"A Counting-House clerk's. If it strikes, I can take 10 off.\" You take the back off, find a hairspring wound round itself like a nervous cat, and coax it straight. At six o'clock the clock strikes seven. The clerk, Pip reports, accepts this as close enough. You owe 5 Crowns.",
+        "changes": { "flag.owes_back_rent": 1, "flag.back_rent_reduced": 1, "prologue.progress": 50 }
+      },
+      "failure": {
+        "text": "Pip sends down a Counting-House clerk's carriage clock. You return it in two parcels, one of them mostly spring. The reply is polite and brief: the bill stands at 15 Crowns, and the clerk has asked Pip for your name, twice. The Arrears dial ticks up two marks.",
+        "changes": { "flag.owes_back_rent": 1, "needle.arrears": "+2", "prologue.progress": 50 }
+      }
+    }
+  ]
+}

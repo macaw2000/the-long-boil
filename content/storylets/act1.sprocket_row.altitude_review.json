@@ -1,0 +1,42 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.sprocket_row.altitude_review",
+  "act": 1,
+  "location": "sprocket_row",
+  "reveal_layer": 1,
+  "requires": { "prologue.progress": ">=100", "act1.progress": "==0" },
+  "nerve": 1,
+  "description": "The Gazette's front page announces an Altitude Review in the tone it saves for good weather: routine, overdue, nothing to trouble the reader. Brassbuckle reads it at your bench, then reads it again, slower, as if the type might rearrange itself. Out in Sprocket Row a newsboy is shouting the headline, and nobody is buying. Without looking up, Brassbuckle says you might spend an hour picking over the loose top of the Rustmoor tip while the town makes up its mind. Bent nails sell by weight, and an hour of it will teach your eye what is worth bending down for.",
+  "options": [
+    {
+      "label": "Ask Brassbuckle what, precisely, an Altitude Review reviews.",
+      "success": {
+        "text": "\"Altitude,\" says Brassbuckle, and folds the Gazette into a square small enough to lose. After a while she adds, \"Up here it is a column of figures. Down in the Lowvents they will be reading it in a different typeface.\" Then she goes to put the kettle on.",
+        "changes": { "act1.progress": 5 }
+      }
+    },
+    {
+      "label": "Take the Gazette down to the Lowvents and see how it reads there.",
+      "success": {
+        "text": "You tuck the Gazette under your arm and take the long stair down. Brassbuckle calls after you to keep your hat on and your opinions in it. By the bottom landing you have read the headline enough times to know it by heart.",
+        "changes": { "act1.progress": 5 }
+      }
+    },
+    {
+      "label": "Take the brass plate from your waistcoat and lay it on the Gazette, beside the headline.",
+      "requires": { "flag.kept_brass_plate": "==1" },
+      "success": {
+        "text": "Brassbuckle looks at the plate, then at the headline, then at you. She does not ask how long it has been in your pocket. \"Put that away,\" she says, not unkindly, \"before somebody asks to see it.\" You put it away. She stands at the window a while longer than the weather deserves.",
+        "changes": { "act1.progress": 5 }
+      }
+    },
+    {
+      "label": "Ask whether this has anything to do with the plate she would not talk about.",
+      "requires": { "flag.asked_brassbuckle_plate": "==1" },
+      "success": {
+        "text": "Brassbuckle gives you the look she saves for a boiler that has started making a new noise. \"You remember that,\" she says. It is not a question, and it is not an answer either. She folds the Gazette into her pocket, and the subject goes with it.",
+        "changes": { "act1.progress": 5 }
+      }
+    }
+  ]
+}
