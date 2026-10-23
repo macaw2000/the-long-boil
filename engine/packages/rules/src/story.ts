@@ -258,6 +258,30 @@ export function optionView(option: StoryOption, tinker: TinkerState, story: Stor
   return { label: option.label, available: locked.length === 0, locked, challenge };
 }
 
+/** A requirement the player works toward through play: a skill, an item, or a record such as visits. */
+function earned(name: string): boolean {
+  return !name.includes(".") || name.startsWith("item.") || name.startsWith("record.");
+}
+
+export interface UpcomingScene {
+  id: string;
+  location: string;
+  /** The requirements still unmet, all of them skills, items or records. */
+  needs: [string, string, number][];
+}
+
+/**
+ * Storylets that are next in the story but held back by a skill, an item or
+ * a visit: every story requirement holds and only earned ones are unmet, so
+ * a locked beat can show its gate without being spoiled.
+ */
+export function upcomingStorylets(tinker: TinkerState, story: StoryState, content: Content): UpcomingScene[] {
+  return [...content.storylets.values()].flatMap((scene) => {
+    const needs = unmet(scene.requires, tinker, story, content);
+    return needs.length > 0 && needs.every(([name]) => earned(name)) ? [{ id: scene.id, location: scene.location, needs }] : [];
+  });
+}
+
 /** Storylets the Tinker can see now: every one whose requirements hold. */
 export function availableStorylets(tinker: TinkerState, story: StoryState, content: Content): Scene[] {
   return [...content.storylets.values()].filter((scene) => unmet(scene.requires, tinker, story, content).length === 0);
@@ -280,7 +304,10 @@ export function playScene(
   const scene = (kind === "storylet" ? content.storylets : content.letters).get(sceneId);
   if (!scene) throw new StoryRefusal(`no ${kind} ${sceneId}`);
   if (kind === "letter" && !previous.hand.includes(sceneId)) throw new StoryRefusal(`${sceneId} is not in your hand`);
-  if (unmet(scene.requires, previousTinker, previous, content).length) throw new StoryRefusal(`${sceneId} is not open to you now`);
+  // A letter's requirements decide when it is dealt; once in hand, only its options' own requirements apply (work order 018).
+  if (kind === "storylet" && unmet(scene.requires, previousTinker, previous, content).length) {
+    throw new StoryRefusal(`${sceneId} is not open to you now`);
+  }
   const option = scene.options[optionIndex];
   if (!option) throw new StoryRefusal(`${sceneId} has no option ${optionIndex}`);
   if (unmet(option.requires, previousTinker, previous, content).length) throw new StoryRefusal("that option is not open to you");

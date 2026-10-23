@@ -109,7 +109,10 @@ describe("the first session's story", () => {
   it("plays the chain in order, and the rat nests open at Scavenging 3", async () => {
     // The next visit opens Act I.
     await call("POST", `/tinkers/${id}/check-in`);
+    // The opening scenes open one a visit, so each play follows a workshop check-in an hour on.
     const play = async (scene: string, option: number) => {
+      clock += HOUR;
+      await call("POST", `/tinkers/${id}/check-in`);
       const { status, body } = await call("POST", `/tinkers/${id}/story`, { kind: "storylet", scene, option });
       expect(status).toBe(200);
       return body;
@@ -150,6 +153,29 @@ describe("the first session's story", () => {
     const stored = nonZero((await db.query("SELECT name, value FROM qualities WHERE tinker_id = $1", [id])).rows.map((row) => [row.name, row.value]));
     expect(stored).toEqual(nonZero(Object.entries(qualities)));
     expect(stored).toMatchObject({ "prologue.progress": 100, "act1.progress": 15 });
+  });
+});
+
+describe("fights before they are queued", () => {
+  it("shows a boss's win chance with the Rations it would take, and why a fight cannot start", async () => {
+    const id = (await call("POST", "/tinkers", { login: "fights@example.com", name: "Fen" })).body.tinker.id;
+    const unarmed = (await call("GET", `/tinkers/${id}/fights`)).body.fights;
+    expect(unarmed.find((f: { monsterId: string }) => f.monsterId === "monster.rustmoor.scrapjaw")).toEqual({
+      monsterId: "monster.rustmoor.scrapjaw",
+      ready: false,
+      reason: "no_weapon",
+    });
+    await call("PUT", `/tinkers/${id}/queue`, { queue: [{ actionId: "action.rustmoor.tinker_brass_spanner", remaining: 1 }] });
+    clock += HOUR;
+    await call("PUT", `/tinkers/${id}/weapon`, { item: "item.rustmoor.brass_spanner" });
+    const armed = (await call("GET", `/tinkers/${id}/fights`)).body.fights;
+    const boss = armed.find((f: { monsterId: string }) => f.monsterId === "monster.rustmoor.scrapjaw");
+    expect(boss).toMatchObject({ ready: true, rations: 3 });
+    expect(boss.winChance).toBeGreaterThanOrEqual(0);
+    expect(boss.winChance).toBeLessThan(0.05);
+    const runt = armed.find((f: { monsterId: string }) => f.monsterId === "monster.rustmoor.rust_rat_runt");
+    expect(runt).toMatchObject({ ready: true, winChance: null });
+    expect(runt.seconds).toBeGreaterThanOrEqual(54);
   });
 });
 

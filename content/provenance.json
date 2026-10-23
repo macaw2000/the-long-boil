@@ -229,7 +229,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T01:07:12Z",
+        "run": "2026-10-23T15:38:30Z",
         "checks": [
           "schema",
           "provenance",
@@ -244,7 +244,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass. Reviewed files as of the 2026-10-23T01:15:32Z validator run."
+        "notes": "Pass: the record.check_ins gate is applied as settled in 016 ('Settled after the Act I assay'); no line reads untrue at a later visit. Reviewed files as of the 2026-10-23T15:38:30Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -283,6 +283,21 @@
           "at": "2026-10-23T01:18:42Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T15:38:19Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T15:38:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T15:39:51Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ]
     },
@@ -299,7 +314,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T00:56:05Z",
+        "run": "2026-10-23T15:38:30Z",
         "checks": [
           "schema",
           "provenance",
@@ -314,7 +329,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass. Reviewed files as of the 2026-10-23T01:15:32Z validator run."
+        "notes": "Pass: the record.check_ins gate is applied as settled in 016 ('Settled after the Act I assay'); no line reads untrue at a later visit. Reviewed files as of the 2026-10-23T15:38:30Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -341,6 +356,21 @@
         },
         {
           "at": "2026-10-23T01:18:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T15:38:19Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T15:38:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T15:39:51Z",
           "status": "reviewed",
           "by": "inspector"
         }
@@ -489,7 +519,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T01:07:12Z",
+        "run": "2026-10-23T15:38:30Z",
         "checks": [
           "schema",
           "provenance",
@@ -504,7 +534,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass. Reviewed files as of the 2026-10-23T01:15:32Z validator run."
+        "notes": "Pass: the record.check_ins gate is applied as settled in 016 ('Settled after the Act I assay'); no line reads untrue at a later visit. Reviewed files as of the 2026-10-23T15:38:30Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -533,6 +563,21 @@
           "at": "2026-10-23T01:18:42Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T15:38:19Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T15:38:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T15:39:51Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ]
     },
@@ -549,7 +594,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T01:15:32Z",
+        "run": "2026-10-23T15:38:30Z",
         "checks": [
           "schema",
           "provenance",
@@ -564,7 +609,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass with notes: taste call, the Story tab may go quiet for a player at act1.progress 15 below Scavenging 3. Reviewed files as of the 2026-10-23T01:15:32Z validator run."
+        "notes": "Pass: the record.check_ins gate is applied as settled in 016 ('Settled after the Act I assay'); no line reads untrue at a later visit. Reviewed files as of the 2026-10-23T15:38:30Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -601,6 +646,21 @@
         },
         {
           "at": "2026-10-23T01:18:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T15:38:19Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T15:38:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T15:39:51Z",
           "status": "reviewed",
           "by": "inspector"
         }

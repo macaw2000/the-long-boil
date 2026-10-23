@@ -1,9 +1,9 @@
 // Choosing one queue slot: a skilling action or a Rustmoor monster, and a count.
 // "Fill" offers the count that 12 hours of steam (or the materials held) allow.
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import type { Content, QueueEntry, Tinker } from "./api";
+import { api, type Content, type FightOutlook, type QueueEntry, type Tinker } from "./api";
 import { seconds, titleCase } from "./format";
 import { colors, ui } from "./theme";
 
@@ -24,6 +24,15 @@ export function QueuePicker({
 }) {
   const [chosen, setChosen] = useState<string | null>(null);
   const [count, setCount] = useState("");
+  const [fights, setFights] = useState<Map<string, FightOutlook>>(new Map());
+
+  // Each fight's outlook for this Tinker, so a boss's win chance shows before it is queued.
+  useEffect(() => {
+    api
+      .fights(tinker.id)
+      .then((result) => setFights(new Map(result.fights.map((fight) => [fight.monsterId, fight]))))
+      .catch(() => setFights(new Map()));
+  }, [tinker.id, tinker.weapon]);
 
   const levels = useMemo(() => new Map(tinker.skills.map((skill) => [skill.skill, skill.level])), [tinker.skills]);
   const held = useMemo(() => {
@@ -96,7 +105,7 @@ export function QueuePicker({
                 locked={false}
                 onPress={() => choose(monster.id)}
                 title={`${monster.name}${monster.boss ? " (boss)" : ""}`}
-                detail={`lvl ${monster.level} · weak to ${monster.weakness} · ${monster.boss ? "one attempt each" : `about ${seconds(monster.seconds_per_kill)} a kill`}`}
+                detail={`lvl ${monster.level} · weak to ${monster.weakness} · ${outlookText(monster, fights.get(monster.id))}`}
               />
             ))}
         </View>
@@ -125,6 +134,22 @@ export function QueuePicker({
       </View>
     </View>
   );
+}
+
+const NOT_READY: Record<string, string> = {
+  no_weapon: "equip a weapon first",
+  level: "your weapon needs a higher level",
+  cannot_win: "you cannot hurt it yet",
+};
+
+function outlookText(monster: Content["monsters"][number], outlook: FightOutlook | undefined): string {
+  if (!outlook) return monster.boss ? "one attempt each" : `about ${seconds(monster.seconds_per_kill)} a kill`;
+  if (!outlook.ready) return NOT_READY[outlook.reason] ?? outlook.reason;
+  if (monster.boss) {
+    const rations = outlook.rations ? ` with ${outlook.rations} Rations` : " without Rations";
+    return `${Math.round((outlook.winChance ?? 0) * 100)}% to win${rations}, ${seconds(outlook.seconds)} an attempt`;
+  }
+  return `about ${seconds(outlook.seconds)} a kill`;
 }
 
 function Row({

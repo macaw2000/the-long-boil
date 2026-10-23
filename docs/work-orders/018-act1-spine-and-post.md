@@ -102,3 +102,12 @@ Jeremy accepted both recommendations on 23 October 2026:
 - **Tallow names his price:** in foundry_pass, "Silas Tallow names a figure as if it were the weather." becomes "\"Six hundred Crowns,\" says Silas Tallow, as if it were the weather."
 - **"Account" means the Crown debt only:** the Arrears letters say "against your name in the House's books" where they said "against your account" (night_clerks option 1's label; crested_spoons' "accepted against your account").
 - **Open:** the unpaid Foundry Pass debt, like the back rent, has no consequence yet.
+
+## Settled after the Act I assay
+
+Jeremy set these on 23 October 2026:
+
+- **Scrapjaw on day 15 to 16.5** for a balanced player is accepted.
+- **A letter's requirements decide when it is dealt** (an engine rule). Once in hand it can be answered while each option's own requirements hold, so tube_rack no longer sticks after Act I opens or the nails are sold.
+- **The client shows a boss's win chance before it is queued,** and **a locked act beat shows its gate.**
+- **Repeatable district storylets come next** (work order 019), with a small Tallow letter that chases the Foundry Pass debt. Crown sinks are their own piece of work: the purse reaches about 95,000 Crowns by day 14 with little to spend on.

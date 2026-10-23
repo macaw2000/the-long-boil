@@ -5,7 +5,8 @@
   "location": "lowvents",
   "reveal_layer": 1,
   "requires": {
-    "act1.progress": "==20"
+    "act1.progress": "==20",
+    "record.check_ins": ">=6"
   },
   "nerve": 1,
   "description": "Mother Ash wants a vent fixed. It is the last one before the bottom rim, where the Lowvents run out of city, and it has been hissing through a split seam for a week. She hands you a sheet of brass, a riveting hammer and a dented Stokers' pocket gauge, and stands well back. From the rim, with nothing below you but the Scald, you could also take a reading of your own.",

@@ -4,7 +4,7 @@
   "act": 1,
   "location": "polytechnic",
   "reveal_layer": 1,
-  "requires": { "act1.progress": "==10" },
+  "requires": { "act1.progress": "==10", "record.check_ins": ">=4" },
   "nerve": 1,
   "description": "Hester Vane's laboratory is locked: a new padlock on an old door, and the keyhole stopped with wax. When you asked about it this morning, Brassbuckle remembered a lecture she was late for, and went to give it at a pace just short of running. But the door has a post-drawer let into it at waist height, brass-fronted, for letters and small parcels, and the drawer is not locked. It is jammed, as if somebody shut it in a hurry and bent the runner doing it.",
   "options": [

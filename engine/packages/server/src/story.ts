@@ -30,6 +30,8 @@ export interface StoryView {
   qualities: Record<string, number>;
   letters: SceneView[];
   storylets: SceneView[];
+  /** Next beats held back by a skill, an item or a visit, with what they need. */
+  upcoming: rules.UpcomingScene[];
   backRent: number;
   debts: { id: string; label: string; crowns: number }[];
 }
@@ -59,6 +61,7 @@ function storyView(tinker: TinkerState, story: StoryState, content: GameContent)
       return letter ? [sceneView(letter, "letter", tinker, story, content)] : [];
     }),
     storylets: rules.availableStorylets(tinker, story, content.rules).map((scene) => sceneView(scene, "storylet", tinker, story, content)),
+    upcoming: rules.upcomingStorylets(tinker, story, content.rules),
     backRent: rules.backRentOwed(story),
     debts: rules.debtsOwed(story).map(({ id, label, crowns }) => ({ id, label, crowns })),
   };

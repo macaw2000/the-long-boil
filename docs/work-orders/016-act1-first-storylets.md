@@ -90,3 +90,9 @@ Jeremy set these on 22 October 2026, after the assayer's walk of the first playa
 
 - **Act I waits for the next visit.** altitude_review also requires `"record.check_ins": ">=2"`, so the first session ends after the Prologue and Act I opens at the first check-in after it. `record.check_ins` is a new engine-set quality in the registry: the engine counts a workshop check-in as a visit when it comes at least an hour after the last counted one. Setting the queue, changing a weapon and the Exchange do not count, so a long first sitting cannot roll into Act I (Jeremy, the same day). With the Prologue's two scenes spent, the first session ends at Nerve 8.
 - **rat_nests at 45% after Brassbuckle's hour is accepted** as it stands.
+
+## Settled after the Act I assay
+
+Jeremy set these on 23 October 2026, after the assayer's 21-day walk found the first five Act I scenes all played in one sitting:
+
+- **One opening scene per visit.** Each scene after altitude_review needs one more counted visit than the one before: the_list `"record.check_ins": ">=3"`, sealed_lab `">=4"`, rat_nests `">=5"`, bottom_rim `">=6"`, on top of their existing gates.

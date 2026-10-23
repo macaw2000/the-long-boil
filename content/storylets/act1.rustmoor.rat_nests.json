@@ -6,7 +6,8 @@
   "reveal_layer": 1,
   "requires": {
     "act1.progress": "==15",
-    "scavenging": ">=3"
+    "scavenging": ">=3",
+    "record.check_ins": ">=5"
   },
   "nerve": 1,
   "description": "The card in your pocket says the Rats have it, and in Kettleport there is only one place the Rats keep anything. Everything thrown off Gaugehill lands in Rustmoor sooner or later, and the Rust Rats sort it more carefully than anyone up there ever did. Their nest under the crane gantry is the size of a hansom cab: bedsprings, umbrella ribs, a mangle, and a great deal of Board paperwork, chewed soft at the edges. The rats are out. They will not be out for long.",

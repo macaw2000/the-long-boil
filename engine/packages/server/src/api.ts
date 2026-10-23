@@ -18,7 +18,7 @@ import {
   type TradingRules,
 } from "./market.js";
 import { discardLetter, payDebt, playStory, readStory } from "./story.js";
-import { BadRequest, NotFound, checkIn, createTinker, equip, listTinkers, look, setQueue } from "./tinkers.js";
+import { BadRequest, NotFound, checkIn, createTinker, equip, fightOutlooks, listTinkers, look, setQueue } from "./tinkers.js";
 
 export interface ApiOptions {
   db: Db;
@@ -161,6 +161,10 @@ export function buildApi({ db, content, now = Date.now, corsOrigins = [], tradin
   );
 
   app.get<{ Params: { item: string } }>("/exchange/:item", async (request) => orderBook(db, request.params.item, now()));
+
+  app.get<{ Params: { id: string } }>("/tinkers/:id/fights", async (request) => ({
+    fights: await fightOutlooks(db, content, Number(request.params.id), now()),
+  }));
 
   app.get<{ Params: { id: string } }>("/tinkers/:id/story", async (request) => readStory(db, content, Number(request.params.id), now()));
 

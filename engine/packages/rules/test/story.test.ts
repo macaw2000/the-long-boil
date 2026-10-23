@@ -4,6 +4,7 @@ import {
   backRentOwed,
   countCheckIn,
   debtsOwed,
+  upcomingStorylets,
   payDebt,
   discardLetter,
   meets,
@@ -98,6 +99,13 @@ describe("the Pneumatic Post", () => {
     expect(refreshStory(answered, tinker, rigged, 24 * HOUR).story.hand).toEqual([]);
   });
 
+  it("lets a letter in hand be answered after its dealing requirements stop holding", () => {
+    const { tinker } = fresh();
+    const story = { ...newStory(0), hand: [LETTER], qualities: { "prologue.progress": 50 } };
+    const { event } = playScene(story, tinker, content, "letter", LETTER, 0, 0);
+    expect(event).toMatchObject({ type: "scene_played", scene: LETTER });
+  });
+
   it("returns a discarded letter to the deck while its requirements hold", () => {
     const { tinker, story } = fresh();
     const dealt = refreshStory(story, tinker, content, 0).story;
@@ -150,9 +158,10 @@ describe("the first storylets, end to end", () => {
     const tinker = newTinker({}, 0, 0, 5);
     let story = refreshStory(countCheckIn(newStory(0), 0).story, tinker, content, 0).story;
     let t = 0;
+    // Each play is a fresh visit, as the opening scenes now open one a visit.
     const play = (kind: "storylet" | "letter", id: string, option: number) => {
       t += 10 * HOUR;
-      story = refreshStory(story, tinker, content, t).story;
+      story = refreshStory(countCheckIn(story, t).story, tinker, content, t).story;
       const played = playScene(story, tinker, content, kind, id, option, t);
       story = played.story;
       return played;
@@ -164,14 +173,15 @@ describe("the first storylets, end to end", () => {
     expect(backRentOwed(story)).toBe(15);
     expect(visible()).toEqual(["prologue.sprocket_row.brass_plate"]);
     play("storylet", "prologue.sprocket_row.brass_plate", 0);
-    // Act I waits for the next visit (Jeremy, after the 48-hour assay).
-    story = countCheckIn(story, t + HOUR).story;
     expect(visible()).toEqual(["act1.sprocket_row.altitude_review"]);
     play("storylet", "act1.sprocket_row.altitude_review", 0);
     play("storylet", "act1.lowvents.the_list", 0);
     play("storylet", "act1.polytechnic.sealed_lab", 1);
     expect(story.qualities["act1.progress"]).toBe(15);
     expect(visible()).toEqual([]);
+    expect(upcomingStorylets(tinker, story, content)).toEqual([
+      { id: "act1.rustmoor.rat_nests", location: "rustmoor", needs: [["scavenging", ">=3", 1]] },
+    ]);
     tinker.skillXp.scavenging = 152;
     expect(visible()).toEqual(["act1.rustmoor.rat_nests"]);
   });

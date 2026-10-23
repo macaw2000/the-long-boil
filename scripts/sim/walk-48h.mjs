@@ -191,7 +191,7 @@ async function runCadence(perDay) {
   note(`Exchange under the GDD's gate: ${firstGate.status} "${firstGate.body.error}"`);
   const sold = await sellToCollectors(main, { [SPANNER]: 1 });
   note(`sold at the Counting-House window for ${sold.earned} Crowns; now ${sold.tinker.crowns}`);
-  const rent = await call("POST", `/tinkers/${main}/rent`);
+  const rent = await call("POST", `/tinkers/${main}/debts/back_rent`);
   note(`paid Pip's bill: ${rent.status === 200 ? `ok, ${rent.body.tinker.crowns} Crowns left, back rent ${rent.body.view.backRent}` : rent.body.error}`);
   await playStory(main);
 
@@ -219,7 +219,7 @@ async function runCadence(perDay) {
     if (s.earned) note(`sold to the collectors for ${s.earned} Crowns`);
     const owed = (await ok("GET", `/tinkers/${main}`)).tinker.story.backRent;
     if (owed) {
-      const r = await call("POST", `/tinkers/${main}/rent`);
+      const r = await call("POST", `/tinkers/${main}/debts/back_rent`);
       note(`back rent: ${r.status === 200 ? "paid" : r.body.error}`);
     }
     await playStory(main);
@@ -286,7 +286,7 @@ async function runCadence(perDay) {
   const crowns = {
     kills: sum(["monster_killed", "boss_attempted"], (p) => p.crowns ?? 0),
     collectors: sum(["collector_sold"], (p) => p.crowns),
-    rent: -sum(["back_rent_paid"], (p) => p.crowns),
+    rent: -ev.filter((e) => e.type === "debt_paid" && e.payload.debt === "back_rent").reduce((n, e) => n + e.payload.crowns, 0), // the payload carries the Crowns as a negative; sinks print positive
     grocer: -sum(["grocer_bought"], (p) => p.crowns),
     exchangeTax: sum(["exchange_filled"], (p) => p.tax ?? 0) + 0,
     exchangeIn: sum(["exchange_collected"], (p) => p.crowns) + sum(["exchange_filled"], (p) => p.crowns ?? 0),

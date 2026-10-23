@@ -274,6 +274,32 @@ function stepFor(state: TinkerState, content: Content, id: string): Step {
   return { kind: "stall", reason: "unknown_action" };
 }
 
+export type FightOutlook =
+  | { monsterId: string; ready: false; reason: "no_weapon" | "level" | "cannot_win" }
+  | { monsterId: string; ready: true; seconds: number; winChance: number | null; rations: number };
+
+/**
+ * What a fight looks like before it is queued, by the same plan the queue
+ * uses: seconds a kill or attempt, and a boss's win chance with the Rations
+ * it would take (GDD section 6: odds are shown up front).
+ */
+export function fightOutlook(state: TinkerState, content: Content, monster: Monster): FightOutlook {
+  const weapon = state.weapon ? content.weapons.get(state.weapon) : undefined;
+  if (!weapon || (state.inventory[weapon.item] ?? 0) < 1) return { monsterId: monster.id, ready: false, reason: "no_weapon" };
+  const fighter = fighterFor(state.skillXp, weapon, content);
+  if (fighter.styleLevel < weapon.level_required) return { monsterId: monster.id, ready: false, reason: "level" };
+  const c = content.combat;
+  const held = state.inventory[content.ration.item] ?? 0;
+  if (monster.boss) {
+    const rations = Math.min(c.BOSS_RATION_CAP_PER_ATTEMPT ?? 0, held);
+    const plan = planBoss(c, fighter, monster, content.ration.heal, rations);
+    return { monsterId: monster.id, ready: true, seconds: plan.seconds, winChance: plan.win, rations };
+  }
+  const plan = planKill(c, fighter, monster, content.ration.heal, held > 0);
+  if (!plan) return { monsterId: monster.id, ready: false, reason: "cannot_win" };
+  return { monsterId: monster.id, ready: true, seconds: plan.seconds, winChance: null, rations: plan.rations };
+}
+
 /** Advances a Tinker's queue from state.resolvedTo to now. Returns a new state; the input is untouched. */
 export function resolve(previous: TinkerState, content: Content, now: number): Resolution {
   const state = cloneState(previous);

@@ -17,6 +17,14 @@ function qualityName(name: string): string {
   return titleCase(last.replace(/_/g, " "));
 }
 
+/** A locked beat's gate in player terms: a skill level, an item count, or more visits. */
+function needText(name: string, condition: string, value: number): string {
+  const target = Number(condition.replace(/[^0-9]/g, ""));
+  if (name === "record.check_ins") return target - value === 1 ? "another visit" : `${target - value} more visits`;
+  if (name.startsWith("item.")) return `${qualityName(name)} in hand`;
+  return `${titleCase(name.replace(/_/g, " "))} ${target} (you have ${value})`;
+}
+
 export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (outcome: Outcome) => void }) {
   const [view, setView] = useState<StoryView | null>(null);
   const [played, setPlayed] = useState<StoryOutcome["played"]>(null);
@@ -111,6 +119,18 @@ export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (o
       {view.storylets.map((scene) => (
         <Card key={scene.id} scene={scene} nerve={view.nerve} busy={busy} onPlay={(option) => act(api.play(tinkerId, "storylet", scene.id, option))} />
       ))}
+
+      {view.upcoming.length > 0 && (
+        <View style={ui.panel}>
+          <Text style={[ui.heading, { fontSize: 15 }]}>Coming up</Text>
+          {view.upcoming.map((scene) => (
+            <Text key={scene.id} style={ui.muted}>
+              Something waits in {titleCase(scene.location.replace(/_/g, " "))}: needs{" "}
+              {scene.needs.map(([name, condition, value]) => needText(name, condition, value)).join(", ")}.
+            </Text>
+          ))}
+        </View>
+      )}
 
       {progress.length > 0 && (
         <View style={ui.panel}>

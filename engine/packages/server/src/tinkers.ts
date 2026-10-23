@@ -377,6 +377,14 @@ export async function look(db: Db, content: GameContent, tinkerId: number, now: 
   });
 }
 
+/** Every monster's outlook for this Tinker as of now, read-only: kill times and a boss's win chance. */
+export async function fightOutlooks(db: Db, content: GameContent, tinkerId: number, now: number): Promise<rules.FightOutlook[]> {
+  return withTransaction(db, async (tx) => {
+    const { state } = await advance(tx, content, tinkerId, now, false);
+    return [...content.rules.monsters.values()].map((monster) => rules.fightOutlook(state, content.rules, monster));
+  });
+}
+
 /** The Tinkers on one account, oldest first; an unknown login has none. */
 export async function listTinkers(db: Db, login: string): Promise<{ id: number; name: string }[]> {
   const rows = (

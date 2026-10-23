@@ -145,9 +145,14 @@ export interface StoryView {
   qualities: Record<string, number>;
   letters: SceneView[];
   storylets: SceneView[];
+  upcoming: { id: string; location: string; needs: [string, string, number][] }[];
   backRent: number;
   debts: { id: string; label: string; crowns: number }[];
 }
+
+export type FightOutlook =
+  | { monsterId: string; ready: false; reason: "no_weapon" | "level" | "cannot_win" }
+  | { monsterId: string; ready: true; seconds: number; winChance: number | null; rations: number };
 
 export interface StoryOutcome extends Outcome {
   view: StoryView;
@@ -196,6 +201,7 @@ export const api = {
   placeOrder: (id: number, order: { item: string; side: Side; price: number; qty: number }) =>
     request<Outcome>("POST", `/tinkers/${id}/orders`, order),
   cancelOrder: (id: number, orderId: number) => request<Outcome>("DELETE", `/tinkers/${id}/orders/${orderId}`),
+  fights: (id: number) => request<{ fights: FightOutlook[] }>("GET", `/tinkers/${id}/fights`),
   story: (id: number) => request<StoryOutcome>("GET", `/tinkers/${id}/story`),
   play: (id: number, kind: "storylet" | "letter", scene: string, option: number) =>
     request<StoryOutcome>("POST", `/tinkers/${id}/story`, { kind, scene, option }),

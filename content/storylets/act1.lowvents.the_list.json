@@ -4,7 +4,7 @@
   "act": 1,
   "location": "lowvents",
   "reveal_layer": 1,
-  "requires": { "act1.progress": "==5" },
+  "requires": { "act1.progress": "==5", "record.check_ins": ">=3" },
   "nerve": 1,
   "description": "Nobody in the Lowvents says \"review\". They say Ballast, and then they stop talking and look at their boots. Pip Tumbler finds you outside a shuttered pie shop and says, in the level voice people use for Counting-House clerks, that the Tumbler name is on a list. In the same breath, and the same voice, Pip says the list does not officially exist.",
   "options": [
