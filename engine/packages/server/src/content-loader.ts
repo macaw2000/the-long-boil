@@ -88,6 +88,8 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
       gear: all("gear", "gear"),
       drops: listJson(join(dir, "drops")).map(readJson),
       combat: readJson(join(dir, "tuning", "combat.json")).constants,
+      storylets: listJson(join(dir, "storylets")).map(readJson),
+      letters: listJson(join(dir, "letters")).map(readJson),
     }),
     start: { inventory: start.inventory, crowns: start.crowns },
     economy: economyTerms(listJson(join(dir, "tuning")).filter((path) => readJson(path).schema?.startsWith("tuning.economy")).map(readJson)),

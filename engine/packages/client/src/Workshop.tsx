@@ -1,12 +1,13 @@
 // The Workshop (GDD section 7, what the screen shows): skills on the left,
 // the Tinker at work in the centre, the stores on the right, and the Boiler
-// gauge on the top bar. Narrow screens stack the three columns. A second
-// tab holds the Exchange.
+// and Nerve gauges on the top bar, the four Needles beside the name. Narrow
+// screens stack the three columns. Further tabs hold the Story and the Exchange.
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { api, type Content, type Ledger as LedgerData, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
 import { Exchange } from "./Exchange";
+import { Story } from "./Story";
 import { duration, levelProgress, namer, seconds, titleCase, tradeLine } from "./format";
 import { Ledger } from "./Ledger";
 import { QueuePicker } from "./QueuePicker";
@@ -18,7 +19,7 @@ const BOILER_MS = 12 * 3_600_000;
 export function Workshop({ content, tinkerId, onLeave }: { content: Content; tinkerId: number; onLeave: () => void }) {
   const [tinker, setTinker] = useState<Tinker | null>(null);
   const [away, setAway] = useState<{ ledger: LedgerData; trades: TradeNote[] } | null>(null);
-  const [tab, setTab] = useState<"workshop" | "exchange">("workshop");
+  const [tab, setTab] = useState<"workshop" | "story" | "exchange">("workshop");
   const [recent, setRecent] = useState<string[]>([]);
   const [picking, setPicking] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -267,13 +268,26 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
           <Text style={ui.muted}>Boiler · {steamLeft > 0 ? `${duration(steamLeft)} of steam` : "dry"}</Text>
           <Bar fraction={Math.max(0, steamLeft) / BOILER_MS} color={colors.brass} />
         </View>
+        <View style={{ minWidth: 140, maxWidth: 200, flex: 1, gap: 3 }}>
+          <Text style={ui.muted}>
+            Nerve · {tinker.story.nerve}/{tinker.story.nerveCap}
+          </Text>
+          <Bar fraction={tinker.story.nerve / tinker.story.nerveCap} color={colors.verdigris} />
+        </View>
         <Text style={[ui.number, { color: colors.brass, fontSize: 15 }]}>{tinker.crowns.toLocaleString()} Crowns</Text>
+        <View style={{ flexDirection: "row", gap: 8 }} accessibilityLabel="The four Needles">
+          {Object.entries(tinker.story.needles).map(([needle, value]) => (
+            <Text key={needle} style={[ui.number, { color: value >= 8 ? colors.scald : value > 0 ? colors.copper : colors.muted }]}>
+              {titleCase(needle.split(".")[1] ?? needle)} {value}
+            </Text>
+          ))}
+        </View>
         <Pressable onPress={onLeave} accessibilityRole="button">
           <Text style={ui.muted}>Leave</Text>
         </Pressable>
       </View>
       <View style={{ flexDirection: "row", gap: 4, paddingHorizontal: 16, paddingTop: 10 }}>
-        {(["workshop", "exchange"] as const).map((choice) => (
+        {(["workshop", "story", "exchange"] as const).map((choice) => (
           <Pressable
             key={choice}
             onPress={() => setTab(choice)}
@@ -286,7 +300,10 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
               borderBottomColor: tab === choice ? colors.brass : "transparent",
             }}
           >
-            <Text style={[ui.text, { color: tab === choice ? colors.brass : colors.muted }]}>{titleCase(choice)}</Text>
+            <Text style={[ui.text, { color: tab === choice ? colors.brass : colors.muted }]}>
+              {titleCase(choice)}
+              {choice === "story" && tinker.story.letters > 0 ? ` (${tinker.story.letters})` : ""}
+            </Text>
           </Pressable>
         ))}
       </View>
@@ -296,6 +313,10 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
           <View style={{ width: wide ? 240 : "100%" }}>{skills}</View>
           <View style={{ flex: wide ? 1 : undefined, width: wide ? undefined : "100%" }}>{centre}</View>
           <View style={{ width: wide ? 300 : "100%" }}>{stores}</View>
+        </ScrollView>
+      ) : tab === "story" ? (
+        <ScrollView contentContainerStyle={{ padding: 16, alignItems: "center" }}>
+          <Story tinkerId={tinkerId} onOutcome={apply} />
         </ScrollView>
       ) : (
         <ScrollView contentContainerStyle={{ padding: 16 }}>

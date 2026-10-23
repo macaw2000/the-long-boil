@@ -8,7 +8,7 @@ import type { GameContent } from "./content-loader.js";
 import { withTransaction, type Db, type Tx } from "./db.js";
 import { adjustCrowns, adjustUnbound, appendEvents, setLastSeq, Shortfall, type LogEntry } from "./events.js";
 import { NotFound, settle, type TradeNote } from "./settle.js";
-import { BadRequest, fromRules, lockAndLoad, outcome, saveState, view, type Outcome } from "./tinkers.js";
+import { advance, BadRequest, outcome, view, type Outcome } from "./tinkers.js";
 
 export class Refused extends Error {}
 
@@ -26,31 +26,15 @@ export interface OrderRequest {
   qty: number;
 }
 
-/**
- * Opens a market operation: settles the Exchange, resolves time and refills
- * the Boiler as any check-in does, and saves that before the market moves
- * anything. Returns the work done and the log's next sequence number.
- */
+/** Opens a market operation as a check-in, saved before the market moves anything. */
 async function begin(tx: Tx, content: GameContent, tinkerId: number, now: number) {
-  const trades = await settle(tx, content, tinkerId, now);
-  const loaded = await lockAndLoad(tx, tinkerId);
-  const resolved = rules.checkIn(loaded.state, content.rules, now);
-  const version = content.rules.version;
-  const seq = await appendEvents(
-    tx,
-    tinkerId,
-    loaded.lastSeq,
-    [...fromRules(resolved.events), { type: "checked_in", at: now, payload: { steamUntil: resolved.state.steamUntil } }],
-    version,
-  );
-  await saveState(tx, tinkerId, loaded, resolved.state, seq, version);
-  return { trades, resolved, seq };
+  return advance(tx, content, tinkerId, now, true);
 }
 
 async function finish(tx: Tx, content: GameContent, tinkerId: number, seq: number, entries: LogEntry[], begun: Awaited<ReturnType<typeof begin>>, notes: TradeNote[] = []): Promise<Outcome> {
   const last = await appendEvents(tx, tinkerId, seq, entries, content.rules.version);
   await setLastSeq(tx, tinkerId, last);
-  return outcome(await view(tx, tinkerId, content), begun.resolved.events, [...begun.trades, ...notes]);
+  return outcome(await view(tx, tinkerId, content), begun.events, [...begun.trades, ...notes], begun.storyEvents);
 }
 
 /** Runs a market operation, turning a shortfall of items or Crowns into a 400. */
@@ -156,7 +140,7 @@ export async function placeOrder(db: Db, content: GameContent, tinkerId: number,
   }
   return marketOp(db, async (tx) => {
     const begun = await begin(tx, content, tinkerId, now);
-    const skillXp = (await lockAndLoad(tx, tinkerId)).state.skillXp;
+    const skillXp = begun.state.skillXp;
     const refusal = await tradingCheck(tx, content, tinkerId, skillXp, now, gate);
     if (refusal) throw new Refused(refusal);
 

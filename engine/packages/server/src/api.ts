@@ -17,6 +17,7 @@ import {
   sellToCollector,
   type TradingRules,
 } from "./market.js";
+import { discardLetter, payBackRent, playStory, readStory } from "./story.js";
 import { BadRequest, NotFound, checkIn, createTinker, equip, listTinkers, look, setQueue } from "./tinkers.js";
 
 export interface ApiOptions {
@@ -160,6 +161,28 @@ export function buildApi({ db, content, now = Date.now, corsOrigins = [], tradin
   );
 
   app.get<{ Params: { item: string } }>("/exchange/:item", async (request) => orderBook(db, request.params.item, now()));
+
+  app.get<{ Params: { id: string } }>("/tinkers/:id/story", async (request) => readStory(db, content, Number(request.params.id), now()));
+
+  app.post<{ Params: { id: string }; Body: { kind: "storylet" | "letter"; scene: string; option: number } }>(
+    "/tinkers/:id/story",
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: ["kind", "scene", "option"],
+          properties: { kind: { enum: ["storylet", "letter"] }, scene: { type: "string" }, option: { type: "integer", minimum: 0 } },
+        },
+      },
+    },
+    async (request) => playStory(db, content, Number(request.params.id), request.body.kind, request.body.scene, request.body.option, now()),
+  );
+
+  app.delete<{ Params: { id: string; letter: string } }>("/tinkers/:id/letters/:letter", async (request) =>
+    discardLetter(db, content, Number(request.params.id), request.params.letter, now()),
+  );
+
+  app.post<{ Params: { id: string } }>("/tinkers/:id/rent", async (request) => payBackRent(db, content, Number(request.params.id), now()));
 
   return app;
 }

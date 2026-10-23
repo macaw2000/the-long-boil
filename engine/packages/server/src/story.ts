@@ -1,0 +1,169 @@
+// The Story tab's operations (GDD section 5): reading what is open, playing
+// a storylet or a letter in hand, discarding a letter, and paying the back
+// rent at the Counting-House window. The rules decide; this file logs and
+// saves, inside the same transaction that brings the Tinker up to now.
+
+import * as rules from "@long-boil/rules";
+import type { OptionView, Scene, StoryState, TinkerState } from "@long-boil/rules";
+import type { GameContent } from "./content-loader.js";
+import { withTransaction, type Db } from "./db.js";
+import { appendEvents, type LogEntry } from "./events.js";
+import { advance, BadRequest, lockAndLoad, outcome, saveState, saveStory, view, type Advanced, type Outcome } from "./tinkers.js";
+
+export interface SceneView {
+  id: string;
+  kind: "storylet" | "letter";
+  act: number;
+  location: string;
+  description: string;
+  nerve: number;
+  sender: string | null;
+  options: OptionView[];
+}
+
+export interface StoryView {
+  nerve: number;
+  nerveCap: number;
+  nextNerveAt: string | null;
+  needles: Record<string, number>;
+  /** Every story quality above 0, for the character sheet. */
+  qualities: Record<string, number>;
+  letters: SceneView[];
+  storylets: SceneView[];
+  backRent: number;
+}
+
+function sceneView(scene: Scene, kind: "storylet" | "letter", tinker: TinkerState, story: StoryState, content: GameContent): SceneView {
+  return {
+    id: scene.id,
+    kind,
+    act: scene.act,
+    location: scene.location,
+    description: scene.description,
+    nerve: scene.nerve,
+    sender: scene.sender ?? null,
+    options: scene.options.map((option) => rules.optionView(option, tinker, story, content.rules)),
+  };
+}
+
+function storyView(tinker: TinkerState, story: StoryState, content: GameContent): StoryView {
+  return {
+    nerve: story.nerve,
+    nerveCap: rules.NERVE_CAP,
+    nextNerveAt: story.nerve >= rules.NERVE_CAP ? null : new Date(story.nerveAt + rules.NERVE_MS).toISOString(),
+    needles: Object.fromEntries(rules.NEEDLES.map((needle) => [needle, story.qualities[needle] ?? 0])),
+    qualities: Object.fromEntries(Object.entries(story.qualities).filter(([, value]) => value > 0)),
+    letters: story.hand.flatMap((id) => {
+      const letter = content.rules.letters.get(id);
+      return letter ? [sceneView(letter, "letter", tinker, story, content)] : [];
+    }),
+    storylets: rules.availableStorylets(tinker, story, content.rules).map((scene) => sceneView(scene, "storylet", tinker, story, content)),
+    backRent: rules.backRentOwed(story),
+  };
+}
+
+export interface StoryOutcome extends Outcome {
+  view: StoryView;
+  /** The outcome just played, for the result card. */
+  played: { scene: string; success: boolean; text: string; odds: number | null } | null;
+}
+
+interface StoryStep {
+  story: StoryState;
+  tinker: TinkerState;
+  entries: LogEntry[];
+  played: StoryOutcome["played"];
+}
+
+/**
+ * Runs one story operation after bringing the Tinker up to now, then logs
+ * and saves what it changed: story qualities, Nerve and the hand, and any
+ * items or Crowns.
+ */
+async function storyOp(db: Db, content: GameContent, tinkerId: number, now: number, step: (advanced: Advanced) => StoryStep): Promise<StoryOutcome> {
+  try {
+    return await withTransaction(db, async (tx) => {
+      const advanced = await advance(tx, content, tinkerId, now, false);
+      const result = step(advanced);
+      const version = content.rules.version;
+      const seq = await appendEvents(tx, tinkerId, advanced.seq, result.entries, version);
+      // The advance saved its own changes; read them back so the story's are saved on top.
+      await saveState(tx, tinkerId, await lockAndLoad(tx, tinkerId), result.tinker, seq, version);
+      await saveStory(tx, tinkerId, advanced.story, result.story);
+      const done = outcome(await view(tx, tinkerId, content), advanced.events, advanced.trades, advanced.storyEvents);
+      return { ...done, view: storyView(result.tinker, result.story, content), played: result.played };
+    });
+  } catch (error) {
+    if (error instanceof rules.StoryRefusal) throw new BadRequest(error.message);
+    throw error;
+  }
+}
+
+/** The Story tab: brings the Tinker up to now and lists what is open. */
+export async function readStory(db: Db, content: GameContent, tinkerId: number, now: number): Promise<StoryOutcome> {
+  return storyOp(db, content, tinkerId, now, ({ state, story }) => ({ story, tinker: state, entries: [], played: null }));
+}
+
+/** Plays one option of a storylet, or of a letter in hand. */
+export async function playStory(
+  db: Db,
+  content: GameContent,
+  tinkerId: number,
+  kind: "storylet" | "letter",
+  sceneId: string,
+  option: number,
+  now: number,
+): Promise<StoryOutcome> {
+  return storyOp(db, content, tinkerId, now, ({ state, story }) => {
+    const played = rules.playScene(story, state, content.rules, kind, sceneId, option, now);
+    const inventory = { ...played.tinker.inventory };
+    for (const [item, delta] of Object.entries(played.event.type === "scene_played" ? played.event.items : {})) {
+      inventory[item] = (inventory[item] ?? 0) + delta;
+      if (inventory[item] === 0) delete inventory[item];
+    }
+    const event = played.event;
+    return {
+      story: played.story,
+      tinker: { ...played.tinker, inventory },
+      entries: [{ type: event.type, at: event.at, payload: event }],
+      played: {
+        scene: sceneId,
+        success: event.type === "scene_played" ? event.success : true,
+        text: played.outcome.text,
+        odds: event.type === "scene_played" && event.challenge ? event.challenge.odds : null,
+      },
+    };
+  });
+}
+
+/** Discards a letter in hand, for free. */
+export async function discardLetter(db: Db, content: GameContent, tinkerId: number, letterId: string, now: number): Promise<StoryOutcome> {
+  return storyOp(db, content, tinkerId, now, ({ state, story }) => {
+    const discarded = rules.discardLetter(story, letterId, now);
+    return { story: discarded.story, tinker: state, entries: [{ type: discarded.event.type, at: now, payload: discarded.event }], played: null };
+  });
+}
+
+/** Pays the back rent at the Counting-House window and clears its flags (work order 016). */
+export async function payBackRent(db: Db, content: GameContent, tinkerId: number, now: number): Promise<StoryOutcome> {
+  return storyOp(db, content, tinkerId, now, ({ state, story }) => {
+    const owed = rules.backRentOwed(story);
+    if (owed === 0) throw new BadRequest("no back rent is owed");
+    if (state.crowns < owed) throw new BadRequest(`the back rent is ${owed} Crowns; you have ${state.crowns}`);
+    const paid = rules.cloneStory(story);
+    paid.qualities["flag.owes_back_rent"] = 0;
+    paid.qualities["flag.back_rent_reduced"] = 0;
+    return {
+      story: paid,
+      tinker: { ...state, crowns: state.crowns - owed },
+      entries: [
+        {
+          type: "back_rent_paid",
+          at: now,
+          payload: { crowns: -owed, items: {}, qualities: { "flag.owes_back_rent": 0, "flag.back_rent_reduced": 0 } },
+        },
+      ],
+      played: null,
+    };
+  });
+}

@@ -4,7 +4,7 @@
 // events and updates the projections in one transaction.
 
 import * as rules from "@long-boil/rules";
-import type { GameEvent, QueueEntry, TinkerState } from "@long-boil/rules";
+import type { GameEvent, QueueEntry, StoryEvent, StoryState, TinkerState } from "@long-boil/rules";
 import type { GameContent } from "./content-loader.js";
 import { withTransaction, type Db, type Tx } from "./db.js";
 import { appendEvents, type LogEntry } from "./events.js";
@@ -32,6 +32,18 @@ export interface TinkerView {
   resolvedTo: string;
   weapon: string | null;
   bossesBeaten: string[];
+  story: StorySummary;
+}
+
+/** The story's gauges for the top bar and the Story tab's badge. */
+export interface StorySummary {
+  nerve: number;
+  nerveCap: number;
+  /** When the next point of Nerve arrives, or null when full. */
+  nextNerveAt: string | null;
+  needles: Record<string, number>;
+  letters: number;
+  backRent: number;
 }
 
 export interface Outcome {
@@ -41,10 +53,12 @@ export interface Outcome {
   ledger: rules.Ledger;
   /** Exchange fills collected and orders closed at this touch. */
   trades: TradeNote[];
+  /** Letters that arrived and Needles that fell. */
+  story: StoryEvent[];
 }
 
-export function outcome(tinker: TinkerView, events: GameEvent[], trades: TradeNote[] = []): Outcome {
-  return { tinker, events, ledger: rules.summarize(events), trades };
+export function outcome(tinker: TinkerView, events: GameEvent[], trades: TradeNote[] = [], story: StoryEvent[] = []): Outcome {
+  return { tinker, events, ledger: rules.summarize(events), trades, story };
 }
 
 export interface Loaded {
@@ -171,6 +185,90 @@ export async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state:
   );
 }
 
+export async function loadStory(tx: Tx, tinkerId: number): Promise<StoryState> {
+  const row = (await tx.query("SELECT nerve, nerve_at, post_at, hand, needle_at FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
+  const qualities: Record<string, number> = {};
+  for (const quality of (await tx.query("SELECT name, value FROM qualities WHERE tinker_id = $1", [tinkerId])).rows) {
+    qualities[quality.name] = quality.value;
+  }
+  return {
+    qualities,
+    nerve: row.nerve,
+    nerveAt: row.nerve_at.getTime(),
+    needleAt: row.needle_at,
+    hand: row.hand,
+    postAt: row.post_at.getTime(),
+  };
+}
+
+export async function saveStory(tx: Tx, tinkerId: number, before: StoryState, after: StoryState): Promise<void> {
+  for (const name of new Set([...Object.keys(before.qualities), ...Object.keys(after.qualities)])) {
+    const value = after.qualities[name] ?? 0;
+    if (value === (before.qualities[name] ?? 0)) continue;
+    await tx.query(
+      `INSERT INTO qualities (tinker_id, name, value) VALUES ($1, $2, $3)
+       ON CONFLICT (tinker_id, name) DO UPDATE SET value = EXCLUDED.value`,
+      [tinkerId, name, value],
+    );
+  }
+  await tx.query("UPDATE tinkers SET nerve = $2, nerve_at = $3, post_at = $4, hand = $5, needle_at = $6 WHERE id = $1", [
+    tinkerId,
+    after.nerve,
+    new Date(after.nerveAt),
+    new Date(after.postAt),
+    JSON.stringify(after.hand),
+    JSON.stringify(after.needleAt),
+  ]);
+}
+
+function summarizeStory(story: StoryState): StorySummary {
+  const full = story.nerve >= rules.NERVE_CAP;
+  return {
+    nerve: story.nerve,
+    nerveCap: rules.NERVE_CAP,
+    nextNerveAt: full ? null : new Date(story.nerveAt + rules.NERVE_MS).toISOString(),
+    needles: Object.fromEntries(rules.NEEDLES.map((needle) => [needle, story.qualities[needle] ?? 0])),
+    letters: story.hand.length,
+    backRent: rules.backRentOwed(story),
+  };
+}
+
+export interface Advanced {
+  loaded: Loaded;
+  state: TinkerState;
+  story: StoryState;
+  storyBefore: StoryState;
+  events: GameEvent[];
+  storyEvents: StoryEvent[];
+  trades: TradeNote[];
+  seq: number;
+}
+
+/**
+ * Brings a Tinker up to now inside a transaction: settles the Exchange,
+ * resolves the queue (refilling the Boiler when `refill`, as a check-in
+ * does), and refreshes the story. Logs and saves all of it, and returns the
+ * state for the operation that follows.
+ */
+export async function advance(tx: Tx, content: GameContent, tinkerId: number, now: number, refill: boolean): Promise<Advanced> {
+  const trades = await settle(tx, content, tinkerId, now);
+  const loaded = await lockAndLoad(tx, tinkerId);
+  const resolved = refill ? rules.checkIn(loaded.state, content.rules, now) : rules.resolve(loaded.state, content.rules, now);
+  const storyBefore = await loadStory(tx, tinkerId);
+  const refreshed = rules.refreshStory(storyBefore, resolved.state, content.rules, now);
+  const state = { ...resolved.state, rng: refreshed.tinker.rng };
+  const version = content.rules.version;
+  const entries: LogEntry[] = [
+    ...fromRules(resolved.events),
+    ...refreshed.events.map((event) => ({ type: event.type, at: event.at, payload: event })),
+  ];
+  if (refill) entries.push({ type: "checked_in", at: now, payload: { steamUntil: state.steamUntil } });
+  const seq = await appendEvents(tx, tinkerId, loaded.lastSeq, entries, version);
+  await saveState(tx, tinkerId, loaded, state, seq, version);
+  await saveStory(tx, tinkerId, storyBefore, refreshed.story);
+  return { loaded, state, story: refreshed.story, storyBefore, events: resolved.events, storyEvents: refreshed.events, trades, seq };
+}
+
 export function fromRules(events: GameEvent[]): LogEntry[] {
   return events.map((event) => ({ type: event.type, at: event.at, payload: event }));
 }
@@ -192,6 +290,7 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent): Prom
     resolvedTo: row.resolved_to.toISOString(),
     weapon: loaded.state.weapon,
     bossesBeaten: loaded.state.bossesBeaten,
+    story: summarizeStory(await loadStory(tx, tinkerId)),
   };
 }
 
@@ -206,12 +305,23 @@ export async function createTinker(db: Db, content: GameContent, login: string, 
       )
     ).rows[0];
     const version = content.rules.version;
+    const story = rules.newStory(now);
     const tinkerId = Number(
       (
         await tx.query(
-          `INSERT INTO tinkers (account_id, name, crowns, resolved_to, steam_until, content_version)
-           VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-          [account.id, name, content.start.crowns, new Date(now), new Date(now + rules.BOILER_HOURS * HOUR_MS), version],
+          `INSERT INTO tinkers (account_id, name, crowns, resolved_to, steam_until, content_version, nerve, nerve_at, post_at)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
+          [
+            account.id,
+            name,
+            content.start.crowns,
+            new Date(now),
+            new Date(now + rules.BOILER_HOURS * HOUR_MS),
+            version,
+            story.nerve,
+            new Date(story.nerveAt),
+            new Date(story.postAt),
+          ],
         )
       ).rows[0].id,
     );
@@ -240,19 +350,8 @@ export async function createTinker(db: Db, content: GameContent, login: string, 
 /** A check-in: resolves everything up to now and refills the Boiler. */
 export async function checkIn(db: Db, content: GameContent, tinkerId: number, now: number): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
-    const trades = await settle(tx, content, tinkerId, now);
-    const loaded = await lockAndLoad(tx, tinkerId);
-    const { state, events } = rules.checkIn(loaded.state, content.rules, now);
-    const version = content.rules.version;
-    const seq = await appendEvents(
-      tx,
-      tinkerId,
-      loaded.lastSeq,
-      [...fromRules(events), { type: "checked_in", at: now, payload: { steamUntil: state.steamUntil } }],
-      version,
-    );
-    await saveState(tx, tinkerId, loaded, state, seq, version);
-    return outcome(await view(tx, tinkerId, content), events, trades);
+    const advanced = await advance(tx, content, tinkerId, now, true);
+    return outcome(await view(tx, tinkerId, content), advanced.events, advanced.trades, advanced.storyEvents);
   });
 }
 
@@ -262,13 +361,8 @@ export async function checkIn(db: Db, content: GameContent, tinkerId: number, no
  */
 export async function look(db: Db, content: GameContent, tinkerId: number, now: number): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
-    const trades = await settle(tx, content, tinkerId, now);
-    const loaded = await lockAndLoad(tx, tinkerId);
-    const { state, events } = rules.resolve(loaded.state, content.rules, now);
-    const version = content.rules.version;
-    const seq = await appendEvents(tx, tinkerId, loaded.lastSeq, fromRules(events), version);
-    await saveState(tx, tinkerId, loaded, state, seq, version);
-    return outcome(await view(tx, tinkerId, content), events, trades);
+    const advanced = await advance(tx, content, tinkerId, now, false);
+    return outcome(await view(tx, tinkerId, content), advanced.events, advanced.trades, advanced.storyEvents);
   });
 }
 

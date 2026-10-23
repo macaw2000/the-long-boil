@@ -15,6 +15,12 @@ function all(dir: string, key: string): any[] {
     .flatMap((file) => readJson(join(CONTENT_DIR, dir, file))[key]);
 }
 
+function files(dir: string): any[] {
+  return readdirSync(join(CONTENT_DIR, dir))
+    .filter((file) => file.endsWith(".json"))
+    .map((file) => readJson(join(CONTENT_DIR, dir, file)));
+}
+
 export function loadRealContent(): Content {
   return buildContent({
     version: "test",
@@ -26,5 +32,7 @@ export function loadRealContent(): Content {
       .filter((file) => file.endsWith(".json"))
       .map((file) => readJson(join(CONTENT_DIR, "drops", file))),
     combat: readJson(join(CONTENT_DIR, "tuning", "combat.json")).constants,
+    storylets: files("storylets"),
+    letters: files("letters"),
   });
 }

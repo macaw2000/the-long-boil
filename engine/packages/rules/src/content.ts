@@ -4,6 +4,7 @@
 // and later from AWS AppConfig.
 
 import type { CombatConstants, DropTable, Monster, Weapon } from "./combat.js";
+import type { Scene } from "./story.js";
 
 export interface ItemStack {
   item: string;
@@ -38,6 +39,9 @@ export interface Content {
   zonePity: ReadonlyMap<string, readonly PityEntry[]>;
   combat: CombatConstants;
   ration: { item: string; heal: number };
+  storylets: ReadonlyMap<string, Scene>;
+  /** The Pneumatic Post's deck. */
+  letters: ReadonlyMap<string, Scene>;
 }
 
 export interface CurveRow {
@@ -66,6 +70,8 @@ export interface ContentSources {
   gear?: GearEntry[];
   drops?: DropsFile[];
   combat?: Record<string, { value: number | null; item?: string }>;
+  storylets?: Scene[];
+  letters?: Scene[];
 }
 
 function index<T>(rows: T[], key: (row: T) => string, what: string): Map<string, T> {
@@ -120,5 +126,7 @@ export function buildContent(sources: ContentSources): Content {
     zonePity,
     combat,
     ration: { item: rationConstant?.item ?? "", heal: rationConstant?.value ?? 0 },
+    storylets: index(sources.storylets ?? [], (scene) => scene.id, "storylet id"),
+    letters: index(sources.letters ?? [], (scene) => scene.id, "letter id"),
   };
 }

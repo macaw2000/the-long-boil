@@ -76,6 +76,14 @@ export interface Tinker {
   resolvedTo: string;
   weapon: string | null;
   bossesBeaten: string[];
+  story: {
+    nerve: number;
+    nerveCap: number;
+    nextNerveAt: string | null;
+    needles: Record<string, number>;
+    letters: number;
+    backRent: number;
+  };
 }
 
 export interface LedgerLine {
@@ -109,6 +117,40 @@ export interface Outcome {
 }
 
 export type Side = "buy" | "sell";
+
+export interface OptionView {
+  label: string;
+  available: boolean;
+  locked: [string, string, number][];
+  challenge: { quality: string; level: number; difficulty: number; odds: number } | null;
+}
+
+export interface SceneView {
+  id: string;
+  kind: "storylet" | "letter";
+  act: number;
+  location: string;
+  description: string;
+  nerve: number;
+  sender: string | null;
+  options: OptionView[];
+}
+
+export interface StoryView {
+  nerve: number;
+  nerveCap: number;
+  nextNerveAt: string | null;
+  needles: Record<string, number>;
+  qualities: Record<string, number>;
+  letters: SceneView[];
+  storylets: SceneView[];
+  backRent: number;
+}
+
+export interface StoryOutcome extends Outcome {
+  view: StoryView;
+  played: { scene: string; success: boolean; text: string; odds: number | null } | null;
+}
 
 export interface MarketView {
   canTrade: boolean;
@@ -152,4 +194,9 @@ export const api = {
   placeOrder: (id: number, order: { item: string; side: Side; price: number; qty: number }) =>
     request<Outcome>("POST", `/tinkers/${id}/orders`, order),
   cancelOrder: (id: number, orderId: number) => request<Outcome>("DELETE", `/tinkers/${id}/orders/${orderId}`),
+  story: (id: number) => request<StoryOutcome>("GET", `/tinkers/${id}/story`),
+  play: (id: number, kind: "storylet" | "letter", scene: string, option: number) =>
+    request<StoryOutcome>("POST", `/tinkers/${id}/story`, { kind, scene, option }),
+  discard: (id: number, letter: string) => request<StoryOutcome>("DELETE", `/tinkers/${id}/letters/${encodeURIComponent(letter)}`),
+  payRent: (id: number) => request<StoryOutcome>("POST", `/tinkers/${id}/rent`),
 };
