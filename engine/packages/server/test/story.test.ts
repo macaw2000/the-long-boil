@@ -90,18 +90,20 @@ describe("the first session's story", () => {
   });
 
   it("pays the back rent at the Counting-House window once there are Crowns", async () => {
-    const broke = await call("POST", `/tinkers/${id}/rent`);
+    const broke = await call("POST", `/tinkers/${id}/debts/back_rent`);
     expect(broke.status).toBe(400);
     expect(broke.body.error).toMatch(/15 Crowns; you have 0/);
     await call("PUT", `/tinkers/${id}/queue`, { queue: [{ actionId: "action.rustmoor.scavenge_bent_nails", remaining: 500 }] });
     clock += 2 * HOUR;
     await call("POST", `/tinkers/${id}/collector`, { item: "item.rustmoor.bent_nails", qty: 10 });
-    const paid = await call("POST", `/tinkers/${id}/rent`);
+    const paid = await call("POST", `/tinkers/${id}/debts/back_rent`);
     expect(paid.status).toBe(200);
     expect(paid.body.tinker.crowns).toBe(80 - 15);
     expect(paid.body.view.backRent).toBe(0);
     expect(paid.body.view.qualities["flag.owes_back_rent"]).toBeUndefined();
-    expect((await call("POST", `/tinkers/${id}/rent`)).status).toBe(400);
+    expect(paid.body.view.debts).toEqual([]);
+    expect((await call("POST", `/tinkers/${id}/debts/back_rent`)).status).toBe(400);
+    expect((await call("POST", `/tinkers/${id}/debts/foundry_pass`)).status).toBe(400);
   });
 
   it("plays the chain in order, and the rat nests open at Scavenging 3", async () => {
@@ -139,7 +141,7 @@ describe("the first session's story", () => {
     const { rows } = await db.query("SELECT type, payload FROM events WHERE tinker_id = $1 ORDER BY seq", [id]);
     const qualities: Record<string, number> = {};
     for (const { type, payload } of rows) {
-      if (type === "scene_played" || type === "back_rent_paid") Object.assign(qualities, payload.qualities);
+      if (type === "scene_played" || type === "debt_paid") Object.assign(qualities, payload.qualities);
       if (type === "needle_fell") qualities[payload.needle] = payload.value;
       if (type === "check_in_counted") Object.assign(qualities, payload.qualities);
     }

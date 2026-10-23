@@ -1,0 +1,48 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.rustmoor.rook_at_the_tip",
+  "act": 1,
+  "location": "rustmoor",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": "==35", "scavenging": ">=9" },
+  "nerve": 1,
+  "description": "When you next go back to the rat nest under the crane gantry, Inspector Rook is already standing in it, ankle-deep in chewed paperwork, turning a bedspring over with the toe of her boot. She does not look surprised to see you. Nobody, she observes, comes to Rustmoor for the air. Between two gloved fingers she holds a corner of torn gauge chart, and she tilts it to the light as though she has never seen one before.",
+  "options": [
+    {
+      "label": "Show her the rest of the torn charts, since she has a corner of one already.",
+      "requires": { "flag.rook_cooperated": "==1" },
+      "success": {
+        "text": "Rook lays your scraps on the mangle and fits her corner to one of them, and it fits. She does not say what the columns add up to. She says instead that the Rust Rats' king keeps whatever it values in the old crane pit, and that she would not go in without three Rations and somebody to carry her out.",
+        "changes": {
+          "needle.notice": "-1",
+          "act1.progress": 40
+        }
+      }
+    },
+    {
+      "label": "Admit you were on the bottom rim, and that you were not mending anything.",
+      "requires": { "flag.rook_evaded": "==1" },
+      "success": {
+        "text": "Rook writes it down beneath her note from the Exchange, and draws a neat line between the two. \"Better late,\" she says, and does not finish the proverb. She leaves you the bedspring, which you did not want, and the nest, which you did.",
+        "changes": {
+          "favour.gaugers": "+1",
+          "flag.rook_cooperated": 1,
+          "flag.rook_evaded": 0,
+          "act1.progress": 40
+        }
+      }
+    },
+    {
+      "label": "Tell her you came for umbrella ribs, and fill a sack with them under her eye.",
+      "success": {
+        "text": "You fill a sack with umbrella ribs, slowly, one at a time, and Rook watches every one go in. When the sack is full she asks whether you need a hand with it. You do not. She notes that down as well.",
+        "changes": {
+          "needle.notice": "+1",
+          "flag.rook_evaded": 1,
+          "flag.rook_cooperated": 0,
+          "act1.progress": 40
+        }
+      }
+    }
+  ]
+}

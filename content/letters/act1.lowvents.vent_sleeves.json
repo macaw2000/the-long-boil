@@ -1,0 +1,34 @@
+{
+  "schema": "letter/1",
+  "id": "act1.lowvents.vent_sleeves",
+  "act": 1,
+  "location": "lowvents",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=30",
+    "item.rustmoor.brass_ingot": ">=20"
+  },
+  "nerve": 1,
+  "sender": "Mother Ash",
+  "weight": 2,
+  "description": "A canister from the Lowvents, still warm, smelling of wet coal. Inside, in pencil, on the back of a coal docket: \"Twenty Brass Ingots. Vent sleeves. The Fellowship will remember. Ash.\" There is no please and no thank you. Mother Ash does not repeat herself, and does not, it seems, begin.",
+  "options": [
+    {
+      "label": "Send twenty Brass Ingots down to the Fellowship hall.",
+      "success": {
+        "text": "The ingots go down the tube in four loads, each one landing in the Lowvents with a noise you can hear from Sprocket Row. No reply comes. Two days later a Stoker you do not know holds a door for you on the long stair, and that, you understand, is the reply.",
+        "changes": {
+          "item.rustmoor.brass_ingot": "-20",
+          "favour.stokers": "+1"
+        }
+      }
+    },
+    {
+      "label": "Write back on the docket that you have none to spare this week.",
+      "success": {
+        "text": "The answer comes back on the same coal docket, turned over: \"Noted.\" It is one word, and Mother Ash has managed to make it sound like a ledger entry.",
+        "changes": {}
+      }
+    }
+  ]
+}

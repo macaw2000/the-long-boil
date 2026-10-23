@@ -44,6 +44,7 @@ export interface StorySummary {
   needles: Record<string, number>;
   letters: number;
   backRent: number;
+  debts: { id: string; label: string; crowns: number }[];
 }
 
 export interface Outcome {
@@ -186,7 +187,7 @@ export async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state:
 }
 
 export async function loadStory(tx: Tx, tinkerId: number): Promise<StoryState> {
-  const row = (await tx.query("SELECT nerve, nerve_at, post_at, hand, needle_at, check_in_at FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
+  const row = (await tx.query("SELECT nerve, nerve_at, post_at, hand, needle_at, check_in_at, answered FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
   const qualities: Record<string, number> = {};
   for (const quality of (await tx.query("SELECT name, value FROM qualities WHERE tinker_id = $1", [tinkerId])).rows) {
     qualities[quality.name] = quality.value;
@@ -199,6 +200,7 @@ export async function loadStory(tx: Tx, tinkerId: number): Promise<StoryState> {
     hand: row.hand,
     postAt: row.post_at.getTime(),
     checkInAt: row.check_in_at ? row.check_in_at.getTime() : null,
+    answered: row.answered,
   };
 }
 
@@ -212,7 +214,7 @@ export async function saveStory(tx: Tx, tinkerId: number, before: StoryState, af
       [tinkerId, name, value],
     );
   }
-  await tx.query("UPDATE tinkers SET nerve = $2, nerve_at = $3, post_at = $4, hand = $5, needle_at = $6, check_in_at = $7 WHERE id = $1", [
+  await tx.query("UPDATE tinkers SET nerve = $2, nerve_at = $3, post_at = $4, hand = $5, needle_at = $6, check_in_at = $7, answered = $8 WHERE id = $1", [
     tinkerId,
     after.nerve,
     new Date(after.nerveAt),
@@ -220,6 +222,7 @@ export async function saveStory(tx: Tx, tinkerId: number, before: StoryState, af
     JSON.stringify(after.hand),
     JSON.stringify(after.needleAt),
     after.checkInAt === null ? null : new Date(after.checkInAt),
+    JSON.stringify(after.answered),
   ]);
 }
 
@@ -232,6 +235,7 @@ function summarizeStory(story: StoryState): StorySummary {
     needles: Object.fromEntries(rules.NEEDLES.map((needle) => [needle, story.qualities[needle] ?? 0])),
     letters: story.hand.length,
     backRent: rules.backRentOwed(story),
+    debts: rules.debtsOwed(story).map(({ id, label, crowns }) => ({ id, label, crowns })),
   };
 }
 

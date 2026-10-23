@@ -1,0 +1,59 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.sprocket_row.what_you_do_with_it",
+  "act": 1,
+  "location": "sprocket_row",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": "==60" },
+  "nerve": 2,
+  "description": "By morning three people know what you found, and you have told none of them. Mrs. Inkwell's note comes by the Post on Gazette paper, offering a column and no promises. Inspector Rook is on your step, waiting. And a card has come down from Gaugehill with Lord Gauntlett's compliments: the tip being Board property, the Board would value a sight of any papers recovered from it, and would see your Boiler licensed for extra hours. Hester's page stays in your Ledger. Whatever you hand over will be a fair copy in your own hand.",
+  "options": [
+    {
+      "label": "Write a fair copy for Mrs. Inkwell, and let the Gazette decide what it is.",
+      "success": {
+        "text": "Mrs. Inkwell reads the copy at her desk with a pencil in her teeth. Nothing will print, she says, until she has a second source, and she has the look of a woman who means to find one by Thursday. By evening the Lowvents know you took it to the Gazette and not up the Hill, and three people you have never met nod to you on the stair.",
+        "changes": {
+          "favour.stokers": "+1",
+          "needle.notice": "+1",
+          "flag.page_to_inkwell": 1,
+          "act1.progress": 70
+        }
+      }
+    },
+    {
+      "label": "Open the door to Inspector Rook and give her the fair copy.",
+      "success": {
+        "text": "Rook reads it on your step. \"You found this in Rustmoor,\" she says. It is not a question; she was there, or near enough. She writes you a receipt, dated and numbered, for one copy of one page. When she has gone you find you are holding the receipt as carefully as the page.",
+        "changes": {
+          "favour.gaugers": "+1",
+          "needle.notice": "-1",
+          "flag.page_to_rook": 1,
+          "act1.progress": 70
+        }
+      }
+    },
+    {
+      "label": "Send the fair copy up to Gaugehill with your compliments to Lord Gauntlett.",
+      "success": {
+        "text": "The reply comes within the hour, on paper so good it barely rustles. Lord Gauntlett thanks you for your civic feeling. He trusts the matter may now rest with those whose task it is, and repeats, without underlining, the offer of extra hours on your Boiler. Nobody on Sprocket Row asks you anything all afternoon.",
+        "changes": {
+          "favour.board": "+1",
+          "needle.notice": "-1",
+          "flag.page_to_gauntlett": 1,
+          "act1.progress": 70
+        }
+      }
+    },
+    {
+      "label": "Write three polite refusals, and keep Hester's columns to yourself.",
+      "success": {
+        "text": "Inkwell's reply says she will wait. Rook's says nothing; she simply leaves your step. Gaugehill does not reply at all. Brassbuckle, when she hears, comes round with a tin of biscuits and does not mention the page once, and her shoulders sit an inch lower than they did last week.",
+        "changes": {
+          "favour.polytechnic": "+1",
+          "flag.page_kept": 1,
+          "act1.progress": 70
+        }
+      }
+    }
+  ]
+}

@@ -180,6 +180,11 @@
       "id": "item.rustmoor.clock_movement",
       "name": "Clock Movement",
       "flavour": "A clock's brass works, thrown off Gaugehill for losing two minutes a week."
+    },
+    {
+      "id": "item.rustmoor.foundry_pass",
+      "name": "Foundry Pass",
+      "flavour": "Leave to pass the Cinderworks gate, made out to you and nobody else."
     }
   ]
 }

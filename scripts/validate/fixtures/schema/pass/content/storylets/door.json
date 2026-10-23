@@ -10,9 +10,9 @@
  "description": "You stand in a fixture yard.",
  "options": [
   {
-   "label": "Knock",
+   "label": "Ring the bell",
    "success": {
-    "text": "You knock. Someone answers.",
+    "text": "You ring. Someone answers.",
     "changes": {
      "progress.fixture_one": "+10",
      "flag.fixture_seen": 1

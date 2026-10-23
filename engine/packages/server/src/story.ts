@@ -31,6 +31,7 @@ export interface StoryView {
   letters: SceneView[];
   storylets: SceneView[];
   backRent: number;
+  debts: { id: string; label: string; crowns: number }[];
 }
 
 function sceneView(scene: Scene, kind: "storylet" | "letter", tinker: TinkerState, story: StoryState, content: GameContent): SceneView {
@@ -59,6 +60,7 @@ function storyView(tinker: TinkerState, story: StoryState, content: GameContent)
     }),
     storylets: rules.availableStorylets(tinker, story, content.rules).map((scene) => sceneView(scene, "storylet", tinker, story, content)),
     backRent: rules.backRentOwed(story),
+    debts: rules.debtsOwed(story).map(({ id, label, crowns }) => ({ id, label, crowns })),
   };
 }
 
@@ -144,23 +146,19 @@ export async function discardLetter(db: Db, content: GameContent, tinkerId: numb
   });
 }
 
-/** Pays the back rent at the Counting-House window and clears its flags (work order 016). */
-export async function payBackRent(db: Db, content: GameContent, tinkerId: number, now: number): Promise<StoryOutcome> {
+/** Pays a story debt at the Counting-House window and clears its flags (work orders 016 and 018). */
+export async function payDebt(db: Db, content: GameContent, tinkerId: number, debtId: string, now: number): Promise<StoryOutcome> {
   return storyOp(db, content, tinkerId, now, ({ state, story }) => {
-    const owed = rules.backRentOwed(story);
-    if (owed === 0) throw new BadRequest("no back rent is owed");
-    if (state.crowns < owed) throw new BadRequest(`the back rent is ${owed} Crowns; you have ${state.crowns}`);
-    const paid = rules.cloneStory(story);
-    paid.qualities["flag.owes_back_rent"] = 0;
-    paid.qualities["flag.back_rent_reduced"] = 0;
+    const { story: paid, debt } = rules.payDebt(story, debtId);
+    if (state.crowns < debt.crowns) throw new BadRequest(`${debt.label} is ${debt.crowns} Crowns; you have ${state.crowns}`);
     return {
       story: paid,
-      tinker: { ...state, crowns: state.crowns - owed },
+      tinker: { ...state, crowns: state.crowns - debt.crowns },
       entries: [
         {
-          type: "back_rent_paid",
+          type: "debt_paid",
           at: now,
-          payload: { crowns: -owed, items: {}, qualities: { "flag.owes_back_rent": 0, "flag.back_rent_reduced": 0 } },
+          payload: { debt: debt.id, crowns: -debt.crowns, items: {}, qualities: Object.fromEntries(debt.clears.map((flag) => [flag, 0])) },
         },
       ],
       played: null,

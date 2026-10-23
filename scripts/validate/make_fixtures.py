@@ -864,7 +864,7 @@ FIX_ITEMS = items((GAUGE, "Gauge", "A fixture gauge, read by a validator."))
 # A well-formed pair: a prologue storylet with a certain and a challenge
 # option, and an act 1 letter with one option.
 GOOD_PROLOGUE = storylet("prologue.fixture_yard.door", 0, "fixture_yard", 0, {}, [
-    opt("Knock", oc("You knock. Someone answers.", {"progress.fixture_one": "+10", "flag.fixture_seen": 1})),
+    opt("Ring the bell", oc("You ring. Someone answers.", {"progress.fixture_one": "+10", "flag.fixture_seen": 1})),
     opt("Force the door", oc("It gives.", {"progress.fixture_one": "+10"}), challenge=("smithing", 15),
         failure=oc("It does not give.", {"needle.fixture_scald": "+2"}))])
 GOOD_LETTER = letter("act1.fixture_yard.note", 1, "fixture_yard", 1, {"progress.fixture_one": ">=10"}, [
@@ -968,6 +968,11 @@ put(GP_ + STP + "calm.json", storylet("act1.fixture_yard.calm", 1, "fixture_yard
     {"needle.fixture_scald": "<=3", "progress.fixture_two": "==50"}, [
     opt("Rest", oc("You rest.", {"needle.fixture_scald": "-1"})),
     opt("Work", oc("You work.", {"progress.fixture_two": "+1"}), requires={"smithing": ">=5"})]))
+# story_graph pass: a letter outcome that changes nothing (a free refusal) is
+# not leads-nowhere, since letters are one-shot once answered (work order 018).
+put(GP_ + LTP + "refusal.json", letter("act1.fixture_yard.refusal", 1, "fixture_yard", 0, {}, [
+    opt("Accept", oc("You accept.", {"lore.fixture_notes": "+1"})),
+    opt("Decline", oc("Noted.", {}))]))
 # story_graph pass: a record requirement no outcome sets is met, since the
 # engine sets records (not set-by-unknown, not never-set, not unreachable).
 put(GP_ + STP + "wait.json", storylet("act1.fixture_yard.wait", 1, "fixture_yard", 0, {RECORD: ">=2"}, [
@@ -1009,6 +1014,13 @@ A2 = [opt("A", oc("A.", {"flag.fixture_seen": 1})), opt("B", oc("B.", {"flag.fix
 put(RVP + STP + "late.json", storylet("act3.fixture_yard.late", 3, "fixture_yard", 2, {}, A2))
 put(RVP + STP + "top.json", storylet("act3.fixture_yard.top", 3, "fixture_yard", 3, {}, A2))
 put(RVP + LTP + "second.json", letter("act2.fixture_yard.second", 2, "fixture_yard", 2, {}, A2[:1]))
+# Every "knock" form (knockers too) is allowed from act 2; "knockabout" is not a knock form
+# and is allowed in act 1.
+put(RVP + STP + "knock.json", storylet("act2.fixture_yard.knock", 2, "fixture_yard", 2, {}, [
+    opt("Answer the knocker", oc("It knocks. It knocked.", {"flag.fixture_seen": 1})),
+    opt("Wait", oc("Knocking, still. Knockers.", {"flag.fixture_seen": 0}))], desc="Something KNOCKS below."))
+put(RVP + LTP + "knockabout.json", letter("act1.fixture_yard.knockabout", 1, "fixture_yard", 1, {}, [
+    opt("Reply", oc("A knockabout day at the yard.", {"flag.fixture_seen": 1}))]))
 # reveal fail: a layer above its act (Prologue and act 1), layers 4 and 5,
 # and a file with no reveal_layer.
 RVF = "reveal/fail/"
@@ -1017,6 +1029,16 @@ put(RVF + STP + "early.json", storylet("act1.fixture_yard.early", 1, "fixture_ya
 put(RVF + STP + "prologue.json", storylet("prologue.fixture_yard.early", 0, "fixture_yard", 1, {}, A2))
 put(RVF + STP + "four.json", storylet("act3.fixture_yard.four", 3, "fixture_yard", 4, {}, A2))
 put(RVF + LTP + "five.json", letter("act2.fixture_yard.five", 2, "fixture_yard", 5, {}, A2[:1]))
+# A "knock" form in every prose field of an act 1 storylet and a Prologue
+# letter, in any case; "Knockers" is a listed form. "knockabout" (in the pass
+# fixture) is not: the rule matches the listed forms as whole words only.
+put(RVF + STP + "knock.json", storylet("act1.fixture_yard.knock", 1, "fixture_yard", 1, {}, [
+    opt("Answer the KNOCKER", oc("Nothing knocks. A knockabout day.", {"flag.fixture_seen": 1})),
+    opt("Wait", oc("Fine.", {"flag.fixture_seen": 0}), challenge=("smithing", 5),
+        failure=oc("It knocked twice, then knocked again.", {"flag.fixture_seen": 0}))],
+    desc="Something is Knocking below."))
+put(RVF + LTP + "knocker.json", letter("prologue.fixture_yard.knocker", 0, "fixture_yard", 0, {}, [
+    opt("Read it", oc("Knockers, it says, and a knock.", {"flag.fixture_seen": 1}))]))
 nl = letter("act2.fixture_yard.unlayered", 2, "fixture_yard", 0, {}, A2[:1]); del nl["reveal_layer"]
 put(RVF + LTP + "unlayered.json", nl)
 

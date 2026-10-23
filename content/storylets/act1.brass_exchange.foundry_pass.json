@@ -1,0 +1,56 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.brass_exchange.foundry_pass",
+  "act": 1,
+  "location": "brass_exchange",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": "==70" },
+  "nerve": 1,
+  "description": "A notice by the Exchange doors, renewed so often the pin-holes have joined up: the Cinderworks Foundry admits nobody without a pass. There are three ways to come by one, and everybody on the trading floor will tell you all three for nothing. The Stokers give a token to Tinkers who have earned it. The Board issues passes to those it has reason to oblige. And the Counting-House, across the floor, will sell you one on terms.",
+  "options": [
+    {
+      "label": "Go down to the Lowvents and earn a Stokers' token on Mother Ash's worst vent.",
+      "challenge": { "quality": "smithing", "difficulty": 15 },
+      "success": {
+        "text": "The worst vent in the Lowvents turns out to deserve the title. It takes you an afternoon and both hands, and when it is done Mother Ash presses a stamped brass token into your palm without a word. It is warm from her pocket. The Fellowship, you gather, will remember the vent.",
+        "changes": {
+          "item.rustmoor.foundry_pass": 1,
+          "favour.stokers": "+1",
+          "act1.progress": 80
+        }
+      },
+      "failure": {
+        "text": "The vent's seam lets go before your rivets do, and you come away with a red forearm and Mother Ash's opinion of your hammer-work, delivered once. The vent is still the worst in the Lowvents. It will still be there when your arm has healed.",
+        "changes": { "needle.scald": "+2" }
+      }
+    },
+    {
+      "label": "Go down to the Lowvents and ask Mother Ash for the Stokers' token.",
+      "requires": { "favour.stokers": ">=2" },
+      "success": {
+        "text": "Mother Ash hears you out by the furnace door, then takes a stamped brass token from her apron pocket and puts it in your hand. There is no vent to mend and no test to pass. \"You have done the work already,\" she says, and turns back to the fire.",
+        "changes": { "item.rustmoor.foundry_pass": 1, "act1.progress": 80 }
+      }
+    },
+    {
+      "label": "Send Lord Gauntlett's card up to Gaugehill, and ask for a Board pass.",
+      "requires": { "favour.board": ">=1" },
+      "success": {
+        "text": "The Board pass arrives by return of Post, stiff, sealed and made out in a clerk's best copperplate. It admits the bearer to the Cinderworks Foundry \"in the Board's interest\". You are not told what the Board's interest is. Presumably you will be, when it suits.",
+        "changes": { "item.rustmoor.foundry_pass": 1, "act1.progress": 80 }
+      }
+    },
+    {
+      "label": "Cross the floor to Silas Tallow and take a pass on the Counting-House's terms.",
+      "success": {
+        "text": "Silas Tallow names a figure as if it were the weather. You agree to it, which is not the same as having it, and he knows that too. The pass is yours at once; the figure goes onto your account, to be settled at the Counting-House window when you have it. On the way out, the Arrears dial under your portrait ticks up twice and settles.",
+        "changes": {
+          "item.rustmoor.foundry_pass": 1,
+          "needle.arrears": "+2",
+          "flag.owes_foundry_pass": 1,
+          "act1.progress": 80
+        }
+      }
+    }
+  ]
+}

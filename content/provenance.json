@@ -2,6 +2,191 @@
   "schema": "provenance/2",
   "rows": [
     {
+      "id": "act1.brass_exchange.crested_spoons",
+      "type": "letter",
+      "path": "content/letters/act1.brass_exchange.crested_spoons.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T02:27:53Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass: Tallow's House in the third person is in voice; needle.arrears >= 1 is the right gate; a single option is allowed by letter/1. Reviewed files as of the 2026-10-23T02:27:53Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:21:24Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:38Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "act1.brass_exchange.foundry_pass",
+      "type": "storylet",
+      "path": "content/storylets/act1.brass_exchange.foundry_pass.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T14:57:30Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: the prose never states Tallow's 600-Crown price; suggested line naming it. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:21:24Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "act1.brass_exchange.rooks_question",
+      "type": "storylet",
+      "path": "content/storylets/act1.brass_exchange.rooks_question.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T14:57:30Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:21:24Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
       "id": "act1.lowvents.bottom_rim",
       "type": "storylet",
       "path": "content/storylets/act1.lowvents.bottom_rim.json",
@@ -126,6 +311,136 @@
         },
         {
           "at": "2026-10-23T01:18:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "act1.lowvents.vent_sleeves",
+      "type": "letter",
+      "path": "content/letters/act1.lowvents.vent_sleeves.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T14:57:30Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:21:24Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "act1.polytechnic.eat_something",
+      "type": "letter",
+      "path": "content/letters/act1.polytechnic.eat_something.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T14:57:30Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:21:24Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
           "status": "reviewed",
           "by": "inspector"
         }
@@ -262,6 +577,136 @@
       ]
     },
     {
+      "id": "act1.rustmoor.rook_at_the_tip",
+      "type": "storylet",
+      "path": "content/storylets/act1.rustmoor.rook_at_the_tip.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T14:57:30Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:21:24Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "act1.rustmoor.scrapjaws_den",
+      "type": "storylet",
+      "path": "content/storylets/act1.rustmoor.scrapjaws_den.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T14:57:30Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:21:24Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
       "id": "act1.sprocket_row.altitude_review",
       "type": "storylet",
       "path": "content/storylets/act1.sprocket_row.altitude_review.json",
@@ -351,6 +796,266 @@
         },
         {
           "at": "2026-10-23T02:03:16Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "act1.sprocket_row.letters_to_the_editor",
+      "type": "letter",
+      "path": "content/letters/act1.sprocket_row.letters_to_the_editor.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T14:57:30Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:21:24Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "act1.sprocket_row.night_clerks",
+      "type": "letter",
+      "path": "content/letters/act1.sprocket_row.night_clerks.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T14:57:30Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: option 1's label says 'against your account', which a player on Tallow's road may read as paying down the 600-Crown debt. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:21:24Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "act1.sprocket_row.two_columns",
+      "type": "storylet",
+      "path": "content/storylets/act1.sprocket_row.two_columns.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T14:57:30Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:21:24Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "act1.sprocket_row.what_you_do_with_it",
+      "type": "storylet",
+      "path": "content/storylets/act1.sprocket_row.what_you_do_with_it.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T14:57:30Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:21:24Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
           "status": "reviewed",
           "by": "inspector"
         }
@@ -2724,6 +3429,71 @@
       ]
     },
     {
+      "id": "item.rustmoor.foundry_pass",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/36",
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T14:57:30Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:27:39Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
       "id": "item.rustmoor.garnet",
       "type": "item",
       "path": "content/items/rustmoor.json",
@@ -4616,6 +5386,71 @@
       ]
     },
     {
+      "id": "prologue.sprocket_row.tube_rack",
+      "type": "letter",
+      "path": "content/letters/prologue.sprocket_row.tube_rack.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-23T14:57:30Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-23T02:21:24Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
       "id": "start.global.inventory",
       "type": "start",
       "path": "content/start.json",
@@ -4882,7 +5717,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T01:15:32Z",
+        "run": "2026-10-23T14:57:30Z",
         "checks": [
           "schema",
           "provenance",
@@ -4891,14 +5726,18 @@
           "pacing",
           "drops",
           "combat",
-          "start"
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style"
         ],
         "waiver": null
       },
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass. Reviewed files as of the 2026-10-23T01:15:32Z validator run."
+        "notes": "Pass. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -4995,6 +5834,31 @@
         },
         {
           "at": "2026-10-23T01:18:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-23T02:27:39Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-23T02:27:53Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:57:29Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-23T14:57:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T14:59:33Z",
           "status": "reviewed",
           "by": "inspector"
         }

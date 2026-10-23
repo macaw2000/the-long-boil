@@ -1,0 +1,24 @@
+{
+ "schema": "letter/1",
+ "id": "prologue.fixture_yard.knocker",
+ "revision": 1,
+ "act": 0,
+ "location": "fixture_yard",
+ "reveal_layer": 0,
+ "requires": {},
+ "nerve": 1,
+ "description": "You stand in a fixture yard.",
+ "options": [
+  {
+   "label": "Read it",
+   "success": {
+    "text": "Knockers, it says, and a knock.",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   }
+  }
+ ],
+ "sender": "A fixture neighbour",
+ "weight": 1
+}

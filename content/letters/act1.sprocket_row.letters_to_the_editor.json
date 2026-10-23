@@ -1,0 +1,34 @@
+{
+  "schema": "letter/1",
+  "id": "act1.sprocket_row.letters_to_the_editor",
+  "act": 1,
+  "location": "sprocket_row",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=35",
+    "flag.own_reading": "==1"
+  },
+  "nerve": 1,
+  "sender": "Mrs. Inkwell",
+  "weight": 1,
+  "description": "Gazette paper, a printed letterhead, and beneath it a hand like a row of tacks. \"Mrs. Inkwell understands you have lately done repairs on the bottom rim. The Gazette is preparing a piece on the Lowvents vents, and would welcome a few words from a Tinker who has seen them. Anonymity can be arranged. It is arranged less often than people suppose.\"",
+  "options": [
+    {
+      "label": "Send her three sentences about split seams and the steam they waste.",
+      "success": {
+        "text": "The piece runs on page four, under a headline you did not write. Your three sentences are all there, and so is your name, spelled correctly and in bold. In the Lowvents they read it twice. On Gaugehill, you suspect, somebody read it once and very carefully.",
+        "changes": {
+          "favour.stokers": "+1",
+          "needle.notice": "+1"
+        }
+      }
+    },
+    {
+      "label": "Reply that you have nothing to say, and take a full page to say it.",
+      "success": {
+        "text": "You write about the weather, the price of tea and the state of the long stair, and sign it with a flourish. Mrs. Inkwell prints none of it. Her reply thanks you for your discretion, which she spells with a capital D.",
+        "changes": { "needle.notice": "-1" }
+      }
+    }
+  ]
+}

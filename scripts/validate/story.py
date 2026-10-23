@@ -71,6 +71,23 @@ def outcomes(option):
     return [(k, option[k]) for k in OUTCOME_KEYS if isinstance(option.get(k), dict)]
 
 
+def prose_fields(data):
+    """(pointer, text) for each prose field the player reads: the
+    description, each option label and each outcome text, leniently: a
+    field that is missing or not a string is skipped (the schema check's to
+    report)."""
+    out = []
+    if isinstance(data.get("description"), str):
+        out.append(("/description", data["description"]))
+    for index, option in options(data):
+        if isinstance(option.get("label"), str):
+            out.append(("/options/%d/label" % index, option["label"]))
+        for key, outcome in outcomes(option):
+            if isinstance(outcome.get("text"), str):
+                out.append(("/options/%d/%s/text" % (index, key), outcome["text"]))
+    return out
+
+
 def references(data):
     """(pointer, quality name, role) for every quality the file names,
     leniently: a malformed part is skipped, not raised."""

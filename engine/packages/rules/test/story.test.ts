@@ -3,6 +3,8 @@ import {
   NERVE_CAP,
   backRentOwed,
   countCheckIn,
+  debtsOwed,
+  payDebt,
   discardLetter,
   meets,
   newStory,
@@ -83,6 +85,17 @@ describe("the Pneumatic Post", () => {
     expect(after.hand).toEqual([LETTER]);
     const answered = playScene(after, tinker, content, "letter", LETTER, 0, 12 * HOUR).story;
     expect(refreshStory(answered, tinker, content, 24 * HOUR).story.hand).toEqual([]);
+  });
+
+  it("never deals an answered letter again, even when its requirements still hold", () => {
+    const { tinker } = fresh();
+    const letter = { id: "test.x.repeatable", act: 0, location: "x", requires: {}, nerve: 1, description: "d", options: [{ label: "l", success: { text: "t", changes: {} } }], weight: 1 };
+    const rigged = { ...content, letters: new Map([[letter.id, letter]]) };
+    const dealt = refreshStory(newStory(0), tinker, rigged, 0).story;
+    expect(dealt.hand).toEqual([letter.id]);
+    const answered = playScene(dealt, tinker, rigged, "letter", letter.id, 0, 0).story;
+    expect(answered.answered).toEqual([letter.id]);
+    expect(refreshStory(answered, tinker, rigged, 24 * HOUR).story.hand).toEqual([]);
   });
 
   it("returns a discarded letter to the deck while its requirements hold", () => {
@@ -179,6 +192,15 @@ describe("the first storylets, end to end", () => {
     };
     expect(run().event).toEqual(run().event);
     expect(run().tinker.rng).not.toBe(42);
+  });
+
+  it("lists Tallow's 600-Crown account for the pass, and paying clears its flag but not Arrears", () => {
+    const story = { ...newStory(0), qualities: { "flag.owes_foundry_pass": 1, "needle.arrears": 2 } };
+    expect(debtsOwed(story).map(({ id, crowns }) => ({ id, crowns }))).toEqual([{ id: "foundry_pass", crowns: 600 }]);
+    const { story: paid, debt } = payDebt(story, "foundry_pass");
+    expect(debt.crowns).toBe(600);
+    expect(paid.qualities).toEqual({ "flag.owes_foundry_pass": 0, "needle.arrears": 2 });
+    expect(() => payDebt(paid, "foundry_pass")).toThrow(/nothing is owed/);
   });
 
   it("charges 5 Crowns after a successful repair", () => {

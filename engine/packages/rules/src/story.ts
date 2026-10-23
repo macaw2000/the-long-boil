@@ -31,6 +31,8 @@ export const CHECK_INS = "record.check_ins";
 /** Work order 016: the back rent is 15 Crowns; a successful repair takes 10 off. */
 export const BACK_RENT = 15;
 export const BACK_RENT_REDUCTION = 10;
+/** Work order 018: Tallow's Foundry Pass goes on the account at 600 Crowns (from GDD appendix A.2). */
+export const FOUNDRY_PASS_DEBT = 600;
 
 export type Requires = Record<string, string>;
 export type Changes = Record<string, string | number>;
@@ -76,6 +78,8 @@ export interface StoryState {
   postAt: number;
   /** When the last counted visit began, or null before the first. */
   checkInAt: number | null;
+  /** Letters answered; they never return to the deck (work order 018). */
+  answered: string[];
 }
 
 export type StoryEvent =
@@ -100,11 +104,11 @@ export type StoryEvent =
 
 /** A fresh Tinker's story: full Nerve, and Pip's first letter already in the tube. */
 export function newStory(now: number): StoryState {
-  return { qualities: {}, nerve: NERVE_CAP, nerveAt: now, needleAt: {}, hand: [], postAt: now - POST_MS, checkInAt: null };
+  return { qualities: {}, nerve: NERVE_CAP, nerveAt: now, needleAt: {}, hand: [], postAt: now - POST_MS, checkInAt: null, answered: [] };
 }
 
 export function cloneStory(story: StoryState): StoryState {
-  return { ...story, qualities: { ...story.qualities }, needleAt: { ...story.needleAt }, hand: [...story.hand] };
+  return { ...story, qualities: { ...story.qualities }, needleAt: { ...story.needleAt }, hand: [...story.hand], answered: [...story.answered] };
 }
 
 const RANGES: [string, number, number][] = [
@@ -180,10 +184,14 @@ function random(tinker: TinkerState): number {
   return value;
 }
 
-/** Letters whose requirements hold and which are not already in hand. */
+/**
+ * Letters the Post can deal: requirements hold, not already in hand, and
+ * never answered. A discarded letter returns; an answered one does not.
+ */
 export function drawable(tinker: TinkerState, story: StoryState, content: Content): Scene[] {
   return [...content.letters.values()].filter(
-    (letter) => !story.hand.includes(letter.id) && unmet(letter.requires, tinker, story, content).length === 0,
+    (letter) =>
+      !story.hand.includes(letter.id) && !story.answered.includes(letter.id) && unmet(letter.requires, tinker, story, content).length === 0,
   );
 }
 
@@ -314,7 +322,10 @@ export function playScene(
       if (next === 0) delete story.needleAt[name];
     }
   }
-  if (kind === "letter") story.hand = story.hand.filter((id) => id !== sceneId);
+  if (kind === "letter") {
+    story.hand = story.hand.filter((id) => id !== sceneId);
+    story.answered.push(sceneId);
+  }
 
   const event: StoryEvent = { type: "scene_played", at: now, kind, scene: sceneId, option: optionIndex, nerve: scene.nerve, challenge, success, qualities, items, crowns: 0 };
   return { story, tinker, event, outcome };
@@ -338,6 +349,34 @@ export function countCheckIn(previous: StoryState, now: number): { story: StoryS
   story.checkInAt = now;
   story.qualities[CHECK_INS] = (story.qualities[CHECK_INS] ?? 0) + 1;
   return { story, event: { type: "check_in_counted", at: now, qualities: { [CHECK_INS]: story.qualities[CHECK_INS] } } };
+}
+
+export interface Debt {
+  id: "back_rent" | "foundry_pass";
+  label: string;
+  crowns: number;
+  /** The flags paying it sets back to 0. */
+  clears: string[];
+}
+
+/** Crown debts the story has run up, paid at the Counting-House window. */
+export function debtsOwed(story: StoryState): Debt[] {
+  const debts: Debt[] = [];
+  const rent = backRentOwed(story);
+  if (rent > 0) debts.push({ id: "back_rent", label: "Pip's bill for the back rent", crowns: rent, clears: ["flag.owes_back_rent", "flag.back_rent_reduced"] });
+  if ((story.qualities["flag.owes_foundry_pass"] ?? 0) === 1) {
+    debts.push({ id: "foundry_pass", label: "Tallow's account for the Foundry Pass", crowns: FOUNDRY_PASS_DEBT, clears: ["flag.owes_foundry_pass"] });
+  }
+  return debts;
+}
+
+/** Settles one debt: clears its flags. The caller takes the Crowns. Needles are left to fall on their own. */
+export function payDebt(previous: StoryState, debtId: string): { story: StoryState; debt: Debt } {
+  const debt = debtsOwed(previous).find((candidate) => candidate.id === debtId);
+  if (!debt) throw new StoryRefusal(`nothing is owed for ${debtId}`);
+  const story = cloneStory(previous);
+  for (const flag of debt.clears) story.qualities[flag] = 0;
+  return { story, debt };
 }
 
 /** What the back rent still costs (work order 016): 0 when nothing is owed. */

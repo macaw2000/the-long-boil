@@ -1,0 +1,31 @@
+{
+ "schema": "storylet/1",
+ "id": "act2.fixture_yard.knock",
+ "revision": 1,
+ "act": 2,
+ "location": "fixture_yard",
+ "reveal_layer": 2,
+ "requires": {},
+ "nerve": 1,
+ "description": "Something KNOCKS below.",
+ "options": [
+  {
+   "label": "Answer the knocker",
+   "success": {
+    "text": "It knocks. It knocked.",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   }
+  },
+  {
+   "label": "Wait",
+   "success": {
+    "text": "Knocking, still. Knockers.",
+    "changes": {
+     "flag.fixture_seen": 0
+    }
+   }
+  }
+ ]
+}

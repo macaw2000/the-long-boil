@@ -1,0 +1,35 @@
+{
+  "schema": "letter/1",
+  "id": "prologue.sprocket_row.tube_rack",
+  "act": 0,
+  "location": "sprocket_row",
+  "reveal_layer": 0,
+  "requires": {
+    "prologue.progress": ">=50",
+    "act1.progress": "==0",
+    "item.rustmoor.bent_nails": ">=10"
+  },
+  "nerve": 1,
+  "sender": "Pip Tumbler",
+  "weight": 2,
+  "description": "The canister comes down the tube at a slant and stops with a bang that is not entirely its own fault. Pip's note reads: \"The rack the tubes run through is held up by string and goodwill, and the goodwill has gone home. If you have bent nails, ten tins would, well. Ten tins. I can pay in pork. Everybody is paid in pork this month. Pip.\"",
+  "options": [
+    {
+      "label": "Send ten tins of bent nails up the tube, and accept the pork.",
+      "success": {
+        "text": "The tins go up with a sound like a dropped drawer of cutlery. By evening the rack has stopped swaying, the tubes have stopped rattling, and a parcel of salt pork arrives wrapped in a Counting-House circular. Pip's note says only: \"Straight enough.\"",
+        "changes": {
+          "item.rustmoor.bent_nails": "-10",
+          "item.rustmoor.salt_pork": "+20"
+        }
+      }
+    },
+    {
+      "label": "Send one tin, and a note telling Pip where the rest of Rustmoor is.",
+      "success": {
+        "text": "The reply comes back in under a minute: \"Fair.\" The tube rack sways a little less, in the one corner where your tin of nails went. Pip, you suspect, will not be paying in pork for this.",
+        "changes": { "item.rustmoor.bent_nails": "-1" }
+      }
+    }
+  ]
+}

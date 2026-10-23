@@ -88,19 +88,21 @@ function Window({ content, tinker, market, name, act }: { content: Content; tink
           />
         );
       })}
-      {tinker.story.backRent > 0 && (
-        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8, marginTop: 6 }}>
-          <Text style={[ui.text, { flex: 1 }]}>Pip's bill for the back rent: {tinker.story.backRent} Crowns</Text>
+      {tinker.story.debts.map((debt) => (
+        <View key={debt.id} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8, marginTop: 6 }}>
+          <Text style={[ui.text, { flex: 1 }]}>
+            {debt.label}: {debt.crowns} Crowns
+          </Text>
           <Pressable
-            style={[ui.button, { paddingVertical: 4 }, tinker.crowns < tinker.story.backRent && { opacity: 0.4 }]}
-            disabled={tinker.crowns < tinker.story.backRent}
-            onPress={() => act(api.payRent(tinker.id))}
+            style={[ui.button, { paddingVertical: 4 }, tinker.crowns < debt.crowns && { opacity: 0.4 }]}
+            disabled={tinker.crowns < debt.crowns}
+            onPress={() => act(api.payDebt(tinker.id, debt.id))}
             accessibilityRole="button"
           >
             <Text style={ui.buttonText}>Pay</Text>
           </Pressable>
         </View>
-      )}
+      ))}
       <Text style={[ui.heading, { fontSize: 15, marginTop: 6 }]}>The grocer's counter</Text>
       {groceries.map(([item, terms]) => (
         <CountRow

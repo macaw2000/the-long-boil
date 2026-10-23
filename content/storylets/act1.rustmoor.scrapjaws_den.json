@@ -1,0 +1,44 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.rustmoor.scrapjaws_den",
+  "act": 1,
+  "location": "rustmoor",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": "==40", "cooking": ">=5" },
+  "nerve": 1,
+  "description": "Everyone who works the tip knows the noise: a long iron grinding from the bottom of Rustmoor, like a crane being made to chew. The Rust Rats run towards it at dusk. Their king is called Scrapjaw, and it is built from three centuries of what the city threw away. Its den is the old crane pit at the tip's lowest chain-point, where the Board's rubbish lands last and stays longest. If the Rats have it, whatever it is, Scrapjaw has it now. Nobody goes into the pit unprepared, and some who go in prepared come out walking differently.",
+  "options": [
+    {
+      "label": "Watch the crane pit from the gantry until you know Scrapjaw's rounds.",
+      "challenge": { "quality": "scavenging", "difficulty": 14 },
+      "success": {
+        "text": "You lie along the gantry until your elbows go numb. Scrapjaw comes out twice, jaw-first, shuts that jaw on a girder each time for no reason you can see, and goes back down. Its rounds are as regular as a Board clerk's. You know where it sleeps now, and which way it turns.",
+        "changes": { "needle.scald": "-1", "act1.progress": 50 }
+      },
+      "failure": {
+        "text": "The gantry has an opinion about your weight and expresses it at the worst moment. You come down into a drift of tin cans, loudly, and the grinding below stops. You leave with a twisted ankle and one clear look at the mouth of the pit, which is more than you wanted.",
+        "changes": { "needle.scald": "+1", "act1.progress": 50 }
+      }
+    },
+    {
+      "label": "Eat a Rustmoor Ration on the gantry, and take your time about watching.",
+      "requires": { "item.rustmoor.rustmoor_ration": ">=1" },
+      "success": {
+        "text": "You unwrap the wax paper and eat slowly while the light goes. Somewhere below, the grinding starts and stops and starts again. By the time the Ration is gone you know the shape of the pit, and your hands have stopped shaking, which you had not noticed they were doing.",
+        "changes": {
+          "item.rustmoor.rustmoor_ration": "-1",
+          "needle.scald": "-1",
+          "act1.progress": 50
+        }
+      }
+    },
+    {
+      "label": "Ask Mother Ash what the Stokers know about the thing in the crane pit.",
+      "requires": { "favour.stokers": ">=1" },
+      "success": {
+        "text": "\"It eats girders,\" says Mother Ash. \"Take three Rations. Do not take a lamp you are fond of.\" That is the whole briefing. When you ask whether anyone has come back with anything, she looks at you until you stop asking.",
+        "changes": { "act1.progress": 50 }
+      }
+    }
+  ]
+}

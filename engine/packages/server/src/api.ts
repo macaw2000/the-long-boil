@@ -17,7 +17,7 @@ import {
   sellToCollector,
   type TradingRules,
 } from "./market.js";
-import { discardLetter, payBackRent, playStory, readStory } from "./story.js";
+import { discardLetter, payDebt, playStory, readStory } from "./story.js";
 import { BadRequest, NotFound, checkIn, createTinker, equip, listTinkers, look, setQueue } from "./tinkers.js";
 
 export interface ApiOptions {
@@ -182,7 +182,9 @@ export function buildApi({ db, content, now = Date.now, corsOrigins = [], tradin
     discardLetter(db, content, Number(request.params.id), request.params.letter, now()),
   );
 
-  app.post<{ Params: { id: string } }>("/tinkers/:id/rent", async (request) => payBackRent(db, content, Number(request.params.id), now()));
+  app.post<{ Params: { id: string; debt: string } }>("/tinkers/:id/debts/:debt", async (request) =>
+    payDebt(db, content, Number(request.params.id), request.params.debt, now()),
+  );
 
   return app;
 }

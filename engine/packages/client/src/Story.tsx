@@ -86,11 +86,11 @@ export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (o
         ))}
       </View>
 
-      {view.backRent > 0 && (
-        <Text style={ui.muted}>
-          Pip's bill is on the spike: {view.backRent} Crowns, payable at the Counting-House window on the Exchange tab.
+      {view.debts.map((debt) => (
+        <Text key={debt.id} style={ui.muted}>
+          {debt.label}: {debt.crowns} Crowns, payable at the Counting-House window on the Exchange tab.
         </Text>
-      )}
+      ))}
 
       {view.letters.length > 0 && <Text style={ui.heading}>The Pneumatic Post</Text>}
       {view.letters.map((letter) => (

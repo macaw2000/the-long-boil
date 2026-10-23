@@ -1,0 +1,41 @@
+{
+ "schema": "storylet/1",
+ "id": "act1.fixture_yard.knock",
+ "revision": 1,
+ "act": 1,
+ "location": "fixture_yard",
+ "reveal_layer": 1,
+ "requires": {},
+ "nerve": 1,
+ "description": "Something is Knocking below.",
+ "options": [
+  {
+   "label": "Answer the KNOCKER",
+   "success": {
+    "text": "Nothing knocks. A knockabout day.",
+    "changes": {
+     "flag.fixture_seen": 1
+    }
+   }
+  },
+  {
+   "label": "Wait",
+   "challenge": {
+    "quality": "smithing",
+    "difficulty": 5
+   },
+   "success": {
+    "text": "Fine.",
+    "changes": {
+     "flag.fixture_seen": 0
+    }
+   },
+   "failure": {
+    "text": "It knocked twice, then knocked again.",
+    "changes": {
+     "flag.fixture_seen": 0
+    }
+   }
+  }
+ ]
+}

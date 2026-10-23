@@ -1,0 +1,28 @@
+{
+  "schema": "letter/1",
+  "id": "act1.polytechnic.eat_something",
+  "act": 1,
+  "location": "polytechnic",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=5",
+    "needle.scald": ">=2",
+    "item.rustmoor.rustmoor_ration": ">=1"
+  },
+  "nerve": 1,
+  "sender": "Professor Brassbuckle",
+  "weight": 1,
+  "description": "A canister from the Polytechnic, addressed in Brassbuckle's lecture-hall capitals. Inside is a numbered list. \"One. You were seen limping on the Polytechnic stair. Two. Burns want clean linen, not brass polish, whatever the Stokers tell you. Three. Eat something hot, and sit down while you do it. Four. That was not a suggestion. O.B.\"",
+  "options": [
+    {
+      "label": "Eat a Rustmoor Ration sitting down, as instructed.",
+      "success": {
+        "text": "You sit. You eat. The Ration is exactly as good as a Rustmoor Ration, which is to say it is hot. Halfway through, your shoulders unlock, and by the end whatever you did to yourself last has gone from loud to merely talkative. You write back: \"Five. Done.\"",
+        "changes": {
+          "item.rustmoor.rustmoor_ration": "-1",
+          "needle.scald": "-1"
+        }
+      }
+    }
+  ]
+}

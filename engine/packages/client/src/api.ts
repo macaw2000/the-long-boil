@@ -83,6 +83,7 @@ export interface Tinker {
     needles: Record<string, number>;
     letters: number;
     backRent: number;
+    debts: { id: string; label: string; crowns: number }[];
   };
 }
 
@@ -145,6 +146,7 @@ export interface StoryView {
   letters: SceneView[];
   storylets: SceneView[];
   backRent: number;
+  debts: { id: string; label: string; crowns: number }[];
 }
 
 export interface StoryOutcome extends Outcome {
@@ -198,5 +200,5 @@ export const api = {
   play: (id: number, kind: "storylet" | "letter", scene: string, option: number) =>
     request<StoryOutcome>("POST", `/tinkers/${id}/story`, { kind, scene, option }),
   discard: (id: number, letter: string) => request<StoryOutcome>("DELETE", `/tinkers/${id}/letters/${encodeURIComponent(letter)}`),
-  payRent: (id: number) => request<StoryOutcome>("POST", `/tinkers/${id}/rent`),
+  payDebt: (id: number, debt: string) => request<StoryOutcome>("POST", `/tinkers/${id}/debts/${encodeURIComponent(debt)}`),
 };

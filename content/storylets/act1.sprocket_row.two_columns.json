@@ -1,0 +1,34 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.sprocket_row.two_columns",
+  "act": 1,
+  "location": "sprocket_row",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": "==50", "item.rustmoor.ledger_page_1": ">=1" },
+  "nerve": 1,
+  "description": "The page came out of Scrapjaw's leavings folded small and tight, like a betting slip. Flattened under the lamp on your bench, it is ruled in two columns in a small upright hand, with \"H. Vane\" at the head. The left column is headed Board. The right is headed Mine. A line a year, eleven years. Down the left, the Scald climbs 6 fathoms, the Gazette's figure to the inch. Down the right, it climbs 70. There are no notes and no adjectives. Hester, it appears, did not hold with either.",
+  "options": [
+    {
+      "label": "Take the page to Brassbuckle at the Polytechnic, and watch her read it.",
+      "success": {
+        "text": "Brassbuckle reads the right-hand column twice and the left not at all. Then she asks whether you have eaten, whether your Boiler's feed pump wants oil, and whether you have thought about a warmer coat. She hands the page back by its corner, as if it were hot. \"Somewhere dry,\" she says. \"And somewhere not here.\"",
+        "changes": { "favour.polytechnic": "+1", "act1.progress": 60 }
+      }
+    },
+    {
+      "label": "Read both columns aloud to Pip over a pot of tea at the Post terminal.",
+      "success": {
+        "text": "Pip listens to the whole of it without interrupting, which has never happened before. At the end Pip says, \"Seventy,\" and then, \"In eleven,\" and then nothing, and drinks the tea cold. By the next morning half the Lowvents can recite the right-hand column, and none of them heard it from Pip.",
+        "changes": { "favour.stokers": "+1", "needle.notice": "+1", "act1.progress": 60 }
+      }
+    },
+    {
+      "label": "Lay it beside your own reading from the bottom rim, and tell nobody.",
+      "requires": { "flag.own_reading": "==1" },
+      "success": {
+        "text": "Your own 40 fathoms has no place in the left-hand column. You look at the three figures together until the lamp needs filling, and then you fold the page along its old creases and put it inside your shirt. Nobody comes to the door. For one night, that is the whole of your plan.",
+        "changes": { "needle.notice": "-1", "act1.progress": 60 }
+      }
+    }
+  ]
+}

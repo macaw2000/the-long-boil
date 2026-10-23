@@ -13,7 +13,12 @@ held to the same rules) and fails when:
   fresh Tinker.
 - unreachable-option: an option of a reachable storylet whose requires cannot
   be met.
-- leads-nowhere: an option outcome that changes no quality.
+- leads-nowhere: a storylet option outcome that changes no quality. A
+  letter's outcome may change nothing: letters are one-shot once answered
+  (work order 018, "Settled after the first draft": an answered letter never
+  returns to the deck), so answering always changes the Tinker's state, and
+  a free refusal with changes {} is a real choice (018, "Settled after
+  review"). Storylets keep the rule.
 - not-checkable: a story file that is not storylet/1 or letter/1, or does not
   match its schema (the schema check reports why).
 
@@ -162,12 +167,16 @@ def run(root):
             continue
         nodes.append((path, ident, data))
 
-    # leads-nowhere, and every quality any outcome sets.
+    # leads-nowhere (storylets only), and every quality any outcome sets.
+    # Letters are exempt from leads-nowhere: a letter is one-shot once
+    # answered (work order 018, "Settled after the first draft"), so even an
+    # outcome with changes {} closes the letter for good.
     set_anywhere = set()
     for path, ident, data in nodes:
+        is_letter = story.declared(data).startswith(story.LETTER_PREFIX)
         for index, option in enumerate(data["options"]):
             for key, outcome in story.outcomes(option):
-                if not outcome["changes"]:
+                if not outcome["changes"] and not is_letter:
                     report.fail("leads-nowhere", path,
                                 "/options/%d/%s changes no quality" % (index, key), ident)
                 set_anywhere.update(outcome["changes"])
