@@ -3,6 +3,7 @@
 // (GDD section 10) can replace the polling later without changing the rules.
 
 import cors from "@fastify/cors";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import Fastify, { type FastifyInstance } from "fastify";
 import type { GameContent } from "./content-loader.js";
 import type { Db } from "./db.js";
@@ -29,9 +30,41 @@ export interface ApiOptions {
   corsOrigins?: string[];
   /** The trading gate; the GDD's unless local play opens it early. */
   trading?: TradingRules;
+  /**
+   * A dev-only clock that can be moved forward, so a person can play days of
+   * the game in an evening. Never given in production; with it, /dev routes exist.
+   */
+  devClock?: DevClock;
 }
 
-export function buildApi({ db, content, now = Date.now, corsOrigins = [], trading = GDD_TRADING }: ApiOptions): FastifyInstance {
+export interface DevClock {
+  /** How far the server's clock runs ahead of the wall clock, in ms. */
+  offset(): number;
+  skip(ms: number): number;
+}
+
+/**
+ * A clock for local play: the wall clock plus an offset that only grows.
+ * Given a file, the offset survives a restart; otherwise game time would run
+ * backwards and every skipped Tinker would wait for the wall clock to catch up.
+ */
+export function devClock(file?: string): { clock: DevClock; now: () => number } {
+  let offset = 0;
+  if (file && existsSync(file)) offset = Number(JSON.parse(readFileSync(file, "utf8")).offsetMs) || 0;
+  return {
+    clock: {
+      offset: () => offset,
+      skip: (ms) => {
+        offset += ms;
+        if (file) writeFileSync(file, JSON.stringify({ offsetMs: offset }) + "\n");
+        return offset;
+      },
+    },
+    now: () => Date.now() + offset,
+  };
+}
+
+export function buildApi({ db, content, now = Date.now, corsOrigins = [], trading = GDD_TRADING, devClock: clock }: ApiOptions): FastifyInstance {
   const app = Fastify();
   // The plugin allows only GET, HEAD and POST by default; the queue, weapons, orders and letters also use PUT and DELETE.
   if (corsOrigins.length) app.register(cors, { origin: corsOrigins, methods: ["GET", "HEAD", "POST", "PUT", "DELETE"] });
@@ -54,8 +87,22 @@ export function buildApi({ db, content, now = Date.now, corsOrigins = [], tradin
     items: [...content.items.values()],
     economy: Object.fromEntries(content.economy),
     guide: content.guide,
+    dev: clock ? { offsetMs: clock.offset() } : null,
     totalXp: content.rules.totalXp,
   }));
+
+  if (clock) {
+    app.get("/dev/clock", async () => ({ offsetMs: clock.offset(), now: new Date(now()).toISOString() }));
+    app.post<{ Body: { hours: number } }>(
+      "/dev/skip",
+      {
+        schema: {
+          body: { type: "object", required: ["hours"], properties: { hours: { type: "number", exclusiveMinimum: 0, maximum: 168 } } },
+        },
+      },
+      async (request) => ({ offsetMs: clock.skip(request.body.hours * 3_600_000), now: new Date(now()).toISOString() }),
+    );
+  }
 
   app.get<{ Params: { login: string } }>("/accounts/:login/tinkers", async (request) => ({
     tinkers: await listTinkers(db, request.params.login),

@@ -3,6 +3,18 @@
 
 const BASE = process.env.EXPO_PUBLIC_API_URL ?? "http://127.0.0.1:3000";
 
+/** How far a dev server's clock runs ahead of this one; 0 everywhere else. */
+let clockOffset = 0;
+
+/** The game's time: the wall clock, plus any dev skip the server has applied. */
+export function gameNow(): number {
+  return Date.now() + clockOffset;
+}
+
+export function setClockOffset(offsetMs: number): void {
+  clockOffset = offsetMs;
+}
+
 export interface ItemStack {
   item: string;
   qty: number;
@@ -52,6 +64,8 @@ export interface ItemTerms {
 export interface Content {
   version: string;
   guide: { id: string; speaker: string; line: string; button?: string }[];
+  /** Present only on a dev server, which can skip time forward. */
+  dev: { offsetMs: number } | null;
   economy: Record<string, ItemTerms>;
   actions: Action[];
   monsters: Monster[];
@@ -205,6 +219,7 @@ export const api = {
   placeOrder: (id: number, order: { item: string; side: Side; price: number; qty: number }) =>
     request<Outcome>("POST", `/tinkers/${id}/orders`, order),
   cancelOrder: (id: number, orderId: number) => request<Outcome>("DELETE", `/tinkers/${id}/orders/${orderId}`),
+  devSkip: (hours: number) => request<{ offsetMs: number; now: string }>("POST", "/dev/skip", { hours }),
   fights: (id: number) => request<{ fights: FightOutlook[] }>("GET", `/tinkers/${id}/fights`),
   story: (id: number) => request<StoryOutcome>("GET", `/tinkers/${id}/story`),
   play: (id: number, kind: "storylet" | "letter", scene: string, option: number) =>

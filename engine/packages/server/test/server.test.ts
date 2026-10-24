@@ -2,7 +2,7 @@
 // migrations before the suite.
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { buildApi } from "../src/api.js";
+import { buildApi, devClock } from "../src/api.js";
 import { loadContent } from "../src/content-loader.js";
 import { connect, migrate } from "../src/db.js";
 
@@ -201,5 +201,21 @@ describe("a browser client on another origin", () => {
       expect(String(response.headers["access-control-allow-methods"])).toContain(method);
     }
     await browser.close();
+  });
+});
+
+describe("the dev clock", () => {
+  it("exists only when given, and moves the game forward", async () => {
+    expect((await call("POST", "/dev/skip", { hours: 1 })).status).toBe(404);
+    const dev = devClock();
+    const local = buildApi({ db, content, devClock: dev.clock, now: dev.now });
+    const before = dev.now();
+    const skipped = await local.inject({ method: "POST", url: "/dev/skip", payload: { hours: 12 } });
+    expect(skipped.statusCode).toBe(200);
+    expect(skipped.json().offsetMs).toBe(12 * HOUR);
+    expect(dev.now() - before).toBeGreaterThanOrEqual(12 * HOUR);
+    expect((await local.inject({ method: "GET", url: "/content" })).json().dev).toEqual({ offsetMs: 12 * HOUR });
+    expect((await local.inject({ method: "POST", url: "/dev/skip", payload: { hours: 0 } })).statusCode).toBe(400);
+    await local.close();
   });
 });

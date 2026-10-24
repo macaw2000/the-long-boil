@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
-import { api, type Content, type Ledger as LedgerData, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
+import { api, gameNow, setClockOffset, type Content, type Ledger as LedgerData, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
 import { Exchange } from "./Exchange";
 import { Glow } from "./Glow";
 import { ItemIcon, Scene } from "./Sprite";
@@ -27,7 +27,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
   const [recent, setRecent] = useState<string[]>([]);
   const [picking, setPicking] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(gameNow());
   const name = useMemo(() => namer(content), [content]);
   const wide = useWindowDimensions().width >= 900;
   const [guide, setGuideState] = useState<GuideState>(() => loadGuide(tinkerId));
@@ -103,18 +103,35 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
   );
 
   // Opening the workshop is a check-in: it resolves the time away and refills the Boiler.
+  const checkIn = useCallback(
+    () =>
+      api
+        .checkIn(tinkerId)
+        .then((outcome) => {
+          apply(outcome);
+          const { ledger, trades } = outcome;
+          if (ledger.lines.length || ledger.stalls.length || ledger.boilerDryAt !== null || trades.length) {
+            setAway({ ledger, trades });
+          }
+        })
+        .catch((reason: Error) => setError(reason.message)),
+    [tinkerId, apply],
+  );
+
   useEffect(() => {
+    checkIn();
+  }, [checkIn]);
+
+  /** Dev only: move the game's clock on, then come back as a fresh visit would. */
+  const skip = (hours: number) =>
     api
-      .checkIn(tinkerId)
-      .then((outcome) => {
-        apply(outcome);
-        const { ledger, trades } = outcome;
-        if (ledger.lines.length || ledger.stalls.length || ledger.boilerDryAt !== null || trades.length) {
-          setAway({ ledger, trades });
-        }
+      .devSkip(hours)
+      .then(({ offsetMs }) => {
+        setClockOffset(offsetMs);
+        setNow(gameNow());
+        return checkIn();
       })
       .catch((reason: Error) => setError(reason.message));
-  }, [tinkerId, apply]);
 
   // While the workshop is open, look in every few seconds to watch work land.
   useEffect(() => {
@@ -127,7 +144,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
         })
         .catch((reason: Error) => setError(reason.message));
     }, LOOK_EVERY_MS);
-    const tick = setInterval(() => setNow(Date.now()), 250);
+    const tick = setInterval(() => setNow(gameNow()), 250);
     return () => {
       clearInterval(look);
       clearInterval(tick);
@@ -368,6 +385,34 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
           <Text style={ui.muted}>Leave</Text>
         </Pressable>
       </View>
+      {content.dev && (
+        <View
+          style={{
+            flexDirection: "row",
+            flexWrap: "wrap",
+            alignItems: "center",
+            gap: 8,
+            paddingHorizontal: 16,
+            paddingVertical: 6,
+            backgroundColor: "#3a2a1a",
+            borderBottomWidth: 1,
+            borderBottomColor: colors.copper,
+          }}
+        >
+          <Text style={[ui.muted, { color: colors.copper }]}>Dev clock · come back after</Text>
+          {[1, 2, 6, 12, 24].map((hours) => (
+            <Pressable
+              key={hours}
+              onPress={() => skip(hours)}
+              accessibilityRole="button"
+              style={{ borderWidth: 1, borderColor: colors.copper, borderRadius: 4, paddingHorizontal: 8, paddingVertical: 2 }}
+            >
+              <Text style={[ui.number, { color: colors.copper }]}>{hours}h</Text>
+            </Pressable>
+          ))}
+          <Text style={ui.muted}>· ahead by {duration(content.dev ? gameNow() - Date.now() : 0)}</Text>
+        </View>
+      )}
       <View style={{ flexDirection: "row", gap: 4, paddingHorizontal: 16, paddingTop: 10 }}>
         {(["workshop", "story", "exchange"] as const).map((choice) => (
           <Glow key={choice} active={tabLit(choice)}>

@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { Platform, Text, View } from "react-native";
-import { api, type Content } from "./src/api";
+import { api, setClockOffset, type Content } from "./src/api";
 import { SignIn } from "./src/SignIn";
 import { colors, ui } from "./src/theme";
 import { Workshop } from "./src/Workshop";
@@ -37,7 +37,10 @@ export default function App() {
   useEffect(() => {
     api
       .content()
-      .then(setContent)
+      .then((loaded) => {
+        setClockOffset(loaded.dev?.offsetMs ?? 0);
+        setContent(loaded);
+      })
       .catch((reason: Error) => setError(`Cannot reach the server: ${reason.message}`));
   }, []);
 
