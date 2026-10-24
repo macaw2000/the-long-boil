@@ -1,12 +1,16 @@
-// The HTTP API for the first playable slice. The client polls GET
-// /tinkers/:id while open, which also collects Exchange fills; WebSockets
-// (GDD section 10) can replace the polling later without changing the rules.
+// The HTTP API for the first playable slice. The client looks at GET
+// /tinkers/:id while open, which also collects Exchange fills. A WebSocket,
+// GET /live/:id (GDD section 10), pushes notices that a Tinker changed and
+// city chat; everything a player does still goes through these HTTP routes.
 
 import cors from "@fastify/cors";
+import websocket from "@fastify/websocket";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import Fastify, { type FastifyInstance } from "fastify";
+import { mutedAccounts, recentChat, say, setMute } from "./chat.js";
 import type { GameContent } from "./content-loader.js";
 import type { Db } from "./db.js";
+import { CITY, localBroadcast, tinkerChannel, type Broadcast, type Notice } from "./live.js";
 import {
   GDD_TRADING,
   Refused,
@@ -35,6 +39,8 @@ export interface ApiOptions {
    * the game in an evening. Never given in production; with it, /dev routes exist.
    */
   devClock?: DevClock;
+  /** Fan-out to open sessions; in-process unless several servers share one. */
+  broadcast?: Broadcast;
 }
 
 export interface DevClock {
@@ -64,17 +70,33 @@ export function devClock(file?: string): { clock: DevClock; now: () => number } 
   };
 }
 
-export function buildApi({ db, content, now = Date.now, corsOrigins = [], trading = GDD_TRADING, devClock: clock }: ApiOptions): FastifyInstance {
+export function buildApi({
+  db,
+  content,
+  now = Date.now,
+  corsOrigins = [],
+  trading = GDD_TRADING,
+  devClock: clock,
+  broadcast = localBroadcast(),
+}: ApiOptions): FastifyInstance {
   const app = Fastify();
   // The plugin allows only GET, HEAD and POST by default; the queue, weapons, orders and letters also use PUT and DELETE.
   if (corsOrigins.length) app.register(cors, { origin: corsOrigins, methods: ["GET", "HEAD", "POST", "PUT", "DELETE"] });
+  app.register(websocket, { options: { maxPayload: 4096 } });
 
-  app.setErrorHandler((error, _request, reply) => {
+  // Anything that changes a Tinker tells that Tinker's other open sessions to look again.
+  app.addHook("onResponse", async (request, reply) => {
+    if (request.method === "GET" || reply.statusCode >= 400) return;
+    const id = Number((request.params as { id?: string }).id);
+    if (Number.isInteger(id) && id > 0) broadcast.publish(tinkerChannel(id), { type: "changed" });
+  });
+
+  app.setErrorHandler((error: Error & { validation?: unknown; code?: string }, _request, reply) => {
     if (error instanceof NotFound) return reply.code(404).send({ error: error.message });
     if (error instanceof Refused) return reply.code(403).send({ error: error.message });
     if (error instanceof BadRequest || error.validation) return reply.code(400).send({ error: error.message });
     // A rule the database enforces with RAISE EXCEPTION, such as 3 Tinkers per account.
-    if ((error as { code?: string }).code === "P0001") return reply.code(409).send({ error: error.message });
+    if (error.code === "P0001") return reply.code(409).send({ error: error.message });
     app.log.error(error);
     return reply.code(500).send({ error: "internal error" });
   });
@@ -200,7 +222,8 @@ export function buildApi({ db, content, now = Date.now, corsOrigins = [], tradin
       },
     },
     async (request, reply) => {
-      const result = await placeOrder(db, content, Number(request.params.id), request.body, now(), trading);
+      const { counterparties, ...result } = await placeOrder(db, content, Number(request.params.id), request.body, now(), trading);
+      for (const other of counterparties) broadcast.publish(tinkerChannel(other), { type: "changed" });
       return reply.code(201).send(result);
     },
   );
@@ -238,6 +261,68 @@ export function buildApi({ db, content, now = Date.now, corsOrigins = [], tradin
   app.post<{ Params: { id: string; debt: string } }>("/tinkers/:id/debts/:debt", async (request) =>
     payDebt(db, content, Number(request.params.id), request.params.debt, now()),
   );
+
+  app.get<{ Params: { id: string } }>("/tinkers/:id/chat", async (request) => recentChat(db, Number(request.params.id)));
+
+  app.post<{ Params: { id: string }; Body: { text: string } }>(
+    "/tinkers/:id/chat",
+    { schema: { body: { type: "object", required: ["text"], properties: { text: { type: "string", minLength: 1, maxLength: 2000 } } } } },
+    async (request, reply) => {
+      const message = await say(db, Number(request.params.id), request.body.text, now());
+      broadcast.publish(CITY, { type: "chat", message });
+      const { accountId: _account, ...shown } = message;
+      return reply.code(201).send({ message: shown });
+    },
+  );
+
+  const muting = async (id: number, other: number, muted: boolean) => {
+    await setMute(db, id, other, muted);
+    broadcast.publish(tinkerChannel(id), { type: "mutes" });
+    return recentChat(db, id);
+  };
+  app.put<{ Params: { id: string; other: string } }>("/tinkers/:id/mutes/:other", async (request) =>
+    muting(Number(request.params.id), Number(request.params.other), true),
+  );
+  app.delete<{ Params: { id: string; other: string } }>("/tinkers/:id/mutes/:other", async (request) =>
+    muting(Number(request.params.id), Number(request.params.other), false),
+  );
+
+  // The live connection: server-to-client only. Chat from muted accounts is
+  // dropped here, per connection, so a mute never reaches the muter's screen.
+  app.register(async (live) => {
+    live.get<{ Params: { id: string } }>("/live/:id", { websocket: true }, async (socket, request) => {
+      const id = Number(request.params.id);
+      const send = (notice: Notice) => {
+        if (socket.readyState !== socket.OPEN) return;
+        if (notice.type === "chat") {
+          const { accountId: _account, ...message } = notice.message;
+          socket.send(JSON.stringify({ type: "chat", message }));
+        } else socket.send(JSON.stringify(notice));
+      };
+      const stops: (() => void)[] = [];
+      socket.on("close", () => stops.forEach((stop) => stop()));
+      let muted: Set<number>;
+      try {
+        muted = await mutedAccounts(db, id);
+      } catch {
+        socket.close(4404, "no such Tinker");
+        return;
+      }
+      stops.push(
+        broadcast.subscribe(tinkerChannel(id), (notice) => {
+          if (notice.type === "mutes") {
+            mutedAccounts(db, id).then((fresh) => (muted = fresh), () => undefined);
+          }
+          send(notice);
+        }),
+        broadcast.subscribe(CITY, (notice) => {
+          if (notice.type === "chat" && muted.has(notice.message.accountId)) return;
+          send(notice);
+        }),
+      );
+      send({ type: "changed" });
+    });
+  });
 
   return app;
 }

@@ -195,6 +195,28 @@ export interface BookLevel {
   orders: number;
 }
 
+export interface ChatMessage {
+  id: number;
+  channel: string;
+  tinker: { id: number; name: string };
+  text: string;
+  at: string;
+}
+
+export interface ChatView {
+  messages: ChatMessage[];
+  /** Tinkers whose accounts this account has muted. */
+  muted: number[];
+}
+
+/** What the live connection pushes (packages/server/src/live.ts). */
+export type Notice = { type: "changed" } | { type: "mutes" } | { type: "chat"; message: ChatMessage };
+
+/** The live connection's address, on the same server as the HTTP API. */
+export function liveUrl(tinkerId: number): string {
+  return `${BASE.replace(/^http/, "ws")}/live/${tinkerId}`;
+}
+
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
   const response = await fetch(`${BASE}${path}`, {
     method,
@@ -229,4 +251,8 @@ export const api = {
     request<StoryOutcome>("POST", `/tinkers/${id}/story`, { kind, scene, option }),
   discard: (id: number, letter: string) => request<StoryOutcome>("DELETE", `/tinkers/${id}/letters/${encodeURIComponent(letter)}`),
   payDebt: (id: number, debt: string) => request<StoryOutcome>("POST", `/tinkers/${id}/debts/${encodeURIComponent(debt)}`),
+  chat: (id: number) => request<ChatView>("GET", `/tinkers/${id}/chat`),
+  say: (id: number, text: string) => request<{ message: ChatMessage }>("POST", `/tinkers/${id}/chat`, { text }),
+  mute: (id: number, other: number) => request<ChatView>("PUT", `/tinkers/${id}/mutes/${other}`),
+  unmute: (id: number, other: number) => request<ChatView>("DELETE", `/tinkers/${id}/mutes/${other}`),
 };

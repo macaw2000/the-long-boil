@@ -130,8 +130,19 @@ async function tradingCheck(tx: Tx, content: GameContent, tinkerId: number, skil
   return null;
 }
 
-/** Places an order: escrows it, fills what crosses at the resting prices, and rests the rest for 30 days. */
-export async function placeOrder(db: Db, content: GameContent, tinkerId: number, order: OrderRequest, now: number, gate = GDD_TRADING): Promise<Outcome> {
+/**
+ * Places an order: escrows it, fills what crosses at the resting prices, and
+ * rests the rest for 30 days. Also names the Tinkers whose resting orders it
+ * filled, so their open sessions can be told.
+ */
+export async function placeOrder(
+  db: Db,
+  content: GameContent,
+  tinkerId: number,
+  order: OrderRequest,
+  now: number,
+  gate = GDD_TRADING,
+): Promise<Outcome & { counterparties: number[] }> {
   const { item, side, price, qty } = order;
   wholeCount(qty);
   if (terms(content, item).bound) throw new BadRequest(`${item} is bound and cannot be traded`);
@@ -214,7 +225,8 @@ export async function placeOrder(db: Db, content: GameContent, tinkerId: number,
        WHERE id = $1`,
       [orderId, remaining, new Date(now)],
     );
-    return finish(tx, content, tinkerId, now, begun.seq, entries, begun, notes);
+    const counterparties = [...new Set(fills.map((fill) => makers.get(fill.orderId)!))];
+    return { ...(await finish(tx, content, tinkerId, now, begun.seq, entries, begun, notes)), counterparties };
   });
 }
 

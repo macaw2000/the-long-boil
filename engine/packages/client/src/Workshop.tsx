@@ -2,10 +2,13 @@
 // the Tinker at work in the centre, the stores on the right, and the Boiler
 // and Nerve gauges on the top bar, the four Needles beside the name. Narrow
 // screens stack the three columns. Further tabs hold the Story and the Exchange.
+// City chat sits on the right of every tab on wide screens, and is its own tab
+// on narrow ones; the live connection feeds it and says when to look again.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
-import { api, gameNow, setClockOffset, type Content, type Ledger as LedgerData, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
+import { api, gameNow, setClockOffset, type Content, type Ledger as LedgerData, type Notice, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
+import { Chat, useChat } from "./Chat";
 import { Exchange } from "./Exchange";
 import { Glow } from "./Glow";
 import { ItemIcon, Scene } from "./Sprite";
@@ -15,6 +18,7 @@ import { Story } from "./Story";
 import { duration, levelProgress, namer, seconds, titleCase, tradeLine } from "./format";
 import { Ledger, STALL_REASONS } from "./Ledger";
 import { QueuePicker } from "./QueuePicker";
+import { useLive } from "./live";
 import { colors, ui } from "./theme";
 
 const LOOK_EVERY_MS = 5_000;
@@ -23,7 +27,7 @@ const BOILER_MS = 12 * 3_600_000;
 export function Workshop({ content, tinkerId, onLeave }: { content: Content; tinkerId: number; onLeave: () => void }) {
   const [tinker, setTinker] = useState<Tinker | null>(null);
   const [away, setAway] = useState<{ ledger: LedgerData; trades: TradeNote[] } | null>(null);
-  const [tab, setTab] = useState<"workshop" | "story" | "exchange">("workshop");
+  const [tab, setTab] = useState<"workshop" | "story" | "exchange" | "chat">("workshop");
   const [recent, setRecent] = useState<string[]>([]);
   const [picking, setPicking] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -133,23 +137,44 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
       })
       .catch((reason: Error) => setError(reason.message));
 
-  // While the workshop is open, look in every few seconds to watch work land.
-  useEffect(() => {
-    const look = setInterval(() => {
+  const lookAgain = useCallback(
+    () =>
       api
         .look(tinkerId)
         .then((outcome) => {
           apply(outcome);
           noteRecent(outcome.ledger, outcome.trades);
         })
-        .catch((reason: Error) => setError(reason.message));
-    }, LOOK_EVERY_MS);
+        .catch((reason: Error) => setError(reason.message)),
+    [tinkerId, apply, noteRecent],
+  );
+
+  // The server says when something changed (a fill, another session's action);
+  // chat arrives the same way.
+  const chat = useChat(tinkerId);
+  const { receive: receiveChat, reload: reloadChat } = chat;
+  const connected = useLive(
+    tinkerId,
+    useCallback(
+      (notice: Notice) => {
+        if (notice.type === "changed") lookAgain();
+        else if (notice.type === "chat") receiveChat(notice.message);
+        else if (notice.type === "mutes") reloadChat();
+      },
+      [lookAgain, receiveChat, reloadChat],
+    ),
+  );
+
+  // While the workshop is open, still look in every few seconds: work lands on
+  // the Boiler's clock, which nothing pushes.
+  useEffect(() => {
+    const look = setInterval(lookAgain, LOOK_EVERY_MS);
     const tick = setInterval(() => setNow(gameNow()), 250);
     return () => {
       clearInterval(look);
       clearInterval(tick);
     };
-  }, [tinkerId, apply, noteRecent]);
+  }, [lookAgain]);
 
   const run = (call: Promise<Outcome>) =>
     call
@@ -178,7 +203,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
   const step = currentStep(tinker, guide);
   const lit: Set<Target> = step ? new Set([step.target]) : nudges(tinker, content, now);
   const tabFor = (target: Target) => (target === "story" || target === "exchange" ? target : "workshop");
-  const tabLit = (choice: "workshop" | "story" | "exchange") => [...lit].some((target) => tabFor(target) === choice) && tab !== choice;
+  const tabLit = (choice: "workshop" | "story" | "exchange" | "chat") => [...lit].some((target) => tabFor(target) === choice) && tab !== choice;
 
   const skills = (
     <View style={ui.panel}>
@@ -415,7 +440,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
         </View>
       )}
       <View style={{ flexDirection: "row", gap: 4, paddingHorizontal: 16, paddingTop: 10 }}>
-        {(["workshop", "story", "exchange"] as const).map((choice) => (
+        {(wide ? (["workshop", "story", "exchange"] as const) : (["workshop", "story", "exchange", "chat"] as const)).map((choice) => (
           <Glow key={choice} active={tabLit(choice)}>
           <Pressable
             onPress={() => setTab(choice)}
@@ -433,6 +458,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
               {choice === "story" && <Badge count={tinker.story.letters + (tinker.story.openScenes > 0 && tinker.story.nerve > 0 ? 1 : 0)} label={tinker.story.letters > 0 ? String(tinker.story.letters) : tinker.story.openScenes > 0 && tinker.story.nerve > 0 ? "•" : undefined} />}
               {choice === "exchange" && tinker.story.debts.some((debt) => tinker.crowns >= debt.crowns) && <Badge count={1} label="!" tone={colors.copper} />}
               {choice === "workshop" && tinker.queue.length === 0 && <Badge count={1} label="idle" tone={colors.scald} />}
+              {choice === "chat" && tab !== "chat" && <Badge count={chat.unread} tone={colors.verdigris} />}
             </View>
             {choice === "story" && <CanisterDrop drops={canisters} />}
           </Pressable>
@@ -450,21 +476,34 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
         </View>
       )}
       {error && <Text style={[ui.text, { color: colors.scald, paddingHorizontal: 16, paddingTop: 8 }]}>{error}</Text>}
-      {tab === "workshop" ? (
-        <ScrollView contentContainerStyle={{ padding: 16, gap: 12, flexDirection: wide ? "row" : "column", alignItems: "flex-start" }}>
-          <View style={{ width: wide ? 240 : "100%" }}>{skills}</View>
-          <View style={{ flex: wide ? 1 : undefined, width: wide ? undefined : "100%" }}>{centre}</View>
-          <View style={{ width: wide ? 300 : "100%" }}>{stores}</View>
-        </ScrollView>
-      ) : tab === "story" ? (
-        <ScrollView contentContainerStyle={{ padding: 16, alignItems: "center" }}>
-          <Story tinkerId={tinkerId} onOutcome={apply} />
-        </ScrollView>
-      ) : (
-        <ScrollView contentContainerStyle={{ padding: 16 }}>
-          <Exchange content={content} tinker={tinker} name={name} run={run} />
-        </ScrollView>
-      )}
+      <View style={{ flex: 1, flexDirection: "row" }}>
+        <View style={{ flex: 1 }}>
+          {tab === "workshop" || (tab === "chat" && wide) ? (
+            <ScrollView contentContainerStyle={{ padding: 16, gap: 12, flexDirection: wide ? "row" : "column", alignItems: "flex-start" }}>
+              <View style={{ width: wide ? 240 : "100%" }}>{skills}</View>
+              <View style={{ flex: wide ? 1 : undefined, width: wide ? undefined : "100%" }}>{centre}</View>
+              <View style={{ width: wide ? 300 : "100%" }}>{stores}</View>
+            </ScrollView>
+          ) : tab === "chat" && !wide ? (
+            <View style={{ flex: 1, padding: 16 }}>
+              <Chat tinkerId={tinkerId} chat={chat} connected={connected} />
+            </View>
+          ) : tab === "story" ? (
+            <ScrollView contentContainerStyle={{ padding: 16, alignItems: "center" }}>
+              <Story tinkerId={tinkerId} onOutcome={apply} />
+            </ScrollView>
+          ) : (
+            <ScrollView contentContainerStyle={{ padding: 16 }}>
+              <Exchange content={content} tinker={tinker} name={name} run={run} />
+            </ScrollView>
+          )}
+        </View>
+        {wide && (
+          <View style={{ width: 300, padding: 16, paddingLeft: 0 }}>
+            <Chat tinkerId={tinkerId} chat={chat} connected={connected} />
+          </View>
+        )}
+      </View>
     </View>
   );
 }
