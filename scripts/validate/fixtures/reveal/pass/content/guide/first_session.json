@@ -1,0 +1,54 @@
+{
+ "schema": "guide/1",
+ "id": "prologue.sprocket_row.first_session_guide",
+ "revision": 1,
+ "steps": [
+  {
+   "id": "boiler",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass",
+   "button": "press press"
+  },
+  {
+   "id": "queue_spanners",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "first_spanner",
+   "speaker": "A fixture professor",
+   "line": "A knockabout day at the yard."
+  },
+  {
+   "id": "pips_bill",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "equip",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "rats",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "pay_bill",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "brass_plate",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "come_back",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass",
+   "button": "press press"
+  }
+ ]
+}

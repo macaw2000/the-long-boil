@@ -51,6 +51,7 @@ export interface ItemTerms {
 
 export interface Content {
   version: string;
+  guide: { id: string; speaker: string; line: string; button?: string }[];
   economy: Record<string, ItemTerms>;
   actions: Action[];
   monsters: Monster[];
@@ -84,6 +85,8 @@ export interface Tinker {
     letters: number;
     backRent: number;
     debts: { id: string; label: string; crowns: number }[];
+    openScenes: number;
+    qualities: Record<string, number>;
   };
 }
 

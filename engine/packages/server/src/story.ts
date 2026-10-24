@@ -100,7 +100,7 @@ async function storyOp(db: Db, content: GameContent, tinkerId: number, now: numb
       // The advance saved its own changes; read them back so the story's are saved on top.
       await saveState(tx, tinkerId, await lockAndLoad(tx, tinkerId), result.tinker, seq, version);
       await saveStory(tx, tinkerId, advanced.story, result.story);
-      const done = outcome(await view(tx, tinkerId, content), advanced.events, advanced.trades, advanced.storyEvents);
+      const done = outcome(await view(tx, tinkerId, content, now), advanced.events, advanced.trades, advanced.storyEvents);
       return { ...done, view: storyView(result.tinker, result.story, content, now), played: result.played };
     });
   } catch (error) {

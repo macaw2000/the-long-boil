@@ -1089,6 +1089,111 @@ put(SYF + LTP + "player.json", letter("act1.fixture_yard.player", 1, "fixture_ya
 put("style/fail-canon/" + STYP, "# Fixture house style\n\n## Limits\n\nFixture.\n")
 put("style/fail-canon/" + STP + "door.json", GOOD_PROLOGUE)
 
+# ---- work order 021, part 1: guide/1, the first-session guide. The text is
+# fixture prose, not the guide; the step ids are the work order's, since the
+# schema fixes them. Every fixture guide sits at content/guide/first_session.json
+# unless it is there to be in the wrong place.
+GUIDE_ID = "prologue.sprocket_row.first_session_guide"
+GUIDE_STEPS = ("boiler", "queue_spanners", "first_spanner", "pips_bill", "equip", "rats",
+               "pay_bill", "brass_plate", "come_back")
+GUIDE_BUTTONS = ("boiler", "come_back")
+GDP = "content/guide/first_session.json"
+def gstep(ident, line="A fixture card says where to press.", button=None, speaker="A fixture professor"):
+    st = {"id": ident, "speaker": speaker, "line": line}
+    if button is not None: st["button"] = button
+    return st
+def guide(steps=None, ident=GUIDE_ID):
+    if steps is None:
+        steps = [gstep(i, button="Fixture button" if i in GUIDE_BUTTONS else None) for i in GUIDE_STEPS]
+    return {"schema": "guide/1", "id": ident, "revision": 1, "steps": steps}
+GOOD_GUIDE = guide()
+
+# schema pass: the guide at its one path.
+put("schema/pass/" + GDP, GOOD_GUIDE)
+# schema fail-guide: a wrong file id; a missing button (boiler); two steps out
+# of order; a button where none is allowed (equip); a blank speaker and a
+# blank line; a field the schema does not know; a missing line; a tenth step;
+# a guide/1 file under content/letters/ (and with no steps); a non-guide file
+# under content/guide/.
+GS = "schema/fail-guide/"
+put(GS + GDP, guide([
+    gstep("boiler"),
+    gstep("first_spanner"), gstep("queue_spanners"),
+    gstep("pips_bill"),
+    gstep("equip", button="Equip it"),
+    gstep("rats", speaker=" "),
+    gstep("pay_bill", line=""),
+    dict(gstep("brass_plate"), glow="workbench"),
+    {"id": "come_back", "speaker": "A fixture professor", "button": "Fixture button"},
+    gstep("fixture_extra")], ident="prologue.sprocket_row.fixture_guide"))
+# schema fail-guide-lines: a card is one line, so a line or a button with a
+# line break (\n or \r) fails; a speaker with one does not.
+put("schema/fail-guide-lines/" + GDP, guide([
+    gstep(i, line="Two lines,\nnot one." if i == "pips_bill" else ("Carriage\rreturn." if i == "rats" else
+          "A fixture card says where to press."),
+          button=("Go\non" if i == "boiler" else "Fixture button") if i in GUIDE_BUTTONS else None,
+          speaker="A fixture\nprofessor" if i == "equip" else "A fixture professor")
+    for i in GUIDE_STEPS]))
+put(GS + "content/letters/guide.json", guide([], ident="prologue.sprocket_row.fixture_stray_guide"))
+put(GS + "content/guide/notes.json", {"schema": "start/1", "id": "start.global.inventory", "inventory": [], "crowns": 0})
+
+# style pass: every line exactly 40 words and both buttons exactly 4;
+# "delved" is not "delve", "players" is not "the player"; a banned word in the
+# speaker is not checked. The storylet and letter are there so the old rules
+# still run beside the new ones.
+def full_guide(line_words=40, button_words=4, extra=None):
+    steps = []
+    for i in GUIDE_STEPS:
+        st = gstep(i, line=words(line_words), button=words(button_words, "press") if i in GUIDE_BUTTONS else None)
+        steps.append(st)
+    for index, field, text in (extra or ()):
+        steps[index][field] = text
+    return guide(steps)
+put(SYP + GDP, full_guide(extra=[(3, "line", "You delved, and the players cheered."),
+                                 (4, "speaker", "A tapestry of a professor")]))
+# style fail-guide: one word over each limit; banned phrases in a line and in
+# a button, in any case and across a line break; "the player" in a line; the
+# speaker still unchecked.
+SYG = "style/fail-guide/"
+put(SYG + STYP, STYLE_MD)
+put(SYG + GDP, full_guide(extra=[
+    (0, "line", words(41)), (0, "button", words(5, "press")),
+    (3, "line", "A Testament\nto the brass."), (8, "button", "Delve deeper"),
+    (5, "line", "The player goes to the Row."), (4, "speaker", "A tapestry of a professor")]))
+
+# reveal pass: the guide is act 0, so "knockabout" (not a guarded form) passes.
+put(RVP + GDP, full_guide(line_words=3, button_words=2, extra=[(2, "line", "A knockabout day at the yard.")]))
+# reveal fail-guide: guarded forms in a line and a button, in any case; the
+# speaker is not read.
+RVG = "reveal/fail-guide/"
+put(RVG + GDP, full_guide(line_words=3, button_words=2, extra=[
+    (1, "line", "Something is Knocking below."), (8, "button", "Answer the KNOCK"),
+    (6, "speaker", "Mr Knocker")]))
+
+# provenance pass: the guide takes one row, for its file id; its step ids
+# are not content ids (lib.ID_EXEMPT_KEYS, Jeremy's answer to work order 021).
+GROWS = [row(GUIDE_ID, GDP, kind="guide")]
+put("provenance/pass/" + GDP, GOOD_GUIDE)
+with open(os.path.join(F, "provenance/pass/content/provenance.json")) as fh:
+    PREG = json.load(fh)
+PREG["rows"] += GROWS
+put("provenance/pass/content/provenance.json", PREG)
+# provenance fail-guide: the guide's file id with two rows, and a row at a
+# guide path that does not exist.
+PVG = "provenance/fail-guide/"
+put(PVG + GDP, GOOD_GUIDE)
+put(PVG + "content/provenance.json", {"schema": "provenance/2", "rows": [
+    row(GUIDE_ID, GDP, kind="guide"), row(GUIDE_ID, GDP, kind="guide"),
+    row("fixture.guide.ghost", "content/guide/second_session.json", kind="guide")]})
+# provenance fail-guide-orphan: the guide with no row at all. Only the file id
+# is reported; the step ids are not.
+PVO = "provenance/fail-guide-orphan/"
+put(PVO + GDP, GOOD_GUIDE)
+put(PVO + "content/provenance.json", {"schema": "provenance/2", "rows": []})
+
+# references pass: the guide is read and counted, and names nothing.
+put("references/pass/" + GDP, GOOD_GUIDE)
+
 # ---- dotfiles: every check skips dotfiles and dot-directories under content/
 # (lib.walk_files). Each pass fixture gets a dotfile that is not JSON and a
 # file in a dot-directory that every check would fail on if it read it: it

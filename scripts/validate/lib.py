@@ -133,7 +133,11 @@ def collect_ids(node, pointer=""):
 # Jeremy's answer to work order 007 Q12: a zone economy file's top-level
 # "anchors" object holds the draftsman's free-form assumptions, so an "id"
 # inside it is not a content id.
-ID_EXEMPT_KEYS = (("tuning.economy/", "anchors"),)
+#
+# Jeremy's answer to work order 021's open question 1: the first-session
+# guide's "steps" hold the client's fixed step keys, not content ids, so the
+# guide file takes one register row (its file id).
+ID_EXEMPT_KEYS = (("tuning.economy/", "anchors"), ("guide/", "steps"))
 
 
 def content_ids(data):
@@ -221,7 +225,7 @@ def validate(instance, schema, root_schema=None, pointer=""):
     """A small JSON Schema (2020-12) subset validator.
 
     Supports: $ref (local #/$defs/...), type, enum, const, required,
-    properties, additionalProperties, items, minItems, maxItems, minimum,
+    properties, additionalProperties, prefixItems, items, minItems, maxItems, minimum,
     exclusiveMinimum, maximum, minLength, pattern, dependentRequired, and one
     keyword of this repo's own: maxWords (a string's whitespace-separated
     word count).
@@ -301,8 +305,16 @@ def validate(instance, schema, root_schema=None, pointer=""):
             errors.append((where, "fewer than %d items" % schema["minItems"]))
         if "maxItems" in schema and len(instance) > schema["maxItems"]:
             errors.append((where, "more than %d items" % schema["maxItems"]))
+        # 2020-12: prefixItems validates by position; items covers only the
+        # positions after them (work order 021, guide/1).
+        prefix = schema.get("prefixItems", [])
+        for index, value in enumerate(instance[:len(prefix)]):
+            errors.extend(validate(
+                value, prefix[index], root_schema, "%s/%d" % (pointer, index)))
         if "items" in schema:
             for index, value in enumerate(instance):
+                if index < len(prefix):
+                    continue
                 errors.extend(validate(
                     value, schema["items"], root_schema, "%s/%d" % (pointer, index)))
 

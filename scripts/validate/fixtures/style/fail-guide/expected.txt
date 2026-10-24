@@ -1,0 +1,5 @@
+FAIL style/banned content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/3/line contains 'Testament\nto' (banned: 'testament to')
+FAIL style/banned content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/5/line contains 'The player' (banned: 'the player')
+FAIL style/banned content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/8/button contains 'Delve' (banned: 'delve')
+FAIL style/too-long content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/0/button has 5 words; at most 4 allowed
+FAIL style/too-long content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/0/line has 41 words; at most 40 allowed

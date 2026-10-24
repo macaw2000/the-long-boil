@@ -1,0 +1,259 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "guide/1",
+  "title": "First-session guide, version 1",
+  "description": "The one file content/guide/first_session.json (work order 021, part 1): Professor Brassbuckle's card at each step of GDD section 7's first session, shown in the client beside the control the step wants pressed. 'id' is the file-level id prologue.sprocket_row.first_session_guide. 'steps' holds exactly nine steps, by position, with these ids in this order, each once (the client depends on them): boiler, queue_spanners, first_spanner, pips_bill, equip, rats, pay_bill, brass_plate, come_back. Each step is {id, speaker, line, button}: speaker, free text; line, the card's text; button, the label of the card's own button, required on boiler and come_back and not allowed on any other step. Each text field is a string with at least one non-space character. When a step is done is the client's rule, not content. The word limits (40 for a line, 4 for a button) and the banned list are the style check's; the reveal-word guard reads the line and button as act 0 (the reveal check's); that the file is content/guide/first_session.json is the schema check's. The step ids are not content ids: 'steps' is exempt from id collection (lib.ID_EXEMPT_KEYS, Jeremy's answer to work order 021), so the file takes one register row, for its file id. A card is one line: 'line' and 'button' may not contain a line break (Jeremy's answer to work order 021). 'revision' is optional and exists only so a register row's revision can match the file. prefixItems is validated by this repo's validator: one schema per position.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "steps"
+  ],
+  "properties": {
+    "schema": {
+      "const": "guide/1"
+    },
+    "id": {
+      "const": "prologue.sprocket_row.first_session_guide"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/step_boiler"
+        },
+        {
+          "$ref": "#/$defs/step_queue_spanners"
+        },
+        {
+          "$ref": "#/$defs/step_first_spanner"
+        },
+        {
+          "$ref": "#/$defs/step_pips_bill"
+        },
+        {
+          "$ref": "#/$defs/step_equip"
+        },
+        {
+          "$ref": "#/$defs/step_rats"
+        },
+        {
+          "$ref": "#/$defs/step_pay_bill"
+        },
+        {
+          "$ref": "#/$defs/step_brass_plate"
+        },
+        {
+          "$ref": "#/$defs/step_come_back"
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "step_boiler": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line",
+        "button"
+      ],
+      "properties": {
+        "id": {
+          "const": "boiler"
+        },
+        "speaker": {
+          "$ref": "#/$defs/text"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        },
+        "button": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_queue_spanners": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "queue_spanners"
+        },
+        "speaker": {
+          "$ref": "#/$defs/text"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_first_spanner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "first_spanner"
+        },
+        "speaker": {
+          "$ref": "#/$defs/text"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_pips_bill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "pips_bill"
+        },
+        "speaker": {
+          "$ref": "#/$defs/text"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_equip": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "equip"
+        },
+        "speaker": {
+          "$ref": "#/$defs/text"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_rats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "rats"
+        },
+        "speaker": {
+          "$ref": "#/$defs/text"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_pay_bill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "pay_bill"
+        },
+        "speaker": {
+          "$ref": "#/$defs/text"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_brass_plate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "brass_plate"
+        },
+        "speaker": {
+          "$ref": "#/$defs/text"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_come_back": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line",
+        "button"
+      ],
+      "properties": {
+        "id": {
+          "const": "come_back"
+        },
+        "speaker": {
+          "$ref": "#/$defs/text"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        },
+        "button": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "card_text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"
+    }
+  }
+}

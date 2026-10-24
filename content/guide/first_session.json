@@ -1,0 +1,53 @@
+{
+  "schema": "guide/1",
+  "id": "prologue.sprocket_row.first_session_guide",
+  "steps": [
+    {
+      "id": "boiler",
+      "speaker": "Professor Brassbuckle",
+      "line": "Twelve hours of steam on that gauge, which is how long your Tinker works without you, so you will sleep tonight whether you like it or not. Press Open the valve on this card.",
+      "button": "Open the valve"
+    },
+    {
+      "id": "queue_spanners",
+      "speaker": "Professor Brassbuckle",
+      "line": "Fifty Brass Ingots from the old stock, and I would rather they became spanners than doorstops. Press the Queue work button and set fifty Brass Spanners going."
+    },
+    {
+      "id": "first_spanner",
+      "speaker": "Professor Brassbuckle",
+      "line": "A watched Tinker works no faster, I am told, but nobody has ever managed not to watch the first one. Keep your eye on the bench until a Brass Spanner lands."
+    },
+    {
+      "id": "pips_bill",
+      "speaker": "Professor Brassbuckle",
+      "line": "That canister rattling into the tray is Pip, and Pip's canisters are seldom good news. Open the Story tab and answer the letter waiting there."
+    },
+    {
+      "id": "equip",
+      "speaker": "Professor Brassbuckle",
+      "line": "Rats have been at the Row again, and a Brass Spanner is a perfectly respectable thing to hit one with. In the Loadout, press Equip beside a Brass Spanner."
+    },
+    {
+      "id": "rats",
+      "speaker": "Professor Brassbuckle",
+      "line": "Mind your Rations and come back in one piece; I have only just got this workshop aired. Press the Queue work button and choose the Rust Rat Runt."
+    },
+    {
+      "id": "pay_bill",
+      "speaker": "Professor Brassbuckle",
+      "line": "Rat scrap is worth more than it smells, which is the kindest thing anyone has said about it. Open the Exchange tab, sell it at the Counting-House window, and pay Pip's bill there."
+    },
+    {
+      "id": "brass_plate",
+      "speaker": "Professor Brassbuckle",
+      "line": "That workbench drawer wants clearing out, and my knees are older than the Boiler. Open the Story tab and see to the workbench."
+    },
+    {
+      "id": "come_back",
+      "speaker": "Professor Brassbuckle",
+      "line": "Go and eat something; the Boiler and the queue will keep working without you, and the city will have written by the time you come back. Fill twelve hours with the Queue work button, then press Leave it running.",
+      "button": "Leave it running"
+    }
+  ]
+}

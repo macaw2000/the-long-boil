@@ -1,0 +1,3 @@
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/0/button: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/3/line: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/5/line: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S

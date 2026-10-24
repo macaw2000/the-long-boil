@@ -45,6 +45,10 @@ export interface StorySummary {
   letters: number;
   backRent: number;
   debts: { id: string; label: string; crowns: number }[];
+  /** Storylets open to play now, for the Story tab's nudge. */
+  openScenes: number;
+  /** Every story quality above 0, for the first-session guide. */
+  qualities: Record<string, number>;
 }
 
 export interface Outcome {
@@ -228,7 +232,7 @@ export async function saveStory(tx: Tx, tinkerId: number, before: StoryState, af
   ]);
 }
 
-function summarizeStory(story: StoryState): StorySummary {
+function summarizeStory(story: StoryState, tinker: TinkerState, content: GameContent, now: number): StorySummary {
   const full = story.nerve >= rules.NERVE_CAP;
   return {
     nerve: story.nerve,
@@ -238,6 +242,8 @@ function summarizeStory(story: StoryState): StorySummary {
     letters: story.hand.length,
     backRent: rules.backRentOwed(story),
     debts: rules.debtsOwed(story).map(({ id, label, crowns }) => ({ id, label, crowns })),
+    openScenes: rules.availableStorylets(tinker, story, content.rules, now).length,
+    qualities: Object.fromEntries(Object.entries(story.qualities).filter(([, value]) => value > 0)),
   };
 }
 
@@ -286,7 +292,7 @@ export function fromRules(events: GameEvent[]): LogEntry[] {
   return events.map((event) => ({ type: event.type, at: event.at, payload: event }));
 }
 
-export async function view(tx: Tx, tinkerId: number, content: GameContent): Promise<TinkerView> {
+export async function view(tx: Tx, tinkerId: number, content: GameContent, now = Date.now()): Promise<TinkerView> {
   const row = (await tx.query("SELECT id, name, crowns, progress_ms, steam_until, resolved_to FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
   const loaded = await lockAndLoad(tx, tinkerId);
   return {
@@ -303,7 +309,7 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent): Prom
     resolvedTo: row.resolved_to.toISOString(),
     weapon: loaded.state.weapon,
     bossesBeaten: loaded.state.bossesBeaten,
-    story: summarizeStory(await loadStory(tx, tinkerId)),
+    story: summarizeStory(await loadStory(tx, tinkerId), loaded.state, content, now),
   };
 }
 
@@ -356,7 +362,7 @@ export async function createTinker(db: Db, content: GameContent, login: string, 
       version,
     );
     await tx.query("UPDATE tinkers SET last_seq = $2 WHERE id = $1", [tinkerId, seq]);
-    return outcome(await view(tx, tinkerId, content), []);
+    return outcome(await view(tx, tinkerId, content, now), []);
   });
 }
 
@@ -364,7 +370,7 @@ export async function createTinker(db: Db, content: GameContent, login: string, 
 export async function checkIn(db: Db, content: GameContent, tinkerId: number, now: number): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
     const advanced = await advance(tx, content, tinkerId, now, true, true);
-    return outcome(await view(tx, tinkerId, content), advanced.events, advanced.trades, advanced.storyEvents);
+    return outcome(await view(tx, tinkerId, content, now), advanced.events, advanced.trades, advanced.storyEvents);
   });
 }
 
@@ -375,7 +381,7 @@ export async function checkIn(db: Db, content: GameContent, tinkerId: number, no
 export async function look(db: Db, content: GameContent, tinkerId: number, now: number): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
     const advanced = await advance(tx, content, tinkerId, now, false);
-    return outcome(await view(tx, tinkerId, content), advanced.events, advanced.trades, advanced.storyEvents);
+    return outcome(await view(tx, tinkerId, content, now), advanced.events, advanced.trades, advanced.storyEvents);
   });
 }
 
@@ -418,7 +424,7 @@ async function atCheckIn(
     const version = content.rules.version;
     const seq = await appendEvents(tx, tinkerId, advanced.seq, [entry], version);
     await saveState(tx, tinkerId, await lockAndLoad(tx, tinkerId), changed, seq, version);
-    return outcome(await view(tx, tinkerId, content), advanced.events, advanced.trades, advanced.storyEvents);
+    return outcome(await view(tx, tinkerId, content, now), advanced.events, advanced.trades, advanced.storyEvents);
   });
 }
 

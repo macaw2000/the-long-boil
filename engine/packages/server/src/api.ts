@@ -53,6 +53,7 @@ export function buildApi({ db, content, now = Date.now, corsOrigins = [], tradin
     weapons: [...content.rules.weapons.values()],
     items: [...content.items.values()],
     economy: Object.fromEntries(content.economy),
+    guide: content.guide,
     totalXp: content.rules.totalXp,
   }));
 

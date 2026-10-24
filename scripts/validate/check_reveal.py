@@ -15,6 +15,11 @@ below that act. Forms match case-insensitively as whole words (no letter may
 touch either end). The canon hard limits are prose, not a quoted list, so the
 words live here, each with the line it quotes.
 
+Work order 021, part 1: the first-session guide (guide/*) is checked as act
+0. It has no act or reveal_layer field, so only the reveal words apply: no
+step's line or button may contain a guarded form whose earliest act is above
+0.
+
 Files are read leniently, not through their schema, so a layer the schema
 also rejects (4 or 5) is still reported here as a breach. A story file whose
 act or reveal_layer is missing or not a whole number fails as not-checkable:
@@ -59,11 +64,11 @@ def _whole(value):
     return isinstance(value, int) and not isinstance(value, bool)
 
 
-def _check_words(report, path, ident, data, act):
+def _check_words(report, path, ident, fields, act):
     for earliest, pattern, source, limit in WORD_GUARDS:
         if act >= earliest:
             continue
-        for pointer, text in story.prose_fields(data):
+        for pointer, text in fields:
             for hit in sorted({m.group(0) for m in pattern.finditer(text)}):
                 report.fail("reveal-word", path,
                             "%s contains %r, which may not appear before act %d; this file "
@@ -83,7 +88,7 @@ def run(root):
                         "for the guard to check this file"
                         % (lib.json.dumps(act), lib.json.dumps(layer)), ident)
             continue
-        _check_words(report, path, ident, data, act)
+        _check_words(report, path, ident, story.prose_fields(data), act)
         if not _whole(layer):
             report.fail("not-checkable", path,
                         "act is %s and reveal_layer is %s; both must be whole numbers "
@@ -102,12 +107,17 @@ def run(root):
             report.fail("too-early", path,
                         "reveal_layer %d belongs to act %d or later; this file is act %d"
                         % (layer, LAYER_ACT[layer], act), ident)
+    guides = story.guide_files(root)
+    for path, data in guides:
+        fields = [(pointer, text) for pointer, text, _f in story.guide_prose_fields(data)]
+        _check_words(report, path, story.file_id(data), fields, story.GUIDE_ACT)
     storylets, letters = story.count_kinds(files)
-    report.note("%d storylet file(s), %d letter file(s); reveal words: %s%s"
-                % (storylets, letters,
+    report.note("%d storylet file(s), %d letter file(s), %d guide file(s) as act %d; "
+                "reveal words: %s%s"
+                % (storylets, letters, len(guides), story.GUIDE_ACT,
                    "; ".join("%s before act %d" % ("/".join(forms), act)
                              for act, forms, _s, _l in REVEAL_WORDS),
-                   "; nothing to check" if not files else ""))
+                   "; nothing to check" if not files and not guides else ""))
     return report
 
 

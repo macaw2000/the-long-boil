@@ -14,6 +14,11 @@ A banned phrase matches case-insensitively, as whole words (letters may not
 touch either end), with any run of whitespace between its words. It matches
 the phrase as written, not its inflections: "delve" does not catch "delved".
 
+Work order 021, part 1: the same rules cover the first-session guide
+(guide/*, content/guide/first_session.json). Each step's line is at most 40
+words and its button at most 4, and neither contains a banned word or phrase.
+The speaker is not checked.
+
 Files are read leniently: a field that is missing or not a string is the
 schema check's to report. Fails when style.md cannot be read or its Banned
 section lists nothing. "Any sentence that explains its own joke" is not a
@@ -37,6 +42,11 @@ CHECK = "style"
 DESCRIPTION_MAX_WORDS = 120
 LABEL_MAX_WORDS = 25
 OUTCOME_MAX_WORDS = 150
+
+# Work order 021, part 1: "a word limit of 40 for a line and 4 for a button".
+GUIDE_LINE_MAX_WORDS = 40
+GUIDE_BUTTON_MAX_WORDS = 4
+GUIDE_LIMITS = {"line": GUIDE_LINE_MAX_WORDS, "button": GUIDE_BUTTON_MAX_WORDS}
 
 # docs/canon/style.md, Voice; work order 015, scope 6.
 ALWAYS_BANNED = ("the player",)
@@ -84,6 +94,18 @@ def _fields(data):
     return out
 
 
+def _check_text(report, path, ident, pointer, text, limit, patterns):
+    words = len(text.split())
+    if words > limit:
+        report.fail("too-long", path, "%s has %d words; at most %d allowed"
+                    % (pointer, words, limit), ident)
+    for phrase, pattern in patterns:
+        hit = pattern.search(text)
+        if hit:
+            report.fail("banned", path, "%s contains %r (banned: %r)"
+                        % (pointer, hit.group(0), phrase), ident)
+
+
 def run(root):
     report = lib.Report(CHECK)
     phrases, error = banned_phrases(root)
@@ -97,19 +119,18 @@ def run(root):
         ident = story.file_id(data)
         for pointer, text, limit in _fields(data):
             fields += 1
-            words = len(text.split())
-            if words > limit:
-                report.fail("too-long", path, "%s has %d words; at most %d allowed"
-                            % (pointer, words, limit), ident)
-            for phrase, pattern in patterns:
-                hit = pattern.search(text)
-                if hit:
-                    report.fail("banned", path, "%s contains %r (banned: %r)"
-                                % (pointer, hit.group(0), phrase), ident)
+            _check_text(report, path, ident, pointer, text, limit, patterns)
+    guides = story.guide_files(root)
+    for path, data in guides:
+        ident = story.file_id(data)
+        for pointer, text, field in story.guide_prose_fields(data):
+            fields += 1
+            _check_text(report, path, ident, pointer, text, GUIDE_LIMITS[field], patterns)
     storylets, letters = story.count_kinds(files)
-    report.note("%d storylet file(s), %d letter file(s), %d prose field(s); banned: %s%s"
-                % (storylets, letters, fields, ", ".join(repr(p) for p in phrases),
-                   "; nothing to check" if not files else ""))
+    report.note("%d storylet file(s), %d letter file(s), %d guide file(s), %d prose field(s); "
+                "banned: %s%s"
+                % (storylets, letters, len(guides), fields, ", ".join(repr(p) for p in phrases),
+                   "; nothing to check" if not files and not guides else ""))
     return report
 
 

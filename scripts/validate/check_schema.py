@@ -4,7 +4,8 @@
 - Every content file (everything under content/ except the register)
   declares a "schema" string, a schema exists for it, and the file matches it.
 - Every "id", at any depth, is unique across the whole content tree, except
-  inside a zone economy file's "anchors" (lib.ID_EXEMPT_KEYS, work order 007).
+  inside a zone economy file's "anchors" (lib.ID_EXEMPT_KEYS, work order 007)
+  or the first-session guide's "steps" (work order 021).
 - Item, action, monster, drop and gear files live where work orders 003, 005,
   007 and 010 put them: a file under content/items/ declares item/*, a file
   under content/actions/ declares action/*, a file under content/monsters/
@@ -17,6 +18,9 @@
   curve, so not every file there declares tuning.economy/*.
 - The starting inventory (start/*) is the one file content/start.json, and
   content/start.json declares start/* (work order 013, scope 2).
+- The first-session guide (guide/*) is the one file
+  content/guide/first_session.json, that file declares guide/*, and
+  content/guide/ holds nothing else (work order 021, part 1).
 - Storylets and letters (work order 015): a file under content/storylets/
   declares storylet/*, a file under content/letters/ declares letter/*, and
   neither schema is declared anywhere else. A storylet/1 or letter/1 file
@@ -47,6 +51,7 @@ SCHEMA_HOMES = (
     ("gear/", "content/gear/"),
     ("storylet/", "content/storylets/"),
     ("letter/", "content/letters/"),
+    ("guide/", "content/guide/"),
 )
 
 # Work order 007: schema family -> the only directory it may live in. The
@@ -55,10 +60,11 @@ SCHEMA_ONLY_IN = (
     ("tuning.economy/", "content/tuning/"),
 )
 
-# Work order 013: schema family -> the one file it may be, and that file must
+# Work orders 013 and 021: schema family -> the one file it may be, and that file must
 # declare it.
 SCHEMA_AT_PATH = (
     ("start/", "content/start.json"),
+    ("guide/", "content/guide/first_session.json"),
 )
 
 

@@ -12,7 +12,8 @@ fails when:
 
 Content ids are every "id" at any depth in every content file (everything
 under content/ except the register), the same set the schema check uses: an
-"id" inside a zone economy file's "anchors" is not one (lib.ID_EXEMPT_KEYS).
+"id" inside a zone economy file's "anchors" or the first-session guide's
+"steps" is not one (lib.ID_EXEMPT_KEYS).
 
 Usage: python3 scripts/validate/check_provenance.py [--root DIR]
 """

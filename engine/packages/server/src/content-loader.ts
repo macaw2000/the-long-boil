@@ -33,6 +33,17 @@ export interface GameContent {
   /** Names and flavour lines, for the client; the rules never read them. */
   items: ReadonlyMap<string, ItemInfo>;
   economy: ReadonlyMap<string, ItemTerms>;
+  /** Brassbuckle's first-session guide (work order 021), or no steps before it is written. */
+  guide: { id: string; speaker: string; line: string; button?: string }[];
+}
+
+function guideSteps(dir: string): GameContent["guide"] {
+  const path = join(dir, "guide", "first_session.json");
+  try {
+    return readJson(path).steps;
+  } catch {
+    return [];
+  }
 }
 
 function economyTerms(files: any[]): Map<string, ItemTerms> {
@@ -92,6 +103,7 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
       letters: listJson(join(dir, "letters")).map(readJson),
     }),
     start: { inventory: start.inventory, crowns: start.crowns },
+    guide: guideSteps(dir),
     economy: economyTerms(listJson(join(dir, "tuning")).filter((path) => readJson(path).schema?.startsWith("tuning.economy")).map(readJson)),
     items: new Map(all("items", "items").map((item: ItemInfo) => [item.id, { id: item.id, name: item.name, flavour: item.flavour }])),
   };

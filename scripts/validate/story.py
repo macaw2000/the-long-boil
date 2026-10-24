@@ -21,6 +21,7 @@ import os
 import lib
 
 STORYLET_PREFIX = "storylet/"
+GUIDE_PREFIX = "guide/"
 LETTER_PREFIX = "letter/"
 CHECKABLE = ("storylet/1", "letter/1")
 OUTCOME_KEYS = ("success", "failure")
@@ -133,3 +134,43 @@ def load_registry(root):
         for name in listed:
             names.setdefault(name, kind)
     return names, types, None
+
+
+# --------------------------------------------------------------------------
+# The first-session guide (work order 021, part 1)
+# --------------------------------------------------------------------------
+
+# Work order 021: the guide is Prologue prose, so the reveal guard reads it as
+# act 0. It has no act or reveal_layer field of its own.
+GUIDE_ACT = 0
+
+
+def guide_files(root):
+    """(path, data) for every parsed content file declaring guide/*,
+    anywhere under content/ (the schema check reports one in the wrong
+    place)."""
+    out = []
+    for path in lib.content_files(root):
+        data, error = lib.load_json(root, path)
+        if error or not isinstance(data, dict):
+            continue
+        if declared(data).startswith(GUIDE_PREFIX):
+            out.append((path, data))
+    return out
+
+
+def guide_prose_fields(data):
+    """(pointer, text, field) for each step's line and button, leniently:
+    a step or field that is missing or not the right type is skipped (the
+    schema check's to report). field is "line" or "button"."""
+    out = []
+    steps = data.get("steps")
+    if not isinstance(steps, list):
+        return out
+    for index, step in enumerate(steps):
+        if not isinstance(step, dict):
+            continue
+        for field in ("line", "button"):
+            if isinstance(step.get(field), str):
+                out.append(("/steps/%d/%s" % (index, field), step[field], field))
+    return out

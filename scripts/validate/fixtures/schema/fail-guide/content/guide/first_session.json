@@ -1,0 +1,59 @@
+{
+ "schema": "guide/1",
+ "id": "prologue.sprocket_row.fixture_guide",
+ "revision": 1,
+ "steps": [
+  {
+   "id": "boiler",
+   "speaker": "A fixture professor",
+   "line": "A fixture card says where to press."
+  },
+  {
+   "id": "first_spanner",
+   "speaker": "A fixture professor",
+   "line": "A fixture card says where to press."
+  },
+  {
+   "id": "queue_spanners",
+   "speaker": "A fixture professor",
+   "line": "A fixture card says where to press."
+  },
+  {
+   "id": "pips_bill",
+   "speaker": "A fixture professor",
+   "line": "A fixture card says where to press."
+  },
+  {
+   "id": "equip",
+   "speaker": "A fixture professor",
+   "line": "A fixture card says where to press.",
+   "button": "Equip it"
+  },
+  {
+   "id": "rats",
+   "speaker": " ",
+   "line": "A fixture card says where to press."
+  },
+  {
+   "id": "pay_bill",
+   "speaker": "A fixture professor",
+   "line": ""
+  },
+  {
+   "id": "brass_plate",
+   "speaker": "A fixture professor",
+   "line": "A fixture card says where to press.",
+   "glow": "workbench"
+  },
+  {
+   "id": "come_back",
+   "speaker": "A fixture professor",
+   "button": "Fixture button"
+  },
+  {
+   "id": "fixture_extra",
+   "speaker": "A fixture professor",
+   "line": "A fixture card says where to press."
+  }
+ ]
+}

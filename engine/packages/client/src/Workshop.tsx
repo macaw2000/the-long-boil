@@ -7,6 +7,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { api, type Content, type Ledger as LedgerData, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
 import { Exchange } from "./Exchange";
+import { Glow } from "./Glow";
+import { currentStep, GuideCard, nudges, type GuideState, type Target } from "./Guide";
 import { Story } from "./Story";
 import { duration, levelProgress, namer, seconds, titleCase, tradeLine } from "./format";
 import { Ledger, STALL_REASONS } from "./Ledger";
@@ -26,6 +28,11 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
   const [now, setNow] = useState(Date.now());
   const name = useMemo(() => namer(content), [content]);
   const wide = useWindowDimensions().width >= 900;
+  const [guide, setGuideState] = useState<GuideState>(() => loadGuide(tinkerId));
+  const setGuide = (next: GuideState) => {
+    setGuideState(next);
+    saveGuide(tinkerId, next);
+  };
 
   const noteRecent = useCallback(
     (ledger: LedgerData, trades: TradeNote[]) => {
@@ -107,6 +114,11 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
   }
 
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
+  // The guide points at one thing at a time; after it, the nudges point at whatever is ready.
+  const step = currentStep(tinker, guide);
+  const lit: Set<Target> = step ? new Set([step.target]) : nudges(tinker, content, now);
+  const tabFor = (target: Target) => (target === "story" || target === "exchange" ? target : "workshop");
+  const tabLit = (choice: "workshop" | "story" | "exchange") => [...lit].some((target) => tabFor(target) === choice) && tab !== choice;
 
   const skills = (
     <View style={ui.panel}>
@@ -142,6 +154,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
   const centre = (
     <View style={{ gap: 12 }}>
       {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} onClose={() => setAway(null)} />}
+      <Glow active={lit.has("bench")}>
       <View style={ui.panel}>
         <Text style={ui.heading}>At the bench</Text>
         {tinker.queue.length === 0 && <Text style={ui.muted}>The bench is idle. Queue up to two jobs.</Text>}
@@ -179,11 +192,14 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
           );
         })}
         {tinker.queue.length < 2 && !picking && (
-          <Pressable style={[ui.button, { alignSelf: "flex-start" }]} onPress={() => setPicking(true)} accessibilityRole="button">
-            <Text style={ui.buttonText}>Queue work</Text>
-          </Pressable>
+          <Glow active={lit.has("queue")} style={{ alignSelf: "flex-start" }}>
+            <Pressable style={ui.button} onPress={() => setPicking(true)} accessibilityRole="button">
+              <Text style={ui.buttonText}>Queue work</Text>
+            </Pressable>
+          </Glow>
         )}
       </View>
+      </Glow>
       {picking && (
         <QueuePicker
           content={content}
@@ -214,6 +230,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
 
   const stores = (
     <View style={{ gap: 12 }}>
+      <Glow active={lit.has("loadout")}>
       <View style={ui.panel}>
         <Text style={ui.heading}>Loadout</Text>
         <Text style={ui.text}>{tinker.weapon ? name(tinker.weapon) : "Bare hands. Equip a weapon to fight."}</Text>
@@ -238,6 +255,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
             );
           })}
       </View>
+      </Glow>
       <View style={ui.panel}>
         <Text style={ui.heading}>Stores</Text>
         {tinker.inventory.length === 0 && <Text style={ui.muted}>Empty shelves.</Text>}
@@ -270,10 +288,12 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
       >
         <Text style={[ui.heading, { fontSize: 20 }]}>No. 9 Sprocket Row</Text>
         <Text style={ui.muted}>{tinker.name}</Text>
-        <View style={{ flex: 1, minWidth: 180, maxWidth: 320, gap: 3 }}>
-          <Text style={ui.muted}>Boiler · {steamLeft > 0 ? `${duration(steamLeft)} of steam` : "dry"}</Text>
-          <Bar fraction={Math.max(0, steamLeft) / BOILER_MS} color={colors.brass} />
-        </View>
+        <Glow active={lit.has("boiler")} style={{ flex: 1, minWidth: 180, maxWidth: 320 }}>
+          <View style={{ gap: 3 }}>
+            <Text style={ui.muted}>Boiler · {steamLeft > 0 ? `${duration(steamLeft)} of steam` : "dry"}</Text>
+            <Bar fraction={Math.max(0, steamLeft) / BOILER_MS} color={colors.brass} />
+          </View>
+        </Glow>
         <View style={{ minWidth: 140, maxWidth: 200, flex: 1, gap: 3 }}>
           <Text style={ui.muted}>
             Nerve · {tinker.story.nerve}/{tinker.story.nerveCap}
@@ -294,8 +314,8 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
       </View>
       <View style={{ flexDirection: "row", gap: 4, paddingHorizontal: 16, paddingTop: 10 }}>
         {(["workshop", "story", "exchange"] as const).map((choice) => (
+          <Glow key={choice} active={tabLit(choice)}>
           <Pressable
-            key={choice}
             onPress={() => setTab(choice)}
             accessibilityRole="tab"
             accessibilityState={{ selected: tab === choice }}
@@ -311,8 +331,19 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
               {choice === "story" && tinker.story.letters > 0 ? ` (${tinker.story.letters})` : ""}
             </Text>
           </Pressable>
+          </Glow>
         ))}
       </View>
+      {step && (
+        <View style={{ paddingHorizontal: 16, paddingTop: 10 }}>
+          <GuideCard
+            step={step}
+            content={content}
+            onAcknowledge={() => setGuide({ ...guide, acknowledged: [...guide.acknowledged, step.id] })}
+            onSkip={() => setGuide({ ...guide, skipped: true })}
+          />
+        </View>
+      )}
       {error && <Text style={[ui.text, { color: colors.scald, paddingHorizontal: 16, paddingTop: 8 }]}>{error}</Text>}
       {tab === "workshop" ? (
         <ScrollView contentContainerStyle={{ padding: 16, gap: 12, flexDirection: wide ? "row" : "column", alignItems: "flex-start" }}>
@@ -331,6 +362,29 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
       )}
     </View>
   );
+}
+
+// The guide's progress is a per-browser convenience; without storage it simply starts again.
+function guideKey(tinkerId: number) {
+  return `long-boil.guide.${tinkerId}`;
+}
+
+function loadGuide(tinkerId: number): GuideState {
+  try {
+    const saved = globalThis.localStorage?.getItem(guideKey(tinkerId));
+    if (saved) return JSON.parse(saved) as GuideState;
+  } catch {
+    // Fall through to a fresh guide.
+  }
+  return { acknowledged: [], skipped: false };
+}
+
+function saveGuide(tinkerId: number, state: GuideState) {
+  try {
+    globalThis.localStorage?.setItem(guideKey(tinkerId), JSON.stringify(state));
+  } catch {
+    // Storage is a convenience only.
+  }
 }
 
 function Bar({ fraction, color }: { fraction: number; color: string }) {

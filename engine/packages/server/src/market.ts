@@ -31,10 +31,10 @@ async function begin(tx: Tx, content: GameContent, tinkerId: number, now: number
   return advance(tx, content, tinkerId, now, true);
 }
 
-async function finish(tx: Tx, content: GameContent, tinkerId: number, seq: number, entries: LogEntry[], begun: Awaited<ReturnType<typeof begin>>, notes: TradeNote[] = []): Promise<Outcome> {
+async function finish(tx: Tx, content: GameContent, tinkerId: number, now: number, seq: number, entries: LogEntry[], begun: Awaited<ReturnType<typeof begin>>, notes: TradeNote[] = []): Promise<Outcome> {
   const last = await appendEvents(tx, tinkerId, seq, entries, content.rules.version);
   await setLastSeq(tx, tinkerId, last);
-  return outcome(await view(tx, tinkerId, content), begun.events, [...begun.trades, ...notes], begun.storyEvents);
+  return outcome(await view(tx, tinkerId, content, now), begun.events, [...begun.trades, ...notes], begun.storyEvents);
 }
 
 /** Runs a market operation, turning a shortfall of items or Crowns into a 400. */
@@ -83,7 +83,7 @@ export async function sellToCollector(db: Db, content: GameContent, tinkerId: nu
     await adjustUnbound(tx, tinkerId, item, -qty);
     await adjustCrowns(tx, tinkerId, crowns);
     await tx.query("UPDATE collector_sales SET qty = qty + $4 WHERE account_id = $1 AND item = $2 AND week_start = $3", [account, item, week, qty]);
-    return finish(tx, content, tinkerId, begun.seq, [
+    return finish(tx, content, tinkerId, now, begun.seq, [
       { type: "collector_sold", at: now, payload: { item, qty, price: collectorPrice, items: { [item]: -qty }, crowns } },
     ], begun);
   });
@@ -99,7 +99,7 @@ export async function buyFromGrocer(db: Db, content: GameContent, tinkerId: numb
     const crowns = grocerPrice * qty;
     await adjustCrowns(tx, tinkerId, -crowns);
     await adjustUnbound(tx, tinkerId, item, qty);
-    return finish(tx, content, tinkerId, begun.seq, [
+    return finish(tx, content, tinkerId, now, begun.seq, [
       { type: "grocer_bought", at: now, payload: { item, qty, price: grocerPrice, items: { [item]: qty }, crowns: -crowns } },
     ], begun);
   });
@@ -214,7 +214,7 @@ export async function placeOrder(db: Db, content: GameContent, tinkerId: number,
        WHERE id = $1`,
       [orderId, remaining, new Date(now)],
     );
-    return finish(tx, content, tinkerId, begun.seq, entries, begun, notes);
+    return finish(tx, content, tinkerId, now, begun.seq, entries, begun, notes);
   });
 }
 
@@ -236,7 +236,7 @@ export async function cancelOrder(db: Db, content: GameContent, tinkerId: number
     const crowns = order.side === "buy" ? Number(order.price) * qty : 0;
     if (order.side === "sell") await adjustUnbound(tx, tinkerId, order.item, qty);
     else await adjustCrowns(tx, tinkerId, crowns);
-    return finish(tx, content, tinkerId, begun.seq, [
+    return finish(tx, content, tinkerId, now, begun.seq, [
       { type: "exchange_order_closed", at: now, payload: { order: orderId, reason: "cancelled", items, crowns } },
     ], begun);
   });

@@ -1,0 +1,1 @@
+FAIL provenance/no-row content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : content id has no row in the register
