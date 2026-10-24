@@ -1,0 +1,32 @@
+FAIL schema/shape content/tuning/work-orders-bad.json id=tuning.rustmoor.work_orders_x : /crown_ceiling: below minimum 1
+FAIL schema/shape content/tuning/work-orders-bad.json id=tuning.rustmoor.work_orders_x : /id: does not match pattern ^tuning\.(rustmoor|cinderworks|thunderhead|global)\.work_orders$
+FAIL schema/shape content/tuning/work-orders-bad.json id=tuning.rustmoor.work_orders_x : /notes: field 'notes' is not allowed by this schema
+FAIL schema/shape content/tuning/work-orders-bad.json id=tuning.rustmoor.work_orders_x : /zone: must be one of ["rustmoor", "cinderworks", "thunderhead", "global"], got "foundry"
+FAIL schema/shape content/tuning/work-orders-unset.json id=tuning.global.work_orders : /: missing required field 'crown_ceiling'
+FAIL schema/shape content/work_orders/asks.json id=wo.Rustmoor.board.fixture_asks : /asks/0/item: does not match pattern ^item\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/work_orders/asks.json id=wo.Rustmoor.board.fixture_asks : /asks/1/qty: below minimum 1
+FAIL schema/shape content/work_orders/asks.json id=wo.Rustmoor.board.fixture_asks : /band/min: expected integer, got number
+FAIL schema/shape content/work_orders/asks.json id=wo.Rustmoor.board.fixture_asks : /id: does not match pattern ^wo\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/work_orders/asks.json id=wo.Rustmoor.board.fixture_asks : /request: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
+FAIL schema/shape content/work_orders/asks.json id=wo.Rustmoor.board.fixture_asks : /reward/crowns: expected integer, got number
+FAIL schema/shape content/work_orders/bad.json id=wo.rustmoor.board : /act: above maximum 3
+FAIL schema/shape content/work_orders/bad.json id=wo.rustmoor.board : /asks: fewer than 1 items
+FAIL schema/shape content/work_orders/bad.json id=wo.rustmoor.board : /band/max: above maximum 100
+FAIL schema/shape content/work_orders/bad.json id=wo.rustmoor.board : /band/mid: field 'mid' is not allowed by this schema
+FAIL schema/shape content/work_orders/bad.json id=wo.rustmoor.board : /band/min: below minimum 1
+FAIL schema/shape content/work_orders/bad.json id=wo.rustmoor.board : /id: does not match pattern ^wo\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/work_orders/bad.json id=wo.rustmoor.board : /request: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
+FAIL schema/shape content/work_orders/bad.json id=wo.rustmoor.board : /reward/crowns: below minimum 1
+FAIL schema/shape content/work_orders/bad.json id=wo.rustmoor.board : /reward/favour: below minimum 0
+FAIL schema/shape content/work_orders/bad.json id=wo.rustmoor.board : /reward/gear: field 'gear' is not allowed by this schema
+FAIL schema/shape content/work_orders/bad.json id=wo.rustmoor.board : /seal: does not match pattern ^favour\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/work_orders/bad.json id=wo.rustmoor.board : /tier: field 'tier' is not allowed by this schema
+FAIL schema/shape content/work_orders/empty.json id=wo.foundry.board.fixture_empty : /id: does not match pattern ^wo\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/work_orders/empty.json id=wo.foundry.board.fixture_empty : /request: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
+FAIL schema/shape content/work_orders/empty.json id=wo.foundry.board.fixture_empty : /request: shorter than 1 characters
+FAIL schema/wrong-directory content/storylets/order.json id=wo.rustmoor.board.fixture_stray : files under content/storylets/ must declare storylet/*; this one declares 'work_order/1'
+FAIL schema/wrong-directory content/storylets/order.json id=wo.rustmoor.board.fixture_stray : schema 'work_order/1' belongs under content/work_orders/
+FAIL schema/wrong-directory content/work_orders/not-an-order.json : files under content/work_orders/ must declare work_order/*; this one declares 'item/1'
+FAIL schema/wrong-directory content/work_orders/not-an-order.json : schema 'item/1' belongs under content/items/
+FAIL schema/wrong-directory content/work_orders/tuning.json id=tuning.cinderworks.work_orders : files under content/work_orders/ must declare work_order/*; this one declares 'tuning.work_orders/1'
+FAIL schema/wrong-directory content/work_orders/tuning.json id=tuning.cinderworks.work_orders : schema 'tuning.work_orders/1' belongs under content/tuning/

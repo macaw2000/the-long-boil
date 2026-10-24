@@ -1,0 +1,7 @@
+{
+ "schema": "tuning.work_orders/1",
+ "id": "tuning.thunderhead.work_orders",
+ "zone": "thunderhead",
+ "crown_ceiling": null,
+ "derivation": "Fixture value, not a derived ceiling."
+}

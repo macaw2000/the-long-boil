@@ -1,0 +1,98 @@
+{
+ "schema": "qualities/1",
+ "source": "Validator fixture. Not canon.",
+ "types": {
+  "skill": {
+   "range": [
+    1,
+    100
+   ],
+   "set_by": "fixture: the idle loop"
+  },
+  "item": {
+   "range": [
+    0,
+    null
+   ],
+   "set_by": "fixture: drops"
+  },
+  "favour": {
+   "range": [
+    0,
+    7
+   ],
+   "set_by": "fixture: work orders"
+  },
+  "needle": {
+   "range": [
+    0,
+    8
+   ],
+   "set_by": "fixture: storylets"
+  },
+  "progress": {
+   "range": [
+    0,
+    100
+   ],
+   "set_by": "fixture: storylets"
+  },
+  "lore": {
+   "range": [
+    0,
+    24
+   ],
+   "set_by": "fixture: storylets, drops"
+  },
+  "flag": {
+   "range": [
+    0,
+    1
+   ],
+   "set_by": "fixture: choices"
+  },
+  "record": {
+   "range": [
+    0,
+    null
+   ],
+   "set_by": "fixture: the engine, never by a storylet"
+  }
+ },
+ "qualities": {
+  "skill": [
+   "smithing",
+   "tinkering"
+  ],
+  "favour": [
+   "favour.fixture_guild",
+   "favour.board",
+   "favour.stokers",
+   "favour.counting_house",
+   "favour.gaugers",
+   "favour.chapel"
+  ],
+  "needle": [
+   "needle.fixture_scald",
+   "needle.fixture_haze"
+  ],
+  "progress": [
+   "progress.fixture_one",
+   "progress.fixture_two",
+   "progress.fixture_loop"
+  ],
+  "lore": [
+   "lore.fixture_notes"
+  ],
+  "nerve": [
+   "nerve"
+  ],
+  "flag": [
+   "flag.fixture_seen",
+   "flag.fixture_never"
+  ],
+  "record": [
+   "record.fixture_visits"
+  ]
+ }
+}

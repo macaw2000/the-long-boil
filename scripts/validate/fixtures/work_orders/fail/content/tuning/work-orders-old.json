@@ -1,0 +1,7 @@
+{
+ "schema": "tuning.work_orders/0",
+ "id": "tuning.cinderworks.work_orders",
+ "zone": "cinderworks",
+ "crown_ceiling": 40,
+ "derivation": "Fixture value, not a derived ceiling."
+}

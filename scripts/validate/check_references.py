@@ -24,6 +24,9 @@ checks as any content file"): the first-session guide (guide/*) names no
 item, monster or other content id; its step ids are its own. It is counted
 here, and has no references to check.
 
+Work order 022, part 1: every item a Work Order (work_order/*) asks for, in
+an "asks" entry's "item", must be an item as above.
+
 Ids are collected leniently: an item or monster file with shape errors still
 contributes the ids it has, and an action, drop or economy file with shape
 errors still has its references checked. The schema check reports the shape
@@ -50,6 +53,7 @@ ECONOMY_SCHEMA_PREFIX = "tuning.economy/"
 GEAR_SCHEMA_PREFIX = "gear/"
 START_SCHEMA_PREFIX = "start/"
 GUIDE_SCHEMA_PREFIX = "guide/"
+WORK_ORDER_SCHEMA_PREFIX = "work_order/"
 
 
 def _declared(data):
@@ -174,6 +178,20 @@ def check_start(report, path, data, items):
     return references
 
 
+def check_work_order(report, path, data, items):
+    """Returns the number of references checked in one work_order/* file."""
+    references = 0
+    ident = data.get("id") if isinstance(data.get("id"), str) else None
+    for index, stack in _entries(data, "asks"):
+        item = stack.get("item")
+        if not isinstance(item, str):
+            continue  # the schema check reports this
+        references += 1
+        if item not in items:
+            _unknown_item(report, path, "/asks/%d/item" % index, item, ident)
+    return references
+
+
 def run(root):
     report = lib.Report(CHECK)
     items = item_ids(root)
@@ -184,6 +202,7 @@ def run(root):
     gear_files = gear_refs = 0
     start_files = start_refs = 0
     guide_files = 0
+    order_files = order_refs = 0
     for path in lib.content_files(root):
         data, error = lib.load_json(root, path)
         if error:
@@ -207,6 +226,10 @@ def run(root):
             continue
         if declared.startswith(GUIDE_SCHEMA_PREFIX):
             guide_files += 1
+            continue
+        if declared.startswith(WORK_ORDER_SCHEMA_PREFIX):
+            order_files += 1
+            order_refs += check_work_order(report, path, data, items)
             continue
         if not declared.startswith(ACTION_SCHEMA_PREFIX):
             continue
@@ -233,6 +256,7 @@ def run(root):
     report.note("%d gear file(s), %d item reference(s)" % (gear_files, gear_refs))
     report.note("%d start file(s), %d item reference(s)" % (start_files, start_refs))
     report.note("%d guide file(s), no references to check" % guide_files)
+    report.note("%d Work Order file(s), %d item reference(s)" % (order_files, order_refs))
     return report
 
 

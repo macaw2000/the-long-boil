@@ -1,0 +1,4 @@
+FAIL provenance/many-rows content/work_orders/stokers.json id=wo.rustmoor.stokers.fixture_rations : content id has 2 rows in the register (rows 0, 1)
+FAIL provenance/missing-file content/provenance.json#/rows/2 id=wo.rustmoor.gaugers.fixture_gone : path 'content/work_orders/gone.json' does not exist
+FAIL provenance/no-row content/work_orders/board.json id=wo.rustmoor.board.fixture_ingots : content id has no row in the register
+FAIL provenance/shared-path-null-pointer content/work_orders/stokers.json : 2 rows point at this whole file with a null pointer: wo.rustmoor.stokers.fixture_rations (row 0), wo.rustmoor.stokers.fixture_rations (row 1)

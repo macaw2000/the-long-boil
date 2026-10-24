@@ -1,0 +1,21 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.board.fixture_no_act",
+ "revision": 1,
+ "seal": "favour.board",
+ "band": {
+  "min": 1,
+  "max": 5
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.fixture_wo_ore",
+   "qty": 1
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 40
+ },
+ "request": "Bring ore."
+}

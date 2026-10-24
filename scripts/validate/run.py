@@ -44,6 +44,7 @@ import check_schema
 import check_start
 import check_story_graph
 import check_style
+import check_work_orders
 import check_xp_curve
 
 CHECKS = (
@@ -59,6 +60,7 @@ CHECKS = (
     ("story_graph", check_story_graph),
     ("reveal", check_reveal),
     ("style", check_style),
+    ("work_orders", check_work_orders),
 )
 
 FIXTURES = os.path.join(lib.HERE, "fixtures")

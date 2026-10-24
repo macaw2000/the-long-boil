@@ -1,0 +1,22 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.board.fixture_long",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.board",
+ "band": {
+  "min": 1,
+  "max": 5
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.fixture_wo_ore",
+   "qty": 1
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 40
+ },
+ "request": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass"
+}

@@ -1,0 +1,86 @@
+{
+ "schema": "tuning.economy/2",
+ "id": "tuning.rustmoor.economy",
+ "zone": "rustmoor",
+ "items": {
+  "item.rustmoor.fixture_wo_ore": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_ingot": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_pin": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_ration": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_scrap": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_cloth": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_far_made": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_trophy": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_tooth": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_charm": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_hard_ingot": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_rivet": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_meal": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null,
+   "grocer_price": 2
+  },
+  "item.rustmoor.fixture_wo_ledger_page": {
+   "bound": true,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.rustmoor.fixture_wo_curio": {
+   "bound": false,
+   "collector_price": 30,
+   "collector_weekly_cap": 7
+  }
+ },
+ "anchors": {
+  "_note": "Fixture values, not game content."
+ }
+}

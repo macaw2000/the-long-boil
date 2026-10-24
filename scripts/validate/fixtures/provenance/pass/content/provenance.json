@@ -279,6 +279,68 @@
      "by": "draftsman"
     }
    ]
+  },
+  {
+   "id": "wo.rustmoor.board.fixture_ingots",
+   "type": "work_order",
+   "path": "content/work_orders/board.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
+  },
+  {
+   "id": "tuning.rustmoor.work_orders",
+   "type": "tuning",
+   "path": "content/tuning/work-orders-rustmoor.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": null,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ]
   }
  ]
 }

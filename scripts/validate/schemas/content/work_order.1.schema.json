@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "work_order/1",
+  "title": "Work Order, version 1",
+  "description": "One Work Order per file under content/work_orders/ (work order 022, part 1; GDD section 6, Guilds, Work Orders, and Favour). 'id' is wo.<zone>.<faction>.<name>: zone one of rustmoor, cinderworks, thunderhead, global (the same list as item ids); faction is the seal's registry id without its 'favour.' prefix (the work_orders check's id-form rule). 'act' is the act the order belongs to, 1 to 3; the work_orders check holds 'seal' to the seals a player has met by that act, and the reveal check holds 'request' to that act's reveal words. 'seal' is the faction's Favour quality id in docs/canon/qualities.json, e.g. favour.board. 'band' is the player level band the order is offered in, {min, max}, whole levels 1 to 100; min <= max and the band lying inside its zone's band are checked in code. 'asks' is the items handed in, a non-empty list of {item, qty}, each item at most once (checked in code). 'reward' is {favour, crowns}: the faction Favour paid (the work_orders check holds it to the settled amount) and a Crown reward of at least 1 (work order 022: 'its faction's Favour, plus a modest Crown reward'; the ceiling is read from tuning.work_orders/* and checked in code). An order pays nothing else: no gear and no bound items, so the reward object takes no other field. 'request' is the one-line request in the faction's voice; its word limit and banned words are the style check's. Whether each asked item exists is the references check's job; unbound, and made or dropped in the order's zone at or below its band, are the work_orders check's. 'revision' is optional and exists only so a register row's revision can match the file.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "act", "seal", "band", "asks", "reward", "request"],
+  "properties": {
+    "schema": {"const": "work_order/1"},
+    "revision": {"type": "integer", "minimum": 1},
+    "id": {
+      "type": "string",
+      "pattern": "^wo\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*\\.[a-z][a-z0-9_]*$"
+    },
+    "act": {"type": "integer", "minimum": 1, "maximum": 3},
+    "seal": {"type": "string", "pattern": "^favour\\.[a-z][a-z0-9_]*$"},
+    "band": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min", "max"],
+      "properties": {
+        "min": {"type": "integer", "minimum": 1, "maximum": 100},
+        "max": {"type": "integer", "minimum": 1, "maximum": 100}
+      }
+    },
+    "asks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item", "qty"],
+        "properties": {
+          "item": {"type": "string", "pattern": "^item\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"},
+          "qty": {"type": "integer", "minimum": 1}
+        }
+      }
+    },
+    "reward": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["favour", "crowns"],
+      "properties": {
+        "favour": {"type": "integer", "minimum": 0},
+        "crowns": {"type": "integer", "minimum": 1}
+      }
+    },
+    "request": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"}
+  }
+}

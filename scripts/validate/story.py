@@ -174,3 +174,33 @@ def guide_prose_fields(data):
             if isinstance(step.get(field), str):
                 out.append(("/steps/%d/%s" % (index, field), step[field], field))
     return out
+
+
+# --------------------------------------------------------------------------
+# Work Orders (work order 022, part 1)
+# --------------------------------------------------------------------------
+
+WORK_ORDER_PREFIX = "work_order/"
+
+
+def work_order_files(root):
+    """(path, data) for every parsed content file declaring work_order/*,
+    anywhere under content/ (the schema check reports one in the wrong
+    place)."""
+    out = []
+    for path in lib.content_files(root):
+        data, error = lib.load_json(root, path)
+        if error or not isinstance(data, dict):
+            continue
+        if declared(data).startswith(WORK_ORDER_PREFIX):
+            out.append((path, data))
+    return out
+
+
+def work_order_prose_fields(data):
+    """(pointer, text) for the order's request line, leniently: a request
+    that is missing or not a string is skipped (the schema check's to
+    report)."""
+    if isinstance(data.get("request"), str):
+        return [("/request", data["request"])]
+    return []

@@ -1,0 +1,7 @@
+{
+ "schema": "tuning.work_orders/1",
+ "id": "tuning.rustmoor.work_orders",
+ "zone": "rustmoor",
+ "crown_ceiling": 40,
+ "derivation": "Fixture value, not a derived ceiling."
+}

@@ -20,6 +20,11 @@ Work order 021, part 1: the first-session guide (guide/*) is checked as act
 step's line or button may contain a guarded form whose earliest act is above
 0.
 
+Work order 022, part 1 ("No knock words below Act II"): a Work Order
+(work_order/*) is checked at its "act". It has no reveal_layer, so only the
+reveal words apply, to its request line. An order whose act is missing or not
+a whole number fails as not-checkable.
+
 Files are read leniently, not through their schema, so a layer the schema
 also rejects (4 or 5) is still reported here as a breach. A story file whose
 act or reveal_layer is missing or not a whole number fails as not-checkable:
@@ -111,13 +116,23 @@ def run(root):
     for path, data in guides:
         fields = [(pointer, text) for pointer, text, _f in story.guide_prose_fields(data)]
         _check_words(report, path, story.file_id(data), fields, story.GUIDE_ACT)
+    orders = story.work_order_files(root)
+    for path, data in orders:
+        ident = story.file_id(data)
+        act = data.get("act")
+        if not _whole(act):
+            report.fail("not-checkable", path,
+                        "act is %s; it must be a whole number for the guard to check this "
+                        "Work Order" % lib.json.dumps(act), ident)
+            continue
+        _check_words(report, path, ident, story.work_order_prose_fields(data), act)
     storylets, letters = story.count_kinds(files)
-    report.note("%d storylet file(s), %d letter file(s), %d guide file(s) as act %d; "
-                "reveal words: %s%s"
-                % (storylets, letters, len(guides), story.GUIDE_ACT,
+    report.note("%d storylet file(s), %d letter file(s), %d guide file(s) as act %d, "
+                "%d Work Order file(s); reveal words: %s%s"
+                % (storylets, letters, len(guides), story.GUIDE_ACT, len(orders),
                    "; ".join("%s before act %d" % ("/".join(forms), act)
                              for act, forms, _s, _l in REVEAL_WORDS),
-                   "; nothing to check" if not files and not guides else ""))
+                   "; nothing to check" if not files and not guides and not orders else ""))
     return report
 
 

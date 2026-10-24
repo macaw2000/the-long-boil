@@ -1,0 +1,30 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.board.fixture_ingots",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.board",
+ "band": {
+  "min": 8,
+  "max": 12
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.fixture_wo_ingot",
+   "qty": 10
+  },
+  {
+   "item": "item.rustmoor.fixture_wo_pin",
+   "qty": 8
+  },
+  {
+   "item": "item.rustmoor.fixture_wo_ore",
+   "qty": 5
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 40
+ },
+ "request": "The Board thanks you for the ingots and pins, delivered in good order on a knockabout day at the gate, and by the Tuesday post."
+}

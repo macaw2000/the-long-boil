@@ -1194,6 +1194,226 @@ put(PVO + "content/provenance.json", {"schema": "provenance/2", "rows": []})
 # references pass: the guide is read and counted, and names nothing.
 put("references/pass/" + GDP, GOOD_GUIDE)
 
+# ---- work order 022, part 1: work_order/1, tuning.work_orders/1 and the
+# work_orders check. Rustmoor is the one zone with Work Order skills
+# (ORDER_SKILLS), so the fixtures use it, with every item, action, monster and
+# order name prefixed fixture_; no fixture copies real content. The seals are
+# the registry ids work order 022 names; each fixture root carries its own
+# docs/canon/qualities.json. Numbers are synthetic.
+WO_ORE, WO_INGOT, WO_PIN = ("item.rustmoor.fixture_wo_ore", "item.rustmoor.fixture_wo_ingot",
+                            "item.rustmoor.fixture_wo_pin")
+WO_MEAL, WO_RATION, WO_SCRAP = ("item.rustmoor.fixture_wo_meal", "item.rustmoor.fixture_wo_ration",
+                                "item.rustmoor.fixture_wo_scrap")
+WO_PAGE, WO_CURIO, WO_CLOTH = ("item.rustmoor.fixture_wo_ledger_page", "item.rustmoor.fixture_wo_curio",
+                               "item.rustmoor.fixture_wo_cloth")
+WO_FAR, WO_TROPHY, WO_TOOTH = ("item.rustmoor.fixture_wo_far_made", "item.rustmoor.fixture_wo_trophy",
+                               "item.rustmoor.fixture_wo_tooth")
+WO_UNLISTED, WO_CHARM, WO_HARD = ("item.rustmoor.fixture_wo_unlisted", "item.rustmoor.fixture_wo_charm",
+                                  "item.rustmoor.fixture_wo_hard_ingot")
+WO_RIVET = "item.rustmoor.fixture_wo_rivet"
+WO_RAT, WO_GAFFER, WO_BOSS = ("monster.rustmoor.fixture_wo_rat", "monster.rustmoor.fixture_wo_gaffer",
+                              "monster.rustmoor.fixture_wo_boss")
+WO_ITEMS = items(*[(i, i.rsplit(".", 1)[1].replace("_", " ").title(), "Fixture goods, handed in to a validator.")
+                   for i in (WO_ORE, WO_INGOT, WO_PIN, WO_MEAL, WO_RATION, WO_SCRAP, WO_PAGE, WO_CURIO,
+                             WO_CLOTH, WO_FAR, WO_TROPHY, WO_TOOTH, WO_UNLISTED, WO_CHARM, WO_HARD, WO_RIVET)])
+WO_ACTIONS = actions(
+    act("action.rustmoor.fixture_wo_dig", "prospecting", 1, 60, 10, outputs=[(WO_ORE, 1)]),
+    act("action.rustmoor.fixture_wo_smelt", "smithing", 3, 60, 10, [(WO_ORE, 2)], [(WO_INGOT, 1)]),
+    act("action.rustmoor.fixture_wo_pin", "tinkering", 8, 60, 10, [(WO_INGOT, 1)], [(WO_PIN, 4)]),
+    # A Ration from a grocer meal: the grocer is never locked, so level 1.
+    act("action.rustmoor.fixture_wo_cook", "cooking", 1, 60, 10, [(WO_MEAL, 1)], [(WO_RATION, 1)]),
+    # Not a source: tailoring is not a Rustmoor Work Order skill.
+    act("action.rustmoor.fixture_wo_sew", "tailoring", 1, 60, 10, outputs=[(WO_CLOTH, 1)]),
+    # Not a source for a Rustmoor order: a global action.
+    act("action.global.fixture_wo_far", "smithing", 1, 60, 10, outputs=[(WO_FAR, 1)]),
+    # A level-6 ingot, and a level-1 rivet made from it: the rivet needs 6.
+    act("action.rustmoor.fixture_wo_hard_smelt", "smithing", 6, 60, 10, [(WO_ORE, 1)], [(WO_HARD, 1)]),
+    act("action.rustmoor.fixture_wo_rivet", "smithing", 1, 60, 10, [(WO_HARD, 1)], [(WO_RIVET, 2)]),
+    # Made at level 1, but only from a Curio, which nothing makes or drops.
+    act("action.rustmoor.fixture_wo_charm", "tinkering", 1, 60, 10, [(WO_CURIO, 1)], [(WO_CHARM, 1)]),
+    act("action.rustmoor.fixture_wo_unlisted", "tinkering", 1, 60, 10, [(WO_ORE, 1)], [(WO_UNLISTED, 1)]))
+WO_MONSTERS = monsters(mon(WO_RAT, 2, 6, 36), mon(WO_GAFFER, 10, 9, 36), mon(WO_BOSS, 12, 400, 300, boss=True))
+WO_DROPS = drops("drops.rustmoor.fixture_wo",
+    table(WO_RAT, 1, 2, [(WO_SCRAP, 0.5, 1, 2), (WO_PAGE, 0.002, 1, 1)]),
+    table(WO_GAFFER, 2, 3, [(WO_TOOTH, 0.5, 1, 1)]),
+    # A first-kill item is given once: not a source.
+    table(WO_BOSS, 9, 9, first_kill=[WO_TROPHY]), pity=[(WO_PAGE, 500)])
+WO_ECON = econ2("rustmoor", [(i, False, None, None, ...) for i in
+                             (WO_ORE, WO_INGOT, WO_PIN, WO_RATION, WO_SCRAP, WO_CLOTH, WO_FAR, WO_TROPHY,
+                              WO_TOOTH, WO_CHARM, WO_HARD, WO_RIVET)]
+                + [(WO_MEAL, False, None, None, 2), (WO_PAGE, True, None, None, ...),
+                   (WO_CURIO, False, 30, 7, ...)])
+WO_REG = json.loads(json.dumps(REG))
+WO_REG["qualities"]["favour"] = ["favour.fixture_guild", "favour.board", "favour.stokers",
+                                 "favour.counting_house", "favour.gaugers", "favour.chapel"]
+WOT = "content/tuning/work-orders-rustmoor.json"
+WOD = "content/work_orders/"
+def wo_tuning(zone="rustmoor", ceiling=40, ident=None, schema="tuning.work_orders/1"):
+    return {"schema": schema, "id": ident or "tuning.%s.work_orders" % zone, "zone": zone,
+            "crown_ceiling": ceiling, "derivation": "Fixture value, not a derived ceiling."}
+def wo(ident, seal, band, asks, favour=1, crowns=40, act=1, request="Fixture request, handed in to a validator.",
+       schema="work_order/1"):
+    return {"schema": schema, "id": ident, "revision": 1, "act": act, "seal": seal,
+            "band": {"min": band[0], "max": band[1]}, "asks": [dict(item=i, qty=q) for i, q in asks],
+            "reward": {"favour": favour, "crowns": crowns}, "request": request}
+# Exactly 25 words, with "knockabout", which is not a knock form.
+WO_REQUEST_25 = ("The Board thanks you for the ingots and pins, delivered in good order on a knockabout "
+                 "day at the gate, and by the Tuesday post.")
+WO_BOARD = wo("wo.rustmoor.board.fixture_ingots", "favour.board", (8, 12),
+              [(WO_INGOT, 10), (WO_PIN, 8), (WO_ORE, 5)], request=WO_REQUEST_25)
+WO_STOKERS = wo("wo.rustmoor.stokers.fixture_rations", "favour.stokers", (2, 6),
+                [(WO_RATION, 20), (WO_SCRAP, 12)], crowns=1)
+WO_COUNTING = wo("wo.rustmoor.counting_house.fixture_rivets", "favour.counting_house", (10, 20),
+                 [(WO_RIVET, 30), (WO_TOOTH, 4)], crowns=25)
+WO_GAUGERS = wo("wo.rustmoor.gaugers.fixture_spare_ore", "favour.gaugers", (1, 1), [(WO_ORE, 40)], crowns=10)
+def wo_sources(base):
+    put(base + REGP, WO_REG)
+    put(base + IP, WO_ITEMS)
+    put(base + AP, WO_ACTIONS)
+    put(base + MP, WO_MONSTERS)
+    put(base + DP, WO_DROPS)
+    put(base + "content/tuning/economy-rustmoor.json", WO_ECON)
+
+# work_orders pass: one order per Act I seal. Each order meets its band's min
+# (BAND_EDGE) exactly: the board's pin is made at 8 (band 8 to 12), the
+# stokers' scrap drops at 2 (band 2 to 6), the counting-house tooth drops at
+# 10 (band 10 to 20) beside a rivet that needs the level-6 ingot, the
+# gaugers' ore at 1 (band 1 to 1); the board pays the ceiling, 40. Rations
+# come from a grocer meal.
+WOP = "work_orders/pass/"
+wo_sources(WOP)
+put(WOP + WOT, wo_tuning())
+for order in (WO_BOARD, WO_STOKERS, WO_COUNTING, WO_GAUGERS):
+    put(WOP + WOD + order["id"] + ".json", order)
+# work_orders pass-empty: no orders, so a null ceiling is not yet a failure
+# (the real tree before part 2).
+put("work_orders/pass-empty/" + WOT, wo_tuning(ceiling=None))
+put("work_orders/pass-empty/" + REGP, WO_REG)
+
+# work_orders fail: each order breaks one rule (see its name).
+WOF = "work_orders/fail/"
+wo_sources(WOF)
+put(WOF + WOT, wo_tuning())
+put(WOF + "content/tuning/work-orders-thunderhead.json", wo_tuning("thunderhead", ceiling=None))
+# The id names cinderworks but the zone is global.
+put(WOF + "content/tuning/work-orders-global.json", wo_tuning("global", ceiling=10,
+                                                              ident="tuning.cinderworks.work_orders"))
+put(WOF + "content/tuning/work-orders-old.json", wo_tuning("cinderworks", schema="tuning.work_orders/0"))
+# Band 3 to 20: every rule-breaking order below asks only for items made or
+# dropped at level 3 or under (ore 1, page 2, ingot 3), so it breaks one rule.
+B = (3, 20)
+for order in (
+    wo("wo.rustmoor.stokers.fixture_id_form", "favour.board", B, [(WO_ORE, 1)]),
+    wo("wo.rustmoor.fixture_nobody.fixture_unknown_seal", "favour.fixture_nobody", B, [(WO_ORE, 1)]),
+    wo("wo.rustmoor.chapel.fixture_later_seal", "favour.chapel", B, [(WO_ORE, 1)]),
+    wo("wo.rustmoor.board.fixture_act_two", "favour.board", B, [(WO_ORE, 1)], act=2),
+    wo("wo.rustmoor.board.fixture_favour_two", "favour.board", B, [(WO_ORE, 1)], favour=2),
+    wo("wo.rustmoor.board.fixture_favour_zero", "favour.board", B, [(WO_ORE, 1)], favour=0),
+    wo("wo.rustmoor.board.fixture_over_ceiling", "favour.board", B, [(WO_ORE, 1)], crowns=41),
+    wo("wo.rustmoor.board.fixture_band_reversed", "favour.board", (8, 3), [(WO_ORE, 1)]),
+    wo("wo.rustmoor.board.fixture_band_outside", "favour.board", (15, 25), [(WO_ORE, 1)]),
+    wo("wo.rustmoor.board.fixture_twice", "favour.board", B, [(WO_ORE, 1), (WO_INGOT, 1), (WO_ORE, 2)]),
+    wo("wo.rustmoor.board.fixture_bound", "favour.board", B, [(WO_PAGE, 1)]),
+    wo("wo.rustmoor.board.fixture_unlisted", "favour.board", B, [(WO_UNLISTED, 1)]),
+    # Nothing in Rustmoor makes or drops these: a Curio, a grocer item asked
+    # directly, a tailoring output, a global action's output, a boss's
+    # first-kill item and an item made only from a Curio. A ghost item is
+    # the references check's, so it is not reported here.
+    wo("wo.rustmoor.board.fixture_no_source", "favour.board", B,
+       [(WO_CURIO, 1), (WO_MEAL, 1), (WO_CLOTH, 1), (WO_FAR, 1), (WO_TROPHY, 1), (WO_CHARM, 1),
+        ("item.rustmoor.fixture_wo_ghost", 1)]),
+    # Above the band's min but within its max: the pin (8), the gaffer's
+    # tooth (10) and the rivet, made at 1 from the level-6 ingot (6), all
+    # asked in band 5 to 12. A player at level 5 cannot fill it.
+    wo("wo.rustmoor.board.fixture_above_band", "favour.board", (5, 12), [(WO_PIN, 1), (WO_TOOTH, 1), (WO_RIVET, 1)]),
+    # Thunderhead: ceiling null, and no Work Order skills, so its items are
+    # not sourced. Cinderworks: no tuning file. Global: no zone band.
+    wo("wo.thunderhead.board.fixture_null_ceiling", "favour.board", (45, 50), [(WO_ORE, 1)]),
+    wo("wo.cinderworks.board.fixture_no_ceiling", "favour.board", (20, 25), [(WO_ORE, 1)]),
+    wo("wo.global.board.fixture_no_band", "favour.board", (1, 5), [(WO_ORE, 1)], crowns=5)):
+    put(WOF + WOD + order["id"].rsplit(".", 1)[1] + ".json", order)
+put(WOF + WOD + "old.json", wo("wo.rustmoor.board.fixture_old", "favour.board", B, [(WO_ORE, 1)], schema="work_order/0"))
+nr = wo("wo.rustmoor.board.fixture_misshapen", "favour.board", B, [(WO_ORE, 1)]); del nr["request"]
+put(WOF + WOD + "misshapen.json", nr)
+# work_orders fail-tuning: two tuning files for one zone; the order there
+# has no single ceiling.
+WFT = "work_orders/fail-tuning/"
+wo_sources(WFT)
+put(WFT + WOT, wo_tuning())
+put(WFT + "content/tuning/work-orders-rustmoor-2.json", wo_tuning(ceiling=60))
+put(WFT + WOD + "gaugers.json", WO_GAUGERS)
+# work_orders fail-registry: an order, and no docs/canon/qualities.json.
+WFR = "work_orders/fail-registry/"
+put(WFR + WOT, wo_tuning())
+put(WFR + WOD + "gaugers.json", WO_GAUGERS)
+
+# schema pass: an order and its tuning file at home.
+put("schema/pass/" + WOD + "board.json", WO_BOARD)
+put("schema/pass/" + WOT, wo_tuning())
+# schema fail-work-order: shapes, and both families out of place.
+SW = "schema/fail-work-order/content/"
+put(SW + "work_orders/bad.json", {"schema": "work_order/1", "id": "wo.rustmoor.board", "act": 4,
+    "seal": "board", "band": {"min": 0, "max": 101, "mid": 5}, "asks": [],
+    "reward": {"favour": -1, "crowns": 0, "gear": "item.rustmoor.fixture_wo_pin"},
+    "request": "Two lines,\nnot one.", "tier": 1})
+put(SW + "work_orders/asks.json", wo("wo.Rustmoor.board.fixture_asks", "favour.board", (1.5, 5),
+    [("monster.rustmoor.fixture_wo_rat", 1), (WO_ORE, 0)], crowns=2.5, request=" "))
+put(SW + "work_orders/empty.json", wo("wo.foundry.board.fixture_empty", "favour.board", (1, 5), [(WO_ORE, 1)],
+                                      request=""))
+put(SW + "work_orders/not-an-order.json", items(("item.rustmoor.fixture_wo_misplaced", "Misplaced",
+                                                "Item file in the work orders directory.")))
+put(SW + "storylets/order.json", wo("wo.rustmoor.board.fixture_stray", "favour.board", (1, 5), [(WO_ORE, 1)]))
+put(SW + "tuning/work-orders-bad.json", {"schema": "tuning.work_orders/1", "id": "tuning.rustmoor.work_orders_x",
+    "zone": "foundry", "crown_ceiling": 0, "notes": []})
+put(SW + "tuning/work-orders-unset.json", {"schema": "tuning.work_orders/1", "id": "tuning.global.work_orders",
+    "zone": "global"})
+put(SW + "work_orders/tuning.json", wo_tuning("cinderworks"))
+
+# provenance pass: an order and its tuning file each take a row.
+with open(os.path.join(F, "provenance/pass/content/provenance.json")) as fh:
+    PREG = json.load(fh)
+PREG["rows"] += [row(WO_BOARD["id"], WOD + "board.json", kind="work_order"),
+                 row("tuning.rustmoor.work_orders", WOT, revision=None)]
+put("provenance/pass/content/provenance.json", PREG)
+put("provenance/pass/" + WOD + "board.json", WO_BOARD)
+put("provenance/pass/" + WOT, wo_tuning())
+# provenance fail-work-order: an order with no row, an order with two rows,
+# and a row at an order file that does not exist.
+PVW = "provenance/fail-work-order/"
+put(PVW + WOD + "board.json", WO_BOARD)
+put(PVW + WOD + "stokers.json", WO_STOKERS)
+put(PVW + "content/provenance.json", {"schema": "provenance/2", "rows": [
+    row(WO_STOKERS["id"], WOD + "stokers.json", kind="work_order"),
+    row(WO_STOKERS["id"], WOD + "stokers.json", kind="work_order"),
+    row("wo.rustmoor.gaugers.fixture_gone", WOD + "gone.json", kind="work_order")]})
+
+# references pass: an order's asks name items that exist; fail: a ghost item
+# and a monster id where an item belongs.
+put("references/pass/" + WOD + "ore.json", wo("wo.global.board.fixture_ore", "favour.board", (1, 5), [(ORE, 3)]))
+put(R + "work_orders/ghost.json", wo("wo.global.board.fixture_ghost", "favour.board", (1, 5),
+    [(ORE, 1), ("item.global.fixture_wo_ghost", 2), (RAT, 1)]))
+
+# style pass: a request of exactly 25 words with "delved" and "players";
+# style fail: 26 words, and banned phrases in any case.
+put(SYP + WOD + "limit.json", wo("wo.rustmoor.board.fixture_limit", "favour.board", (1, 5), [(WO_ORE, 1)],
+    request=words(22) + " delved, players cheered."))
+put(SYF + WOD + "long.json", wo("wo.rustmoor.board.fixture_long", "favour.board", (1, 5), [(WO_ORE, 1)],
+    request=words(26)))
+put(SYF + WOD + "banned.json", wo("wo.rustmoor.board.fixture_banned", "favour.board", (1, 5), [(WO_ORE, 1)],
+    request="A TESTAMENT to the player, and a tapestry of ingots."))
+
+# reveal pass: an act 1 request with "knockabout", and an act 2 request with
+# knock forms. reveal fail: knock forms in act 1, and an order with no act.
+put(RVP + WOD + "knockabout.json", wo("wo.rustmoor.board.fixture_knockabout", "favour.board", (1, 5), [(WO_ORE, 1)],
+    request="A knockabout week; bring ore."))
+put(RVP + WOD + "knock.json", wo("wo.rustmoor.board.fixture_knock", "favour.board", (1, 5), [(WO_ORE, 1)], act=2,
+    request="Something knocks. Bring ore anyway."))
+put(RVF + WOD + "knock.json", wo("wo.rustmoor.board.fixture_knock", "favour.board", (1, 5), [(WO_ORE, 1)],
+    request="Something is Knocking below; bring a KNOCKER."))
+na = wo("wo.rustmoor.board.fixture_no_act", "favour.board", (1, 5), [(WO_ORE, 1)], request="Bring ore.")
+del na["act"]
+put(RVF + WOD + "no-act.json", na)
+
 # ---- dotfiles: every check skips dotfiles and dot-directories under content/
 # (lib.walk_files). Each pass fixture gets a dotfile that is not JSON and a
 # file in a dot-directory that every check would fail on if it read it: it
@@ -1202,7 +1422,7 @@ put("references/pass/" + GDP, GOOD_GUIDE)
 # committed and the proof survives a clone. A hidden gear/9 file does the
 # same for the combat check.
 for check in ("schema", "provenance", "xp_curve", "references", "pacing", "drops", "combat", "start",
-              "qualities", "story_graph", "reveal", "style"):
+              "qualities", "story_graph", "reveal", "style", "work_orders"):
     put(check + "/pass/content/.notes.json", "{ not json, as a Finder or editor file would be\n")
     put(check + "/pass/content/monsters/.cache/stray.json", {"schema": "monster/9", "id": "fixture.hidden.stray",
         "monsters": [{"id": "fixture.hidden.stray"}]})

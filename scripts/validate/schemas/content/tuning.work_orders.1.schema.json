@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tuning.work_orders/1",
+  "title": "Work Order tuning, version 1",
+  "description": "A file under content/tuning/, one per zone that has Work Orders (work order 022, parts 1 and 2), for example content/tuning/work-orders-rustmoor.json. 'id' is tuning.<zone>.work_orders; the work_orders check fails it when its zone differs from 'zone', and when a zone has more than one such file. 'zone' is one of rustmoor, cinderworks, thunderhead, global. 'crown_ceiling' is the most Crowns any one Work Order in the zone may pay, an integer of at least 1, or null while the draftsman has not derived it (work order 022, part 2: 'derive a ceiling per order from the collectors' prices for the same items'); the work_orders check fails every order in a zone whose ceiling is null or missing. 'derivation' is optional free text for the draftsman's arithmetic, which no check reads. 'revision' is optional and exists only so a register row's revision can match the file.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "zone", "crown_ceiling"],
+  "properties": {
+    "schema": {"const": "tuning.work_orders/1"},
+    "id": {"type": "string", "pattern": "^tuning\\.(rustmoor|cinderworks|thunderhead|global)\\.work_orders$"},
+    "revision": {"type": "integer", "minimum": 1},
+    "zone": {"enum": ["rustmoor", "cinderworks", "thunderhead", "global"]},
+    "crown_ceiling": {"type": ["integer", "null"], "minimum": 1},
+    "derivation": {"type": "string"}
+  }
+}

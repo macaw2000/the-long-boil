@@ -19,6 +19,10 @@ Work order 021, part 1: the same rules cover the first-session guide
 words and its button at most 4, and neither contains a banned word or phrase.
 The speaker is not checked.
 
+Work order 022, part 1: a Work Order's request line (work_order/*,
+content/work_orders/) is at most 25 words ("One line per order, at most 25
+words") and contains no banned word or phrase.
+
 Files are read leniently: a field that is missing or not a string is the
 schema check's to report. Fails when style.md cannot be read or its Banned
 section lists nothing. "Any sentence that explains its own joke" is not a
@@ -47,6 +51,9 @@ OUTCOME_MAX_WORDS = 150
 GUIDE_LINE_MAX_WORDS = 40
 GUIDE_BUTTON_MAX_WORDS = 4
 GUIDE_LIMITS = {"line": GUIDE_LINE_MAX_WORDS, "button": GUIDE_BUTTON_MAX_WORDS}
+
+# Work order 022, part 3: "One line per order, at most 25 words".
+REQUEST_MAX_WORDS = 25
 
 # docs/canon/style.md, Voice; work order 015, scope 6.
 ALWAYS_BANNED = ("the player",)
@@ -126,11 +133,18 @@ def run(root):
         for pointer, text, field in story.guide_prose_fields(data):
             fields += 1
             _check_text(report, path, ident, pointer, text, GUIDE_LIMITS[field], patterns)
+    orders = story.work_order_files(root)
+    for path, data in orders:
+        ident = story.file_id(data)
+        for pointer, text in story.work_order_prose_fields(data):
+            fields += 1
+            _check_text(report, path, ident, pointer, text, REQUEST_MAX_WORDS, patterns)
     storylets, letters = story.count_kinds(files)
-    report.note("%d storylet file(s), %d letter file(s), %d guide file(s), %d prose field(s); "
-                "banned: %s%s"
-                % (storylets, letters, len(guides), fields, ", ".join(repr(p) for p in phrases),
-                   "; nothing to check" if not files and not guides else ""))
+    report.note("%d storylet file(s), %d letter file(s), %d guide file(s), %d Work Order "
+                "file(s), %d prose field(s); banned: %s%s"
+                % (storylets, letters, len(guides), len(orders), fields,
+                   ", ".join(repr(p) for p in phrases),
+                   "; nothing to check" if not files and not guides and not orders else ""))
     return report
 
 

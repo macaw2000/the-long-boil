@@ -1,0 +1,7 @@
+{
+ "schema": "tuning.work_orders/1",
+ "id": "tuning.rustmoor.work_orders_x",
+ "zone": "foundry",
+ "crown_ceiling": 0,
+ "notes": []
+}

@@ -1,0 +1,26 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.counting_house.fixture_rivets",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.counting_house",
+ "band": {
+  "min": 10,
+  "max": 20
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.fixture_wo_rivet",
+   "qty": 30
+  },
+  {
+   "item": "item.rustmoor.fixture_wo_tooth",
+   "qty": 4
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 25
+ },
+ "request": "Fixture request, handed in to a validator."
+}

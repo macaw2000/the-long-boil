@@ -1,0 +1,19 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.board",
+ "act": 4,
+ "seal": "board",
+ "band": {
+  "min": 0,
+  "max": 101,
+  "mid": 5
+ },
+ "asks": [],
+ "reward": {
+  "favour": -1,
+  "crowns": 0,
+  "gear": "item.rustmoor.fixture_wo_pin"
+ },
+ "request": "Two lines,\nnot one.",
+ "tier": 1
+}

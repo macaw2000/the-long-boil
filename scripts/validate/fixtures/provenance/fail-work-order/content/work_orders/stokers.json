@@ -1,0 +1,26 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.stokers.fixture_rations",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.stokers",
+ "band": {
+  "min": 2,
+  "max": 6
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.fixture_wo_ration",
+   "qty": 20
+  },
+  {
+   "item": "item.rustmoor.fixture_wo_scrap",
+   "qty": 12
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 1
+ },
+ "request": "Fixture request, handed in to a validator."
+}

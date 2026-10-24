@@ -1,0 +1,30 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.board.fixture_above_band",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.board",
+ "band": {
+  "min": 5,
+  "max": 12
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.fixture_wo_pin",
+   "qty": 1
+  },
+  {
+   "item": "item.rustmoor.fixture_wo_tooth",
+   "qty": 1
+  },
+  {
+   "item": "item.rustmoor.fixture_wo_rivet",
+   "qty": 1
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 40
+ },
+ "request": "Fixture request, handed in to a validator."
+}

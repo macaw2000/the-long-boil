@@ -27,6 +27,10 @@
   whose id matches its schema's pattern must also agree with itself: the
   id's first part is "prologue" when act is 0 and "act<N>" when act is N,
   and its second part equals "location" (id-form).
+- Work Orders (work order 022, part 1): a file under content/work_orders/
+  declares work_order/*, and work_order/* is declared nowhere else. A Work
+  Order tuning file (tuning.work_orders/*) lives under content/tuning/. The
+  Work Order id-form rule is the work_orders check's.
 
 The register's own shape is the provenance check's job, not this one's.
 
@@ -41,7 +45,7 @@ import lib  # noqa: E402
 
 CHECK = "schema"
 
-# Work orders 003, 005, 007 and 010: schema family -> the only directory it may
+# Work orders 003, 005, 007, 010, 015, 021 and 022: schema family -> the only directory it may
 # live in, and the only family that directory may hold.
 SCHEMA_HOMES = (
     ("item/", "content/items/"),
@@ -52,12 +56,14 @@ SCHEMA_HOMES = (
     ("storylet/", "content/storylets/"),
     ("letter/", "content/letters/"),
     ("guide/", "content/guide/"),
+    ("work_order/", "content/work_orders/"),
 )
 
-# Work order 007: schema family -> the only directory it may live in. The
+# Work orders 007 and 022: schema family -> the only directory it may live in. The
 # directory may hold other families too.
 SCHEMA_ONLY_IN = (
     ("tuning.economy/", "content/tuning/"),
+    ("tuning.work_orders/", "content/tuning/"),
 )
 
 # Work orders 013 and 021: schema family -> the one file it may be, and that file must

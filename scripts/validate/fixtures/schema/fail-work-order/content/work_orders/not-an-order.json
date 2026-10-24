@@ -1,0 +1,10 @@
+{
+ "schema": "item/1",
+ "items": [
+  {
+   "id": "item.rustmoor.fixture_wo_misplaced",
+   "name": "Misplaced",
+   "flavour": "Item file in the work orders directory."
+  }
+ ]
+}

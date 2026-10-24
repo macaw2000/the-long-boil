@@ -1,0 +1,85 @@
+{
+ "schema": "item/1",
+ "items": [
+  {
+   "id": "item.rustmoor.fixture_wo_ore",
+   "name": "Fixture Wo Ore",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_ingot",
+   "name": "Fixture Wo Ingot",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_pin",
+   "name": "Fixture Wo Pin",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_meal",
+   "name": "Fixture Wo Meal",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_ration",
+   "name": "Fixture Wo Ration",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_scrap",
+   "name": "Fixture Wo Scrap",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_ledger_page",
+   "name": "Fixture Wo Ledger Page",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_curio",
+   "name": "Fixture Wo Curio",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_cloth",
+   "name": "Fixture Wo Cloth",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_far_made",
+   "name": "Fixture Wo Far Made",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_trophy",
+   "name": "Fixture Wo Trophy",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_tooth",
+   "name": "Fixture Wo Tooth",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_unlisted",
+   "name": "Fixture Wo Unlisted",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_charm",
+   "name": "Fixture Wo Charm",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_hard_ingot",
+   "name": "Fixture Wo Hard Ingot",
+   "flavour": "Fixture goods, handed in to a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_wo_rivet",
+   "name": "Fixture Wo Rivet",
+   "flavour": "Fixture goods, handed in to a validator."
+  }
+ ]
+}

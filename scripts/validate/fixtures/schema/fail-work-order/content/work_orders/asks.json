@@ -1,0 +1,26 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.Rustmoor.board.fixture_asks",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.board",
+ "band": {
+  "min": 1.5,
+  "max": 5
+ },
+ "asks": [
+  {
+   "item": "monster.rustmoor.fixture_wo_rat",
+   "qty": 1
+  },
+  {
+   "item": "item.rustmoor.fixture_wo_ore",
+   "qty": 0
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 2.5
+ },
+ "request": " "
+}

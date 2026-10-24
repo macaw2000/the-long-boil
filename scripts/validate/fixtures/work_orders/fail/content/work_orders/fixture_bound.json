@@ -1,0 +1,22 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.board.fixture_bound",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.board",
+ "band": {
+  "min": 3,
+  "max": 20
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.fixture_wo_ledger_page",
+   "qty": 1
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 40
+ },
+ "request": "Fixture request, handed in to a validator."
+}
