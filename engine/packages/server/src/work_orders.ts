@@ -126,6 +126,8 @@ export function turnIn(db: Db, content: GameContent, tinkerId: number, offerId: 
     const done = rules.completeOrder(orders, offerId, unbound, story.qualities, content.rules, now);
     for (const [item, delta] of Object.entries(done.event.items)) await adjustUnbound(tx, tinkerId, item, delta);
     await adjustCrowns(tx, tinkerId, done.event.crowns);
+    // The guild roster counts Work Orders turned in since joining.
+    await tx.query("UPDATE guild_members SET work_orders = work_orders + 1 WHERE tinker_id = $1", [tinkerId]);
     const next = { ...story, qualities: { ...story.qualities, ...done.event.favour } };
     return { orders: done.orders, events: [done.event], story: next };
   });

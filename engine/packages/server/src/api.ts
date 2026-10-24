@@ -11,6 +11,22 @@ import { mutedAccounts, recentChat, say, setMute } from "./chat.js";
 import type { GameContent } from "./content-loader.js";
 import type { Db } from "./db.js";
 import { chooseSeal, discardOffer, readDesk, turnIn } from "./work_orders.js";
+import {
+  acceptApplication,
+  acceptInvite,
+  applyToGuild,
+  disbandGuild,
+  dropRequest,
+  foundGuild,
+  guildChannel,
+  inviteToGuild,
+  pledgeToGuild,
+  readGuild,
+  removeMember,
+  renameGuild,
+  setRank,
+  type GuildOutcome,
+} from "./guilds.js";
 import { CITY, localBroadcast, tinkerChannel, type Broadcast, type Notice } from "./live.js";
 import {
   GDD_TRADING,
@@ -295,14 +311,87 @@ export function buildApi({
     discardOffer(db, content, Number(request.params.id), Number(request.params.offer), now(), trading),
   );
 
-  app.get<{ Params: { id: string } }>("/tinkers/:id/chat", async (request) => recentChat(db, Number(request.params.id)));
+  // Guilds (milestone 10). Every change tells the other Tinkers it touched, so their screens and guild chat follow.
+  const guildDone = (id: number, outcome: GuildOutcome) => {
+    for (const other of [id, ...outcome.touched]) broadcast.publish(tinkerChannel(other), { type: "guild" });
+    return outcome.view;
+  };
+  const idOf = (params: { id: string }) => Number(params.id);
+  app.get<{ Params: { id: string } }>("/tinkers/:id/guild", async (request) => (await readGuild(db, content, idOf(request.params), now(), trading)).view);
+  app.post<{ Params: { id: string }; Body: { name: string; crowns: number } }>(
+    "/tinkers/:id/guild",
+    { schema: { body: { type: "object", required: ["name", "crowns"], properties: { name: { type: "string", maxLength: 80 }, crowns: { type: "integer", minimum: 1 } } } } },
+    async (request) => guildDone(idOf(request.params), await foundGuild(db, content, idOf(request.params), request.body.name, request.body.crowns, now(), trading)),
+  );
+  app.post<{ Params: { id: string; guild: string }; Body: { crowns: number } }>(
+    "/tinkers/:id/guilds/:guild/pledge",
+    { schema: { body: { type: "object", required: ["crowns"], properties: { crowns: { type: "integer", minimum: 1 } } } } },
+    async (request) =>
+      guildDone(idOf(request.params), await pledgeToGuild(db, content, idOf(request.params), Number(request.params.guild), request.body.crowns, now(), trading)),
+  );
+  app.post<{ Params: { id: string; guild: string } }>("/tinkers/:id/guilds/:guild/apply", async (request) =>
+    guildDone(idOf(request.params), await applyToGuild(db, content, idOf(request.params), Number(request.params.guild), now(), trading)),
+  );
+  app.post<{ Params: { id: string; guild: string } }>("/tinkers/:id/guilds/:guild/accept", async (request) =>
+    guildDone(idOf(request.params), await acceptInvite(db, content, idOf(request.params), Number(request.params.guild), now(), trading)),
+  );
+  app.delete<{ Params: { id: string; guild: string; other: string } }>("/tinkers/:id/guilds/:guild/requests/:other", async (request) =>
+    guildDone(
+      idOf(request.params),
+      await dropRequest(db, content, idOf(request.params), Number(request.params.guild), Number(request.params.other), now(), trading),
+    ),
+  );
+  app.post<{ Params: { id: string; other: string } }>("/tinkers/:id/guild/invite/:other", async (request) =>
+    guildDone(idOf(request.params), await inviteToGuild(db, content, idOf(request.params), Number(request.params.other), now(), trading)),
+  );
+  app.post<{ Params: { id: string; other: string } }>("/tinkers/:id/guild/applications/:other/accept", async (request) =>
+    guildDone(idOf(request.params), await acceptApplication(db, content, idOf(request.params), Number(request.params.other), now(), trading)),
+  );
+  app.put<{ Params: { id: string; other: string }; Body: { rank: "leader" | "officer" | "member" } }>(
+    "/tinkers/:id/guild/members/:other/rank",
+    { schema: { body: { type: "object", required: ["rank"], properties: { rank: { enum: ["leader", "officer", "member"] } } } } },
+    async (request) =>
+      guildDone(idOf(request.params), await setRank(db, content, idOf(request.params), Number(request.params.other), request.body.rank, now(), trading)),
+  );
+  app.delete<{ Params: { id: string; other: string } }>("/tinkers/:id/guild/members/:other", async (request) =>
+    guildDone(idOf(request.params), await removeMember(db, content, idOf(request.params), Number(request.params.other), now(), trading)),
+  );
+  app.post<{ Params: { id: string }; Body: { name: string } }>(
+    "/tinkers/:id/guild/rename",
+    { schema: { body: { type: "object", required: ["name"], properties: { name: { type: "string", maxLength: 80 } } } } },
+    async (request) => guildDone(idOf(request.params), await renameGuild(db, content, idOf(request.params), request.body.name, now(), trading)),
+  );
+  app.post<{ Params: { id: string } }>("/tinkers/:id/guild/disband", async (request) =>
+    guildDone(idOf(request.params), await disbandGuild(db, content, idOf(request.params), now(), trading)),
+  );
 
-  app.post<{ Params: { id: string }; Body: { text: string } }>(
+  /** Which chat a request means: the city, or this Tinker's guild. */
+  const channelFor = async (id: number, channel: string | undefined) => {
+    if (channel !== "guild") return CITY;
+    const own = await guildChannel(db, id);
+    if (!own) throw new BadRequest("you are not in a guild");
+    return own;
+  };
+
+  app.get<{ Params: { id: string }; Querystring: { channel?: string } }>("/tinkers/:id/chat", async (request) =>
+    recentChat(db, Number(request.params.id), await channelFor(Number(request.params.id), request.query.channel)),
+  );
+
+  app.post<{ Params: { id: string }; Body: { text: string; channel?: "city" | "guild" } }>(
     "/tinkers/:id/chat",
-    { schema: { body: { type: "object", required: ["text"], properties: { text: { type: "string", minLength: 1, maxLength: 2000 } } } } },
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: ["text"],
+          properties: { text: { type: "string", minLength: 1, maxLength: 2000 }, channel: { enum: ["city", "guild"] } },
+        },
+      },
+    },
     async (request, reply) => {
-      const message = await say(db, Number(request.params.id), request.body.text, now());
-      broadcast.publish(CITY, { type: "chat", message });
+      const channel = await channelFor(Number(request.params.id), request.body.channel);
+      const message = await say(db, Number(request.params.id), request.body.text, now(), channel);
+      broadcast.publish(channel, { type: "chat", message });
       const { accountId: _account, ...shown } = message;
       return reply.code(201).send({ message: shown });
     },
@@ -341,18 +430,30 @@ export function buildApi({
         socket.close(4404, "no such Tinker");
         return;
       }
+      const chatListener = (notice: Notice) => {
+        if (notice.type === "chat" && muted.has(notice.message.accountId)) return;
+        send(notice);
+      };
+      // Guild chat follows membership: resubscribe whenever this Tinker's guild changes.
+      let guildStop: (() => void) | null = null;
+      const followGuild = async () => {
+        const channel = await guildChannel(db, id).catch(() => null);
+        guildStop?.();
+        guildStop = channel ? broadcast.subscribe(channel, chatListener) : null;
+      };
       stops.push(
         broadcast.subscribe(tinkerChannel(id), (notice) => {
           if (notice.type === "mutes") {
             mutedAccounts(db, id).then((fresh) => (muted = fresh), () => undefined);
           }
+          if (notice.type === "guild") followGuild();
           send(notice);
         }),
-        broadcast.subscribe(CITY, (notice) => {
-          if (notice.type === "chat" && muted.has(notice.message.accountId)) return;
-          send(notice);
-        }),
+        broadcast.subscribe(CITY, chatListener),
+        () => guildStop?.(),
       );
+      // Subscribed first, so nothing published while the guild is looked up is missed.
+      await followGuild();
       send({ type: "changed" });
     });
   });

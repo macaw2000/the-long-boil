@@ -8,6 +8,8 @@ export type Notice =
   | { type: "changed" }
   /** This Tinker's account muted or unmuted someone; reload the mute list. */
   | { type: "mutes" }
+  /** This Tinker's guild changed (joined, left, a request, a pledge); look again and follow its chat. */
+  | { type: "guild" }
   | { type: "chat"; message: ChatMessage & { accountId: number } };
 
 export interface ChatMessage {

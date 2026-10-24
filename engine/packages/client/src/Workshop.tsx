@@ -7,8 +7,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
-import { api, gameNow, setClockOffset, type Content, type Ledger as LedgerData, type Notice, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
-import { Chat, useChat } from "./Chat";
+import { api, gameNow, setClockOffset, type Content, type GuildView, type Ledger as LedgerData, type Notice, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
+import { Chat, channelOf, useChat } from "./Chat";
+import { Guild } from "./Guild";
 import { Exchange } from "./Exchange";
 import { WorkOrders } from "./WorkOrders";
 import { Loadout } from "./Loadout";
@@ -30,7 +31,7 @@ const BOILER_MS = 12 * 3_600_000;
 export function Workshop({ content, tinkerId, onLeave }: { content: Content; tinkerId: number; onLeave: () => void }) {
   const [tinker, setTinker] = useState<Tinker | null>(null);
   const [away, setAway] = useState<{ ledger: LedgerData; trades: TradeNote[] } | null>(null);
-  const [tab, setTab] = useState<"workshop" | "story" | "exchange" | "chat">("workshop");
+  const [tab, setTab] = useState<"workshop" | "story" | "exchange" | "guild" | "chat">("workshop");
   const [recent, setRecent] = useState<string[]>([]);
   const [picking, setPicking] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -174,15 +175,40 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
   // chat arrives the same way.
   const chat = useChat(tinkerId);
   const { receive: receiveChat, reload: reloadChat } = chat;
+
+  // The guild: its view feeds the Guild tab, and membership decides whether guild chat exists.
+  const [guildView, setGuildView] = useState<GuildView | null>(null);
+  const loadGuild = useCallback(() => {
+    api
+      .guild(tinkerId)
+      .then(setGuildView)
+      .catch(() => undefined);
+  }, [tinkerId]);
+  useEffect(loadGuild, [loadGuild]);
+  const guildChat = useChat(tinkerId, "guild", Boolean(guildView?.guild));
+  const { receive: receiveGuildChat } = guildChat;
+  const inviteToGuild =
+    guildView?.guild && guildView.guild.rank !== "member"
+      ? (other: number) =>
+          api
+            .invite(tinkerId, other)
+            .then(setGuildView)
+            .catch((reason: Error) => setError(reason.message))
+      : undefined;
+
   const connected = useLive(
     tinkerId,
     useCallback(
       (notice: Notice) => {
         if (notice.type === "changed") lookAgain();
-        else if (notice.type === "chat") receiveChat(notice.message);
+        else if (notice.type === "chat") (channelOf(notice.message) === "guild" ? receiveGuildChat : receiveChat)(notice.message);
         else if (notice.type === "mutes") reloadChat();
+        else if (notice.type === "guild") {
+          loadGuild();
+          lookAgain();
+        }
       },
-      [lookAgain, receiveChat, reloadChat],
+      [lookAgain, receiveChat, receiveGuildChat, reloadChat, loadGuild],
     ),
   );
 
@@ -223,8 +249,8 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
   // The guide points at one thing at a time; after it, the nudges point at whatever is ready.
   const step = currentStep(tinker, guide);
   const lit: Set<Target> = step ? new Set([step.target]) : nudges(tinker, content, now);
-  const tabFor = (target: Target) => (target === "story" || target === "exchange" ? target : "workshop");
-  const tabLit = (choice: "workshop" | "story" | "exchange" | "chat") => [...lit].some((target) => tabFor(target) === choice) && tab !== choice;
+  const tabFor = (target: Target): "workshop" | "story" | "exchange" => (target === "story" || target === "exchange" ? target : "workshop");
+  const tabLit = (choice: "workshop" | "story" | "exchange" | "guild" | "chat") => [...lit].some((target) => tabFor(target) === choice) && tab !== choice;
 
   const skills = (
     <View style={ui.panel}>
@@ -462,7 +488,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
         </View>
       )}
       <View style={{ flexDirection: "row", gap: 4, paddingHorizontal: 16, paddingTop: 10 }}>
-        {(wide ? (["workshop", "story", "exchange"] as const) : (["workshop", "story", "exchange", "chat"] as const)).map((choice) => (
+        {(wide ? (["workshop", "story", "exchange", "guild"] as const) : (["workshop", "story", "exchange", "guild", "chat"] as const)).map((choice) => (
           <Glow key={choice} active={tabLit(choice)}>
           <Pressable
             onPress={() => setTab(choice)}
@@ -481,7 +507,10 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
               {choice === "exchange" && tinker.story.debts.some((debt) => tinker.crowns >= debt.crowns) && <Badge count={1} label="!" tone={colors.copper} />}
               {choice === "exchange" && <Badge count={tinker.workOrders} tone={colors.verdigris} />}
               {choice === "workshop" && tinker.queue.length === 0 && <Badge count={1} label="idle" tone={colors.scald} />}
-              {choice === "chat" && tab !== "chat" && <Badge count={chat.unread} tone={colors.verdigris} />}
+              {choice === "chat" && tab !== "chat" && <Badge count={chat.unread + guildChat.unread} tone={colors.verdigris} />}
+              {choice === "guild" && (
+                <Badge count={(guildView?.invites.length ?? 0) + (guildView?.guild?.requests.filter((request) => request.kind === "application").length ?? 0)} tone={colors.verdigris} />
+              )}
             </View>
             {choice === "story" && <CanisterDrop drops={canisters} />}
           </Pressable>
@@ -509,8 +538,19 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
             </ScrollView>
           ) : tab === "chat" && !wide ? (
             <View style={{ flex: 1, padding: 16 }}>
-              <Chat tinkerId={tinkerId} chat={chat} connected={connected} />
+              <Chat
+                tinkerId={tinkerId}
+                city={chat}
+                guild={guildView?.guild ? guildChat : null}
+                guildName={guildView?.guild?.name}
+                connected={connected}
+                onInvite={inviteToGuild}
+              />
             </View>
+          ) : tab === "guild" ? (
+            <ScrollView contentContainerStyle={{ padding: 16, alignItems: "center" }}>
+              <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} crownsHeld={tinker.crowns} />
+            </ScrollView>
           ) : tab === "story" ? (
             <ScrollView contentContainerStyle={{ padding: 16, alignItems: "center" }}>
               <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} />
@@ -524,7 +564,14 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
         </View>
         {wide && (
           <View style={{ width: 300, padding: 16, paddingLeft: 0 }}>
-            <Chat tinkerId={tinkerId} chat={chat} connected={connected} />
+            <Chat
+                tinkerId={tinkerId}
+                city={chat}
+                guild={guildView?.guild ? guildChat : null}
+                guildName={guildView?.guild?.name}
+                connected={connected}
+                onInvite={inviteToGuild}
+              />
           </View>
         )}
       </View>

@@ -224,6 +224,30 @@ export interface WorkOrderDesk {
 
 export type DeskOutcome = Outcome & { desk: WorkOrderDesk };
 
+export type GuildRank = "leader" | "officer" | "member";
+
+export interface GuildView {
+  locked: string | null;
+  guild: {
+    id: number;
+    name: string;
+    status: "charter" | "active";
+    pledged: number;
+    fee: number;
+    charterEnds: string;
+    formedAt: string | null;
+    rank: GuildRank;
+    members: { tinkerId: number; name: string; rank: GuildRank; totalLevel: number; lastSeen: string; pledged: number; workOrders: number }[];
+    requests: { tinkerId: number; name: string; kind: "invite" | "application"; at: string }[];
+  } | null;
+  invites: { guildId: number; name: string; status: string }[];
+  applications: { guildId: number; name: string; status: string }[];
+  guilds: { id: number; name: string; status: string; members: number; pledged: number; charterEnds: string }[];
+  rules: { fee: number; founderMin: number; maxMembers: number; renameCrowns: number };
+}
+
+export type ChatChannel = "city" | "guild";
+
 export interface ChatMessage {
   id: number;
   channel: string;
@@ -239,7 +263,7 @@ export interface ChatView {
 }
 
 /** What the live connection pushes (packages/server/src/live.ts). */
-export type Notice = { type: "changed" } | { type: "mutes" } | { type: "chat"; message: ChatMessage };
+export type Notice = { type: "changed" } | { type: "mutes" } | { type: "guild" } | { type: "chat"; message: ChatMessage };
 
 /** The live connection's address, on the same server as the HTTP API. */
 export function liveUrl(tinkerId: number): string {
@@ -287,8 +311,20 @@ export const api = {
   chooseSeal: (id: number, offer: number, order: string) => request<DeskOutcome>("POST", `/tinkers/${id}/work-orders/${offer}/choose`, { order }),
   turnIn: (id: number, offer: number) => request<DeskOutcome>("POST", `/tinkers/${id}/work-orders/${offer}/turn-in`),
   discardOrder: (id: number, offer: number) => request<DeskOutcome>("DELETE", `/tinkers/${id}/work-orders/${offer}`),
-  chat: (id: number) => request<ChatView>("GET", `/tinkers/${id}/chat`),
-  say: (id: number, text: string) => request<{ message: ChatMessage }>("POST", `/tinkers/${id}/chat`, { text }),
+  chat: (id: number, channel: ChatChannel = "city") => request<ChatView>("GET", `/tinkers/${id}/chat${channel === "guild" ? "?channel=guild" : ""}`),
+  say: (id: number, text: string, channel: ChatChannel = "city") => request<{ message: ChatMessage }>("POST", `/tinkers/${id}/chat`, { text, channel }),
+  guild: (id: number) => request<GuildView>("GET", `/tinkers/${id}/guild`),
+  foundGuild: (id: number, name: string, crowns: number) => request<GuildView>("POST", `/tinkers/${id}/guild`, { name, crowns }),
+  pledge: (id: number, guild: number, crowns: number) => request<GuildView>("POST", `/tinkers/${id}/guilds/${guild}/pledge`, { crowns }),
+  applyToGuild: (id: number, guild: number) => request<GuildView>("POST", `/tinkers/${id}/guilds/${guild}/apply`),
+  acceptInvite: (id: number, guild: number) => request<GuildView>("POST", `/tinkers/${id}/guilds/${guild}/accept`),
+  dropRequest: (id: number, guild: number, other: number) => request<GuildView>("DELETE", `/tinkers/${id}/guilds/${guild}/requests/${other}`),
+  invite: (id: number, other: number) => request<GuildView>("POST", `/tinkers/${id}/guild/invite/${other}`),
+  acceptApplication: (id: number, other: number) => request<GuildView>("POST", `/tinkers/${id}/guild/applications/${other}/accept`),
+  setRank: (id: number, other: number, rank: GuildRank) => request<GuildView>("PUT", `/tinkers/${id}/guild/members/${other}/rank`, { rank }),
+  removeMember: (id: number, other: number) => request<GuildView>("DELETE", `/tinkers/${id}/guild/members/${other}`),
+  renameGuild: (id: number, name: string) => request<GuildView>("POST", `/tinkers/${id}/guild/rename`, { name }),
+  disbandGuild: (id: number) => request<GuildView>("POST", `/tinkers/${id}/guild/disband`),
   mute: (id: number, other: number) => request<ChatView>("PUT", `/tinkers/${id}/mutes/${other}`),
   unmute: (id: number, other: number) => request<ChatView>("DELETE", `/tinkers/${id}/mutes/${other}`),
 };
