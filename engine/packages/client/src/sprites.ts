@@ -13,6 +13,74 @@ export const characters: Record<string, Record<string, Frames>> = {
     tinker: [require("../assets/sprites/tinker_tinker_0.png"), require("../assets/sprites/tinker_tinker_1.png")],
     attack: [require("../assets/sprites/tinker_attack_0.png"), require("../assets/sprites/tinker_attack_1.png")],
   },
+  "tinker:item.rustmoor.brass_spanner": {
+    idle: [require("../assets/sprites/tinker_brass_spanner_idle_0.png"), require("../assets/sprites/tinker_brass_spanner_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_brass_spanner_attack_0.png"), require("../assets/sprites/tinker_brass_spanner_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_brass_spanner_portrait_0.png"), require("../assets/sprites/tinker_brass_spanner_portrait_1.png")],
+  },
+  "tinker:item.rustmoor.iron_crowbar": {
+    idle: [require("../assets/sprites/tinker_iron_crowbar_idle_0.png"), require("../assets/sprites/tinker_iron_crowbar_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_iron_crowbar_attack_0.png"), require("../assets/sprites/tinker_iron_crowbar_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_iron_crowbar_portrait_0.png"), require("../assets/sprites/tinker_iron_crowbar_portrait_1.png")],
+  },
+  "tinker:item.rustmoor.riveting_hammer": {
+    idle: [require("../assets/sprites/tinker_riveting_hammer_idle_0.png"), require("../assets/sprites/tinker_riveting_hammer_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_riveting_hammer_attack_0.png"), require("../assets/sprites/tinker_riveting_hammer_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_riveting_hammer_portrait_0.png"), require("../assets/sprites/tinker_riveting_hammer_portrait_1.png")],
+  },
+  "tinker:item.rustmoor.steel_blade": {
+    idle: [require("../assets/sprites/tinker_steel_blade_idle_0.png"), require("../assets/sprites/tinker_steel_blade_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_steel_blade_attack_0.png"), require("../assets/sprites/tinker_steel_blade_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_steel_blade_portrait_0.png"), require("../assets/sprites/tinker_steel_blade_portrait_1.png")],
+  },
+  "tinker:item.rustmoor.scrapjaws_cleaver": {
+    idle: [require("../assets/sprites/tinker_scrapjaws_cleaver_idle_0.png"), require("../assets/sprites/tinker_scrapjaws_cleaver_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_scrapjaws_cleaver_attack_0.png"), require("../assets/sprites/tinker_scrapjaws_cleaver_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_scrapjaws_cleaver_portrait_0.png"), require("../assets/sprites/tinker_scrapjaws_cleaver_portrait_1.png")],
+  },
+  "tinker:item.rustmoor.brass_catapult": {
+    idle: [require("../assets/sprites/tinker_brass_catapult_idle_0.png"), require("../assets/sprites/tinker_brass_catapult_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_brass_catapult_attack_0.png"), require("../assets/sprites/tinker_brass_catapult_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_brass_catapult_portrait_0.png"), require("../assets/sprites/tinker_brass_catapult_portrait_1.png")],
+  },
+  "tinker:item.rustmoor.iron_rifle": {
+    idle: [require("../assets/sprites/tinker_iron_rifle_idle_0.png"), require("../assets/sprites/tinker_iron_rifle_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_iron_rifle_attack_0.png"), require("../assets/sprites/tinker_iron_rifle_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_iron_rifle_portrait_0.png"), require("../assets/sprites/tinker_iron_rifle_portrait_1.png")],
+  },
+  "tinker:item.rustmoor.steel_carbine": {
+    idle: [require("../assets/sprites/tinker_steel_carbine_idle_0.png"), require("../assets/sprites/tinker_steel_carbine_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_steel_carbine_attack_0.png"), require("../assets/sprites/tinker_steel_carbine_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_steel_carbine_portrait_0.png"), require("../assets/sprites/tinker_steel_carbine_portrait_1.png")],
+  },
+  "tinker:item.rustmoor.garnet_rifle": {
+    idle: [require("../assets/sprites/tinker_garnet_rifle_idle_0.png"), require("../assets/sprites/tinker_garnet_rifle_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_garnet_rifle_attack_0.png"), require("../assets/sprites/tinker_garnet_rifle_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_garnet_rifle_portrait_0.png"), require("../assets/sprites/tinker_garnet_rifle_portrait_1.png")],
+  },
+  "tinker:item.rustmoor.copper_coil": {
+    idle: [require("../assets/sprites/tinker_copper_coil_idle_0.png"), require("../assets/sprites/tinker_copper_coil_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_copper_coil_attack_0.png"), require("../assets/sprites/tinker_copper_coil_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_copper_coil_portrait_0.png"), require("../assets/sprites/tinker_copper_coil_portrait_1.png")],
+  },
+  "tinker:item.rustmoor.brass_sparker": {
+    idle: [require("../assets/sprites/tinker_brass_sparker_idle_0.png"), require("../assets/sprites/tinker_brass_sparker_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_brass_sparker_attack_0.png"), require("../assets/sprites/tinker_brass_sparker_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_brass_sparker_portrait_0.png"), require("../assets/sprites/tinker_brass_sparker_portrait_1.png")],
+  },
+  "tinker:item.rustmoor.spark_rod": {
+    idle: [require("../assets/sprites/tinker_spark_rod_idle_0.png"), require("../assets/sprites/tinker_spark_rod_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_spark_rod_attack_0.png"), require("../assets/sprites/tinker_spark_rod_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_spark_rod_portrait_0.png"), require("../assets/sprites/tinker_spark_rod_portrait_1.png")],
+  },
+  "tinker:item.rustmoor.garnet_rod": {
+    idle: [require("../assets/sprites/tinker_garnet_rod_idle_0.png"), require("../assets/sprites/tinker_garnet_rod_idle_1.png")],
+    attack: [require("../assets/sprites/tinker_garnet_rod_attack_0.png"), require("../assets/sprites/tinker_garnet_rod_attack_1.png")],
+    portrait: [require("../assets/sprites/tinker_garnet_rod_portrait_0.png"), require("../assets/sprites/tinker_garnet_rod_portrait_1.png")],
+  },
+  "tinker:bare": {
+    portrait: [require("../assets/sprites/tinker_bare_portrait_0.png"), require("../assets/sprites/tinker_bare_portrait_1.png")],
+  },
   "monster.rustmoor.rust_rat_runt": {
     idle: [require("../assets/sprites/rust_rat_runt_idle0.png"), require("../assets/sprites/rust_rat_runt_idle1.png")],
     attack: [require("../assets/sprites/rust_rat_runt_attack0.png"), require("../assets/sprites/rust_rat_runt_attack1.png")],
@@ -78,6 +146,10 @@ export const icons: Record<string, number> = {
   "item.rustmoor.odd_spoons": require("../assets/sprites/icon_odd_spoons.png"),
   "item.rustmoor.clock_movement": require("../assets/sprites/icon_clock_movement.png"),
   "item.rustmoor.foundry_pass": require("../assets/sprites/icon_foundry_pass.png"),
+  "item.rustmoor.board_memo": require("../assets/sprites/icon_board_memo.png"),
+  "item.rustmoor.cracked_gauge_glass": require("../assets/sprites/icon_cracked_gauge_glass.png"),
+  "item.rustmoor.ballast_day_ribbon": require("../assets/sprites/icon_ballast_day_ribbon.png"),
+  "item.rustmoor.misstruck_crown": require("../assets/sprites/icon_misstruck_crown.png"),
   "fallback": require("../assets/sprites/icon_fallback.png"),
 };
 

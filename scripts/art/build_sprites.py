@@ -170,6 +170,131 @@ def tool(c: Canvas, hx: float, hy: float, angle: float, kind: str) -> None:
         c.ellipse(ex + ux, ey + uy, 1, 1, SOOT)
 
 
+GARNET = "#D0545F"
+
+# Each weapon's attack style decides how the Tinker holds it and fights with it.
+WEAPON_STYLES = {
+    "brass_spanner": "melee", "iron_crowbar": "melee", "riveting_hammer": "melee", "steel_blade": "melee", "scrapjaws_cleaver": "melee",
+    "brass_catapult": "marksmanship", "iron_rifle": "marksmanship", "steel_carbine": "marksmanship", "garnet_rifle": "marksmanship",
+    "copper_coil": "aetherics", "brass_sparker": "aetherics", "spark_rod": "aetherics", "garnet_rod": "aetherics",
+}
+
+
+def held(c: Canvas, hx: float, hy: float, angle: float, weapon: str) -> tuple[float, float]:
+    """Draws a weapon gripped at the hand, pointing along `angle`. Returns its tip: the muzzle, the gem or the edge."""
+    rad = math.radians(angle)
+    ux, uy = math.cos(rad), math.sin(rad)
+    px, py = -uy, ux
+    at = lambda d, side=0.0: (hx + ux * d + px * side, hy + uy * d + py * side)  # noqa: E731
+    if weapon == "brass_spanner":
+        c.line(*at(-1), *at(8), BRASS, 2)
+        c.ellipse(*at(9), 2.6, 2.6, BRASS)
+        c.ellipse(*at(10.2), 1.1, 1.1, SOOT)
+        return at(10)
+    if weapon == "iron_crowbar":
+        c.line(*at(-2), *at(11), IRON, 2)
+        c.line(*at(11), *at(11, 3), IRON, 2)
+        c.set(*map(round, at(5)), shade(IRON, 1.4))
+        return at(11, 2)
+    if weapon == "riveting_hammer":
+        c.line(*at(-1), *at(8), WOOD, 2)
+        c.line(*at(8, -4), *at(8, 3), IRON, 3)
+        c.set(*map(round, at(8, -4)), shade(IRON, 1.5))
+        return at(9)
+    if weapon == "steel_blade":
+        c.line(*at(-2), *at(1), WOOD, 2)
+        c.line(*at(1, -2.5), *at(1, 2.5), BRASS, 2)
+        c.line(*at(2), *at(13), STEEL, 2)
+        c.line(*at(3, -0.6), *at(12, -0.6), shade(STEEL, 1.35))
+        return at(13)
+    if weapon == "scrapjaws_cleaver":
+        c.line(*at(-2), *at(3), WOOD, 3)
+        c.polygon([at(3, -1), at(13, -1), at(13, 5), at(3, 5)], STEEL)
+        c.line(*at(3, -1), *at(13, -1), shade(STEEL, 1.35))
+        for d in (5, 8, 11):
+            c.set(*map(round, at(d, 5)), CREAM)
+            c.set(*map(round, at(d - 1, 3)), COPPER)
+        return at(13, 2)
+    if weapon == "brass_catapult":
+        c.line(*at(-1), *at(4), WOOD, 2)
+        c.line(*at(4), *at(8, -3), WOOD, 2)
+        c.line(*at(4), *at(8, 3), WOOD, 2)
+        c.line(*at(8, -3), *at(8, 3), BRASS)
+        return at(9)
+    if weapon in ("iron_rifle", "steel_carbine", "garnet_rifle"):
+        barrel = {"iron_rifle": IRON, "steel_carbine": STEEL, "garnet_rifle": shade(COPPER, 0.8)}[weapon]
+        length = {"iron_rifle": 11, "steel_carbine": 9, "garnet_rifle": 12}[weapon]
+        c.polygon([at(-6, -1), at(1, -1), at(1, 2), at(-5, 3)], WOOD)
+        c.line(*at(0), *at(length), barrel, 2)
+        c.set(*map(round, at(2, 1.5)), SOOT)
+        if weapon == "garnet_rifle":
+            c.set(*map(round, at(6, -1.5)), GARNET)
+            c.set(*map(round, at(7, -1.5)), GARNET)
+        if weapon == "steel_carbine":
+            c.set(*map(round, at(length - 1, -1)), shade(STEEL, 1.4))
+        return at(length + 1)
+    # Aetherics: a rod with something live at the end.
+    rod_colour, gem, length = {
+        "copper_coil": (COPPER, VERDIGRIS, 9),
+        "brass_sparker": (BRASS, EMBER, 8),
+        "spark_rod": (IRON, VERDIGRIS, 11),
+        "garnet_rod": (shade(COPPER, 0.8), GARNET, 12),
+    }[weapon]
+    c.line(*at(-2), *at(length), rod_colour, 2)
+    if weapon == "copper_coil":
+        for d in (3, 5, 7):
+            c.line(*at(d, -2), *at(d, 2), BRASS)
+    if weapon == "brass_sparker":
+        c.line(*at(length), *at(length + 3, -2), BRASS)
+        c.line(*at(length), *at(length + 3, 2), BRASS)
+        return at(length + 3)
+    c.ellipse(*at(length + 1.5), 2.2 if weapon != "garnet_rod" else 2.6, 2.2 if weapon != "garnet_rod" else 2.6, gem)
+    c.set(*map(round, at(length + 1, -1)), CREAM)
+    return at(length + 1.5)
+
+
+def armed(weapon: str, pose: str, frame: int) -> Canvas:
+    """The Tinker with a weapon in hand: standing ready, or fighting in its style."""
+    c = tinker("bare", frame if pose == "idle" else 0)
+    style = WEAPON_STYLES[weapon]
+    bob = 1 if (pose == "idle" and frame == 1) else 0
+    shoulder = (27, 24 + bob)
+    raised = (29, 23 + bob)
+    if pose == "idle":
+        angle = {"melee": 55, "marksmanship": -30, "aetherics": -75}[style]
+        hand = arm(c, *shoulder, {"melee": 70, "marksmanship": 10, "aetherics": 5}[style], 7)
+        tip = held(c, *hand, angle, weapon)
+        if style == "aetherics" and frame == 1:
+            c.set(round(tip[0]) + 2, round(tip[1]) - 1, CREAM)
+    elif style == "melee":
+        angle = -60 if frame == 0 else 15
+        hand = arm(c, *(raised if frame == 0 else shoulder), angle, 8)
+        held(c, *hand, angle - 5, weapon)
+        if frame == 1:
+            for i in range(5):
+                c.set(36 + i, 20 + i * 2, CREAM)
+    elif style == "marksmanship":
+        # Stock at the shoulder, so the muzzle and its flash stay inside the frame.
+        angle = 0 if frame == 0 else -8
+        hand = arm(c, *raised, -5, 3)
+        tip = held(c, *hand, angle, weapon)
+        if frame == 1:
+            tx, ty = round(tip[0]), round(tip[1])
+            for dx, dy, colour in ((0, 0, CREAM), (1, 0, EMBER), (1, -1, EMBER), (1, 1, EMBER), (2, 0, CREAM)):
+                c.set(min(47, tx + dx), ty + dy, colour)
+    else:
+        # The rod is raised, then thrust; the scene draws the bolt to the target.
+        angle = -75 if frame == 0 else -40
+        hand = arm(c, *(raised if frame == 0 else shoulder), angle, 6)
+        tip = held(c, *hand, angle, weapon)
+        tx, ty = round(tip[0]), round(tip[1])
+        ring = ((-3, 0), (3, 0), (0, -3), (-2, -2), (2, -2), (2, 2)) if frame == 1 else ((-2, -2), (2, -2))
+        for i, (dx, dy) in enumerate(ring):
+            c.set(min(47, tx + dx), max(0, ty + dy), CREAM if i % 2 else VERDIGRIS)
+    c.outline()
+    return c
+
+
 def tinker(pose: str, frame: int) -> Canvas:
     c = Canvas(48, 48)
     bob = 1 if (pose == "idle" and frame == 1) else 0
@@ -197,6 +322,9 @@ def tinker(pose: str, frame: int) -> Canvas:
     # Front arm and tool, by pose. A raised arm swings out in front of the face, not through it.
     shoulder = (27, 24 + bob)
     raised = (29, 23 + bob)
+    if pose == "bare":
+        # The body alone; armed() adds the arm and weapon, then outlines.
+        return c
     if pose == "idle":
         arm(c, *shoulder, 95, 8)
     elif pose == "hammer":
@@ -563,6 +691,15 @@ def main() -> None:
 
     tinker_anims = {pose: [save(f"tinker_{pose}_{f}", tinker(pose, f), 3) for f in (0, 1)] for pose in ("idle", "hammer", "pick", "tinker", "attack")}
     index["characters"]["tinker"] = tinker_anims
+    # The Tinker with each weapon: ready, fighting in its style, and a larger portrait for the loadout.
+    for weapon in WEAPON_STYLES:
+        short = weapon
+        index["characters"][f"tinker:item.rustmoor.{weapon}"] = {
+            "idle": [save(f"tinker_{short}_idle_{f}", armed(weapon, "idle", f), 3) for f in (0, 1)],
+            "attack": [save(f"tinker_{short}_attack_{f}", armed(weapon, "attack", f), 3) for f in (0, 1)],
+            "portrait": [save(f"tinker_{short}_portrait_{f}", armed(weapon, "idle", f), 4) for f in (0, 1)],
+        }
+    index["characters"]["tinker:bare"] = {"portrait": [save(f"tinker_bare_portrait_{f}", tinker("idle", f), 4) for f in (0, 1)]}
 
     for variant, mapping in RAT_VARIANTS.items():
         anims = {}

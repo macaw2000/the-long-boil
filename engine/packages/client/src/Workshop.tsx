@@ -10,6 +10,9 @@ import { Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } fro
 import { api, gameNow, setClockOffset, type Content, type Ledger as LedgerData, type Notice, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
 import { Chat, useChat } from "./Chat";
 import { Exchange } from "./Exchange";
+import { WorkOrders } from "./WorkOrders";
+import { Loadout } from "./Loadout";
+import { NewGear } from "./NewGear";
 import { Glow } from "./Glow";
 import { ItemIcon, Scene } from "./Sprite";
 import { Badge, CanisterDrop, CountUp, Floaters, Gauge, ScaldVignette, Sparks, SteamTube, useFloaters } from "./Juice";
@@ -47,6 +50,8 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
   const [floaters, addFloater, removeFloater] = useFloaters();
   const [skillBursts, setSkillBursts] = useState<Record<string, number>>({});
   const [canisters, setCanisters] = useState(0);
+  // A weapon seen in the stores for the first time, shown off until equipped or put aside.
+  const [newGear, setNewGear] = useState<string | null>(null);
   const previous = useRef<Tinker | null>(null);
 
   // What changed since the last look, as things the player can watch arrive.
@@ -64,6 +69,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
       for (const [item, qty] of count(next)) {
         const gained = qty - (was.get(item) ?? 0);
         if (gained > 0) addFloater(`+${gained.toLocaleString()} ${name(item)}`, colors.brass, item);
+        if (gained > 0 && !was.get(item) && content.weapons.some((weapon) => weapon.item === item)) setNewGear(item);
       }
       const gainedCrowns = next.crowns - before.crowns;
       if (gainedCrowns > 0) addFloater(`+${gainedCrowns.toLocaleString()} Crowns`, colors.brass);
@@ -329,36 +335,15 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
     </View>
   );
 
-  const weapons = content.weapons.filter((weapon) => tinker.inventory.some((stack) => stack.item === weapon.item));
-  const levelOf = (skill: string) => tinker.skills.find((entry) => entry.skill === skill)?.level ?? 1;
+  const equipWeapon = (item: string) => {
+    setNewGear(null);
+    return run(api.equip(tinkerId, item));
+  };
 
   const stores = (
     <View style={{ gap: 12 }}>
       <Glow active={lit.has("loadout")}>
-      <View style={ui.panel}>
-        <Text style={ui.heading}>Loadout</Text>
-        <Text style={ui.text}>{tinker.weapon ? name(tinker.weapon) : "Bare hands. Equip a weapon to fight."}</Text>
-        {weapons
-          .filter((weapon) => weapon.item !== tinker.weapon)
-          .map((weapon) => {
-            const usable = levelOf(weapon.style) >= weapon.level_required;
-            return (
-              <View key={weapon.item} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                <Text style={ui.muted}>
-                  {name(weapon.item)} · {weapon.style} {weapon.level_required}
-                </Text>
-                <Pressable
-                  disabled={!usable}
-                  style={[ui.button, { paddingVertical: 4 }, !usable && { opacity: 0.4 }]}
-                  onPress={() => run(api.equip(tinkerId, weapon.item))}
-                  accessibilityRole="button"
-                >
-                  <Text style={ui.buttonText}>Equip</Text>
-                </Pressable>
-              </View>
-            );
-          })}
-      </View>
+        <Loadout content={content} tinker={tinker} name={name} onEquip={equipWeapon} />
       </Glow>
       <View style={ui.panel}>
         <Text style={ui.heading}>Stores</Text>
@@ -494,6 +479,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
               <Text style={[ui.text, { color: tab === choice ? colors.brass : colors.muted }]}>{titleCase(choice)}</Text>
               {choice === "story" && <Badge count={tinker.story.letters + (tinker.story.openScenes > 0 && tinker.story.nerve > 0 ? 1 : 0)} label={tinker.story.letters > 0 ? String(tinker.story.letters) : tinker.story.openScenes > 0 && tinker.story.nerve > 0 ? "•" : undefined} />}
               {choice === "exchange" && tinker.story.debts.some((debt) => tinker.crowns >= debt.crowns) && <Badge count={1} label="!" tone={colors.copper} />}
+              {choice === "exchange" && <Badge count={tinker.workOrders} tone={colors.verdigris} />}
               {choice === "workshop" && tinker.queue.length === 0 && <Badge count={1} label="idle" tone={colors.scald} />}
               {choice === "chat" && tab !== "chat" && <Badge count={chat.unread} tone={colors.verdigris} />}
             </View>
@@ -531,6 +517,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
             </ScrollView>
           ) : (
             <ScrollView contentContainerStyle={{ padding: 16 }}>
+              <WorkOrders content={content} tinker={tinker} name={name} onOutcome={apply} />
               <Exchange content={content} tinker={tinker} name={name} run={run} />
             </ScrollView>
           )}
@@ -541,6 +528,9 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
           </View>
         )}
       </View>
+      {newGear && (
+        <NewGear item={newGear} content={content} tinker={tinker} name={name} onEquip={equipWeapon} onClose={() => setNewGear(null)} />
+      )}
     </View>
   );
 }

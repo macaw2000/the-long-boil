@@ -1,0 +1,22 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.gaugers.umbrella_ribs",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.gaugers",
+ "band": {
+  "min": 5,
+  "max": 9
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.umbrella_ribs",
+   "qty": 50
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 375
+ },
+ "request": "Gaugers' requisition: Umbrella Ribs, fifty, to be weighed, entered and receipted in triplicate. Unreceipted ribs have not been delivered."
+}

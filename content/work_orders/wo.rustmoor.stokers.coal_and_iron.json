@@ -1,0 +1,26 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.stokers.coal_and_iron",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.stokers",
+ "band": {
+  "min": 10,
+  "max": 14
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.coal",
+   "qty": 20
+  },
+  {
+   "item": "item.rustmoor.iron_ingot",
+   "qty": 10
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 375
+ },
+ "request": "Twenty Coal and ten Iron Ingots for the Fellowship. Bring them down yourself if you like; there is always tea on in the hall."
+}

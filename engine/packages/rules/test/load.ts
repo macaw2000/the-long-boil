@@ -34,5 +34,11 @@ export function loadRealContent(): Content {
     combat: readJson(join(CONTENT_DIR, "tuning", "combat.json")).constants,
     storylets: files("storylets"),
     letters: files("letters"),
+    workOrders: files("work_orders"),
+    grocer: files("tuning")
+      .filter((file) => String(file.schema ?? "").startsWith("tuning.economy"))
+      .flatMap((file) => Object.entries(file.items ?? {}))
+      .filter(([, terms]) => (terms as { grocer_price?: number | null }).grocer_price != null)
+      .map(([item]) => item),
   });
 }

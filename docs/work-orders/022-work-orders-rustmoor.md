@@ -77,3 +77,25 @@ Jeremy accepted every recommendation on 24 October 2026:
 - Draftsman: the 16 orders, the derivations, the Crown ceiling, the faucet figure and the Favour cap proposal.
 - Scrivener: the lines, with validator output verbatim.
 - Assayer: the walk's figures.
+
+## Settled after part 2
+
+Jeremy accepted every recommendation on 24 October 2026, after the draftsman's pool:
+
+- **Which orders are offered:** only orders whose goods the Tinker can make now, at current skill levels, taken from the highest band the Tinker qualifies for. A band qualifies when the Tinker has the band minimum in every skill the order's chain uses (or can kill the monster that drops the asked item).
+- **Crowns:** an order pays half its goods' value, rounded half up; the ceiling is 500 Crowns an order (`tuning.rustmoor.work_orders`).
+- **Favour cap in Act I:** Work Orders raise a faction's Favour to at most 3. An order turned in at 3 or above still pays its Crowns and counts as a pledge, but adds no Favour. Story Favour stays capped at 2 (work order 019).
+- **Seal pairs** are drawn evenly at random from the seals with an order the Tinker qualifies for.
+- **No gear in orders.**
+- **Engine rules that follow:** orders take unbound goods only (the bound starter crate cannot be handed in); an order can take more than one check-in to fill, since the queue holds two actions.
+- **For the inspector:** `wo.rustmoor.gaugers.rat_scrap` pays only 100 Crowns, since Rat Scrap is valued at its collector price.
+
+## Settled after review
+
+Jeremy accepted every recommendation on 24 October 2026, after the inspector's review:
+
+- **The Rat Scrap order is replaced** by `wo.rustmoor.gaugers.umbrella_ribs`: 50 Umbrella Ribs (Scavenging 5), band 5 to 9, about 1.5 hours, paying half the goods' value. Rat Scrap is a free by-product of every fight, so an order for it was free Favour. Its line is the inspector's: "Gaugers' requisition: Umbrella Ribs, fifty, to be weighed, entered and receipted in triplicate. Unreceipted ribs have not been delivered."
+- **The inspector's two line fixes** stand (brass_keys no longer uses the Arrears wording; odd_spoons no longer names Tallow).
+- **Ash and Rook may be named** in the 15 to 20 orders.
+- **"The House does not ask where you found them"** stays as the House's stock phrase.
+- **The faucet** is accepted until Calibrating exists: +8,122 Crowns a week, 15.8% of Rustmoor's, with the Umbrella Ribs order in place of Rat Scrap (it was +7,761, 15.1%, when Jeremy accepted it).

@@ -1,0 +1,22 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.counting_house.copper",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.counting_house",
+ "band": {
+  "min": 1,
+  "max": 4
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.copper",
+   "qty": 100
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 375
+ },
+ "request": "The Counting-House will take one hundred Copper at the window, at the House's valuation. Terms as stated. The House does not haggle."
+}

@@ -33,6 +33,8 @@ export interface TinkerView {
   weapon: string | null;
   bossesBeaten: string[];
   story: StorySummary;
+  /** Work Orders waiting on the desk, as last brought up to date; for the tab's badge. */
+  workOrders: number;
 }
 
 /** The story's gauges for the top bar and the Story tab's badge. */
@@ -295,8 +297,18 @@ export function fromRules(events: GameEvent[]): LogEntry[] {
   return events.map((event) => ({ type: event.type, at: event.at, payload: event }));
 }
 
+/**
+ * Orders on the desk plus those due by the stored clock, up to the desk's
+ * size. The desk itself draws them when it is next opened; until trading
+ * first opens there is no clock, so nothing is counted.
+ */
+function waitingOrders(desk: rules.WorkOrderState, now: number): number {
+  const due = desk.nextAt !== null && desk.nextAt <= now ? Math.floor((now - desk.nextAt) / rules.WORK_ORDER_MS) + 1 : 0;
+  return Math.min(rules.WORK_ORDERS_HELD, desk.offers.length + due);
+}
+
 export async function view(tx: Tx, tinkerId: number, content: GameContent, now = Date.now()): Promise<TinkerView> {
-  const row = (await tx.query("SELECT id, name, crowns, progress_ms, steam_until, resolved_to FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
+  const row = (await tx.query("SELECT id, name, crowns, progress_ms, steam_until, resolved_to, work_orders FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
   const loaded = await lockAndLoad(tx, tinkerId);
   return {
     id: Number(row.id),
@@ -313,6 +325,7 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent, now =
     weapon: loaded.state.weapon,
     bossesBeaten: loaded.state.bossesBeaten,
     story: summarizeStory(await loadStory(tx, tinkerId), loaded.state, content, now),
+    workOrders: waitingOrders(row.work_orders as rules.WorkOrderState, now),
   };
 }
 
@@ -393,6 +406,39 @@ export async function fightOutlooks(db: Db, content: GameContent, tinkerId: numb
   return withTransaction(db, async (tx) => {
     const { state } = await advance(tx, content, tinkerId, now, false);
     return [...content.rules.monsters.values()].map((monster) => rules.fightOutlook(state, content.rules, monster));
+  });
+}
+
+export interface LoadoutWeapon {
+  item: string;
+  style: string;
+  level_required: number;
+  power: number;
+  accuracy: number;
+  /** The Tinker's level in the weapon's style is high enough to wield it. */
+  usable: boolean;
+  equipped: boolean;
+  /** How every fight would go with this weapon in hand. */
+  outlooks: rules.FightOutlook[];
+}
+
+/** Every weapon the Tinker owns, with how each fight would go if it were equipped, so weapons can be compared. */
+export async function loadout(db: Db, content: GameContent, tinkerId: number, now: number): Promise<{ weapons: LoadoutWeapon[] }> {
+  return withTransaction(db, async (tx) => {
+    const { state } = await advance(tx, content, tinkerId, now, false);
+    const owned = [...content.rules.weapons.values()].filter((weapon) => (state.inventory[weapon.item] ?? 0) > 0);
+    return {
+      weapons: owned.map((weapon) => {
+        const wielding = { ...state, weapon: weapon.item };
+        const level = rules.levelFor(state.skillXp[weapon.style] ?? 0, content.rules);
+        return {
+          ...weapon,
+          usable: level >= weapon.level_required,
+          equipped: state.weapon === weapon.item,
+          outlooks: [...content.rules.monsters.values()].map((monster) => rules.fightOutlook(wielding, content.rules, monster)),
+        };
+      }),
+    };
   });
 }
 

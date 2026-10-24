@@ -1,0 +1,26 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.gaugers.garnets_and_locks",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.gaugers",
+ "band": {
+  "min": 15,
+  "max": 20
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.garnet",
+   "qty": 12
+  },
+  {
+   "item": "item.rustmoor.iron_lock",
+   "qty": 7
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 366
+ },
+ "request": "Twelve Garnets and seven Iron Locks for the Gaugers. Inspector Rook will count them on arrival, then ask whether you counted them."
+}

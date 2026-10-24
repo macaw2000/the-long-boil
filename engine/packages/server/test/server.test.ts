@@ -204,6 +204,26 @@ describe("a browser client on another origin", () => {
   });
 });
 
+describe("the loadout", () => {
+  it("compares every owned weapon on how each fight would go", async () => {
+    const id = (await call("POST", "/tinkers", { login: "loadout@example.com", name: "Lo" })).body.tinker.id;
+    await call("PUT", `/tinkers/${id}/queue`, { queue: [{ actionId: "action.rustmoor.tinker_brass_spanner", remaining: 1 }, { actionId: "action.rustmoor.tinker_brass_catapult", remaining: 1 }] });
+    clock += HOUR;
+    await call("POST", `/tinkers/${id}/check-in`);
+    await call("PUT", `/tinkers/${id}/weapon`, { item: "item.rustmoor.brass_spanner" });
+    const { status, body } = await call("GET", `/tinkers/${id}/loadout`);
+    expect(status).toBe(200);
+    const byItem = Object.fromEntries(body.weapons.map((weapon: { item: string }) => [weapon.item, weapon]));
+    expect(Object.keys(byItem).sort()).toEqual(["item.rustmoor.brass_catapult", "item.rustmoor.brass_spanner"]);
+    expect(byItem["item.rustmoor.brass_spanner"]).toMatchObject({ style: "melee", equipped: true, usable: true });
+    expect(byItem["item.rustmoor.brass_catapult"].equipped).toBe(false);
+    const runt = (weapon: { outlooks: { monsterId: string; seconds?: number }[] }) =>
+      weapon.outlooks.find((outlook) => outlook.monsterId === "monster.rustmoor.rust_rat_runt")!;
+    // Runts are weak to Melee, so the spanner kills them faster than the catapult.
+    expect(runt(byItem["item.rustmoor.brass_spanner"]).seconds!).toBeLessThan(runt(byItem["item.rustmoor.brass_catapult"]).seconds!);
+  });
+});
+
 describe("the dev clock", () => {
   it("exists only when given, and moves the game forward", async () => {
     expect((await call("POST", "/dev/skip", { hours: 1 })).status).toBe(404);

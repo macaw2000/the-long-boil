@@ -1,0 +1,22 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.gaugers.iron_locks",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.gaugers",
+ "band": {
+  "min": 10,
+  "max": 14
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.iron_lock",
+   "qty": 14
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 371
+ },
+ "request": "Gaugers' requisition: fourteen Iron Locks, keys tagged and numbered. Locks delivered without keys will be entered as found property."
+}

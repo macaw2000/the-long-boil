@@ -104,6 +104,8 @@ export interface Tinker {
     qualities: Record<string, number>;
     inInfirmary: boolean;
   };
+  /** Work Orders waiting on the desk. */
+  workOrders: number;
 }
 
 export interface LedgerLine {
@@ -175,6 +177,13 @@ export type FightOutlook =
   | { monsterId: string; ready: false; reason: "no_weapon" | "level" | "cannot_win" }
   | { monsterId: string; ready: true; seconds: number; winChance: number | null; rations: number };
 
+/** An owned weapon and how every fight would go with it in hand (GET /tinkers/:id/loadout). */
+export interface LoadoutWeapon extends Weapon {
+  usable: boolean;
+  equipped: boolean;
+  outlooks: FightOutlook[];
+}
+
 export interface StoryOutcome extends Outcome {
   view: StoryView;
   played: { scene: string; success: boolean; text: string; odds: number | null; roll: number | null } | null;
@@ -194,6 +203,26 @@ export interface BookLevel {
   qty: number;
   orders: number;
 }
+
+export interface WorkOrderChoice {
+  id: string;
+  seal: string;
+  band: { min: number; max: number };
+  asks: ItemStack[];
+  reward: { favour: number; crowns: number };
+  request: string;
+}
+
+export interface WorkOrderDesk {
+  locked: string | null;
+  offers: { id: number; arrivedAt: string; chosen: string | null; choices: WorkOrderChoice[] }[];
+  nextAt: string | null;
+  held: number;
+  favour: Record<string, number>;
+  favourCap: number;
+}
+
+export type DeskOutcome = Outcome & { desk: WorkOrderDesk };
 
 export interface ChatMessage {
   id: number;
@@ -248,11 +277,16 @@ export const api = {
   devStory: (id: number, change: { qualities?: Record<string, number>; fillNerve?: boolean }) =>
     request<StoryOutcome>("POST", `/dev/tinkers/${id}/story`, change),
   fights: (id: number) => request<{ fights: FightOutlook[] }>("GET", `/tinkers/${id}/fights`),
+  loadout: (id: number) => request<{ weapons: LoadoutWeapon[] }>("GET", `/tinkers/${id}/loadout`),
   story: (id: number) => request<StoryOutcome>("GET", `/tinkers/${id}/story`),
   play: (id: number, kind: "storylet" | "letter", scene: string, option: number) =>
     request<StoryOutcome>("POST", `/tinkers/${id}/story`, { kind, scene, option }),
   discard: (id: number, letter: string) => request<StoryOutcome>("DELETE", `/tinkers/${id}/letters/${encodeURIComponent(letter)}`),
   payDebt: (id: number, debt: string) => request<StoryOutcome>("POST", `/tinkers/${id}/debts/${encodeURIComponent(debt)}`),
+  desk: (id: number) => request<DeskOutcome>("GET", `/tinkers/${id}/work-orders`),
+  chooseSeal: (id: number, offer: number, order: string) => request<DeskOutcome>("POST", `/tinkers/${id}/work-orders/${offer}/choose`, { order }),
+  turnIn: (id: number, offer: number) => request<DeskOutcome>("POST", `/tinkers/${id}/work-orders/${offer}/turn-in`),
+  discardOrder: (id: number, offer: number) => request<DeskOutcome>("DELETE", `/tinkers/${id}/work-orders/${offer}`),
   chat: (id: number) => request<ChatView>("GET", `/tinkers/${id}/chat`),
   say: (id: number, text: string) => request<{ message: ChatMessage }>("POST", `/tinkers/${id}/chat`, { text }),
   mute: (id: number, other: number) => request<ChatView>("PUT", `/tinkers/${id}/mutes/${other}`),

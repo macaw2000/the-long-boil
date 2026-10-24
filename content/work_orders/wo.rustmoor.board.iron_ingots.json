@@ -1,0 +1,22 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.board.iron_ingots",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.board",
+ "band": {
+  "min": 5,
+  "max": 9
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.iron_ingot",
+   "qty": 25
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 375
+ },
+ "request": "Twenty-five Iron Ingots, if you would, for the Board of Gauges. The city rides steady, and the Board is grateful for steady hands."
+}

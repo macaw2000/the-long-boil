@@ -7593,6 +7593,988 @@
           "by": "inspector"
         }
       ]
+    },
+    {
+      "id": "tuning.rustmoor.work_orders",
+      "type": "tuning",
+      "path": "content/tuning/work-orders-rustmoor.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T16:11:37Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T16:11:37Z run. Faucet +8,122 Crowns a week (15.8%), accepted by Jeremy until Calibrating exists."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:09:26Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T16:11:37Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.board.brass_ingots",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.board.brass_ingots.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.board.garnet_sights",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.board.garnet_sights.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.board.iron_ingots",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.board.iron_ingots.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.board.steel_ingots",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.board.steel_ingots.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.counting_house.brass_keys",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.counting_house.brass_keys.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T16:11:37Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T16:11:37Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:09:26Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-24T16:11:37Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.counting_house.clock_movements",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.counting_house.clock_movements.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.counting_house.copper",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.counting_house.copper.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.counting_house.odd_spoons",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.counting_house.odd_spoons.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T16:11:37Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T16:11:37Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:09:26Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-24T16:11:37Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.gaugers.bent_nails",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.gaugers.bent_nails.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.gaugers.garnets_and_locks",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.gaugers.garnets_and_locks.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run. Names Rook / Mother Ash in a 15 to 20 order; Jeremy allowed it."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.gaugers.iron_locks",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.gaugers.iron_locks.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.gaugers.umbrella_ribs",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.gaugers.umbrella_ribs.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T16:11:37Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T16:11:37Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T16:09:26Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T16:11:37Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.stokers.coal_and_iron",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.stokers.coal_and_iron.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.stokers.ingots_and_rations",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.stokers.ingots_and_rations.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.stokers.ore_and_rations",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.stokers.ore_and_rations.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
+    },
+    {
+      "id": "wo.rustmoor.stokers.steel_and_rations",
+      "type": "work_order",
+      "path": "content/work_orders/wo.rustmoor.stokers.steel_and_rations.json",
+      "pointer": null,
+      "revision": 1,
+      "work_order": "docs/work-orders/022-work-orders-rustmoor.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-24T15:49:50Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-24T15:49:50Z run. Names Rook / Mother Ash in a 15 to 20 order; Jeremy allowed it."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-24T15:47:36Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-24T15:49:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-24T16:12:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ]
     }
   ]
 }

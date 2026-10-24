@@ -3,7 +3,7 @@
 // In production AWS AppConfig supplies the same files (GDD section 11).
 
 import { createHash } from "node:crypto";
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { buildContent, type Action, type Content, type CurveRow } from "@long-boil/rules";
 
@@ -90,6 +90,8 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
   const actions: Action[] = all("actions", "actions");
   const curve: CurveRow[] = readJson(join(dir, "tuning", "xp-curve.json")).table;
   const start = readJson(join(dir, "start.json"));
+  const economy = economyTerms(listJson(join(dir, "tuning")).filter((path) => readJson(path).schema?.startsWith("tuning.economy")).map(readJson));
+  const workOrderDir = join(dir, "work_orders");
   return {
     rules: buildContent({
       version,
@@ -101,10 +103,12 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
       combat: readJson(join(dir, "tuning", "combat.json")).constants,
       storylets: listJson(join(dir, "storylets")).map(readJson),
       letters: listJson(join(dir, "letters")).map(readJson),
+      workOrders: existsSync(workOrderDir) ? listJson(workOrderDir).map(readJson) : [],
+      grocer: [...economy].filter(([, terms]) => terms.grocerPrice !== null).map(([item]) => item),
     }),
     start: { inventory: start.inventory, crowns: start.crowns },
     guide: guideSteps(dir),
-    economy: economyTerms(listJson(join(dir, "tuning")).filter((path) => readJson(path).schema?.startsWith("tuning.economy")).map(readJson)),
+    economy,
     items: new Map(all("items", "items").map((item: ItemInfo) => [item.id, { id: item.id, name: item.name, flavour: item.flavour }])),
   };
 }

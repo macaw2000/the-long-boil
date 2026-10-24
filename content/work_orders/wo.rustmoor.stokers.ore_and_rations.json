@@ -1,0 +1,26 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.stokers.ore_and_rations",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.stokers",
+ "band": {
+  "min": 5,
+  "max": 9
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.iron_ore",
+   "qty": 25
+  },
+  {
+   "item": "item.rustmoor.rustmoor_ration",
+   "qty": 50
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 425
+ },
+ "request": "Twenty-five Iron Ore and fifty Rations, sent down to the Lowvents. Nobody on the bottom rim works a double shift on an empty stomach."
+}

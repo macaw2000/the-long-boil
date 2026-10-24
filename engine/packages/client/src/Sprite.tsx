@@ -45,7 +45,7 @@ function Frame({ frames, tick, size, flip, style }: { frames: number[]; tick: nu
   );
 }
 
-type Puff = { id: number; x: number; y: number; kind: "spark" | "dust" | "glint" | "damage"; text?: string };
+type Puff = { id: number; x: number; y: number; kind: "spark" | "dust" | "glint" | "damage" | "tracer" | "bolt"; text?: string; toX?: number; toY?: number };
 let puffId = 0;
 
 /**
@@ -55,13 +55,64 @@ let puffId = 0;
 function PuffView({ puff, onDone }: { puff: Puff; onDone: (id: number) => void }) {
   const t = useRef(new Animated.Value(0)).current;
   const angles = useRef(Array.from({ length: puff.kind === "damage" ? 0 : 7 }, () => Math.random() * Math.PI - Math.PI)).current;
+  const duration = puff.kind === "damage" ? 800 : puff.kind === "tracer" ? 160 : puff.kind === "bolt" ? 280 : 480;
   useEffect(() => {
-    Animated.timing(t, { toValue: 1, duration: puff.kind === "damage" ? 800 : 480, easing: Easing.out(Easing.quad), useNativeDriver: false }).start(() =>
+    Animated.timing(t, { toValue: 1, duration, easing: puff.kind === "tracer" ? Easing.linear : Easing.out(Easing.quad), useNativeDriver: false }).start(() =>
       onDone(puff.id),
     );
     // Each burst plays once from when it mounts.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // A shot: a hot streak flying from the muzzle to the target.
+  if (puff.kind === "tracer") {
+    const reach = (puff.toX ?? puff.x + 60) - puff.x;
+    return (
+      <Animated.View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          left: puff.x,
+          top: puff.y,
+          width: 14,
+          height: 3,
+          borderRadius: 2,
+          backgroundColor: "#E07A2E",
+          borderRightWidth: 4,
+          borderRightColor: "#efe4cc",
+          opacity: t.interpolate({ inputRange: [0, 0.85, 1], outputRange: [1, 1, 0] }),
+          transform: [{ translateX: t.interpolate({ inputRange: [0, 1], outputRange: [0, reach] }) }],
+        }}
+      />
+    );
+  }
+  // Aetherics: a crooked bolt from the rod's tip to the target, flickering out.
+  if (puff.kind === "bolt") {
+    const points = boltPoints(puff);
+    return (
+      <Animated.View pointerEvents="none" style={{ position: "absolute", left: 0, top: 0, opacity: t.interpolate({ inputRange: [0, 0.2, 0.4, 0.6, 1], outputRange: [1, 0.4, 1, 0.6, 0] }) }}>
+        {points.slice(1).map((point, index) => {
+          const from = points[index]!;
+          const dx = point.x - from.x;
+          const dy = point.y - from.y;
+          const length = Math.hypot(dx, dy);
+          return (
+            <View
+              key={index}
+              style={{
+                position: "absolute",
+                left: (from.x + point.x) / 2 - length / 2,
+                top: (from.y + point.y) / 2 - 1.5,
+                width: length,
+                height: 3,
+                backgroundColor: index % 2 ? "#efe4cc" : colors.verdigris,
+                transform: [{ rotate: `${Math.atan2(dy, dx)}rad` }],
+              }}
+            />
+          );
+        })}
+      </Animated.View>
+    );
+  }
   if (puff.kind === "damage") {
     return (
       <Animated.Text
@@ -108,6 +159,18 @@ function PuffView({ puff, onDone }: { puff: Puff; onDone: (id: number) => void }
       ))}
     </View>
   );
+}
+
+/** A zigzag between a puff's two points, fixed per puff so it does not jitter as it fades. */
+function boltPoints(puff: Puff): { x: number; y: number }[] {
+  const toX = puff.toX ?? puff.x + 80;
+  const toY = puff.toY ?? puff.y;
+  const steps = 6;
+  return Array.from({ length: steps + 1 }, (_, i) => {
+    const f = i / steps;
+    const jag = i === 0 || i === steps ? 0 : ((puff.id * 7 + i * 13) % 11) - 5;
+    return { x: puff.x + (toX - puff.x) * f, y: puff.y + (toY - puff.y) * f + jag };
+  });
 }
 
 /** What the Tinker does with each skill's work. */
@@ -159,6 +222,9 @@ export function Scene({ tinker, content, progress, working }: { tinker: Tinker; 
       const dealt = Math.max(1, Math.round((progress - lastSwing.current) * monster.hp));
       lastSwing.current = progress;
       const x = monster.boss ? 200 : 190;
+      // Each style lands its own way: a swing, a shot, or a bolt.
+      if (style === "marksmanship") add({ x: 145, y: FLOOR - 64, kind: "tracer", toX: x });
+      if (style === "aetherics") add({ x: 120, y: FLOOR - 102, kind: "bolt", toX: x, toY: FLOOR - 72 });
       add({ x, y: FLOOR - 70, kind: "spark" });
       add({ x: x + 10, y: FLOOR - (monster.boss ? 150 : 110), kind: "damage", text: `-${dealt}` });
       if (monster.boss) {
@@ -178,6 +244,10 @@ export function Scene({ tinker, content, progress, working }: { tinker: Tinker; 
 
   const tinkerFrames = characters.tinker!;
   const pose = !working || !head ? "idle" : monster ? "attack" : (POSE[action?.skill ?? ""] ?? "hammer");
+  // With a weapon equipped, the Tinker holds it when idle and fights with it in its own style.
+  const armed = tinker.weapon ? characters[`tinker:${tinker.weapon}`] : undefined;
+  const style = content.weapons.find((weapon) => weapon.item === tinker.weapon)?.style;
+  const shownFrames = armed && (pose === "attack" || pose === "idle") ? armed[pose] : tinkerFrames[pose];
   const monsterFrames = monster ? characters[monster.id] : undefined;
   const boss = Boolean(monster?.boss);
   const monsterSize = boss ? BOSS_PX : CHARACTER_PX;
@@ -201,7 +271,7 @@ export function Scene({ tinker, content, progress, working }: { tinker: Tinker; 
         accessibilityIgnoresInvertColors
       />
       <View style={{ position: "absolute", left: 12, top: FLOOR - 132 }}>
-        <Frame frames={tinkerFrames[pose] ?? tinkerFrames.idle!} tick={tick} size={CHARACTER_PX} />
+        <Frame frames={shownFrames ?? tinkerFrames.idle!} tick={tick} size={CHARACTER_PX} />
       </View>
       {fighting && monsterFrames && (
         <View style={{ position: "absolute", left: boss ? 130 : 150, top: FLOOR - (boss ? 164 : 132) }}>

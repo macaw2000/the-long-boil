@@ -1,0 +1,22 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.gaugers.bent_nails",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.gaugers",
+ "band": {
+  "min": 1,
+  "max": 4
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.bent_nails",
+   "qty": 100
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 400
+ },
+ "request": "Gaugers' requisition: Bent Nails, one hundred tins. Deliver in person, sign the docket, and state where they were found."
+}

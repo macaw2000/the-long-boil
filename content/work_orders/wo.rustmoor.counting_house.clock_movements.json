@@ -1,0 +1,22 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.counting_house.clock_movements",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.counting_house",
+ "band": {
+  "min": 15,
+  "max": 20
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.clock_movement",
+   "qty": 25
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 375
+ },
+ "request": "Twenty-five Clock Movements to the Counting-House. A movement that loses two minutes a week is still worth something, and the House knows exactly what."
+}

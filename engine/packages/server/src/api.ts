@@ -10,6 +10,7 @@ import Fastify, { type FastifyInstance } from "fastify";
 import { mutedAccounts, recentChat, say, setMute } from "./chat.js";
 import type { GameContent } from "./content-loader.js";
 import type { Db } from "./db.js";
+import { chooseSeal, discardOffer, readDesk, turnIn } from "./work_orders.js";
 import { CITY, localBroadcast, tinkerChannel, type Broadcast, type Notice } from "./live.js";
 import {
   GDD_TRADING,
@@ -23,7 +24,7 @@ import {
   type TradingRules,
 } from "./market.js";
 import { devSetStory, discardLetter, payDebt, playStory, readStory } from "./story.js";
-import { BadRequest, NotFound, checkIn, createTinker, equip, fightOutlooks, listTinkers, look, setQueue } from "./tinkers.js";
+import { BadRequest, NotFound, checkIn, createTinker, equip, fightOutlooks, listTinkers, loadout, look, setQueue } from "./tinkers.js";
 
 export interface ApiOptions {
   db: Db;
@@ -253,6 +254,8 @@ export function buildApi({
     fights: await fightOutlooks(db, content, Number(request.params.id), now()),
   }));
 
+  app.get<{ Params: { id: string } }>("/tinkers/:id/loadout", async (request) => loadout(db, content, Number(request.params.id), now()));
+
   app.get<{ Params: { id: string } }>("/tinkers/:id/story", async (request) => readStory(db, content, Number(request.params.id), now()));
 
   app.post<{ Params: { id: string }; Body: { kind: "storylet" | "letter"; scene: string; option: number } }>(
@@ -275,6 +278,21 @@ export function buildApi({
 
   app.post<{ Params: { id: string; debt: string } }>("/tinkers/:id/debts/:debt", async (request) =>
     payDebt(db, content, Number(request.params.id), request.params.debt, now()),
+  );
+
+  app.get<{ Params: { id: string } }>("/tinkers/:id/work-orders", async (request) =>
+    readDesk(db, content, Number(request.params.id), now(), trading),
+  );
+  app.post<{ Params: { id: string; offer: string }; Body: { order: string } }>(
+    "/tinkers/:id/work-orders/:offer/choose",
+    { schema: { body: { type: "object", required: ["order"], properties: { order: { type: "string" } } } } },
+    async (request) => chooseSeal(db, content, Number(request.params.id), Number(request.params.offer), request.body.order, now(), trading),
+  );
+  app.post<{ Params: { id: string; offer: string } }>("/tinkers/:id/work-orders/:offer/turn-in", async (request) =>
+    turnIn(db, content, Number(request.params.id), Number(request.params.offer), now(), trading),
+  );
+  app.delete<{ Params: { id: string; offer: string } }>("/tinkers/:id/work-orders/:offer", async (request) =>
+    discardOffer(db, content, Number(request.params.id), Number(request.params.offer), now(), trading),
   );
 
   app.get<{ Params: { id: string } }>("/tinkers/:id/chat", async (request) => recentChat(db, Number(request.params.id)));

@@ -1,0 +1,22 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.board.garnet_sights",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.board",
+ "band": {
+  "min": 15,
+  "max": 20
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.garnet_sight",
+   "qty": 6
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 405
+ },
+ "request": "Six Garnet Sights for the Board of Gauges, with its thanks. The city's readings are in excellent hands, and so, the Board trusts, are yours."
+}

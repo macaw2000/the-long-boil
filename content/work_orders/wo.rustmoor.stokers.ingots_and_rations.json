@@ -1,0 +1,26 @@
+{
+ "schema": "work_order/1",
+ "id": "wo.rustmoor.stokers.ingots_and_rations",
+ "revision": 1,
+ "act": 1,
+ "seal": "favour.stokers",
+ "band": {
+  "min": 1,
+  "max": 4
+ },
+ "asks": [
+  {
+   "item": "item.rustmoor.brass_ingot",
+   "qty": 25
+  },
+  {
+   "item": "item.rustmoor.rustmoor_ration",
+   "qty": 50
+  }
+ ],
+ "reward": {
+  "favour": 1,
+  "crowns": 425
+ },
+ "request": "Twenty-five Brass Ingots and fifty Rations down to the Fellowship hall. The ingots are for the vents. The Rations are for whoever fixes them."
+}
