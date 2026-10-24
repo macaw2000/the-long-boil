@@ -245,6 +245,8 @@ export const api = {
     request<Outcome>("POST", `/tinkers/${id}/orders`, order),
   cancelOrder: (id: number, orderId: number) => request<Outcome>("DELETE", `/tinkers/${id}/orders/${orderId}`),
   devSkip: (hours: number) => request<{ offsetMs: number; now: string }>("POST", "/dev/skip", { hours }),
+  devStory: (id: number, change: { qualities?: Record<string, number>; fillNerve?: boolean }) =>
+    request<StoryOutcome>("POST", `/dev/tinkers/${id}/story`, change),
   fights: (id: number) => request<{ fights: FightOutlook[] }>("GET", `/tinkers/${id}/fights`),
   story: (id: number) => request<StoryOutcome>("GET", `/tinkers/${id}/story`),
   play: (id: number, kind: "storylet" | "letter", scene: string, option: number) =>

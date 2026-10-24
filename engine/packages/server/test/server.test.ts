@@ -218,4 +218,31 @@ describe("the dev clock", () => {
     expect((await local.inject({ method: "POST", url: "/dev/skip", payload: { hours: 0 } })).statusCode).toBe(400);
     await local.close();
   });
+
+  it("sets story qualities and fills Nerve on a dev server only, and logs the change", async () => {
+    const kit = (await call("POST", "/tinkers", { login: "dev-story@example.com", name: "Dev" })).body.tinker.id;
+    expect((await call("POST", `/dev/tinkers/${kit}/story`, { qualities: { "needle.scald": 8 } })).status).toBe(404);
+
+    const dev = devClock();
+    const local = buildApi({ db, content, devClock: dev.clock, now: dev.now });
+    const set = async (payload: object) => {
+      const response = await local.inject({ method: "POST", url: `/dev/tinkers/${kit}/story`, payload });
+      return { status: response.statusCode, body: response.json() };
+    };
+    await db.query("UPDATE tinkers SET nerve = 2 WHERE id = $1", [kit]);
+    const redlined = await set({ qualities: { "needle.scald": 8 }, fillNerve: true });
+    expect(redlined.status).toBe(200);
+    expect(redlined.body.view.needles["needle.scald"]).toBe(8);
+    expect(redlined.body.view.nerve).toBe(10);
+    // Redline sends the Tinker to St. Pinion's (work order 020).
+    expect(redlined.body.view.inInfirmary).toBe(true);
+    expect(redlined.body.view.storylets.every((scene: { location: string }) => scene.location === "infirmary")).toBe(true);
+    const logged = await db.query("SELECT payload FROM events WHERE tinker_id = $1 AND type = 'dev_story_set'", [kit]);
+    expect(logged.rows[0].payload.qualities).toEqual({ "needle.scald": 8 });
+
+    expect((await set({ qualities: { "needle.scald": 9 } })).status).toBe(400);
+    expect((await set({ qualities: { "skill.smithing": 50 } })).status).toBe(400);
+    expect((await set({ qualities: { "favour.stokers": 3 } })).body.view.qualities["favour.stokers"]).toBe(3);
+    await local.close();
+  });
 });

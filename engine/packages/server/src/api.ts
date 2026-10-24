@@ -22,7 +22,7 @@ import {
   sellToCollector,
   type TradingRules,
 } from "./market.js";
-import { discardLetter, payDebt, playStory, readStory } from "./story.js";
+import { devSetStory, discardLetter, payDebt, playStory, readStory } from "./story.js";
 import { BadRequest, NotFound, checkIn, createTinker, equip, fightOutlooks, listTinkers, look, setQueue } from "./tinkers.js";
 
 export interface ApiOptions {
@@ -123,6 +123,21 @@ export function buildApi({
         },
       },
       async (request) => ({ offsetMs: clock.skip(request.body.hours * 3_600_000), now: new Date(now()).toISOString() }),
+    );
+    app.post<{ Params: { id: string }; Body: { qualities?: Record<string, number>; fillNerve?: boolean } }>(
+      "/dev/tinkers/:id/story",
+      {
+        schema: {
+          body: {
+            type: "object",
+            properties: {
+              qualities: { type: "object", maxProperties: 20, additionalProperties: { type: "integer" } },
+              fillNerve: { type: "boolean" },
+            },
+          },
+        },
+      },
+      async (request) => devSetStory(db, content, Number(request.params.id), request.body, now()),
     );
   }
 

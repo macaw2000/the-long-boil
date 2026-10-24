@@ -6,7 +6,7 @@
 // on narrow ones; the live connection feeds it and says when to look again.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
+import { Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { api, gameNow, setClockOffset, type Content, type Ledger as LedgerData, type Notice, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
 import { Chat, useChat } from "./Chat";
 import { Exchange } from "./Exchange";
@@ -32,6 +32,10 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
   const [picking, setPicking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(gameNow());
+  // Dev only: the story controls, and a key that remounts the Story tab after them.
+  const [devQuality, setDevQuality] = useState("needle.scald");
+  const [devValue, setDevValue] = useState("8");
+  const [storyKey, setStoryKey] = useState(0);
   const name = useMemo(() => namer(content), [content]);
   const wide = useWindowDimensions().width >= 900;
   const [guide, setGuideState] = useState<GuideState>(() => loadGuide(tinkerId));
@@ -134,6 +138,17 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
         setClockOffset(offsetMs);
         setNow(gameNow());
         return checkIn();
+      })
+      .catch((reason: Error) => setError(reason.message));
+
+  /** Dev only: set story qualities or fill Nerve, then show the result everywhere. */
+  const devStory = (change: { qualities?: Record<string, number>; fillNerve?: boolean }) =>
+    api
+      .devStory(tinkerId, change)
+      .then((outcome) => {
+        apply(outcome);
+        setStoryKey((key) => key + 1);
+        setError(null);
       })
       .catch((reason: Error) => setError(reason.message));
 
@@ -427,16 +442,38 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
         >
           <Text style={[ui.muted, { color: colors.copper }]}>Dev clock · come back after</Text>
           {[1, 2, 6, 12, 24].map((hours) => (
-            <Pressable
-              key={hours}
-              onPress={() => skip(hours)}
-              accessibilityRole="button"
-              style={{ borderWidth: 1, borderColor: colors.copper, borderRadius: 4, paddingHorizontal: 8, paddingVertical: 2 }}
-            >
+            <Pressable key={hours} onPress={() => skip(hours)} accessibilityRole="button" style={devButton}>
               <Text style={[ui.number, { color: colors.copper }]}>{hours}h</Text>
             </Pressable>
           ))}
           <Text style={ui.muted}>· ahead by {duration(content.dev ? gameNow() - Date.now() : 0)}</Text>
+          <Text style={[ui.muted, { color: colors.copper, marginLeft: 12 }]}>Story</Text>
+          {[
+            { label: "Scald 8", change: { qualities: { "needle.scald": 8 } } },
+            { label: "Scald 0", change: { qualities: { "needle.scald": 0 } } },
+            { label: "Fill Nerve", change: { fillNerve: true } },
+          ].map(({ label, change }) => (
+            <Pressable key={label} onPress={() => devStory(change)} accessibilityRole="button" style={devButton}>
+              <Text style={[ui.number, { color: colors.copper }]}>{label}</Text>
+            </Pressable>
+          ))}
+          <TextInput
+            value={devQuality}
+            onChangeText={setDevQuality}
+            accessibilityLabel="Dev quality name"
+            autoCapitalize="none"
+            style={[ui.input, { width: 170, paddingVertical: 2, fontSize: 12 }]}
+          />
+          <TextInput
+            value={devValue}
+            onChangeText={setDevValue}
+            accessibilityLabel="Dev quality value"
+            keyboardType="number-pad"
+            style={[ui.input, { width: 48, paddingVertical: 2, fontSize: 12 }]}
+          />
+          <Pressable onPress={() => devStory({ qualities: { [devQuality.trim()]: Number(devValue) } })} accessibilityRole="button" style={devButton}>
+            <Text style={[ui.number, { color: colors.copper }]}>Set</Text>
+          </Pressable>
         </View>
       )}
       <View style={{ flexDirection: "row", gap: 4, paddingHorizontal: 16, paddingTop: 10 }}>
@@ -490,7 +527,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
             </View>
           ) : tab === "story" ? (
             <ScrollView contentContainerStyle={{ padding: 16, alignItems: "center" }}>
-              <Story tinkerId={tinkerId} onOutcome={apply} />
+              <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} />
             </ScrollView>
           ) : (
             <ScrollView contentContainerStyle={{ padding: 16 }}>
@@ -507,6 +544,8 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
     </View>
   );
 }
+
+const devButton = { borderWidth: 1, borderColor: colors.copper, borderRadius: 4, paddingHorizontal: 8, paddingVertical: 2 };
 
 // The guide's progress is a per-browser convenience; without storage it simply starts again.
 function guideKey(tinkerId: number) {

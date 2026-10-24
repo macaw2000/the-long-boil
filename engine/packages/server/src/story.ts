@@ -177,3 +177,49 @@ export async function payDebt(db: Db, content: GameContent, tinkerId: number, de
     };
   });
 }
+
+/**
+ * Dev only, for playing the story without grinding to it: sets story
+ * qualities directly, or fills Nerve. Logged as an event like any other
+ * change, so the event log still rebuilds the Tinker.
+ */
+export const DEV_QUALITY_RANGES: Record<string, [number, number]> = {
+  needle: [0, 8],
+  favour: [0, 7],
+  flag: [0, 1],
+  progress: [0, 100],
+  lore: [0, 24],
+  record: [0, 1_000],
+};
+
+export async function devSetStory(
+  db: Db,
+  content: GameContent,
+  tinkerId: number,
+  change: { qualities?: Record<string, number>; fillNerve?: boolean },
+  now: number,
+): Promise<StoryOutcome> {
+  const qualities = change.qualities ?? {};
+  for (const [name, value] of Object.entries(qualities)) {
+    const range = DEV_QUALITY_RANGES[name.split(".")[0] ?? ""];
+    if (!range || !/^[a-z]+\.[a-z0-9_.]+$/.test(name)) throw new BadRequest(`${name} is not a story quality (${Object.keys(DEV_QUALITY_RANGES).join(", ")})`);
+    if (!Number.isInteger(value) || value < range[0] || value > range[1]) throw new BadRequest(`${name} runs from ${range[0]} to ${range[1]}`);
+  }
+  return storyOp(db, content, tinkerId, now, ({ state, story }) => {
+    const needleAt = { ...story.needleAt };
+    // A Needle set by hand starts its daily fall from now, as a rise in play does.
+    for (const name of Object.keys(qualities)) if (name.startsWith("needle.")) needleAt[name] = now;
+    const next = {
+      ...story,
+      qualities: { ...story.qualities, ...qualities },
+      needleAt,
+      ...(change.fillNerve ? { nerve: rules.NERVE_CAP, nerveAt: now } : {}),
+    };
+    return {
+      story: next,
+      tinker: state,
+      entries: [{ type: "dev_story_set", at: now, payload: { qualities, fillNerve: Boolean(change.fillNerve), items: {}, crowns: 0 } }],
+      played: null,
+    };
+  });
+}
