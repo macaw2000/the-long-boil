@@ -179,19 +179,25 @@ export async function payDebt(db: Db, content: GameContent, tinkerId: number, de
 }
 
 /**
+ * The story qualities the dev tools may set: each canon type
+ * (docs/canon/qualities.json) by its prefix, and every *.progress (the acts'
+ * and the Ambitions'). Ranges come from the rules, except record.*, whose
+ * canon range is open-ended and is capped here.
+ */
+const DEV_PREFIXES = ["needle.", "favour.", "flag.", "lore.", "record.", "ambition."];
+
+export function devRangeOf(name: string): [number, number] | null {
+  if (!/^[a-z0-9]+\.[a-z0-9_.]+$/.test(name)) return null;
+  if (name.startsWith("record.")) return [0, 1_000];
+  if (DEV_PREFIXES.some((prefix) => name.startsWith(prefix)) || name.endsWith(".progress")) return rules.rangeOf(name);
+  return null;
+}
+
+/**
  * Dev only, for playing the story without grinding to it: sets story
  * qualities directly, or fills Nerve. Logged as an event like any other
  * change, so the event log still rebuilds the Tinker.
  */
-export const DEV_QUALITY_RANGES: Record<string, [number, number]> = {
-  needle: [0, 8],
-  favour: [0, 7],
-  flag: [0, 1],
-  progress: [0, 100],
-  lore: [0, 24],
-  record: [0, 1_000],
-};
-
 export async function devSetStory(
   db: Db,
   content: GameContent,
@@ -201,8 +207,8 @@ export async function devSetStory(
 ): Promise<StoryOutcome> {
   const qualities = change.qualities ?? {};
   for (const [name, value] of Object.entries(qualities)) {
-    const range = DEV_QUALITY_RANGES[name.split(".")[0] ?? ""];
-    if (!range || !/^[a-z]+\.[a-z0-9_.]+$/.test(name)) throw new BadRequest(`${name} is not a story quality (${Object.keys(DEV_QUALITY_RANGES).join(", ")})`);
+    const range = devRangeOf(name);
+    if (!range) throw new BadRequest(`${name} is not a story quality (${DEV_PREFIXES.join(", ")} or *.progress)`);
     if (!Number.isInteger(value) || value < range[0] || value > range[1]) throw new BadRequest(`${name} runs from ${range[0]} to ${range[1]}`);
   }
   return storyOp(db, content, tinkerId, now, ({ state, story }) => {

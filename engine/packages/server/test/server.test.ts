@@ -263,6 +263,12 @@ describe("the dev clock", () => {
     expect((await set({ qualities: { "needle.scald": 9 } })).status).toBe(400);
     expect((await set({ qualities: { "skill.smithing": 50 } })).status).toBe(400);
     expect((await set({ qualities: { "favour.stokers": 3 } })).body.view.qualities["favour.stokers"]).toBe(3);
+    // The acts' and the Ambitions' progress, so a beat can be reached from the dev tools.
+    for (const name of ["act1.progress", "prologue.progress", "ambition.gauge"]) {
+      expect((await set({ qualities: { [name]: 80 } })).status).toBe(200);
+    }
+    expect((await set({ qualities: { "act1.progress": 101 } })).status).toBe(400);
+    expect((await set({ qualities: { "act1.other": 1 } })).status).toBe(400);
     await local.close();
   });
 });
