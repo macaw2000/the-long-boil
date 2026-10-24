@@ -1,7 +1,7 @@
 # Work order 020: Curios for the districts, and the Infirmary of St. Pinion
 
 **Agents:** `draftsman` (part 1), then `scrivener` (parts 2 and 3)
-**Status:** draft, for Jeremy to read before it runs
+**Status:** ready to run (Jeremy, 23 October 2026: run as written; the two open questions are settled after the drafts)
 **Act:** Act I. **Clearance:** Layer 1.
 **Blocks:** story pace. The district re-walk (work order 019, "Settled after the district re-walk") measured about 1.5 story actions a day for a player who plays only what pays: Favour caps at 2, Needles rarely rise, so nothing is worth Nerve.
 
