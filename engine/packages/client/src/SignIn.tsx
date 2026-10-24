@@ -1,11 +1,14 @@
-// Choosing a workshop: a login names an account, which holds up to 3
-// Tinkers. With Cognito (build plan milestone 11) the login is the signed-in
-// account's; without it, the dev login takes any name typed here.
+// The first screen: the splash art, then signing in and choosing a workshop.
+// A login names an account, which holds up to 3 Tinkers. With Cognito (build
+// plan milestone 11) each provider has its own button, which goes straight to
+// that provider, and the login is the signed-in account's; without Cognito,
+// the dev login takes any name typed here.
 
 import { useEffect, useState } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { ImageBackground, Pressable, Text, TextInput, View } from "react-native";
 import { api } from "./api";
-import { cognitoEnabled, signOut, startSignIn } from "./auth";
+import { art } from "./art";
+import { cognitoEnabled, providers, signOut, startSignIn, type Provider } from "./auth";
 import { colors, ui } from "./theme";
 
 export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (login: string, tinkerId: number) => void }) {
@@ -42,17 +45,34 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
       .then((outcome) => onEnter(login.trim(), outcome.tinker.id))
       .catch((reason: Error) => setError(reason.message));
 
+  const signInWith = (provider?: Provider) => startSignIn(provider).catch((reason: Error) => setError(reason.message));
+
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 16 }}>
-      <View style={[ui.panel, { width: "100%", maxWidth: 420, gap: 12 }]}>
-        <Text style={[ui.heading, { fontSize: 22 }]}>The Long Boil</Text>
+    // The art's title sits at the top, so the panel sits at the bottom, over the rooftop.
+    <ImageBackground
+      source={{ uri: art("splash.jpg") }}
+      resizeMode="cover"
+      style={{ flex: 1, alignItems: "center", justifyContent: "flex-end", padding: 16, paddingBottom: 32, backgroundColor: colors.soot }}
+      accessibilityLabel="The Long Boil: a young Tinker on a brass rooftop among airships"
+    >
+      <View style={[ui.panel, { width: "100%", maxWidth: 420, gap: 12, backgroundColor: "rgba(38, 32, 26, 0.92)" }]}>
         <Text style={ui.muted}>
           A solicitor's letter: the tenancy of No. 9 Sprocket Row, "contents included", is yours.
         </Text>
         {cognitoEnabled && !signedIn ? (
-          <Pressable style={ui.button} onPress={() => startSignIn().catch((reason: Error) => setError(reason.message))} accessibilityRole="button">
-            <Text style={ui.buttonText}>Sign in</Text>
-          </Pressable>
+          <View style={{ gap: 8 }}>
+            {providers.length ? (
+              providers.map((provider) => (
+                <Pressable key={provider} style={ui.button} onPress={() => signInWith(provider)} accessibilityRole="button">
+                  <Text style={ui.buttonText}>Continue with {provider}</Text>
+                </Pressable>
+              ))
+            ) : (
+              <Pressable style={ui.button} onPress={() => signInWith()} accessibilityRole="button">
+                <Text style={ui.buttonText}>Sign in</Text>
+              </Pressable>
+            )}
+          </View>
         ) : cognitoEnabled ? null : (
           <TextInput
             style={ui.input}
@@ -115,6 +135,6 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
           </Pressable>
         )}
       </View>
-    </View>
+    </ImageBackground>
   );
 }

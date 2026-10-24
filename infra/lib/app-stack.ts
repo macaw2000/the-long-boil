@@ -258,6 +258,11 @@ export class AppStack extends Stack {
       ExpoPublicApiUrl: [`${siteUrl}${API_PREFIX}`, "EXPO_PUBLIC_API_URL"],
       ExpoPublicCognitoDomain: [cognitoDomain, "EXPO_PUBLIC_COGNITO_DOMAIN (hosted sign-in)"],
       ExpoPublicCognitoClientId: [client.userPoolClientId, "EXPO_PUBLIC_COGNITO_CLIENT_ID"],
+      ExpoPublicSignInProviders: [
+        [settings.googleClientId && "Google", settings.discordClientId && "Discord"].filter(Boolean).join(",") || "none",
+        "EXPO_PUBLIC_SIGN_IN_PROVIDERS: the buttons on the sign-in screen",
+      ],
+      ExpoPublicArtUrl: [`${siteUrl}/art`, "EXPO_PUBLIC_ART_URL: art synced from the repository's art/ folder"],
       CognitoUserPoolId: [userPool.userPoolId, "COGNITO_USER_POOL_ID"],
       SiteBucketName: [siteBucket.bucketName, "Where the PWA bundle is synced"],
       DistributionId: [distribution.distributionId, "Invalidated after each bundle sync"],
@@ -394,12 +399,31 @@ export class AppStack extends Stack {
       Annotations.of(this).addInfo("No Google sign-in: pass -c googleClientId=... (and create the google-oauth secret).");
     }
 
-    // Discord is deferred. Discord speaks OAuth 2 but is not a full OIDC
-    // provider (no discovery document or ID token in the shape Cognito wants),
-    // so it needs either a small OIDC wrapper or the Lambda shim of decision 6,
-    // which signs Discord players in as native Cognito users. Both need
-    // research before they are built; the phase 0 exit gate's "Discord sign-in
-    // tested" is open until then.
+    if (settings.discordClientId) {
+      // Discord now publishes an OpenID Connect discovery document with
+      // RS256-signed ID tokens (checked 24 October 2026), so Cognito federates
+      // with it directly and no shim is needed yet. Decision 6's shim is about
+      // cost: past 50 monthly Discord players, OIDC users cost $0.015 each.
+      new cognito.UserPoolIdentityProviderOidc(pool, "Discord", {
+        userPool: pool,
+        name: "Discord",
+        clientId: settings.discordClientId,
+        // A dynamic reference: the template never holds the secret itself.
+        clientSecret: SecretValue.secretsManager(`long-boil/${settings.envName}/discord-oauth`, {
+          jsonField: "clientSecret",
+        }).unsafeUnwrap(),
+        issuerUrl: "https://discord.com",
+        scopes: ["openid", "identify", "email"],
+        attributeRequestMethod: cognito.OidcAttributeRequestMethod.GET,
+        attributeMapping: {
+          email: cognito.ProviderAttribute.other("email"),
+          emailVerified: cognito.ProviderAttribute.other("verified"),
+          preferredUsername: cognito.ProviderAttribute.other("username"),
+        },
+      });
+    } else {
+      Annotations.of(this).addInfo("No Discord sign-in: pass -c discordClientId=... (and create the discord-oauth secret).");
+    }
     return pool;
   }
 
@@ -407,6 +431,8 @@ export class AppStack extends Stack {
     const providers = [cognito.UserPoolClientIdentityProvider.COGNITO];
     const google = settings.googleClientId ? pool.node.tryFindChild("Google") : undefined;
     if (google) providers.push(cognito.UserPoolClientIdentityProvider.GOOGLE);
+    const discord = settings.discordClientId ? pool.node.tryFindChild("Discord") : undefined;
+    if (discord) providers.push(cognito.UserPoolClientIdentityProvider.custom("Discord"));
 
     // Trailing slashes on purpose: the client redirects to the site root.
     const urls = [`${siteUrl}/`, "http://localhost:8081/"];
@@ -430,6 +456,7 @@ export class AppStack extends Stack {
       enableTokenRevocation: true,
     });
     if (google) client.node.addDependency(google);
+    if (discord) client.node.addDependency(discord);
     return client;
   }
 

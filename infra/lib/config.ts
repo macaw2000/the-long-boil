@@ -40,6 +40,8 @@ export interface Settings extends EnvironmentShape {
   redirectDomains: string[];
   cognitoDomainPrefix: string;
   googleClientId: string | undefined;
+  /** Discord application id; its secret is in Secrets Manager, like Google's. */
+  discordClientId: string | undefined;
   alertEmail: string | undefined;
   /** owner/name of the GitHub repository allowed to deploy. */
   githubRepo: string | undefined;
@@ -86,6 +88,7 @@ export function readSettings(app: App): Settings {
     redirectDomains: domainName && (text("hostedZoneName") ?? domainName) === domainName ? [`www.${domainName}`] : [],
     cognitoDomainPrefix: text("cognitoDomainPrefix") ?? `long-boil-${envName}`,
     googleClientId: text("googleClientId"),
+    discordClientId: text("discordClientId"),
     alertEmail: text("alertEmail"),
     githubRepo: text("githubRepo"),
     githubRepoIds: text("githubRepoIds"),

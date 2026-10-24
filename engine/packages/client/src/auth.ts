@@ -12,6 +12,14 @@ const CLIENT_ID = process.env.EXPO_PUBLIC_COGNITO_CLIENT_ID;
 
 export const cognitoEnabled = Boolean(DOMAIN && CLIENT_ID) && Platform.OS === "web";
 
+export type Provider = "Google" | "Discord";
+
+/** The sign-in buttons to show, from the deploy (EXPO_PUBLIC_SIGN_IN_PROVIDERS, e.g. "Google,Discord"). */
+export const providers: Provider[] = String(process.env.EXPO_PUBLIC_SIGN_IN_PROVIDERS ?? "")
+  .split(",")
+  .map((name) => name.trim())
+  .filter((name): name is Provider => name === "Google" || name === "Discord");
+
 const TOKENS_KEY = "long-boil.tokens";
 const PENDING_KEY = "long-boil.sign-in";
 /** A token this close to expiring is refreshed first, so it does not lapse in flight. */
@@ -59,8 +67,11 @@ async function tokenRequest(body: Record<string, string>): Promise<{ access_toke
   return response.json();
 }
 
-/** Leaves for Cognito's managed login; the player comes back to finishSignIn. */
-export async function startSignIn(): Promise<void> {
+/**
+ * Leaves for the chosen provider by way of Cognito, which skips its own page
+ * when told the provider; the player comes back to finishSignIn.
+ */
+export async function startSignIn(provider?: Provider): Promise<void> {
   const verifier = randomString();
   const state = randomString();
   globalThis.sessionStorage.setItem(PENDING_KEY, JSON.stringify({ verifier, state }));
@@ -73,6 +84,8 @@ export async function startSignIn(): Promise<void> {
     state,
     code_challenge: challenge,
     code_challenge_method: "S256",
+    // Without a provider, Cognito shows its own page listing them.
+    ...(provider ? { identity_provider: provider } : {}),
   });
   globalThis.location.assign(`https://${DOMAIN}/oauth2/authorize?${query}`);
 }
