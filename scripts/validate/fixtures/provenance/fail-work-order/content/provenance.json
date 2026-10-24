@@ -1,5 +1,5 @@
 {
- "schema": "provenance/2",
+ "schema": "provenance/3",
  "rows": [
   {
    "id": "wo.rustmoor.stokers.fixture_rations",
@@ -30,7 +30,8 @@
      "status": "drafted",
      "by": "draftsman"
     }
-   ]
+   ],
+   "retirement": null
   },
   {
    "id": "wo.rustmoor.stokers.fixture_rations",
@@ -61,7 +62,8 @@
      "status": "drafted",
      "by": "draftsman"
     }
-   ]
+   ],
+   "retirement": null
   },
   {
    "id": "wo.rustmoor.gaugers.fixture_gone",
@@ -92,7 +94,8 @@
      "status": "drafted",
      "by": "draftsman"
     }
-   ]
+   ],
+   "retirement": null
   }
  ]
 }

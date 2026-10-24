@@ -1,0 +1,7 @@
+FAIL provenance/missing-file content/provenance.json#/rows/2 id=fixture.fail.ghost_live : path 'content/tuning/missing.json' does not exist
+FAIL provenance/register-shape content/provenance.json id=fixture.fail.no_reason : /rows/9/retirement/reason: shorter than 1 characters
+FAIL provenance/retired-id-on-disk content/tuning/curve.json id=fixture.fail.curve_v1 : content carries a retired id (row 0); give the item a new id
+FAIL provenance/retired-id-reused content/provenance.json id=fixture.fail.reused : id is retired (row 3) and carried by 2 rows (rows 3, 4); a retired id is never reused
+FAIL provenance/retired-without-retirement content/provenance.json#/rows/6 id=fixture.fail.no_record : status is "retired" but retirement is null or missing; record at, by and reason
+FAIL provenance/retirement-not-in-history content/provenance.json#/rows/8 id=fixture.fail.stale_history : the last history entry must be the retirement: status "retired", at 2026-10-24T12:00:00Z, by jeremy
+FAIL provenance/retirement-without-retired content/provenance.json#/rows/7 id=fixture.fail.stray_record : retirement is set but status is 'drafted'

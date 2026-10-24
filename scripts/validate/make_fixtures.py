@@ -51,7 +51,14 @@ def row(ident, path, pointer=None, result="pass", waiver=None, revision=1, kind=
             "validators": {"result": result, "run": "2026-10-21T22:00:00Z" if result in ("pass", "fail") else None,
                            "checks": ["schema", "provenance"] if result in ("pass", "fail") else None, "waiver": waiver},
             "review": None, "approved_by": None, "approved_at": None,
-            "history": [{"at": "2026-10-21T22:00:00Z", "status": "drafted", "by": "draftsman"}]}
+            "history": [{"at": "2026-10-21T22:00:00Z", "status": "drafted", "by": "draftsman"}],
+            "retirement": None}
+RETIRED_AT = "2026-10-24T12:00:00Z"
+def retired(r, reason="Fixture: replaced by a new id.", by="jeremy"):
+    """Row r moved to "retired" on Jeremy's word, with its retirement recorded."""
+    r = dict(r, status="retired", retirement={"at": RETIRED_AT, "by": by, "reason": reason})
+    r["history"] = r["history"] + [{"at": RETIRED_AT, "status": "retired", "by": by}]
+    return r
 def put(rel, obj):
     p = os.path.join(F, rel); os.makedirs(os.path.dirname(p), exist_ok=True)
     with open(p, "w") as fh:
@@ -62,7 +69,7 @@ CP = "content/tuning/curve.json"
 
 # ---- schema
 put("schema/pass/" + CP, curve("fixture.pass.xp_curve"))
-put("schema/pass/content/provenance.json", {"schema": "provenance/2", "rows": [
+put("schema/pass/content/provenance.json", {"schema": "provenance/3", "rows": [
     row("fixture.pass.xp_curve", CP), row("fixture.pass.xp_curve_ref", CP, "/reference_action")]})
 put("schema/fail/content/tuning/broken.json", "{ \"schema\": \"tuning.xp_curve/1\", \n")
 put("schema/fail/content/tuning/no-schema.json", {"id": "fixture.fail.no_schema"})
@@ -73,17 +80,17 @@ s["formula"]["BASE"] = s["formula"]["constants"].pop("base")
 put("schema/fail/content/tuning/shape.json", s)
 d = curve("fixture.fail.shape"); d["reference_action"]["id"] = "fixture.fail.old"
 put("schema/fail/content/tuning/dupe.json", d)
-put("schema/fail/content/provenance.json", "{ \"schema\": \"provenance/2\", \"rows\": [ \n")
+put("schema/fail/content/provenance.json", "{ \"schema\": \"provenance/3\", \"rows\": [ \n")
 
 # ---- provenance
 put("provenance/pass/" + CP, curve("fixture.pass.xp_curve"))
-put("provenance/pass/content/provenance.json", {"schema": "provenance/2", "rows": [
+put("provenance/pass/content/provenance.json", {"schema": "provenance/3", "rows": [
     row("fixture.pass.xp_curve", CP, result="waived", waiver=W),
     row("fixture.pass.xp_curve_ref", CP, "/reference_action")]})
 put("provenance/fail/" + CP, curve("fixture.fail.curve"))
 put("provenance/fail/content/tuning/orphan.json", {"schema": "tuning.xp_curve/1", "id": "fixture.fail.orphan", "revision": 1})
 put("provenance/fail/content/tuning/twice.json", {"schema": "tuning.xp_curve/1", "id": "fixture.fail.twice", "revision": 1})
-put("provenance/fail/content/provenance.json", {"schema": "provenance/2", "rows": [
+put("provenance/fail/content/provenance.json", {"schema": "provenance/3", "rows": [
     row("fixture.fail.curve", CP, result="skipped"),
     row("fixture.fail.curve_ref", CP, "/nowhere", result="waived"),
     row("fixture.fail.twice", "content/tuning/twice.json", result="pass", waiver=W),
@@ -165,7 +172,7 @@ put(S + "tuning/stray.json", actions(act("action.global.fixture_stray", "smithin
 # provenance: item and action rows with pointers pass; an item with no row fails.
 put("provenance/pass/" + IP, GOOD_ITEMS)
 put("provenance/pass/" + AP, GOOD_ACTIONS)
-put("provenance/pass/content/provenance.json", {"schema": "provenance/2", "rows": [
+put("provenance/pass/content/provenance.json", {"schema": "provenance/3", "rows": [
     row("fixture.pass.xp_curve", CP, result="waived", waiver=W),
     row("fixture.pass.xp_curve_ref", CP, "/reference_action"),
     row(ORE, IP, "/items/0", revision=None, kind="item"),
@@ -381,7 +388,7 @@ put(S + "actions/stray-economy.json", econ("global", [(ORE, False, None, None)],
 # inside an economy file's anchors does not need a row.
 put("provenance/pass/" + DP, drops("drops.global.fixture", table("monster.global.fixture_rat", 1, 1)))
 put("provenance/pass/" + GEP, GLOBAL_ECON)
-put("provenance/pass/content/provenance.json", {"schema": "provenance/2", "rows": [
+put("provenance/pass/content/provenance.json", {"schema": "provenance/3", "rows": [
     row("fixture.pass.xp_curve", CP, result="waived", waiver=W),
     row("fixture.pass.xp_curve_ref", CP, "/reference_action"),
     row(ORE, IP, "/items/0", revision=None, kind="item"),
@@ -1182,14 +1189,14 @@ put("provenance/pass/content/provenance.json", PREG)
 # guide path that does not exist.
 PVG = "provenance/fail-guide/"
 put(PVG + GDP, GOOD_GUIDE)
-put(PVG + "content/provenance.json", {"schema": "provenance/2", "rows": [
+put(PVG + "content/provenance.json", {"schema": "provenance/3", "rows": [
     row(GUIDE_ID, GDP, kind="guide"), row(GUIDE_ID, GDP, kind="guide"),
     row("fixture.guide.ghost", "content/guide/second_session.json", kind="guide")]})
 # provenance fail-guide-orphan: the guide with no row at all. Only the file id
 # is reported; the step ids are not.
 PVO = "provenance/fail-guide-orphan/"
 put(PVO + GDP, GOOD_GUIDE)
-put(PVO + "content/provenance.json", {"schema": "provenance/2", "rows": []})
+put(PVO + "content/provenance.json", {"schema": "provenance/3", "rows": []})
 
 # references pass: the guide is read and counted, and names nothing.
 put("references/pass/" + GDP, GOOD_GUIDE)
@@ -1382,7 +1389,7 @@ put("provenance/pass/" + WOT, wo_tuning())
 PVW = "provenance/fail-work-order/"
 put(PVW + WOD + "board.json", WO_BOARD)
 put(PVW + WOD + "stokers.json", WO_STOKERS)
-put(PVW + "content/provenance.json", {"schema": "provenance/2", "rows": [
+put(PVW + "content/provenance.json", {"schema": "provenance/3", "rows": [
     row(WO_STOKERS["id"], WOD + "stokers.json", kind="work_order"),
     row(WO_STOKERS["id"], WOD + "stokers.json", kind="work_order"),
     row("wo.rustmoor.gaugers.fixture_gone", WOD + "gone.json", kind="work_order")]})
@@ -1413,6 +1420,50 @@ put(RVF + WOD + "knock.json", wo("wo.rustmoor.board.fixture_knock", "favour.boar
 na = wo("wo.rustmoor.board.fixture_no_act", "favour.board", (1, 5), [(WO_ORE, 1)], request="Bring ore.")
 del na["act"]
 put(RVF + WOD + "no-act.json", na)
+
+# ---- retirement (provenance/3): a retired row keeps its row instead of being
+# erased. provenance pass-retired: a retired row at a file that no longer
+# exists, a retired row whose pointer no longer resolves and whose revision no
+# longer matches, and a retired row at the same whole file as its replacement
+# (a new id, with a null pointer) all pass.
+PVR = "provenance/pass-retired/"
+put(PVR + CP, curve("fixture.pass.curve_v2"))
+put(PVR + "content/provenance.json", {"schema": "provenance/3", "rows": [
+    row("fixture.pass.curve_v2", CP),
+    row("fixture.pass.curve_v2_ref", CP, "/reference_action"),
+    retired(row("fixture.pass.curve_v1", CP, revision=7)),
+    retired(row("fixture.pass.curve_v1_part", CP, "/withdrawn_part", revision=4)),
+    retired(row("fixture.pass.withdrawn", "content/tuning/withdrawn.json"), reason="Fixture: withdrawn."),
+    dict(retired(row("fixture.pass.retired_from_approved", "content/tuning/gone.json")),
+         status="retired", approved_by="jeremy", approved_at="2026-10-22T12:00:00Z")]})
+# provenance pass-provenance-2: a provenance/2 register (no "retirement"
+# field) is accepted, with a warning, while ACCEPT_PROVENANCE_2 is on.
+PV2 = "provenance/pass-provenance-2/"
+put(PV2 + CP, curve("fixture.pass.xp_curve"))
+R2 = [row("fixture.pass.xp_curve", CP), row("fixture.pass.xp_curve_ref", CP, "/reference_action")]
+for r2 in R2: del r2["retirement"]
+put(PV2 + "content/provenance.json", {"schema": "provenance/2", "rows": R2})
+# provenance fail-retired: a non-retired row at a missing file still fails; a
+# retired id reused by a new row; content on disk carrying a retired id; a
+# retired row with no retirement record; a retirement record on a live row; a
+# retirement that is not the last history entry; a retirement with no reason.
+PVF = "provenance/fail-retired/"
+put(PVF + CP, curve("fixture.fail.curve_v1"))
+put(PVF + "content/tuning/reused.json", {"schema": "tuning.xp_curve/1", "id": "fixture.fail.reused_v2", "revision": 1})
+NOREC = retired(row("fixture.fail.no_record", "content/tuning/gone-a.json")); NOREC["retirement"] = None
+STRAY = row("fixture.fail.stray_record", "content/tuning/reused.json", "/revision")
+STRAY["retirement"] = {"at": RETIRED_AT, "by": "jeremy", "reason": "Fixture."}
+STALE = retired(row("fixture.fail.stale_history", "content/tuning/gone-b.json"))
+STALE["history"] = STALE["history"] + [{"at": "2026-10-24T13:00:00Z", "status": "drafted", "by": "draftsman"}]
+put(PVF + "content/provenance.json", {"schema": "provenance/3", "rows": [
+    retired(row("fixture.fail.curve_v1", CP)),
+    row("fixture.fail.curve_v1_ref", CP, "/reference_action"),
+    row("fixture.fail.ghost_live", "content/tuning/missing.json"),
+    retired(row("fixture.fail.reused", "content/tuning/old-reused.json")),
+    row("fixture.fail.reused", "content/tuning/reused.json", "/id"),
+    row("fixture.fail.reused_v2", "content/tuning/reused.json"),
+    NOREC, STRAY, STALE,
+    retired(row("fixture.fail.no_reason", "content/tuning/gone-c.json"), reason="")]})
 
 # ---- dotfiles: every check skips dotfiles and dot-directories under content/
 # (lib.walk_files). Each pass fixture gets a dotfile that is not JSON and a

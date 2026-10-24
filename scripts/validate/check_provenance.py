@@ -1,14 +1,26 @@
 """Check 2: provenance.
 
 Validates content/provenance.json against its declared register schema
-(provenance/2; provenance/1 is accepted with a warning during migration), then
-fails when:
+(provenance/3; provenance/2 is accepted with a warning while the registrar
+migrates, ACCEPT_PROVENANCE_2), then fails when:
 
 - validators.result is not one of pass, fail, waived, or null;
 - result is "waived" without a waiver, or a waiver is present without "waived";
 - a row's file does not exist, or its pointer does not resolve inside it;
 - a content id has no row, or more than one row;
-- two rows share a path and both have a null pointer.
+- two rows share a path and both have a null pointer;
+- status is "retired" without a retirement record, or a retirement record is
+  present on a row that is not "retired";
+- a retired row's last history entry is not its retirement (status "retired",
+  same "at" and "by" as the retirement record);
+- a retired row's id is reused: any other row carries the same id;
+- content on disk carries a retired id.
+
+A retired row keeps its row instead of being erased ("A retired item gets a
+status, not an erasure"). Its file and pointer may be gone, so a retired row is
+exempt from missing-file, pointer-unresolvable and revision-mismatch, and is
+not counted for shared-path-null-pointer (its replacement may take the same
+whole file). Every other rule still applies to it.
 
 Content ids are every "id" at any depth in every content file (everything
 under content/ except the register), the same set the schema check uses: an
@@ -31,6 +43,14 @@ CHECK = "provenance"
 # (work order 002, Constraints). Turned off by Jeremy's answer on work order 002.
 ACCEPT_PROVENANCE_1 = False
 
+# provenance/2 is accepted, with a warning, while the registrar migrates the
+# register to provenance/3 (add "retirement": null to every row, then set
+# "schema"). Turn off once content/provenance.json declares provenance/3.
+ACCEPT_PROVENANCE_2 = True
+
+CURRENT = "provenance/3"
+RETIRED = "retired"
+
 RESULTS = ("pass", "fail", "waived", None)
 
 
@@ -50,10 +70,14 @@ def run(root):
     if declared == "provenance/1" and ACCEPT_PROVENANCE_1:
         report.warn("register-version", reg_path,
                     "provenance/1 accepted during migration; move the register "
-                    "to provenance/2 (missing fields are read as null)")
-    elif declared != "provenance/2":
+                    "to %s (missing fields are read as null)" % CURRENT)
+    elif declared == "provenance/2" and ACCEPT_PROVENANCE_2:
+        report.warn("register-version", reg_path,
+                    "provenance/2 accepted during migration; move the register "
+                    "to %s (add \"retirement\": null to every row)" % CURRENT)
+    elif declared != CURRENT:
         report.fail("register-version", reg_path,
-                    "schema %r is not accepted; expected provenance/2" % (declared,))
+                    "schema %r is not accepted; expected %s" % (declared, CURRENT))
         return report
 
     for pointer, message in lib.validate(register, schemas[declared]):
@@ -82,14 +106,19 @@ def run(root):
                 content_ids.setdefault(value, set()).add(path)
 
     rows_by_id = {}
+    retired_rows_by_id = {}
     whole_file_rows = {}
     for index, row in enumerate(rows):
         if not isinstance(row, dict):
             continue
         rid = row.get("id")
         where = "%s#/rows/%d" % (reg_path, index)
+        retired = row.get("status") == RETIRED
         if isinstance(rid, str):
             rows_by_id.setdefault(rid, []).append(index)
+            if retired:
+                retired_rows_by_id.setdefault(rid, []).append(index)
+        _check_retirement(report, where, row, retired, rid)
 
         validators = row.get("validators")
         validators = validators if isinstance(validators, dict) else {}
@@ -110,7 +139,7 @@ def run(root):
 
         path = row.get("path")
         pointer = row.get("pointer")
-        if not isinstance(path, str):
+        if not isinstance(path, str) or retired:
             continue
         if not os.path.isfile(os.path.join(root, path)):
             report.fail("missing-file", where, "path %r does not exist" % path, rid)
@@ -134,8 +163,24 @@ def run(root):
         if pointer is None:
             whole_file_rows.setdefault(path, []).append((index, rid))
 
+    for ident in sorted(retired_rows_by_id):
+        indexes = rows_by_id[ident]
+        if len(indexes) > 1:
+            report.fail("retired-id-reused", reg_path,
+                        "id is retired (row %s) and carried by %d rows (rows %s); "
+                        "a retired id is never reused"
+                        % (", ".join(str(i) for i in retired_rows_by_id[ident]),
+                           len(indexes), ", ".join(str(i) for i in indexes)),
+                        ident)
+
     for ident in sorted(content_ids):
         paths = ", ".join(sorted(content_ids[ident]))
+        if ident in retired_rows_by_id:
+            report.fail("retired-id-on-disk", paths,
+                        "content carries a retired id (row %s); give the item a new id"
+                        % ", ".join(str(i) for i in retired_rows_by_id[ident]),
+                        ident)
+            continue  # retired-id-reused covers any other row with this id
         count = len(rows_by_id.get(ident, []))
         if count == 0:
             report.fail("no-row", paths, "content id has no row in the register", ident)
@@ -153,6 +198,31 @@ def run(root):
                         "%d rows point at this whole file with a null pointer: %s"
                         % (len(entries), listed))
     return report
+
+
+def _check_retirement(report, where, row, retired, rid):
+    """status "retired" and a retirement record go together, and the record
+    matches the row's last history entry."""
+    retirement = row.get("retirement")
+    if not retired:
+        if retirement is not None:
+            report.fail("retirement-without-retired", where,
+                        "retirement is set but status is %r" % (row.get("status"),), rid)
+        return
+    if not isinstance(retirement, dict):
+        report.fail("retired-without-retirement", where,
+                    "status is \"retired\" but retirement is null or missing; "
+                    "record at, by and reason", rid)
+        return
+    history = row.get("history")
+    last = history[-1] if isinstance(history, list) and history else None
+    if not (isinstance(last, dict) and last.get("status") == RETIRED
+            and last.get("at") == retirement.get("at")
+            and last.get("by") == retirement.get("by")):
+        report.fail("retirement-not-in-history", where,
+                    "the last history entry must be the retirement: status \"retired\", "
+                    "at %s, by %s" % (json_text(retirement.get("at")),
+                                      json_text(retirement.get("by"))), rid)
 
 
 def _content_revision(root, parsed, path, pointer):

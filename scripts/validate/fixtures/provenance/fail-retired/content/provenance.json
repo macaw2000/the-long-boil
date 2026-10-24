@@ -1,0 +1,375 @@
+{
+ "schema": "provenance/3",
+ "rows": [
+  {
+   "id": "fixture.fail.curve_v1",
+   "type": "tuning",
+   "path": "content/tuning/curve.json",
+   "status": "retired",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    },
+    {
+     "at": "2026-10-24T12:00:00Z",
+     "status": "retired",
+     "by": "jeremy"
+    }
+   ],
+   "retirement": {
+    "at": "2026-10-24T12:00:00Z",
+    "by": "jeremy",
+    "reason": "Fixture: replaced by a new id."
+   }
+  },
+  {
+   "id": "fixture.fail.curve_v1_ref",
+   "type": "tuning",
+   "path": "content/tuning/curve.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": "/reference_action",
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ],
+   "retirement": null
+  },
+  {
+   "id": "fixture.fail.ghost_live",
+   "type": "tuning",
+   "path": "content/tuning/missing.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ],
+   "retirement": null
+  },
+  {
+   "id": "fixture.fail.reused",
+   "type": "tuning",
+   "path": "content/tuning/old-reused.json",
+   "status": "retired",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    },
+    {
+     "at": "2026-10-24T12:00:00Z",
+     "status": "retired",
+     "by": "jeremy"
+    }
+   ],
+   "retirement": {
+    "at": "2026-10-24T12:00:00Z",
+    "by": "jeremy",
+    "reason": "Fixture: replaced by a new id."
+   }
+  },
+  {
+   "id": "fixture.fail.reused",
+   "type": "tuning",
+   "path": "content/tuning/reused.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": "/id",
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ],
+   "retirement": null
+  },
+  {
+   "id": "fixture.fail.reused_v2",
+   "type": "tuning",
+   "path": "content/tuning/reused.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ],
+   "retirement": null
+  },
+  {
+   "id": "fixture.fail.no_record",
+   "type": "tuning",
+   "path": "content/tuning/gone-a.json",
+   "status": "retired",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    },
+    {
+     "at": "2026-10-24T12:00:00Z",
+     "status": "retired",
+     "by": "jeremy"
+    }
+   ],
+   "retirement": null
+  },
+  {
+   "id": "fixture.fail.stray_record",
+   "type": "tuning",
+   "path": "content/tuning/reused.json",
+   "status": "drafted",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": "/revision",
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ],
+   "retirement": {
+    "at": "2026-10-24T12:00:00Z",
+    "by": "jeremy",
+    "reason": "Fixture."
+   }
+  },
+  {
+   "id": "fixture.fail.stale_history",
+   "type": "tuning",
+   "path": "content/tuning/gone-b.json",
+   "status": "retired",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    },
+    {
+     "at": "2026-10-24T12:00:00Z",
+     "status": "retired",
+     "by": "jeremy"
+    },
+    {
+     "at": "2026-10-24T13:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    }
+   ],
+   "retirement": {
+    "at": "2026-10-24T12:00:00Z",
+    "by": "jeremy",
+    "reason": "Fixture: replaced by a new id."
+   }
+  },
+  {
+   "id": "fixture.fail.no_reason",
+   "type": "tuning",
+   "path": "content/tuning/gone-c.json",
+   "status": "retired",
+   "drafted_by": "draftsman",
+   "model": null,
+   "patch": null,
+   "revision": 1,
+   "work_order": "docs/work-orders/002-validators.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-21T22:00:00Z",
+     "status": "drafted",
+     "by": "draftsman"
+    },
+    {
+     "at": "2026-10-24T12:00:00Z",
+     "status": "retired",
+     "by": "jeremy"
+    }
+   ],
+   "retirement": {
+    "at": "2026-10-24T12:00:00Z",
+    "by": "jeremy",
+    "reason": ""
+   }
+  }
+ ]
+}

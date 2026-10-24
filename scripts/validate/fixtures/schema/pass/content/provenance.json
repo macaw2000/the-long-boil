@@ -1,5 +1,5 @@
 {
- "schema": "provenance/2",
+ "schema": "provenance/3",
  "rows": [
   {
    "id": "fixture.pass.xp_curve",
@@ -30,7 +30,8 @@
      "status": "drafted",
      "by": "draftsman"
     }
-   ]
+   ],
+   "retirement": null
   },
   {
    "id": "fixture.pass.xp_curve_ref",
@@ -61,7 +62,8 @@
      "status": "drafted",
      "by": "draftsman"
     }
-   ]
+   ],
+   "retirement": null
   }
  ]
 }

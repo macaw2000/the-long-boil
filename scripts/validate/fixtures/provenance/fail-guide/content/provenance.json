@@ -1,5 +1,5 @@
 {
- "schema": "provenance/2",
+ "schema": "provenance/3",
  "rows": [
   {
    "id": "prologue.sprocket_row.first_session_guide",
@@ -30,7 +30,8 @@
      "status": "drafted",
      "by": "draftsman"
     }
-   ]
+   ],
+   "retirement": null
   },
   {
    "id": "prologue.sprocket_row.first_session_guide",
@@ -61,7 +62,8 @@
      "status": "drafted",
      "by": "draftsman"
     }
-   ]
+   ],
+   "retirement": null
   },
   {
    "id": "fixture.guide.ghost",
@@ -92,7 +94,8 @@
      "status": "drafted",
      "by": "draftsman"
     }
-   ]
+   ],
+   "retirement": null
   }
  ]
 }
