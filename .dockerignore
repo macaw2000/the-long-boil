@@ -1,0 +1,19 @@
+# Keep the build context to what the server image needs: engine/ and content/.
+**/node_modules
+**/dist
+**/*.tsbuildinfo
+**/.DS_Store
+.git
+.github
+.claude
+art
+docs
+scripts
+infra
+README.md
+engine/.dev-clock.json
+engine/packages/client/*
+!engine/packages/client/package.json
+engine/packages/*/test
+.env
+.env.*

@@ -1,25 +1,40 @@
-// A local dev sign-in until Cognito (build plan, Database): a login names an
-// account, which holds up to 3 Tinkers.
+// Choosing a workshop: a login names an account, which holds up to 3
+// Tinkers. With Cognito (build plan milestone 11) the login is the signed-in
+// account's; without it, the dev login takes any name typed here.
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { api } from "./api";
+import { cognitoEnabled, signOut, startSignIn } from "./auth";
 import { colors, ui } from "./theme";
 
-export function SignIn({ onEnter }: { onEnter: (login: string, tinkerId: number) => void }) {
+export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (login: string, tinkerId: number) => void }) {
   const [login, setLogin] = useState("");
   const [tinkers, setTinkers] = useState<{ id: number; name: string }[] | null>(null);
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const lookUp = () =>
+  const lookUp = (account = login.trim()) =>
     api
-      .listTinkers(login.trim())
+      .listTinkers(account)
       .then((result) => {
         setTinkers(result.tinkers);
         setError(null);
       })
       .catch((reason: Error) => setError(reason.message));
+
+  // Signed in with Cognito: the server says which account this is, and its Tinkers follow.
+  useEffect(() => {
+    if (!cognitoEnabled || !signedIn) return;
+    api
+      .me()
+      .then(({ login: account }) => {
+        if (!account) throw new Error("the server is not using sign-in");
+        setLogin(account);
+        return lookUp(account);
+      })
+      .catch((reason: Error) => setError(reason.message));
+  }, [signedIn]);
 
   const create = () =>
     api
@@ -34,24 +49,30 @@ export function SignIn({ onEnter }: { onEnter: (login: string, tinkerId: number)
         <Text style={ui.muted}>
           A solicitor's letter: the tenancy of No. 9 Sprocket Row, "contents included", is yours.
         </Text>
-        <TextInput
-          style={ui.input}
-          value={login}
-          onChangeText={(text) => {
-            setLogin(text);
-            setTinkers(null);
-          }}
-          onSubmitEditing={lookUp}
-          placeholder="login (any name, for now)"
-          placeholderTextColor={colors.muted}
-          autoCapitalize="none"
-          accessibilityLabel="Login"
-        />
-        {tinkers === null ? (
+        {cognitoEnabled && !signedIn ? (
+          <Pressable style={ui.button} onPress={() => startSignIn().catch((reason: Error) => setError(reason.message))} accessibilityRole="button">
+            <Text style={ui.buttonText}>Sign in</Text>
+          </Pressable>
+        ) : cognitoEnabled ? null : (
+          <TextInput
+            style={ui.input}
+            value={login}
+            onChangeText={(text) => {
+              setLogin(text);
+              setTinkers(null);
+            }}
+            onSubmitEditing={() => lookUp()}
+            placeholder="login (any name, for now)"
+            placeholderTextColor={colors.muted}
+            autoCapitalize="none"
+            accessibilityLabel="Login"
+          />
+        )}
+        {cognitoEnabled && (!signedIn || tinkers === null) ? null : tinkers === null ? (
           <Pressable
             style={[ui.button, !login.trim() && { opacity: 0.4 }]}
             disabled={!login.trim()}
-            onPress={lookUp}
+            onPress={() => lookUp()}
             accessibilityRole="button"
           >
             <Text style={ui.buttonText}>Sign in</Text>
@@ -88,6 +109,11 @@ export function SignIn({ onEnter }: { onEnter: (login: string, tinkerId: number)
           </View>
         )}
         {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
+        {cognitoEnabled && signedIn && (
+          <Pressable onPress={signOut} accessibilityRole="button">
+            <Text style={ui.muted}>Sign out</Text>
+          </Pressable>
+        )}
       </View>
     </View>
   );

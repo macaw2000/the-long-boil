@@ -1,7 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { Platform, Text, View } from "react-native";
-import { api, setClockOffset, type Content } from "./src/api";
+import { api, setClockOffset, whenSignedOut, type Content } from "./src/api";
+import { accessToken, cognitoEnabled, finishSignIn } from "./src/auth";
 import { SignIn } from "./src/SignIn";
 import { colors, ui } from "./src/theme";
 import { Workshop } from "./src/Workshop";
@@ -33,6 +34,17 @@ export default function App() {
   const [content, setContent] = useState<Content | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tinkerId, setTinkerId] = useState<number | null>(remembered);
+  // Under the dev login everyone is signed in; with Cognito, unknown until a returning code is traded and the tokens looked at.
+  const [signedIn, setSignedIn] = useState<boolean | null>(cognitoEnabled ? null : true);
+
+  useEffect(() => {
+    if (!cognitoEnabled) return;
+    whenSignedOut(() => setSignedIn(false));
+    finishSignIn()
+      .catch(() => undefined)
+      .then(accessToken)
+      .then((token) => setSignedIn(Boolean(token)));
+  }, []);
 
   useEffect(() => {
     api
@@ -52,12 +64,12 @@ export default function App() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.soot }}>
       <StatusBar style="light" />
-      {!content ? (
+      {!content || signedIn === null ? (
         <View style={{ padding: 24 }}>
           <Text style={error ? [ui.text, { color: colors.scald }] : ui.muted}>{error ?? "Raising steam…"}</Text>
         </View>
-      ) : tinkerId === null ? (
-        <SignIn onEnter={(_login, id) => open(id)} />
+      ) : tinkerId === null || !signedIn ? (
+        <SignIn signedIn={signedIn} onEnter={(_login, id) => open(id)} />
       ) : (
         <Workshop key={tinkerId} content={content} tinkerId={tinkerId} onLeave={() => open(null)} />
       )}

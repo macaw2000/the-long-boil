@@ -20,8 +20,10 @@ export function useLive(tinkerId: number, onNotice: (notice: Notice) => void): b
     let wait = FIRST_RETRY_MS;
     let stopped = false;
 
-    const open = () => {
-      socket = new WebSocket(liveUrl(tinkerId));
+    const open = async () => {
+      const url = await liveUrl(tinkerId);
+      if (stopped) return;
+      socket = new WebSocket(url);
       socket.onopen = () => {
         wait = FIRST_RETRY_MS;
         setConnected(true);

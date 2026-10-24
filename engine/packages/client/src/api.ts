@@ -1,7 +1,16 @@
 // The server's HTTP API, as the client sees it. The shapes mirror
 // packages/server/src/tinkers.ts and packages/rules/src/ledger.ts.
 
+import { accessToken } from "./auth";
+
 const BASE = process.env.EXPO_PUBLIC_API_URL ?? "http://127.0.0.1:3000";
+
+/** Told when the server no longer accepts this player's sign-in, so the app can ask for it again. */
+let onSignedOut: () => void = () => undefined;
+
+export function whenSignedOut(listener: () => void): void {
+  onSignedOut = listener;
+}
 
 /** How far a dev server's clock runs ahead of this one; 0 everywhere else. */
 let clockOffset = 0;
@@ -271,16 +280,23 @@ export interface ChatView {
 export type Notice = { type: "changed" } | { type: "mutes" } | { type: "guild" } | { type: "chat"; message: ChatMessage };
 
 /** The live connection's address, on the same server as the HTTP API. */
-export function liveUrl(tinkerId: number): string {
-  return `${BASE.replace(/^http/, "ws")}/live/${tinkerId}`;
+/** A browser cannot give a WebSocket headers, so the sign-in token rides in the query. */
+export async function liveUrl(tinkerId: number): Promise<string> {
+  const token = await accessToken();
+  return `${BASE.replace(/^http/, "ws")}/live/${tinkerId}${token ? `?token=${encodeURIComponent(token)}` : ""}`;
 }
 
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+  const token = await accessToken();
   const response = await fetch(`${BASE}${path}`, {
     method,
-    headers: body === undefined ? {} : { "content-type": "application/json" },
+    headers: {
+      ...(body === undefined ? {} : { "content-type": "application/json" }),
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
+    },
     body: body === undefined ? null : JSON.stringify(body),
   });
+  if (response.status === 401) onSignedOut();
   const json = await response.json();
   if (!response.ok) throw new Error(json.error ?? `${method} ${path} failed with ${response.status}`);
   return json as T;
@@ -288,6 +304,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 
 export const api = {
   content: () => request<Content>("GET", "/content"),
+  me: () => request<{ login: string | null }>("GET", "/me"),
   listTinkers: (login: string) =>
     request<{ tinkers: { id: number; name: string }[] }>("GET", `/accounts/${encodeURIComponent(login)}/tinkers`),
   createTinker: (login: string, name: string) => request<Outcome>("POST", "/tinkers", { login, name }),

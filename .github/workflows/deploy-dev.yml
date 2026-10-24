@@ -1,0 +1,122 @@
+name: deploy-dev
+
+# Deploys main to dev with no hands (GDD section 11, rollout phase 0 exit
+# gate). Inert until the repository variable AWS_DEPLOY_ROLE_ARN is set to
+# the LongBoil-dev-Foundation stack's GitHubDeployRoleArn output; see
+# infra/README.md for the one-time steps before that.
+#
+# The CDK context below must match what was deployed by hand, or this run
+# would remove what the missing context created (the budget, the domain,
+# Google sign-in). It comes from repository variables, so set them once.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write # OIDC: no long-lived AWS keys
+  contents: read
+
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: us-west-2
+  STACK: LongBoil-dev-App
+
+jobs:
+  deploy:
+    if: vars.AWS_DEPLOY_ROLE_ARN != ''
+    runs-on: ubuntu-latest
+    # No `environment:` key: it would change the OIDC subject the deploy
+    # role trusts (repo:<owner>/<repo>:ref:refs/heads/main).
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            infra/package-lock.json
+            engine/package-lock.json
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # --- Server image: arm64 for Graviton (decision 5), tagged by commit ---
+      - id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/arm64
+          push: true
+          provenance: false
+          tags: ${{ steps.ecr.outputs.registry }}/long-boil-dev/server:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # --- Infrastructure: the new image tag rolls the ECS service ----------
+      - name: cdk deploy
+        working-directory: infra
+        run: |
+          npm ci --no-audit --no-fund
+          npx cdk deploy --all --require-approval never --outputs-file cdk-outputs.json \
+            -c env=dev \
+            -c imageTag=${{ github.sha }} \
+            -c githubRepo=${{ github.repository }} \
+            -c alertEmail=${{ vars.ALERT_EMAIL }} \
+            -c monthlyBudgetUsd=${{ vars.MONTHLY_BUDGET_USD || '110' }} \
+            -c domainName=${{ vars.DOMAIN_NAME }} \
+            -c hostedZoneId=${{ vars.HOSTED_ZONE_ID }} \
+            -c hostedZoneName=${{ vars.HOSTED_ZONE_NAME }} \
+            -c googleClientId=${{ vars.GOOGLE_CLIENT_ID }} \
+            -c cognitoDomainPrefix=${{ vars.COGNITO_DOMAIN_PREFIX || 'long-boil-dev' }}
+
+      - name: Read stack outputs
+        id: out
+        run: |
+          read_output() { jq -r --arg s "$STACK" --arg k "$1" '.[$s][$k]' infra/cdk-outputs.json; }
+          {
+            echo "api_url=$(read_output ExpoPublicApiUrl)"
+            echo "cognito_domain=$(read_output ExpoPublicCognitoDomain)"
+            echo "cognito_client_id=$(read_output ExpoPublicCognitoClientId)"
+            echo "bucket=$(read_output SiteBucketName)"
+            echo "distribution=$(read_output DistributionId)"
+          } >> "$GITHUB_OUTPUT"
+
+      # --- The PWA bundle ----------------------------------------------------
+      - name: Build the web bundle
+        working-directory: engine
+        env:
+          EXPO_PUBLIC_API_URL: ${{ steps.out.outputs.api_url }}
+          EXPO_PUBLIC_COGNITO_DOMAIN: ${{ steps.out.outputs.cognito_domain }}
+          EXPO_PUBLIC_COGNITO_CLIENT_ID: ${{ steps.out.outputs.cognito_client_id }}
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          cd packages/client
+          npx expo export --platform web --output-dir dist
+
+      - name: Sync to S3 and invalidate
+        working-directory: engine/packages/client/dist
+        env:
+          BUCKET: ${{ steps.out.outputs.bucket }}
+          DISTRIBUTION: ${{ steps.out.outputs.distribution }}
+        run: |
+          # Hashed bundles and assets never change under one name; cache them for a year.
+          aws s3 sync . "s3://$BUCKET/" --delete \
+            --exclude "*" --include "_expo/*" --include "assets/*" \
+            --cache-control "public, max-age=31536000, immutable"
+          # Everything else (index.html above all) is checked on every load.
+          aws s3 sync . "s3://$BUCKET/" --delete \
+            --exclude "_expo/*" --exclude "assets/*" \
+            --cache-control "no-cache"
+          aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION" --paths "/*"

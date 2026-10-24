@@ -2,11 +2,14 @@
 // /tinkers/:id while open, which also collects Exchange fills. A WebSocket,
 // GET /live/:id (GDD section 10), pushes notices that a Tinker changed and
 // city chat; everything a player does still goes through these HTTP routes.
+// With an Auth (milestone 11) every route but /health and /content needs a
+// Cognito token, and a route naming a Tinker needs it to be the caller's.
 
 import cors from "@fastify/cors";
 import websocket from "@fastify/websocket";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import Fastify, { type FastifyInstance } from "fastify";
+import { Unauthorized, tokenOf, type Auth } from "./auth.js";
 import { mutedAccounts, recentChat, say, setMute, whisperInbox, whisperTo } from "./chat.js";
 import type { GameContent } from "./content-loader.js";
 import type { Db } from "./db.js";
@@ -58,7 +61,24 @@ export interface ApiOptions {
   devClock?: DevClock;
   /** Fan-out to open sessions; in-process unless several servers share one. */
   broadcast?: Broadcast;
+  /** Real sign-in; without it, the dev login trusts the login and Tinker id it is given. */
+  auth?: Auth;
+  /** A path the API also answers under, such as /api behind CloudFront, which sends /api/* to the server unchanged. */
+  prefix?: string;
 }
+
+declare module "fastify" {
+  interface FastifyRequest {
+    /** The signed-in account's login, when there is an Auth. */
+    login: string | null;
+  }
+}
+
+/** How often the live connection pings, well inside CloudFront's 10-minute idle limit. */
+const PING_MS = 45_000;
+
+/** Routes anyone may call, signed in or not: the load balancer's health check and the game's content. */
+const OPEN_ROUTES = new Set(["/health", "/content"]);
 
 export interface DevClock {
   /** How far the server's clock runs ahead of the wall clock, in ms. */
@@ -95,11 +115,32 @@ export function buildApi({
   trading = GDD_TRADING,
   devClock: clock,
   broadcast = localBroadcast(),
+  auth,
+  prefix,
 }: ApiOptions): FastifyInstance {
-  const app = Fastify();
+  const app = Fastify(
+    prefix ? { rewriteUrl: (request) => (request.url?.startsWith(`${prefix}/`) ? request.url.slice(prefix.length) : (request.url ?? "/")) } : {},
+  );
   // The plugin allows only GET, HEAD and POST by default; the queue, weapons, orders and letters also use PUT and DELETE.
   if (corsOrigins.length) app.register(cors, { origin: corsOrigins, methods: ["GET", "HEAD", "POST", "PUT", "DELETE"] });
   app.register(websocket, { options: { maxPayload: 4096 } });
+
+  app.decorateRequest("login", null);
+  if (auth) {
+    // Runs before the WebSocket upgrade too, so a bad token never opens a live connection.
+    app.addHook("preHandler", async (request) => {
+      if (OPEN_ROUTES.has(request.routeOptions.url ?? "")) return;
+      const token = tokenOf(request.headers, request.query);
+      if (!token) throw new Unauthorized("sign in first");
+      request.login = await auth.verify(token);
+      const id = Number((request.params as { id?: string }).id);
+      if (Number.isInteger(id) && id > 0 && !(await ownsTinker(request.login, id))) throw new Refused("that is not your Tinker");
+      const login = (request.params as { login?: string }).login ?? (request.body as { login?: unknown } | undefined)?.login;
+      if (login !== undefined && login !== request.login) throw new Refused("that is not your account");
+    });
+  }
+  const ownsTinker = async (login: string, id: number) =>
+    (await db.query("SELECT 1 FROM tinkers t JOIN accounts a ON a.id = t.account_id WHERE t.id = $1 AND a.login = $2", [id, login])).rowCount === 1;
 
   // Anything that changes a Tinker tells that Tinker's other open sessions to look again.
   app.addHook("onResponse", async (request, reply) => {
@@ -109,6 +150,7 @@ export function buildApi({
   });
 
   app.setErrorHandler((error: Error & { validation?: unknown; code?: string }, _request, reply) => {
+    if (error instanceof Unauthorized) return reply.code(401).send({ error: error.message });
     if (error instanceof NotFound) return reply.code(404).send({ error: error.message });
     if (error instanceof Refused) return reply.code(403).send({ error: error.message });
     if (error instanceof BadRequest || error.validation) return reply.code(400).send({ error: error.message });
@@ -117,6 +159,12 @@ export function buildApi({
     app.log.error(error);
     return reply.code(500).send({ error: "internal error" });
   });
+
+  // Answers without touching the database, so the load balancer's checks never wake a paused Aurora (GDD section 11, decision 3).
+  app.get("/health", async () => ({ ok: true }));
+
+  // Who the token speaks for, so the client can list and open its own Tinkers; null under the dev login.
+  app.get("/me", async (request) => ({ login: request.login }));
 
   app.get("/content", async () => ({
     version: content.rules.version,
@@ -441,6 +489,9 @@ export function buildApi({
       };
       const stops: (() => void)[] = [];
       socket.on("close", () => stops.forEach((stop) => stop()));
+      // CloudFront closes a WebSocket after 10 minutes without a byte from the server; a ping keeps a quiet workshop open.
+      const ping = setInterval(() => socket.readyState === socket.OPEN && socket.ping(), PING_MS);
+      stops.push(() => clearInterval(ping));
       let muted: Set<number>;
       try {
         muted = await mutedAccounts(db, id);

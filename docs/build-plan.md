@@ -71,7 +71,11 @@ Milestones 1 to 6 are built. The GDD makes Kettleport a shared city (sections 6 
     - **Guild chat:** a private channel on milestone 8's code, with the same limits and mutes.
     - **Names:** unique, 3 to 24 characters of letters, spaces and apostrophes. A rename costs 10,000 Crowns.
     - **Later:** Guild Contracts, the guild Workshop and charters (section 10 cuts charters and Contracts first if time runs short).
-11. **Real sign-in.** Cognito with Google, then Discord, replacing the dev login (sections 10 and 11). It comes with AWS rollout phase 0, since Cognito needs the deployed domain.
+11. **Real sign-in.** Cognito with Google, then Discord, replacing the dev login (sections 10 and 11). It comes with AWS rollout phase 0, since Cognito needs the deployed domain. Built as code first, nothing deployed (Jeremy, 24 October 2026):
+    - The server checks a Cognito access token on every route but `/health` and `/content` when `COGNITO_USER_POOL_ID` and `COGNITO_CLIENT_ID` are set, and a route naming a Tinker must name one of the caller's. The live connection takes the token as `?token=`. Without them, the dev login is unchanged.
+    - The client signs in through Cognito's managed login (authorization code with PKCE) when built with `EXPO_PUBLIC_COGNITO_DOMAIN` and `EXPO_PUBLIC_COGNITO_CLIENT_ID`.
+    - `infra/` holds the dev environment in CDK, `Dockerfile` the server image, and `.github/workflows/deploy-dev.yml` the deploy, inert until the repository variable `AWS_DEPLOY_ROLE_ARN` is set. `infra/README.md` lists the one-time steps.
+    - Still open for phase 0: the accounts, a domain, the Google OAuth client, Discord (not an OIDC provider Cognito accepts, so it needs a shim), and the first deploy.
 
 ## Prerequisites on this machine
 
