@@ -3,7 +3,7 @@
 // from the muting account only; nothing is deleted.
 
 import type { Db } from "./db.js";
-import { CITY, type ChatMessage } from "./live.js";
+import { CITY, whisperChannel, type ChatMessage } from "./live.js";
 import { Refused } from "./market.js";
 import { BadRequest, NotFound } from "./tinkers.js";
 
@@ -65,6 +65,45 @@ export async function say(db: Db, tinkerId: number, text: string, now: number, c
     )
   ).rows[0];
   return { ...shape(row), accountId };
+}
+
+/**
+ * Whether one Tinker may whisper another: the other must exist, be on a
+ * different account, and not have muted the sender's account. The refusal
+ * does not say which, so a mute is not given away.
+ */
+export async function whisperTo(db: Db, tinkerId: number, otherId: number): Promise<string> {
+  const { accountId } = await accountOf(db, tinkerId);
+  const other = await accountOf(db, otherId).catch(() => null);
+  if (!other) throw new NotFound(`no Tinker ${otherId}`);
+  if (other.accountId === accountId) throw new BadRequest("that Tinker is on your own account");
+  const muted = await db.query("SELECT 1 FROM chat_mutes WHERE account_id = $1 AND muted_account_id = $2", [other.accountId, accountId]);
+  if (muted.rows.length) throw new Refused("your whisper cannot be delivered");
+  return whisperChannel(tinkerId, otherId);
+}
+
+/** This Tinker's whisper conversations, latest first: who with, and the last word. */
+export async function whisperInbox(db: Db, tinkerId: number): Promise<{ with: { id: number; name: string }; last: ChatMessage }[]> {
+  const { accountId } = await accountOf(db, tinkerId);
+  const rows = (
+    await db.query(
+      `SELECT DISTINCT ON (m.channel) m.id, m.channel, m.tinker_id, t.name, m.body, m.at
+       FROM chat_messages m JOIN tinkers t ON t.id = m.tinker_id
+       WHERE m.channel LIKE 'chat:dm:%'
+         AND (split_part(m.channel, ':', 3)::bigint = $1 OR split_part(m.channel, ':', 4)::bigint = $1)
+         AND m.account_id NOT IN (SELECT muted_account_id FROM chat_mutes WHERE account_id = $2)
+       ORDER BY m.channel, m.id DESC`,
+      [tinkerId, accountId],
+    )
+  ).rows;
+  const conversations = [];
+  for (const row of rows) {
+    const [low, high] = row.channel.split(":").slice(2).map(Number);
+    const otherId = low === tinkerId ? high : low;
+    const other = await accountOf(db, otherId);
+    conversations.push({ with: { id: otherId, name: other.name }, last: shape(row) });
+  }
+  return conversations.sort((a, b) => b.last.id - a.last.id);
 }
 
 /** Mutes or unmutes the account behind another Tinker, for this Tinker's account. */

@@ -143,3 +143,54 @@ describe("city chat", () => {
     expect((await call("PUT", `/tinkers/${ada}/mutes/${ada}`)).status).toBe(400);
   });
 });
+
+describe("the other channels", () => {
+  let ivy: number;
+  let jun: number;
+  let kit: number;
+
+  it("keeps Trade and Help apart from the city", async () => {
+    ivy = await newTinker("chan-ivy@example.com", "Ivy");
+    jun = await newTinker("chan-jun@example.com", "Jun");
+    kit = await newTinker("chan-kit@example.com", "Kit");
+    clock += 3_000;
+    expect((await call("POST", `/tinkers/${ivy}/chat`, { text: "Selling copper, 8 a piece.", channel: "trade" })).status).toBe(201);
+    clock += 3_000;
+    expect((await call("POST", `/tinkers/${ivy}/chat`, { text: "Where do I find coal?", channel: "help" })).status).toBe(201);
+    const texts = async (query: string) =>
+      (await call("GET", `/tinkers/${jun}/chat${query}`)).body.messages.map((message: { text: string }) => message.text);
+    expect(await texts("?channel=trade")).toEqual(["Selling copper, 8 a piece."]);
+    expect(await texts("?channel=help")).toEqual(["Where do I find coal?"]);
+    expect(await texts("")).not.toContain("Selling copper, 8 a piece.");
+  });
+
+  it("whispers to one Tinker only, live, and keeps the conversation", async () => {
+    const jl = await listen(jun);
+    const kl = await listen(kit);
+    clock += 3_000;
+    const sent = await call("POST", `/tinkers/${ivy}/chat`, { text: "A word in private?", channel: "whisper", to: jun });
+    expect(sent.status).toBe(201);
+    await jl.until(() => jl.notices.some((notice) => notice.message?.text === "A word in private?"));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    expect(kl.notices.some((notice) => notice.message?.text === "A word in private?")).toBe(false);
+    jl.socket.terminate();
+    kl.socket.terminate();
+
+    const thread = (await call("GET", `/tinkers/${jun}/chat?channel=whisper&with=${ivy}`)).body.messages;
+    expect(thread.map((message: { text: string }) => message.text)).toEqual(["A word in private?"]);
+    const inbox = (await call("GET", `/tinkers/${jun}/whispers`)).body.conversations;
+    expect(inbox).toEqual([expect.objectContaining({ with: { id: ivy, name: "Ivy" }, last: expect.objectContaining({ text: "A word in private?" }) })]);
+    expect((await call("GET", `/tinkers/${kit}/whispers`)).body.conversations).toEqual([]);
+  });
+
+  it("will not carry a whisper to someone who muted the sender, or to the sender's own account", async () => {
+    await call("PUT", `/tinkers/${kit}/mutes/${ivy}`);
+    clock += 3_000;
+    const refused = await call("POST", `/tinkers/${ivy}/chat`, { text: "Hello?", channel: "whisper", to: kit });
+    expect(refused.status).toBe(403);
+    expect(refused.body.error).toBe("your whisper cannot be delivered");
+    const alt = (await call("POST", "/tinkers", { login: "chan-ivy@example.com", name: "Ivy Two" })).body.tinker.id;
+    expect((await call("POST", `/tinkers/${ivy}/chat`, { text: "Me again", channel: "whisper", to: alt })).status).toBe(400);
+    expect((await call("POST", `/tinkers/${ivy}/chat`, { text: "To nobody", channel: "whisper" })).status).toBe(400);
+  });
+});

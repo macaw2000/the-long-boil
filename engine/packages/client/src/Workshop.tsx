@@ -8,7 +8,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { api, gameNow, setClockOffset, type Content, type GuildView, type Ledger as LedgerData, type Notice, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
-import { Chat, channelOf, useChat } from "./Chat";
+import { Chat, channelOf, useChat, useWhispers } from "./Chat";
 import { Guild } from "./Guild";
 import { Exchange } from "./Exchange";
 import { WorkOrders } from "./WorkOrders";
@@ -174,7 +174,13 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
   // The server says when something changed (a fill, another session's action);
   // chat arrives the same way.
   const chat = useChat(tinkerId);
+  const trade = useChat(tinkerId, "trade");
+  const help = useChat(tinkerId, "help");
+  const whispers = useWhispers(tinkerId);
   const { receive: receiveChat, reload: reloadChat } = chat;
+  const { receive: receiveTrade, reload: reloadTrade } = trade;
+  const { receive: receiveHelp, reload: reloadHelp } = help;
+  const { receive: receiveWhisper, reload: reloadWhispers } = whispers;
 
   // The guild: its view feeds the Guild tab, and membership decides whether guild chat exists.
   const [guildView, setGuildView] = useState<GuildView | null>(null);
@@ -201,14 +207,21 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
     useCallback(
       (notice: Notice) => {
         if (notice.type === "changed") lookAgain();
-        else if (notice.type === "chat") (channelOf(notice.message) === "guild" ? receiveGuildChat : receiveChat)(notice.message);
-        else if (notice.type === "mutes") reloadChat();
+        else if (notice.type === "chat") {
+          const into = { city: receiveChat, trade: receiveTrade, help: receiveHelp, guild: receiveGuildChat, whisper: receiveWhisper };
+          into[channelOf(notice.message)](notice.message);
+        } else if (notice.type === "mutes") {
+          reloadChat();
+          reloadTrade();
+          reloadHelp();
+          reloadWhispers();
+        }
         else if (notice.type === "guild") {
           loadGuild();
           lookAgain();
         }
       },
-      [lookAgain, receiveChat, receiveGuildChat, reloadChat, loadGuild],
+      [lookAgain, receiveChat, receiveTrade, receiveHelp, receiveGuildChat, receiveWhisper, reloadChat, reloadTrade, reloadHelp, reloadWhispers, loadGuild],
     ),
   );
 
@@ -507,7 +520,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
               {choice === "exchange" && tinker.story.debts.some((debt) => tinker.crowns >= debt.crowns) && <Badge count={1} label="!" tone={colors.copper} />}
               {choice === "exchange" && <Badge count={tinker.workOrders} tone={colors.verdigris} />}
               {choice === "workshop" && tinker.queue.length === 0 && <Badge count={1} label="idle" tone={colors.scald} />}
-              {choice === "chat" && tab !== "chat" && <Badge count={chat.unread + guildChat.unread} tone={colors.verdigris} />}
+              {choice === "chat" && tab !== "chat" && <Badge count={chat.unread + trade.unread + help.unread + guildChat.unread + whispers.unread} tone={colors.verdigris} />}
               {choice === "guild" && (
                 <Badge count={(guildView?.invites.length ?? 0) + (guildView?.guild?.requests.filter((request) => request.kind === "application").length ?? 0)} tone={colors.verdigris} />
               )}
@@ -540,8 +553,8 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
             <View style={{ flex: 1, padding: 16 }}>
               <Chat
                 tinkerId={tinkerId}
-                city={chat}
-                guild={guildView?.guild ? guildChat : null}
+                rooms={{ city: chat, trade, help, guild: guildView?.guild ? guildChat : null }}
+                whispers={whispers}
                 guildName={guildView?.guild?.name}
                 connected={connected}
                 onInvite={inviteToGuild}
@@ -566,8 +579,8 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
           <View style={{ width: 300, padding: 16, paddingLeft: 0 }}>
             <Chat
                 tinkerId={tinkerId}
-                city={chat}
-                guild={guildView?.guild ? guildChat : null}
+                rooms={{ city: chat, trade, help, guild: guildView?.guild ? guildChat : null }}
+                whispers={whispers}
                 guildName={guildView?.guild?.name}
                 connected={connected}
                 onInvite={inviteToGuild}

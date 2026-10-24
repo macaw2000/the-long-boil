@@ -55,7 +55,7 @@ Each milestone ends with the validators and the tests passing, and a commit.
 Milestones 1 to 6 are built. The GDD makes Kettleport a shared city (sections 6 and 7: guilds, Work Orders, chat on the right of the desktop screen), so these come next, in this order (Jeremy, 24 October 2026):
 
 7. **Live connection.** One WebSocket per open workshop (section 10), server to client only; everything a player does still goes through HTTP. The server pushes a change notice when an action changes a Tinker, including the other side of an Exchange fill, and carries chat. Work finishing on the Boiler's clock is not pushed, so the client still looks every few seconds while open. The socket trusts the Tinker id it is given, exactly as the HTTP routes do under the dev login; both take a Cognito token at milestone 11.
-8. **City chat.** One city channel, shown on the right on desktop and as a sheet on phones.
+8. **Chat.** Shown on the right on desktop and as a tab on phones. Neither GDD lists channels beyond chat on the right and a guild's own, so the set is chosen for the game's features (24 October 2026): Kettleport (general), Trade (the Exchange and Work Orders), Help (new Tinkers' questions), the guild's channel (milestone 10), and Whispers between two Tinkers, which a muted account cannot send and which never reach the sender's own account. A party channel waits for group content (Act IV); a news feed belongs with the Gazette.
    - Messages are stored in Postgres (`chat_messages`), so history survives a restart and the last 50 load on connect.
    - At most 280 characters; one message every 3 seconds per account; plain text only.
    - Any player can mute another for themselves. A muted sender's messages are hidden on the muter's screen, not deleted.

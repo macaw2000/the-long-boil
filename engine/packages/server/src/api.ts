@@ -7,7 +7,7 @@ import cors from "@fastify/cors";
 import websocket from "@fastify/websocket";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import Fastify, { type FastifyInstance } from "fastify";
-import { mutedAccounts, recentChat, say, setMute } from "./chat.js";
+import { mutedAccounts, recentChat, say, setMute, whisperInbox, whisperTo } from "./chat.js";
 import type { GameContent } from "./content-loader.js";
 import type { Db } from "./db.js";
 import { chooseSeal, discardOffer, readDesk, turnIn } from "./work_orders.js";
@@ -27,7 +27,7 @@ import {
   setRank,
   type GuildOutcome,
 } from "./guilds.js";
-import { CITY, localBroadcast, tinkerChannel, type Broadcast, type Notice } from "./live.js";
+import { CITY, HELP, PUBLIC_CHANNELS, TRADE, localBroadcast, tinkerChannel, type Broadcast, type Notice } from "./live.js";
 import {
   GDD_TRADING,
   Refused,
@@ -365,33 +365,51 @@ export function buildApi({
     guildDone(idOf(request.params), await disbandGuild(db, content, idOf(request.params), now(), trading)),
   );
 
-  /** Which chat a request means: the city, or this Tinker's guild. */
-  const channelFor = async (id: number, channel: string | undefined) => {
-    if (channel !== "guild") return CITY;
-    const own = await guildChannel(db, id);
-    if (!own) throw new BadRequest("you are not in a guild");
-    return own;
+  type ChannelName = "city" | "trade" | "help" | "guild" | "whisper";
+  const CHANNEL_NAMES = ["city", "trade", "help", "guild", "whisper"];
+
+  /** Which chat a request means: a public channel, this Tinker's guild, or a whisper to one other Tinker. */
+  const channelFor = async (id: number, channel: string | undefined, to: number | undefined) => {
+    if (channel === "guild") {
+      const own = await guildChannel(db, id);
+      if (!own) throw new BadRequest("you are not in a guild");
+      return own;
+    }
+    if (channel === "whisper") {
+      if (!to) throw new BadRequest("a whisper needs someone to whisper to");
+      return whisperTo(db, id, to);
+    }
+    return PUBLIC_CHANNELS[(channel ?? "city") as keyof typeof PUBLIC_CHANNELS] ?? CITY;
   };
 
-  app.get<{ Params: { id: string }; Querystring: { channel?: string } }>("/tinkers/:id/chat", async (request) =>
-    recentChat(db, Number(request.params.id), await channelFor(Number(request.params.id), request.query.channel)),
+  app.get<{ Params: { id: string }; Querystring: { channel?: ChannelName; with?: string } }>(
+    "/tinkers/:id/chat",
+    { schema: { querystring: { type: "object", properties: { channel: { enum: CHANNEL_NAMES }, with: { type: "string", pattern: "^[0-9]+$" } } } } },
+    async (request) =>
+      recentChat(db, Number(request.params.id), await channelFor(Number(request.params.id), request.query.channel, Number(request.query.with) || undefined)),
   );
 
-  app.post<{ Params: { id: string }; Body: { text: string; channel?: "city" | "guild" } }>(
+  app.get<{ Params: { id: string } }>("/tinkers/:id/whispers", async (request) => ({ conversations: await whisperInbox(db, Number(request.params.id)) }));
+
+  app.post<{ Params: { id: string }; Body: { text: string; channel?: ChannelName; to?: number } }>(
     "/tinkers/:id/chat",
     {
       schema: {
         body: {
           type: "object",
           required: ["text"],
-          properties: { text: { type: "string", minLength: 1, maxLength: 2000 }, channel: { enum: ["city", "guild"] } },
+          properties: { text: { type: "string", minLength: 1, maxLength: 2000 }, channel: { enum: CHANNEL_NAMES }, to: { type: "integer", minimum: 1 } },
         },
       },
     },
     async (request, reply) => {
-      const channel = await channelFor(Number(request.params.id), request.body.channel);
-      const message = await say(db, Number(request.params.id), request.body.text, now(), channel);
-      broadcast.publish(channel, { type: "chat", message });
+      const id = Number(request.params.id);
+      const channel = await channelFor(id, request.body.channel, request.body.to);
+      const message = await say(db, id, request.body.text, now(), channel);
+      // A whisper goes to the two Tinkers' own channels; everything else to its channel.
+      if (request.body.channel === "whisper") {
+        for (const party of [id, request.body.to!]) broadcast.publish(tinkerChannel(party), { type: "chat", message });
+      } else broadcast.publish(channel, { type: "chat", message });
       const { accountId: _account, ...shown } = message;
       return reply.code(201).send({ message: shown });
     },
@@ -447,9 +465,13 @@ export function buildApi({
             mutedAccounts(db, id).then((fresh) => (muted = fresh), () => undefined);
           }
           if (notice.type === "guild") followGuild();
+          // Whispers arrive here; a muted account's are dropped like any other chat.
+          if (notice.type === "chat") return chatListener(notice);
           send(notice);
         }),
         broadcast.subscribe(CITY, chatListener),
+        broadcast.subscribe(TRADE, chatListener),
+        broadcast.subscribe(HELP, chatListener),
         () => guildStop?.(),
       );
       // Subscribed first, so nothing published while the guild is looked up is missed.

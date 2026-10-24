@@ -246,7 +246,12 @@ export interface GuildView {
   rules: { fee: number; founderMin: number; maxMembers: number; renameCrowns: number };
 }
 
-export type ChatChannel = "city" | "guild";
+export type ChatChannel = "city" | "trade" | "help" | "guild" | "whisper";
+
+export interface WhisperConversation {
+  with: { id: number; name: string };
+  last: ChatMessage;
+}
 
 export interface ChatMessage {
   id: number;
@@ -311,8 +316,11 @@ export const api = {
   chooseSeal: (id: number, offer: number, order: string) => request<DeskOutcome>("POST", `/tinkers/${id}/work-orders/${offer}/choose`, { order }),
   turnIn: (id: number, offer: number) => request<DeskOutcome>("POST", `/tinkers/${id}/work-orders/${offer}/turn-in`),
   discardOrder: (id: number, offer: number) => request<DeskOutcome>("DELETE", `/tinkers/${id}/work-orders/${offer}`),
-  chat: (id: number, channel: ChatChannel = "city") => request<ChatView>("GET", `/tinkers/${id}/chat${channel === "guild" ? "?channel=guild" : ""}`),
-  say: (id: number, text: string, channel: ChatChannel = "city") => request<{ message: ChatMessage }>("POST", `/tinkers/${id}/chat`, { text, channel }),
+  chat: (id: number, channel: ChatChannel = "city", withId?: number) =>
+    request<ChatView>("GET", `/tinkers/${id}/chat?channel=${channel}${withId ? `&with=${withId}` : ""}`),
+  say: (id: number, text: string, channel: ChatChannel = "city", to?: number) =>
+    request<{ message: ChatMessage }>("POST", `/tinkers/${id}/chat`, { text, channel, ...(to ? { to } : {}) }),
+  whispers: (id: number) => request<{ conversations: WhisperConversation[] }>("GET", `/tinkers/${id}/whispers`),
   guild: (id: number) => request<GuildView>("GET", `/tinkers/${id}/guild`),
   foundGuild: (id: number, name: string, crowns: number) => request<GuildView>("POST", `/tinkers/${id}/guild`, { name, crowns }),
   pledge: (id: number, guild: number, crowns: number) => request<GuildView>("POST", `/tinkers/${id}/guilds/${guild}/pledge`, { crowns }),

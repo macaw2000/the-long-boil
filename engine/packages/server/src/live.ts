@@ -27,6 +27,17 @@ export interface Broadcast {
 }
 
 export const CITY = "chat:city";
+/** Buying and selling, so it does not crowd the city channel. */
+export const TRADE = "chat:trade";
+/** Questions from new Tinkers and answers from anyone. */
+export const HELP = "chat:help";
+/** The channels every Tinker reads. */
+export const PUBLIC_CHANNELS = { city: CITY, trade: TRADE, help: HELP } as const;
+
+/** A private conversation between two Tinkers, the same whichever of them names it. */
+export function whisperChannel(a: number, b: number): string {
+  return `chat:dm:${Math.min(a, b)}:${Math.max(a, b)}`;
+}
 
 export function tinkerChannel(tinkerId: number): string {
   return `tinker:${tinkerId}`;
