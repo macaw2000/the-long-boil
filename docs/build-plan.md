@@ -75,7 +75,8 @@ Milestones 1 to 6 are built. The GDD makes Kettleport a shared city (sections 6 
     - The server checks a Cognito access token on every route but `/health` and `/content` when `COGNITO_USER_POOL_ID` and `COGNITO_CLIENT_ID` are set, and a route naming a Tinker must name one of the caller's. The live connection takes the token as `?token=`. Without them, the dev login is unchanged.
     - The client signs in through Cognito's managed login (authorization code with PKCE) when built with `EXPO_PUBLIC_COGNITO_DOMAIN` and `EXPO_PUBLIC_COGNITO_CLIENT_ID`.
     - `infra/` holds the dev environment in CDK, `Dockerfile` the server image, and `.github/workflows/deploy-dev.yml` the deploy, inert until the repository variable `AWS_DEPLOY_ROLE_ARN` is set. `infra/README.md` lists the one-time steps.
-    - Still open for phase 0: the accounts, a domain, the Google OAuth client, Discord (not an OIDC provider Cognito accepts, so it needs a shim), and the first deploy.
+    - Deployed on 24 October 2026 to dev at https://thelongboil.com (www redirects there), in Jeremy's existing AWS account rather than the GDD's separate accounts, with Google sign-in, a $100 budget and a daily spend email. The load balancer answers only requests carrying CloudFront's secret header.
+    - Still open for phase 0: Discord (not an OIDC provider Cognito accepts, so it needs a shim), SES for Cognito's email before alpha, and the GDD's separate accounts if they are ever wanted.
 
 ## Prerequisites on this machine
 

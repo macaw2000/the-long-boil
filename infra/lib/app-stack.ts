@@ -17,6 +17,7 @@ import * as rds from "aws-cdk-lib/aws-rds";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as targets from "aws-cdk-lib/aws-route53-targets";
 import * as s3 from "aws-cdk-lib/aws-s3";
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import type { Construct } from "constructs";
 import { deployRoleName, REGION, type Settings } from "./config.js";
 
@@ -29,6 +30,8 @@ export interface AppStackProps extends StackProps {
 
 const SERVER_PORT = 3000;
 const API_PREFIX = "/api";
+/** CloudFront adds this header to every request it sends the load balancer. */
+const ORIGIN_HEADER = "X-Origin-Verify";
 const DATABASE_NAME = "long_boil";
 
 export class AppStack extends Stack {
@@ -92,9 +95,10 @@ export class AppStack extends Stack {
     // CloudFront origin-facing prefix list and nothing else. There is no
     // domain or certificate on the ALB yet, so CloudFront reaches it over
     // plain HTTP inside AWS's network; players still see HTTPS at the edge.
-    // Later: an HTTPS listener with its own certificate, and a secret
-    // origin header checked by a listener rule, so that only *our*
-    // distribution (not any CloudFront distribution) can reach it.
+    // Any CloudFront distribution comes from that prefix list, so ours also
+    // sends a secret header, and the listener forwards only requests that
+    // carry it (see the listener below). Later: an HTTPS listener with its
+    // own certificate.
     const albSecurityGroup = new ec2.SecurityGroup(this, "AlbSecurityGroup", {
       vpc,
       description: "Load balancer: HTTP from CloudFront only",
@@ -150,7 +154,15 @@ export class AppStack extends Stack {
       autoDeleteObjects: !settings.retainData,
     });
 
-    const distribution = this.distribution(settings, siteBucket, alb, props.certificate);
+    // The header value lives in Secrets Manager; the templates hold only a
+    // reference to it. Changing it needs a deploy, which updates both ends.
+    const originSecret = new secretsmanager.Secret(this, "OriginVerifySecret", {
+      description: "The header CloudFront sends so the load balancer knows the request came through our distribution",
+      generateSecretString: { passwordLength: 48, excludePunctuation: true },
+    });
+    const originHeaderValue = originSecret.secretValue.unsafeUnwrap();
+
+    const distribution = this.distribution(settings, siteBucket, alb, props.certificate, originHeaderValue);
     const siteDomain = settings.domainName ?? distribution.distributionDomainName;
     const siteUrl = `https://${siteDomain}`;
     const client = this.userPoolClient(settings, userPool, siteUrl);
@@ -204,8 +216,15 @@ export class AppStack extends Stack {
       enableExecuteCommand: true,
     });
 
-    const listener = alb.addListener("Http", { port: 80, open: false });
+    // Without the secret header the answer is a bare 403; with it, the game server.
+    const listener = alb.addListener("Http", {
+      port: 80,
+      open: false,
+      defaultAction: elbv2.ListenerAction.fixedResponse(403, { contentType: "text/plain", messageBody: "Forbidden" }),
+    });
     listener.addTargets("Server", {
+      priority: 1,
+      conditions: [elbv2.ListenerCondition.httpHeader(ORIGIN_HEADER, [originHeaderValue])],
       port: SERVER_PORT,
       protocol: elbv2.ApplicationProtocol.HTTP,
       targets: [service],
@@ -261,6 +280,7 @@ export class AppStack extends Stack {
     bucket: s3.IBucket,
     alb: elbv2.IApplicationLoadBalancer,
     certificate: acm.ICertificate | undefined,
+    originHeaderValue: string,
   ): cloudfront.Distribution {
     // A single-page app: any path that is not a file is served index.html.
     // This is done with a function on the S3 behaviour rather than custom
@@ -293,6 +313,7 @@ export class AppStack extends Stack {
 
     const apiOrigin = new origins.HttpOrigin(alb.loadBalancerDnsName, {
       protocolPolicy: cloudfront.OriginProtocolPolicy.HTTP_ONLY,
+      customHeaders: { [ORIGIN_HEADER]: originHeaderValue },
       readTimeout: Duration.seconds(60),
       keepaliveTimeout: Duration.seconds(60),
     });
