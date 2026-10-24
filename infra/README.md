@@ -37,6 +37,7 @@ Pass with `-c key=value`. An empty value counts as not given.
 | `googleClientId` | none (no Google sign-in) | Google OAuth client id. Its secret is read from Secrets Manager (below) |
 | `alertEmail` | none (no budget, with a synth warning) | Who gets the budget alarms ($100 a month: at 80% actual and 100% forecast) and a spend email every morning (yesterday's spend by service and the month so far, from Cost Explorer) |
 | `githubRepo` | none (no deploy role) | `owner/name` allowed to deploy from `main` |
+| `githubRepoIds` | none; required with `githubRepo` | `<owner id>/<repository id>`, for GitHub's immutable OIDC subject (`repo:<owner>@<owner id>/<name>@<repo id>:ref:refs/heads/main`). `gh api repos/<owner>/<name> -q '.owner.id, .id'` prints both |
 | `cloudFrontPrefixListId` | `pl-82a045eb` | CloudFront's origin-facing prefix list in us-west-2, the only source the ALB admits |
 | `desiredCount` | per environment (dev 1) | Server task count. `0` parks dev |
 
@@ -70,13 +71,13 @@ In this order, once the accounts exist (GDD section 11, "Accounts and environmen
 4. **Domain** (optional). The hosted zone must already exist in Route 53 in this account.
 5. **Foundation and first image.**
    ```
-   npx cdk deploy LongBoil-dev-Foundation -c githubRepo=<owner>/the-long-boil -c alertEmail=<you>
+   npx cdk deploy LongBoil-dev-Foundation -c githubRepo=<owner>/the-long-boil -c githubRepoIds=<owner id>/<repo id> -c alertEmail=<you>
    aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin <account>.dkr.ecr.us-west-2.amazonaws.com
    docker build --platform linux/arm64 -t <EcrRepositoryUri>:latest .   # from the repository root
    docker push <EcrRepositoryUri>:latest
    ```
    Confirm the budget's subscription email and the daily spend email's SNS subscription.
-6. **Everything else**, with the same context: `npx cdk deploy --all -c githubRepo=... -c alertEmail=...`
+6. **Everything else**, with the same context: `npx cdk deploy --all -c githubRepo=... -c githubRepoIds=... -c alertEmail=...`
 7. **Switch the workflow on.** In GitHub's repository variables set `AWS_DEPLOY_ROLE_ARN` to the `GitHubDeployRoleArn` output, and set any of `ALERT_EMAIL`, `DOMAIN_NAME`, `HOSTED_ZONE_ID`, `HOSTED_ZONE_NAME`, `GOOGLE_CLIENT_ID`, `COGNITO_DOMAIN_PREFIX` that step 6 used. From then on each push to `main` deploys dev (`.github/workflows/deploy-dev.yml`).
 8. **CloudFront plan.** Dev stays on the free plan. Prod's flat-rate Pro plan (decision 2) is chosen in the console; CloudFormation does not set it.
 

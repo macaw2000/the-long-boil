@@ -43,6 +43,8 @@ export interface Settings extends EnvironmentShape {
   alertEmail: string | undefined;
   /** owner/name of the GitHub repository allowed to deploy. */
   githubRepo: string | undefined;
+  /** "<owner id>/<repository id>": GitHub's immutable OIDC subject names the repository by these as well as by name. */
+  githubRepoIds: string | undefined;
   imageTag: string;
   /** The CloudFront origin-facing managed prefix list in REGION. */
   cloudFrontPrefixListId: string;
@@ -86,6 +88,7 @@ export function readSettings(app: App): Settings {
     googleClientId: text("googleClientId"),
     alertEmail: text("alertEmail"),
     githubRepo: text("githubRepo"),
+    githubRepoIds: text("githubRepoIds"),
     imageTag: text("imageTag") ?? "latest",
     cloudFrontPrefixListId: text("cloudFrontPrefixListId") ?? CLOUDFRONT_PREFIX_LIST_US_WEST_2,
   };

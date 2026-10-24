@@ -72,6 +72,7 @@ jobs:
             -c env=dev \
             -c imageTag=${{ github.sha }} \
             -c githubRepo=${{ github.repository }} \
+            -c githubRepoIds=${{ github.repository_owner_id }}/${{ github.repository_id }} \
             -c alertEmail=${{ vars.ALERT_EMAIL }} \
             -c domainName=${{ vars.DOMAIN_NAME }} \
             -c hostedZoneId=${{ vars.HOSTED_ZONE_ID }} \

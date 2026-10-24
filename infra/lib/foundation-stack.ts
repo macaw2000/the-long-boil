@@ -121,6 +121,17 @@ export class FoundationStack extends Stack {
     if (!/^[\w.-]+\/[\w.-]+$/.test(settings.githubRepo)) {
       throw new Error(`githubRepo must look like owner/name, not "${settings.githubRepo}".`);
     }
+    // GitHub's immutable subject claim names the owner and repository by
+    // their ids too (repo:<owner>@<owner id>/<name>@<repo id>), so a deleted
+    // and re-created repository of the same name cannot deploy. This
+    // repository uses it; check with
+    // `gh api repos/<owner>/<name>/actions/oidc/customization/sub`.
+    if (!settings.githubRepoIds || !/^\d+\/\d+$/.test(settings.githubRepoIds)) {
+      throw new Error("githubRepoIds must be <owner id>/<repository id>, e.g. -c githubRepoIds=2822443/1422786774.");
+    }
+    const [owner, name] = settings.githubRepo.split("/");
+    const [ownerId, repoId] = settings.githubRepoIds.split("/");
+    const subject = `repo:${owner}@${ownerId}/${name}@${repoId}:ref:refs/heads/main`;
 
     // One provider per account and URL. If a second environment ever shares
     // this account, import the provider there instead of creating another.
@@ -137,7 +148,7 @@ export class FoundationStack extends Stack {
         StringEquals: {
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
           // The workflow must not set `environment:`, which would change the subject.
-          "token.actions.githubusercontent.com:sub": `repo:${settings.githubRepo}:ref:refs/heads/main`,
+          "token.actions.githubusercontent.com:sub": subject,
         },
       }),
     });
