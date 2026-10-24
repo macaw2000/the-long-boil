@@ -2,9 +2,11 @@
 // "Fill" offers the count that 12 hours of steam (or the materials held) allow.
 
 import { useEffect, useMemo, useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Image, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { api, type Content, type FightOutlook, type QueueEntry, type Tinker } from "./api";
 import { seconds, titleCase } from "./format";
+import { ItemIcon } from "./Sprite";
+import { characters } from "./sprites";
 import { colors, ui } from "./theme";
 
 const BOILER_SECONDS = 12 * 3600;
@@ -108,6 +110,7 @@ export function QueuePicker({
                   locked={locked}
                   onPress={() => choose(action.id)}
                   title={name(action.id)}
+                  picture={action.outputs[0] ? <ItemIcon item={action.outputs[0].item} size={32} /> : undefined}
                   detail={`lvl ${action.level_required} · ${seconds(action.seconds)} · ${action.xp} XP${inputs ? ` · uses ${inputs}` : ""}`}
                 />
               );
@@ -125,6 +128,11 @@ export function QueuePicker({
                 locked={false}
                 onPress={() => choose(monster.id)}
                 title={`${monster.name}${monster.boss ? " (boss)" : ""}`}
+                picture={
+                  characters[monster.id]?.idle?.[0] !== undefined ? (
+                    <Image source={characters[monster.id]!.idle![0] as number} style={{ width: 40, height: 40 }} />
+                  ) : undefined
+                }
                 detail={`lvl ${monster.level} · weak to ${monster.weakness} · ${outlookText(monster, fights.get(monster.id))}`}
               />
             ))}
@@ -180,12 +188,15 @@ function Row({
   selected,
   locked,
   onPress,
+  picture,
 }: {
   title: string;
   detail: string;
   selected: boolean;
   locked: boolean;
   onPress: () => void;
+  /** An icon or sprite beside the row. */
+  picture?: React.ReactNode;
 }) {
   return (
     <Pressable
@@ -201,8 +212,13 @@ function Row({
         opacity: locked ? 0.4 : 1,
       }}
     >
-      <Text style={ui.text}>{title}</Text>
-      <Text style={ui.muted}>{detail}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        {picture}
+        <View style={{ flex: 1 }}>
+          <Text style={ui.text}>{title}</Text>
+          <Text style={ui.muted}>{detail}</Text>
+        </View>
+      </View>
     </Pressable>
   );
 }

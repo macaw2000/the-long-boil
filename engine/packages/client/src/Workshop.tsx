@@ -8,6 +8,7 @@ import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-na
 import { api, type Content, type Ledger as LedgerData, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
 import { Exchange } from "./Exchange";
 import { Glow } from "./Glow";
+import { ItemIcon, Scene } from "./Sprite";
 import { Badge, CanisterDrop, CountUp, Floaters, Gauge, ScaldVignette, Sparks, SteamTube, useFloaters } from "./Juice";
 import { currentStep, GuideCard, nudges, type GuideState, type Target } from "./Guide";
 import { Story } from "./Story";
@@ -54,7 +55,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
       const was = count(before);
       for (const [item, qty] of count(next)) {
         const gained = qty - (was.get(item) ?? 0);
-        if (gained > 0) addFloater(`+${gained.toLocaleString()} ${name(item)}`);
+        if (gained > 0) addFloater(`+${gained.toLocaleString()} ${name(item)}`, colors.brass, item);
       }
       const gainedCrowns = next.crowns - before.crowns;
       if (gainedCrowns > 0) addFloater(`+${gainedCrowns.toLocaleString()} Crowns`, colors.brass);
@@ -197,7 +198,8 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
 
   const centre = (
     <View style={{ gap: 12 }}>
-      <Floaters floaters={floaters} onDone={removeFloater} />
+      <Scene tinker={tinker} content={content} progress={headSeconds > 0 ? Math.min(1, elapsed / (headSeconds * 1000)) : 0} working={Boolean(working)} />
+      <Floaters floaters={floaters} onDone={removeFloater} icon={(item) => <ItemIcon item={item} size={22} />} />
       {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} onClose={() => setAway(null)} />}
       <Glow active={lit.has("bench")}>
       <View style={ui.panel}>
@@ -305,12 +307,15 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
         <Text style={ui.heading}>Stores</Text>
         {tinker.inventory.length === 0 && <Text style={ui.muted}>Empty shelves.</Text>}
         {tinker.inventory.map((stack) => (
-          <View key={`${stack.item}-${stack.bound}`} style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <Text style={ui.text}>
-              {name(stack.item)}
-              {stack.bound ? <Text style={ui.muted}> (bound)</Text> : null}
-            </Text>
-            <Text style={ui.number}>{stack.qty.toLocaleString()}</Text>
+          <View key={`${stack.item}-${stack.bound}`} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1 }}>
+              <ItemIcon item={stack.item} size={28} />
+              <Text style={ui.text}>
+                {name(stack.item)}
+                {stack.bound ? <Text style={ui.muted}> (bound)</Text> : null}
+              </Text>
+            </View>
+            <CountUp value={stack.qty} style={ui.number} />
           </View>
         ))}
       </View>

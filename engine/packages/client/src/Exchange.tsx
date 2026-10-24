@@ -5,6 +5,7 @@ import { ladderFloor, onLadder, stepDown, stepUp } from "@long-boil/rules";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { api, type BookLevel, type Content, type MarketView, type Outcome, type Side, type Tinker } from "./api";
+import { ItemIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
 const REFRESH_MS = 5_000;
@@ -80,6 +81,7 @@ function Window({ content, tinker, market, name, act }: { content: Content; tink
         return (
           <CountRow
             key={item}
+            item={item}
             title={name(item)}
             detail={`${terms.collectorPrice} each · you hold ${held} · they take ${left} more`}
             max={Math.min(held, left)}
@@ -107,6 +109,7 @@ function Window({ content, tinker, market, name, act }: { content: Content; tink
       {groceries.map(([item, terms]) => (
         <CountRow
           key={item}
+          item={item}
           title={name(item)}
           detail={`${terms.grocerPrice} each · you hold ${heldUnbound(tinker, item)}`}
           max={Math.floor(tinker.crowns / (terms.grocerPrice ?? 1))}
@@ -118,13 +121,30 @@ function Window({ content, tinker, market, name, act }: { content: Content; tink
   );
 }
 
-function CountRow({ title, detail, max, verb, onSubmit }: { title: string; detail: string; max: number; verb: string; onSubmit: (qty: number) => void }) {
+function CountRow({
+  item,
+  title,
+  detail,
+  max,
+  verb,
+  onSubmit,
+}: {
+  item: string;
+  title: string;
+  detail: string;
+  max: number;
+  verb: string;
+  onSubmit: (qty: number) => void;
+}) {
   const [count, setCount] = useState("");
   const qty = count === "" ? max : Number(count);
   const valid = Number.isInteger(qty) && qty >= 1 && qty <= max;
   return (
     <View style={{ gap: 4 }}>
-      <Text style={ui.text}>{title}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+        <ItemIcon item={item} size={28} />
+        <Text style={ui.text}>{title}</Text>
+      </View>
       <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
         <Text style={[ui.muted, { flex: 1 }]}>{detail}</Text>
         <TextInput
@@ -207,7 +227,10 @@ function Floor({ content, tinker, market, name, act }: { content: Content; tinke
                 borderColor: id === item ? colors.brass : colors.panelEdge,
               }}
             >
-              <Text style={[ui.muted, id === item && { color: colors.ink }]}>{name(id)}</Text>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                <ItemIcon item={id} size={20} />
+                <Text style={[ui.muted, id === item && { color: colors.ink }]}>{name(id)}</Text>
+              </View>
             </Pressable>
           ))}
         </View>

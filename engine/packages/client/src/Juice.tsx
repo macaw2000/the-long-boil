@@ -316,29 +316,51 @@ export interface Floater {
   id: number;
   text: string;
   color: string;
+  /** An item id, to show its icon beside the text. */
+  item?: string;
 }
 
 let floaterId = 0;
 
 /** A stack of short messages ("+1 Brass Spanner") that rise and fade. */
-export function useFloaters(): [Floater[], (text: string, color?: string) => void, (id: number) => void] {
+export function useFloaters(): [Floater[], (text: string, color?: string, item?: string) => void, (id: number) => void] {
   const [floaters, setFloaters] = useState<Floater[]>([]);
-  const add = (text: string, color: string = colors.brass) => setFloaters((list) => [...list.slice(-5), { id: ++floaterId, text, color }]);
+  const add = (text: string, color: string = colors.brass, item?: string) =>
+    setFloaters((list) => [...list.slice(-5), { id: ++floaterId, text, color, ...(item ? { item } : {}) }]);
   const remove = (id: number) => setFloaters((list) => list.filter((floater) => floater.id !== id));
   return [floaters, add, remove];
 }
 
-export function Floaters({ floaters, onDone }: { floaters: Floater[]; onDone: (id: number) => void }) {
+export function Floaters({
+  floaters,
+  onDone,
+  icon,
+}: {
+  floaters: Floater[];
+  onDone: (id: number) => void;
+  /** Renders an item's icon; passed in so this file needs no sprite imports. */
+  icon?: (item: string) => ReactNode;
+}) {
   return (
     <View pointerEvents="none" style={{ position: "absolute", top: 0, right: 12, alignItems: "flex-end", gap: 2, zIndex: 10 }}>
       {floaters.map((floater, index) => (
-        <FloatingText key={floater.id} floater={floater} order={index} onDone={onDone} />
+        <FloatingText key={floater.id} floater={floater} order={index} onDone={onDone} icon={icon} />
       ))}
     </View>
   );
 }
 
-function FloatingText({ floater, order, onDone }: { floater: Floater; order: number; onDone: (id: number) => void }) {
+function FloatingText({
+  floater,
+  order,
+  onDone,
+  icon,
+}: {
+  floater: Floater;
+  order: number;
+  onDone: (id: number) => void;
+  icon?: ((item: string) => ReactNode) | undefined;
+}) {
   const reduced = useReducedMotion();
   const rise = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -355,20 +377,32 @@ function FloatingText({ floater, order, onDone }: { floater: Floater; order: num
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <Animated.Text
+    <Animated.View
       style={{
-        color: floater.color,
-        fontFamily: fonts.serif,
-        fontWeight: "700",
-        fontSize: 15,
-        textShadowColor: colors.soot,
-        textShadowRadius: 4,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 4,
         opacity: rise.interpolate({ inputRange: [0, 0.15, 0.75, 1], outputRange: [0, 1, 1, 0] }),
-        transform: [{ translateY: reduced ? 0 : rise.interpolate({ inputRange: [0, 1], outputRange: [10, -36] }) }],
+        transform: [
+          { translateY: reduced ? 0 : rise.interpolate({ inputRange: [0, 1], outputRange: [10, -36] }) },
+          { scale: reduced ? 1 : rise.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0.6, 1.15, 1] }) },
+        ],
       }}
     >
-      {floater.text}
-    </Animated.Text>
+      {floater.item && icon ? icon(floater.item) : null}
+      <Text
+        style={{
+          color: floater.color,
+          fontFamily: fonts.serif,
+          fontWeight: "700",
+          fontSize: 16,
+          textShadowColor: colors.soot,
+          textShadowRadius: 4,
+        }}
+      >
+        {floater.text}
+      </Text>
+    </Animated.View>
   );
 }
 
