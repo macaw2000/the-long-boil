@@ -35,6 +35,7 @@ Pass with `-c key=value`. An empty value counts as not given.
 | `hostedZoneName` | `domainName` | The zone's name, when the site is a subdomain of it |
 | `cognitoDomainPrefix` | `long-boil-<env>` | Hosted sign-in at `<prefix>.auth.us-west-2.amazoncognito.com`. Must be unused across all of AWS |
 | `googleClientId` | none (no Google sign-in) | Google OAuth client id. Its secret is read from Secrets Manager (below) |
+| `discordClientId` | none (no Discord sign-in) | Discord application id. Its secret is read from Secrets Manager (below) |
 | `alertEmail` | none (no budget, with a synth warning) | Who gets the budget alarms ($100 a month: at 80% actual and 100% forecast) and a spend email every morning (yesterday's spend by service and the month so far, from Cost Explorer) |
 | `githubRepo` | none (no deploy role) | `owner/name` allowed to deploy from `main` |
 | `githubRepoIds` | none; required with `githubRepo` | `<owner id>/<repository id>`, for GitHub's immutable OIDC subject (`repo:<owner>@<owner id>/<name>@<repo id>:ref:refs/heads/main`). `gh api repos/<owner>/<name> -q '.owner.id, .id'` prints both |
@@ -68,6 +69,7 @@ In this order, once the accounts exist (GDD section 11, "Accounts and environmen
    `npx cdk bootstrap aws://<account>/us-west-2 aws://<account>/us-east-1`
 3. **Google sign-in** (optional). Create an OAuth client in Google Cloud with the redirect URI `https://<cognitoDomainPrefix>.auth.us-west-2.amazoncognito.com/oauth2/idpresponse`, then store its secret:
    `aws secretsmanager create-secret --region us-west-2 --name long-boil/dev/google-oauth --secret-string '{"clientSecret":"..."}'`
+   **Discord sign-in** (optional), the same way: in the Discord Developer Portal create an application, add the same `.../oauth2/idpresponse` redirect under OAuth2, then store its client secret as `long-boil/dev/discord-oauth`, field `clientSecret`. Discord publishes an OpenID Connect discovery document, so Cognito federates with it directly.
 4. **Domain** (optional). The hosted zone must already exist in Route 53 in this account.
 5. **Foundation and first image.**
    ```
@@ -78,12 +80,12 @@ In this order, once the accounts exist (GDD section 11, "Accounts and environmen
    ```
    Confirm the budget's subscription email and the daily spend email's SNS subscription.
 6. **Everything else**, with the same context: `npx cdk deploy --all -c githubRepo=... -c githubRepoIds=... -c alertEmail=...`
-7. **Switch the workflow on.** In GitHub's repository variables set `AWS_DEPLOY_ROLE_ARN` to the `GitHubDeployRoleArn` output, and set any of `ALERT_EMAIL`, `DOMAIN_NAME`, `HOSTED_ZONE_ID`, `HOSTED_ZONE_NAME`, `GOOGLE_CLIENT_ID`, `COGNITO_DOMAIN_PREFIX` that step 6 used. From then on each push to `main` deploys dev (`.github/workflows/deploy-dev.yml`).
+7. **Switch the workflow on.** In GitHub's repository variables set `AWS_DEPLOY_ROLE_ARN` to the `GitHubDeployRoleArn` output, and set any of `ALERT_EMAIL`, `DOMAIN_NAME`, `HOSTED_ZONE_ID`, `HOSTED_ZONE_NAME`, `GOOGLE_CLIENT_ID`, `DISCORD_CLIENT_ID`, `COGNITO_DOMAIN_PREFIX` that step 6 used. From then on each push to `main` deploys dev (`.github/workflows/deploy-dev.yml`).
 8. **CloudFront plan.** Dev stays on the free plan. Prod's flat-rate Pro plan (decision 2) is chosen in the console; CloudFormation does not set it.
 
 ## Not here yet
 
-- **Discord sign-in.** Discord is OAuth 2 but not an OIDC provider Cognito can federate with directly. It needs a small OIDC wrapper or the Lambda shim of decision 6, which signs Discord players in as native Cognito users. Research first; the phase 0 exit gate's "Discord sign-in tested" stays open until then.
+- **Decision 6's Discord shim.** Discord federates through OIDC today; past 50 monthly Discord players each costs $0.015, and the shim that signs them in as native Cognito users becomes the cheaper path.
 - **Valkey, Scheduler/SQS jobs, Lambda, DynamoDB, AppConfig, SES, Bedrock, Step Functions.** Each arrives with the feature that needs it.
 - **WAF, GuardDuty, CloudTrail, KMS keys, Cost Anomaly Detection.** Account-level security, set up with the accounts.
 - **Separate accounts.** One environment per account is assumed; the GitHub OIDC provider is created per account.
