@@ -1,0 +1,8 @@
+{
+ "schema": "ledger_page/1",
+ "id": "ledger.rustmoor.fixture_knocking",
+ "item": "item.rustmoor.fixture_ledger_page_2",
+ "reveal_layer": 2,
+ "title": "It knocks",
+ "text": "Something is knocking below. Knockers, all of them."
+}

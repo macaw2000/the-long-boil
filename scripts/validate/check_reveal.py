@@ -25,6 +25,14 @@ Work order 022, part 1 ("No knock words below Act II"): a Work Order
 reveal words apply, to its request line. An order whose act is missing or not
 a whole number fails as not-checkable.
 
+Work order 024, section 4: a Ledger Page (ledger_page/*) has a reveal_layer
+and no act. It is checked as belonging to its layer's act (LAYER_ACT), so the
+reveal words apply to its title and text at that act: a layer 1 page may not
+say "knocking". Layers 4 and 5 fail as for storylets; a reveal_layer that is
+missing, not a whole number or not a known layer fails as not-checkable.
+Which act a page actually reaches the player in (its item's drop or reward)
+is not read here.
+
 Files are read leniently, not through their schema, so a layer the schema
 also rejects (4 or 5) is still reported here as a breach. A story file whose
 act or reveal_layer is missing or not a whole number fails as not-checkable:
@@ -69,16 +77,19 @@ def _whole(value):
     return isinstance(value, int) and not isinstance(value, bool)
 
 
-def _check_words(report, path, ident, fields, act):
+def _check_words(report, path, ident, fields, act, whose=None):
+    """whose describes the act the file is checked at; by default "this file
+    is act N"."""
+    whose = whose or "this file is act %d" % act
     for earliest, pattern, source, limit in WORD_GUARDS:
         if act >= earliest:
             continue
         for pointer, text in fields:
             for hit in sorted({m.group(0) for m in pattern.finditer(text)}):
                 report.fail("reveal-word", path,
-                            "%s contains %r, which may not appear before act %d; this file "
-                            "is act %d (%s: \"%s\")"
-                            % (pointer, hit, earliest, act, source, limit), ident)
+                            "%s contains %r, which may not appear before act %d; %s "
+                            "(%s: \"%s\")"
+                            % (pointer, hit, earliest, whose, source, limit), ident)
 
 
 def run(root):
@@ -126,14 +137,39 @@ def run(root):
                         "Work Order" % lib.json.dumps(act), ident)
             continue
         _check_words(report, path, ident, story.work_order_prose_fields(data), act)
+    pages = story.ledger_files(root)
+    for path, data in pages:
+        _check_ledger_page(report, path, data)
     storylets, letters = story.count_kinds(files)
     report.note("%d storylet file(s), %d letter file(s), %d guide file(s) as act %d, "
-                "%d Work Order file(s); reveal words: %s%s"
-                % (storylets, letters, len(guides), story.GUIDE_ACT, len(orders),
+                "%d Work Order file(s), %d Ledger Page file(s) at their layer's act; "
+                "reveal words: %s%s"
+                % (storylets, letters, len(guides), story.GUIDE_ACT, len(orders), len(pages),
                    "; ".join("%s before act %d" % ("/".join(forms), act)
                              for act, forms, _s, _l in REVEAL_WORDS),
-                   "; nothing to check" if not files and not guides and not orders else ""))
+                   "; nothing to check"
+                   if not files and not guides and not orders and not pages else ""))
     return report
+
+
+def _check_ledger_page(report, path, data):
+    ident = story.file_id(data)
+    layer = data.get("reveal_layer")
+    if not _whole(layer):
+        report.fail("not-checkable", path,
+                    "reveal_layer is %s; it must be a whole number for the guard to check "
+                    "this Ledger Page" % lib.json.dumps(layer), ident)
+        return
+    if layer in FORBIDDEN_LAYERS:
+        report.fail("forbidden-layer", path, "reveal_layer %d is never allowed" % layer, ident)
+        return
+    if layer not in LAYER_ACT:
+        report.fail("not-checkable", path,
+                    "reveal_layer %d is not a known layer (0 to 3)" % layer, ident)
+        return
+    fields = [(pointer, text) for pointer, text, _f in story.ledger_prose_fields(data)]
+    _check_words(report, path, ident, fields, LAYER_ACT[layer],
+                 "this page is reveal_layer %d, so it is checked as act %d" % (layer, LAYER_ACT[layer]))
 
 
 def main(argv):

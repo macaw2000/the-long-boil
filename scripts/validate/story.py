@@ -204,3 +204,32 @@ def work_order_prose_fields(data):
     if isinstance(data.get("request"), str):
         return [("/request", data["request"])]
     return []
+
+
+# --------------------------------------------------------------------------
+# Hester's Ledger pages (work order 024, section 4)
+# --------------------------------------------------------------------------
+
+LEDGER_PREFIX = "ledger_page/"
+
+
+def ledger_files(root):
+    """(path, data) for every parsed content file declaring ledger_page/*,
+    anywhere under content/ (the schema check reports one in the wrong
+    place)."""
+    out = []
+    for path in lib.content_files(root):
+        data, error = lib.load_json(root, path)
+        if error or not isinstance(data, dict):
+            continue
+        if declared(data).startswith(LEDGER_PREFIX):
+            out.append((path, data))
+    return out
+
+
+def ledger_prose_fields(data):
+    """(pointer, text, field) for the page's title and text, leniently: a
+    field that is missing or not a string is skipped (the schema check's to
+    report). field is "title" or "text"."""
+    return [("/" + field, data[field], field) for field in ("title", "text")
+            if isinstance(data.get(field), str)]

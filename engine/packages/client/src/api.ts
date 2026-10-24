@@ -280,6 +280,15 @@ export interface ChatView {
 export type Notice = { type: "changed" } | { type: "mutes" } | { type: "guild" } | { type: "chat"; message: ChatMessage };
 
 /** The live connection's address, on the same server as the HTTP API. */
+/** A page of Hester's Ledger; its title and text come only once the page is held (server pages.ts). */
+export interface LedgerPage {
+  item: string;
+  name: string;
+  held: boolean;
+  title: string | null;
+  text: string | null;
+}
+
 /** A browser cannot give a WebSocket headers, so the sign-in token rides in the query. */
 export async function liveUrl(tinkerId: number): Promise<string> {
   const token = await bearerToken();
@@ -305,6 +314,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 export const api = {
   content: () => request<Content>("GET", "/content"),
   me: () => request<{ login: string | null; admin: boolean }>("GET", "/me"),
+  pages: (id: number) => request<{ pages: LedgerPage[] }>("GET", `/tinkers/${id}/pages`),
   listTinkers: (login: string) =>
     request<{ tinkers: { id: number; name: string }[] }>("GET", `/accounts/${encodeURIComponent(login)}/tinkers`),
   createTinker: (login: string, name: string) => request<Outcome>("POST", "/tinkers", { login, name }),

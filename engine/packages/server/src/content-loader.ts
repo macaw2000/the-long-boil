@@ -19,6 +19,14 @@ export interface ItemInfo {
   flavour: string;
 }
 
+/** A page of Hester's Ledger (content/ledger, schema ledger_page/1), written by Jeremy (work order 024). */
+export interface LedgerPage {
+  id: string;
+  item: string;
+  title: string;
+  text: string;
+}
+
 /** An item's terms at the Counting-House window and on the Exchange (tuning.economy). */
 export interface ItemTerms {
   bound: boolean;
@@ -33,6 +41,8 @@ export interface GameContent {
   /** Names and flavour lines, for the client; the rules never read them. */
   items: ReadonlyMap<string, ItemInfo>;
   economy: ReadonlyMap<string, ItemTerms>;
+  /** Ledger page texts by the item that carries the page; a page with no file yet is not transcribed. */
+  ledger: ReadonlyMap<string, LedgerPage>;
   /** Brassbuckle's first-session guide (work order 021), or no steps before it is written. */
   guide: { id: string; speaker: string; line: string; button?: string }[];
 }
@@ -92,6 +102,8 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
   const start = readJson(join(dir, "start.json"));
   const economy = economyTerms(listJson(join(dir, "tuning")).filter((path) => readJson(path).schema?.startsWith("tuning.economy")).map(readJson));
   const workOrderDir = join(dir, "work_orders");
+  const ledgerDir = join(dir, "ledger");
+  const ledger: LedgerPage[] = existsSync(ledgerDir) ? listJson(ledgerDir).map(readJson) : [];
   return {
     rules: buildContent({
       version,
@@ -108,6 +120,7 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
     }),
     start: { inventory: start.inventory, crowns: start.crowns },
     guide: guideSteps(dir),
+    ledger: new Map(ledger.map((page) => [page.item, { id: page.id, item: page.item, title: page.title, text: page.text }])),
     economy,
     items: new Map(all("items", "items").map((item: ItemInfo) => [item.id, { id: item.id, name: item.name, flavour: item.flavour }])),
   };

@@ -1,0 +1,18 @@
+FAIL schema/file-name content/ledger/global.fixture_wrong_zone.json id=ledger.rustmoor.fixture_wrong_zone : a ledger_page/1 file is named for its id; this one must be content/ledger/rustmoor.fixture_wrong_zone.json
+FAIL schema/file-name content/ledger/page_1.json id=ledger.rustmoor.fixture_misnamed : a ledger_page/1 file is named for its id; this one must be content/ledger/rustmoor.fixture_misnamed.json
+FAIL schema/file-name content/storylets/rustmoor.fixture_stray.json id=ledger.rustmoor.fixture_stray : a ledger_page/1 file is named for its id; this one must be content/ledger/rustmoor.fixture_stray.json
+FAIL schema/shape content/ledger/bad-id.json id=ledger.foundry.Page : /id: does not match pattern ^ledger\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/ledger/bad-id.json id=ledger.foundry.Page : /item: does not match pattern ^item\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/ledger/rustmoor.fixture_blank.json id=ledger.rustmoor.fixture_blank : /text: does not match pattern [\S]
+FAIL schema/shape content/ledger/rustmoor.fixture_blank.json id=ledger.rustmoor.fixture_blank : /text: shorter than 1 characters
+FAIL schema/shape content/ledger/rustmoor.fixture_blank.json id=ledger.rustmoor.fixture_blank : /title: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
+FAIL schema/shape content/ledger/rustmoor.fixture_layer_four.json id=ledger.rustmoor.fixture_layer_four : /act: field 'act' is not allowed by this schema
+FAIL schema/shape content/ledger/rustmoor.fixture_layer_four.json id=ledger.rustmoor.fixture_layer_four : /reveal_layer: above maximum 3
+FAIL schema/shape content/ledger/rustmoor.fixture_layer_four.json id=ledger.rustmoor.fixture_layer_four : /revision: field 'revision' is not allowed by this schema
+FAIL schema/shape content/ledger/rustmoor.fixture_layer_text.json id=ledger.rustmoor.fixture_layer_text : /reveal_layer: expected integer, got string
+FAIL schema/shape content/ledger/rustmoor.fixture_no_text.json id=ledger.rustmoor.fixture_no_text : /: missing required field 'text'
+FAIL schema/shape content/ledger/rustmoor.fixture_two_lines.json id=ledger.rustmoor.fixture_two_lines : /title: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
+FAIL schema/wrong-directory content/ledger/rustmoor.fixture_items.json : files under content/ledger/ must declare ledger_page/*; this one declares 'item/1'
+FAIL schema/wrong-directory content/ledger/rustmoor.fixture_items.json : schema 'item/1' belongs under content/items/
+FAIL schema/wrong-directory content/storylets/rustmoor.fixture_stray.json id=ledger.rustmoor.fixture_stray : files under content/storylets/ must declare storylet/*; this one declares 'ledger_page/1'
+FAIL schema/wrong-directory content/storylets/rustmoor.fixture_stray.json id=ledger.rustmoor.fixture_stray : schema 'ledger_page/1' belongs under content/ledger/

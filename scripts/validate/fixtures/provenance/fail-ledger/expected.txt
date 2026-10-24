@@ -1,0 +1,4 @@
+FAIL provenance/many-rows content/ledger/rustmoor.fixture_page_2.json id=ledger.rustmoor.fixture_page_2 : content id has 2 rows in the register (rows 0, 1)
+FAIL provenance/missing-file content/provenance.json#/rows/2 id=ledger.rustmoor.fixture_page_9 : path 'content/ledger/rustmoor.fixture_page_9.json' does not exist
+FAIL provenance/no-row content/ledger/rustmoor.fixture_page_1.json id=ledger.rustmoor.fixture_page_1 : content id has no row in the register
+FAIL provenance/shared-path-null-pointer content/ledger/rustmoor.fixture_page_2.json : 2 rows point at this whole file with a null pointer: ledger.rustmoor.fixture_page_2 (row 0), ledger.rustmoor.fixture_page_2 (row 1)

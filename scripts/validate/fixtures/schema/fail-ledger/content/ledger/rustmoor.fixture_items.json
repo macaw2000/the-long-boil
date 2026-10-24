@@ -1,0 +1,10 @@
+{
+ "schema": "item/1",
+ "items": [
+  {
+   "id": "item.rustmoor.fixture_ledger_misplaced",
+   "name": "Misplaced",
+   "flavour": "Item file in the ledger directory."
+  }
+ ]
+}

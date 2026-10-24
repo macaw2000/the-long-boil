@@ -43,6 +43,7 @@ import {
   sellToCollector,
   type TradingRules,
 } from "./market.js";
+import { readLedgerPages } from "./pages.js";
 import { devSetStory, discardLetter, payDebt, playStory, readStory } from "./story.js";
 import { BadRequest, NotFound, checkIn, createTinker, equip, fightOutlooks, listTinkers, loadout, look, setQueue } from "./tinkers.js";
 
@@ -360,6 +361,9 @@ export function buildApi({
   app.get<{ Params: { id: string } }>("/tinkers/:id/loadout", async (request) => loadout(db, content, Number(request.params.id), now()));
 
   app.get<{ Params: { id: string } }>("/tinkers/:id/story", async (request) => readStory(db, content, Number(request.params.id), now()));
+
+  // Hester's Ledger: the pages this Tinker holds can be read; the rest are only counted.
+  app.get<{ Params: { id: string } }>("/tinkers/:id/pages", async (request) => readLedgerPages(db, content, Number(request.params.id)));
 
   app.post<{ Params: { id: string }; Body: { kind: "storylet" | "letter"; scene: string; option: number } }>(
     "/tinkers/:id/story",

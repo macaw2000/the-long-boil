@@ -1,0 +1,101 @@
+{
+ "schema": "provenance/3",
+ "rows": [
+  {
+   "id": "ledger.rustmoor.fixture_page_2",
+   "type": "ledger_page",
+   "path": "content/ledger/rustmoor.fixture_page_2.json",
+   "status": "drafted",
+   "drafted_by": "jeremy",
+   "model": null,
+   "patch": null,
+   "revision": null,
+   "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-24T18:00:00Z",
+     "status": "drafted",
+     "by": "jeremy"
+    }
+   ],
+   "retirement": null
+  },
+  {
+   "id": "ledger.rustmoor.fixture_page_2",
+   "type": "ledger_page",
+   "path": "content/ledger/rustmoor.fixture_page_2.json",
+   "status": "drafted",
+   "drafted_by": "jeremy",
+   "model": null,
+   "patch": null,
+   "revision": null,
+   "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-24T18:00:00Z",
+     "status": "drafted",
+     "by": "jeremy"
+    }
+   ],
+   "retirement": null
+  },
+  {
+   "id": "ledger.rustmoor.fixture_page_9",
+   "type": "ledger_page",
+   "path": "content/ledger/rustmoor.fixture_page_9.json",
+   "status": "drafted",
+   "drafted_by": "jeremy",
+   "model": null,
+   "patch": null,
+   "revision": null,
+   "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+   "pointer": null,
+   "validators": {
+    "result": "pass",
+    "run": "2026-10-21T22:00:00Z",
+    "checks": [
+     "schema",
+     "provenance"
+    ],
+    "waiver": null
+   },
+   "review": null,
+   "approved_by": null,
+   "approved_at": null,
+   "history": [
+    {
+     "at": "2026-10-24T18:00:00Z",
+     "status": "drafted",
+     "by": "jeremy"
+    }
+   ],
+   "retirement": null
+  }
+ ]
+}

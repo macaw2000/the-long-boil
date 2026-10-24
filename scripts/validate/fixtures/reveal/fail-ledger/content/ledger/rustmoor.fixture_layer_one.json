@@ -1,0 +1,8 @@
+{
+ "schema": "ledger_page/1",
+ "id": "ledger.rustmoor.fixture_layer_one",
+ "item": "item.rustmoor.fixture_ledger_page_1",
+ "reveal_layer": 1,
+ "title": "The KNOCK",
+ "text": "Seventy fathoms.\nSomething is Knocking below."
+}

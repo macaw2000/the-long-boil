@@ -1,0 +1,8 @@
+{
+ "schema": "ledger_page/1",
+ "id": "ledger.rustmoor.fixture_layer_four",
+ "item": "item.rustmoor.fixture_ledger_page_1",
+ "reveal_layer": 4,
+ "title": "A fixture page",
+ "text": "Fixture prose, in a fixture hand."
+}

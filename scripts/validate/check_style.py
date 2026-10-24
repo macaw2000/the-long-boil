@@ -23,6 +23,14 @@ Work order 022, part 1: a Work Order's request line (work_order/*,
 content/work_orders/) is at most 25 words ("One line per order, at most 25
 words") and contains no banned word or phrase.
 
+Work order 024, section 4: a Ledger Page's title and text (ledger_page/*,
+content/ledger/) contain no banned word or phrase. Neither has a word limit
+in canon: style.md's Limits table does not list Ledger Pages, and the work
+order says only that the title is short. LEDGER_TITLE_MAX_WORDS and
+LEDGER_TEXT_MAX_WORDS are therefore unset (None); while either is unset and
+any page exists, the check warns once (limit-unset) and does not count that
+field's words. Set them from canon; do not guess them.
+
 Files are read leniently: a field that is missing or not a string is the
 schema check's to report. Fails when style.md cannot be read or its Banned
 section lists nothing. "Any sentence that explains its own joke" is not a
@@ -54,6 +62,12 @@ GUIDE_LIMITS = {"line": GUIDE_LINE_MAX_WORDS, "button": GUIDE_BUTTON_MAX_WORDS}
 
 # Work order 022, part 3: "One line per order, at most 25 words".
 REQUEST_MAX_WORDS = 25
+
+# Work order 024, section 4: no limit in canon yet. Open question; see the
+# docstring. None means unset: the field's words are not counted.
+LEDGER_TITLE_MAX_WORDS = None
+LEDGER_TEXT_MAX_WORDS = None
+LEDGER_LIMITS = {"title": LEDGER_TITLE_MAX_WORDS, "text": LEDGER_TEXT_MAX_WORDS}
 
 # docs/canon/style.md, Voice; work order 015, scope 6.
 ALWAYS_BANNED = ("the player",)
@@ -103,7 +117,7 @@ def _fields(data):
 
 def _check_text(report, path, ident, pointer, text, limit, patterns):
     words = len(text.split())
-    if words > limit:
+    if limit is not None and words > limit:
         report.fail("too-long", path, "%s has %d words; at most %d allowed"
                     % (pointer, words, limit), ident)
     for phrase, pattern in patterns:
@@ -139,12 +153,26 @@ def run(root):
         for pointer, text in story.work_order_prose_fields(data):
             fields += 1
             _check_text(report, path, ident, pointer, text, REQUEST_MAX_WORDS, patterns)
+    pages = story.ledger_files(root)
+    for path, data in pages:
+        ident = story.file_id(data)
+        for pointer, text, field in story.ledger_prose_fields(data):
+            fields += 1
+            _check_text(report, path, ident, pointer, text, LEDGER_LIMITS[field], patterns)
+    unset = sorted(name for name, value in (("LEDGER_TITLE_MAX_WORDS", LEDGER_TITLE_MAX_WORDS),
+                                            ("LEDGER_TEXT_MAX_WORDS", LEDGER_TEXT_MAX_WORDS))
+                   if value is None)
+    if pages and unset:
+        report.warn("limit-unset", None,
+                    "%s unset in check_style.py: no canon word limit for Ledger Pages yet, so "
+                    "%d page(s) were checked for banned words only" % (" and ".join(unset), len(pages)))
     storylets, letters = story.count_kinds(files)
     report.note("%d storylet file(s), %d letter file(s), %d guide file(s), %d Work Order "
-                "file(s), %d prose field(s); banned: %s%s"
-                % (storylets, letters, len(guides), len(orders), fields,
+                "file(s), %d Ledger Page file(s), %d prose field(s); banned: %s%s"
+                % (storylets, letters, len(guides), len(orders), len(pages), fields,
                    ", ".join(repr(p) for p in phrases),
-                   "; nothing to check" if not files and not guides and not orders else ""))
+                   "; nothing to check"
+                   if not files and not guides and not orders and not pages else ""))
     return report
 
 

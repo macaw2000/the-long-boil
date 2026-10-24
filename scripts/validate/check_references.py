@@ -27,6 +27,10 @@ here, and has no references to check.
 Work order 022, part 1: every item a Work Order (work_order/*) asks for, in
 an "asks" entry's "item", must be an item as above.
 
+Work order 024, section 4: the item a Ledger Page (ledger_page/*) names in
+"item" must be an item as above, and no two pages may name the same item
+(duplicate-page: each Ledger Page item has at most one text).
+
 Ids are collected leniently: an item or monster file with shape errors still
 contributes the ids it has, and an action, drop or economy file with shape
 errors still has its references checked. The schema check reports the shape
@@ -54,6 +58,7 @@ GEAR_SCHEMA_PREFIX = "gear/"
 START_SCHEMA_PREFIX = "start/"
 GUIDE_SCHEMA_PREFIX = "guide/"
 WORK_ORDER_SCHEMA_PREFIX = "work_order/"
+LEDGER_SCHEMA_PREFIX = "ledger_page/"
 
 
 def _declared(data):
@@ -192,6 +197,31 @@ def check_work_order(report, path, data, items):
     return references
 
 
+def check_ledger_page(report, path, data, items, pages):
+    """Returns the number of references checked in one ledger_page/* file.
+    pages collects {item id: [(path, page id)]} for the duplicate rule."""
+    ident = data.get("id") if isinstance(data.get("id"), str) else None
+    item = data.get("item")
+    if not isinstance(item, str):
+        return 0  # the schema check reports this
+    pages.setdefault(item, []).append((path, ident))
+    if item not in items:
+        _unknown_item(report, path, "/item", item, ident)
+    return 1
+
+
+def check_duplicate_pages(report, pages):
+    for item in sorted(pages):
+        named = pages[item]
+        if len(named) < 2:
+            continue
+        listed = ", ".join("%s (%s)" % (ident, path) for path, ident in named)
+        for path, ident in named:
+            report.fail("duplicate-page", path,
+                        "/item names %r, which %d Ledger Pages name: %s; an item has at most "
+                        "one page" % (item, len(named), listed), ident)
+
+
 def run(root):
     report = lib.Report(CHECK)
     items = item_ids(root)
@@ -203,6 +233,8 @@ def run(root):
     start_files = start_refs = 0
     guide_files = 0
     order_files = order_refs = 0
+    page_files = page_refs = 0
+    pages = {}
     for path in lib.content_files(root):
         data, error = lib.load_json(root, path)
         if error:
@@ -231,6 +263,10 @@ def run(root):
             order_files += 1
             order_refs += check_work_order(report, path, data, items)
             continue
+        if declared.startswith(LEDGER_SCHEMA_PREFIX):
+            page_files += 1
+            page_refs += check_ledger_page(report, path, data, items, pages)
+            continue
         if not declared.startswith(ACTION_SCHEMA_PREFIX):
             continue
         action_files += 1
@@ -257,6 +293,8 @@ def run(root):
     report.note("%d start file(s), %d item reference(s)" % (start_files, start_refs))
     report.note("%d guide file(s), no references to check" % guide_files)
     report.note("%d Work Order file(s), %d item reference(s)" % (order_files, order_refs))
+    check_duplicate_pages(report, pages)
+    report.note("%d Ledger Page file(s), %d item reference(s)" % (page_files, page_refs))
     return report
 
 

@@ -1421,6 +1421,115 @@ na = wo("wo.rustmoor.board.fixture_no_act", "favour.board", (1, 5), [(WO_ORE, 1)
 del na["act"]
 put(RVF + WOD + "no-act.json", na)
 
+# ---- work order 024, section 4: ledger_page/1, Hester's Ledger page texts.
+# Rustmoor, with every item and page name prefixed fixture_; the prose is
+# fixture prose, not Hester's. A page file is named for its id
+# (content/ledger/<id without "ledger.">.json) unless it is there to be
+# misnamed.
+LGD = "content/ledger/"
+LG_ITEM_1, LG_ITEM_2 = "item.rustmoor.fixture_ledger_page_1", "item.rustmoor.fixture_ledger_page_2"
+LG_ITEMS = items((LG_ITEM_1, "Fixture Page 1", "A fixture page, read by a validator."),
+                 (LG_ITEM_2, "Fixture Page 2", "A fixture page, read by a validator."))
+LGIP = "content/items/ledger.json"
+def page(ident, item, layer=1, title="A fixture page", text="Fixture prose, in a fixture hand.",
+         schema="ledger_page/1"):
+    return {"schema": schema, "id": ident, "item": item, "reveal_layer": layer, "title": title, "text": text}
+def put_page(base, pg, name=None):
+    put(base + LGD + (name or pg["id"].split(".", 1)[1]) + ".json", pg)
+GOOD_PAGE = page("ledger.rustmoor.fixture_page_1", LG_ITEM_1)
+
+# schema pass: a page at its own file name, with a multi-line text.
+put_page("schema/pass/", page("ledger.rustmoor.fixture_page_1", LG_ITEM_1,
+                              text="First paragraph.\n\nSecond paragraph."))
+# schema fail-ledger: no text; a blank title and an empty text; a two-line
+# title; a malformed id and item; layer 4 and a field the schema does not
+# know (revision included); a whole-file layer of the wrong type; a page at
+# the wrong file name; a page under content/storylets/; an item file under
+# content/ledger/.
+SL = "schema/fail-ledger/"
+nt = page("ledger.rustmoor.fixture_no_text", LG_ITEM_1); del nt["text"]
+put_page(SL, nt)
+put_page(SL, page("ledger.rustmoor.fixture_blank", LG_ITEM_1, title=" ", text=""))
+put_page(SL, page("ledger.rustmoor.fixture_two_lines", LG_ITEM_1, title="Two lines,\nnot one."))
+put(SL + LGD + "bad-id.json", page("ledger.foundry.Page", "monster.rustmoor.fixture_rat"))
+put_page(SL, dict(page("ledger.rustmoor.fixture_layer_four", LG_ITEM_1, layer=4), revision=1, act=1))
+put_page(SL, page("ledger.rustmoor.fixture_layer_text", LG_ITEM_1, layer="1"))
+put(SL + LGD + "page_1.json", page("ledger.rustmoor.fixture_misnamed", LG_ITEM_1))
+put(SL + LGD + "global.fixture_wrong_zone.json", page("ledger.rustmoor.fixture_wrong_zone", LG_ITEM_1))
+put(SL + "content/storylets/rustmoor.fixture_stray.json", page("ledger.rustmoor.fixture_stray", LG_ITEM_1))
+put(SL + LGD + "rustmoor.fixture_items.json", items(("item.rustmoor.fixture_ledger_misplaced", "Misplaced",
+                                                     "Item file in the ledger directory.")))
+
+# references pass: a page names an item that exists; fail-ledger: a page
+# names an item nothing defines, and two pages name the same item.
+put("references/pass/" + LGIP, LG_ITEMS)
+put_page("references/pass/", GOOD_PAGE)
+RL = "references/fail-ledger/"
+put(RL + LGIP, LG_ITEMS)
+put_page(RL, GOOD_PAGE)
+put_page(RL, page("ledger.rustmoor.fixture_page_1_again", LG_ITEM_1))
+put_page(RL, page("ledger.rustmoor.fixture_ghost", "item.rustmoor.fixture_ledger_ghost"))
+put_page(RL, page("ledger.rustmoor.fixture_page_2", LG_ITEM_2))
+
+# reveal pass: a layer 1 page with "knockabout" (not a knock form), a layer 2
+# page with knock forms (allowed from act 2), and a layer 0 page.
+put_page(RVP, page("ledger.rustmoor.fixture_knockabout", LG_ITEM_1, title="A knockabout week",
+                   text="A knockabout week at the gauges."))
+put_page(RVP, page("ledger.rustmoor.fixture_knocking", LG_ITEM_2, layer=2, title="It knocks",
+                   text="Something is knocking below. Knockers, all of them."))
+put_page(RVP, page("ledger.global.fixture_plain", LG_ITEM_1, layer=0))
+# reveal fail-ledger: a layer 1 page with knock forms in its title and text,
+# in any case; a layer 0 page with one; layers 4 and 5; a page with no
+# reveal_layer, one with a layer that is not a whole number, and one with an
+# unknown layer.
+RVL = "reveal/fail-ledger/"
+put_page(RVL, page("ledger.rustmoor.fixture_layer_one", LG_ITEM_1, title="The KNOCK",
+                   text="Seventy fathoms.\nSomething is Knocking below."))
+put_page(RVL, page("ledger.rustmoor.fixture_layer_zero", LG_ITEM_1, layer=0, text="It knocked twice."))
+put_page(RVL, page("ledger.rustmoor.fixture_layer_four", LG_ITEM_1, layer=4))
+put_page(RVL, page("ledger.rustmoor.fixture_layer_five", LG_ITEM_1, layer=5, text="It knocked."))
+nl = page("ledger.rustmoor.fixture_unlayered", LG_ITEM_1); del nl["reveal_layer"]
+put_page(RVL, nl)
+put_page(RVL, page("ledger.rustmoor.fixture_half_layer", LG_ITEM_1, layer=1.5))
+put_page(RVL, page("ledger.rustmoor.fixture_layer_nine", LG_ITEM_1, layer=9))
+
+# style pass: "delved" is not "delve", "players" is not "the player", and a
+# 400-word text and 30-word title pass while no word limit is set (the run
+# warns limit-unset; a pass fixture may warn).
+put_page(SYP, page("ledger.rustmoor.fixture_long", LG_ITEM_1, title=words(30),
+                   text="You delved, and the players cheered.\n\n" + words(400)))
+# style fail-ledger: banned phrases in a title and a text, in any case and
+# across a line break; "the player" in a text; and the limit-unset warning.
+SYL = "style/fail-ledger/"
+put(SYL + STYP, STYLE_MD)
+put_page(SYL, page("ledger.rustmoor.fixture_banned", LG_ITEM_1, title="A Tapestry of gauges",
+                   text="A testament\nto the Board. Little did you know."))
+put_page(SYL, page("ledger.rustmoor.fixture_player", LG_ITEM_2, title="Readings",
+                   text="The player reads the gauge."))
+
+# provenance pass: a page Jeremy wrote takes one row, drafted_by "jeremy"
+# and model null, with a null revision (the page has no revision field).
+def human_row(ident, path, kind):
+    r = row(ident, path, revision=None, kind=kind)
+    r.update(drafted_by="jeremy", model=None, work_order="docs/work-orders/024-act1-spine-by-jeremy.md",
+             history=[{"at": "2026-10-24T18:00:00Z", "status": "drafted", "by": "jeremy"}])
+    return r
+LG_PATH = LGD + "rustmoor.fixture_page_1.json"
+with open(os.path.join(F, "provenance/pass/content/provenance.json")) as fh:
+    PREG = json.load(fh)
+PREG["rows"] += [human_row(GOOD_PAGE["id"], LG_PATH, "ledger_page")]
+put("provenance/pass/content/provenance.json", PREG)
+put_page("provenance/pass/", GOOD_PAGE)
+# provenance fail-ledger: a page with no row, a page with two rows, and a row
+# at a page file that does not exist.
+PVL = "provenance/fail-ledger/"
+put_page(PVL, GOOD_PAGE)
+put_page(PVL, page("ledger.rustmoor.fixture_page_2", LG_ITEM_2))
+put(PVL + "content/provenance.json", {"schema": "provenance/3", "rows": [
+    human_row("ledger.rustmoor.fixture_page_2", LGD + "rustmoor.fixture_page_2.json", "ledger_page"),
+    human_row("ledger.rustmoor.fixture_page_2", LGD + "rustmoor.fixture_page_2.json", "ledger_page"),
+    human_row("ledger.rustmoor.fixture_page_9", LGD + "rustmoor.fixture_page_9.json", "ledger_page")]})
+
 # ---- retirement (provenance/3): a retired row keeps its row instead of being
 # erased. provenance pass-retired: a retired row at a file that no longer
 # exists, a retired row whose pointer no longer resolves and whose revision no

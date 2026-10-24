@@ -1,0 +1,8 @@
+{
+ "schema": "ledger_page/1",
+ "id": "ledger.rustmoor.fixture_two_lines",
+ "item": "item.rustmoor.fixture_ledger_page_1",
+ "reveal_layer": 1,
+ "title": "Two lines,\nnot one.",
+ "text": "Fixture prose, in a fixture hand."
+}

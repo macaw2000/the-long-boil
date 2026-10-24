@@ -1,0 +1,7 @@
+{
+ "schema": "ledger_page/1",
+ "id": "ledger.rustmoor.fixture_no_text",
+ "item": "item.rustmoor.fixture_ledger_page_1",
+ "reveal_layer": 1,
+ "title": "A fixture page"
+}

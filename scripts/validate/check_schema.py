@@ -32,6 +32,13 @@
   Order tuning file (tuning.work_orders/*) lives under content/tuning/. The
   Work Order id-form rule is the work_orders check's.
 
+- Ledger Pages (work order 024, section 4): a file under content/ledger/
+  declares ledger_page/*, and ledger_page/* is declared nowhere else. A
+  ledger_page/1 file whose id matches its schema's pattern is the file
+  content/ledger/<id without its "ledger." prefix>.json, so
+  ledger.rustmoor.page_1 is content/ledger/rustmoor.page_1.json (file-name),
+  since the Hester's Ledger screen reads one file per page.
+
 The register's own shape is the provenance check's job, not this one's.
 
 Usage: python3 scripts/validate/check_schema.py [--root DIR]
@@ -57,6 +64,7 @@ SCHEMA_HOMES = (
     ("letter/", "content/letters/"),
     ("guide/", "content/guide/"),
     ("work_order/", "content/work_orders/"),
+    ("ledger_page/", "content/ledger/"),
 )
 
 # Work orders 007 and 022: schema family -> the only directory it may live in. The
@@ -112,6 +120,8 @@ def run(root):
         _check_home(report, path, declared, top_id)
         if declared in ID_FORM_SCHEMAS and declared in schemas:
             _check_id_form(report, path, data, top_id, schemas[declared])
+        if declared in FILE_NAME_SCHEMAS and declared in schemas:
+            _check_file_name(report, path, top_id, schemas[declared])
 
         for pointer, value in lib.content_ids(data):
             if not isinstance(value, str) or not value:
@@ -152,6 +162,23 @@ def _check_id_form(report, path, data, ident, schema):
     if isinstance(location, str) and second != location:
         report.fail("id-form", path,
                     "id's location part is %r but location is %r" % (second, location), ident)
+
+
+# Work order 024, section 4: schema -> (id prefix, directory). The file is
+# <directory><id without the prefix>.json.
+FILE_NAME_SCHEMAS = {"ledger_page/1": ("ledger.", "content/ledger/")}
+
+
+def _check_file_name(report, path, ident, schema):
+    pattern = schema["properties"]["id"]["pattern"]
+    if ident is None or not lib.ecma_search(pattern, ident):
+        return  # the shape check reports a malformed id
+    prefix, directory = FILE_NAME_SCHEMAS[schema["$id"]]
+    expected = directory + ident[len(prefix):] + ".json"
+    if path != expected:
+        report.fail("file-name", path,
+                    "a %s file is named for its id; this one must be %s"
+                    % (schema["$id"], expected), ident)
 
 
 def _check_home(report, path, declared, ident):

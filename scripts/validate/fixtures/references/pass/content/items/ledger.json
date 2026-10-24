@@ -1,0 +1,15 @@
+{
+ "schema": "item/1",
+ "items": [
+  {
+   "id": "item.rustmoor.fixture_ledger_page_1",
+   "name": "Fixture Page 1",
+   "flavour": "A fixture page, read by a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_ledger_page_2",
+   "name": "Fixture Page 2",
+   "flavour": "A fixture page, read by a validator."
+  }
+ ]
+}

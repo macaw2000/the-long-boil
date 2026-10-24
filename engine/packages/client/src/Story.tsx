@@ -2,10 +2,11 @@
 // Pneumatic Post first, then the storylets open to this Tinker. A storylet
 // is a card: the description and up to four options, each showing its
 // Nerve cost and, for a challenge, its odds before the player commits.
+// Hester's Ledger closes the tab: the pages found, each readable once held.
 
 import { useCallback, useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import { api, type Outcome, type SceneView, type StoryOutcome, type StoryView } from "./api";
+import { api, type LedgerPage, type Outcome, type SceneView, type StoryOutcome, type StoryView } from "./api";
 import { titleCase } from "./format";
 import { OddsDial } from "./Juice";
 import { colors, ui } from "./theme";
@@ -28,6 +29,7 @@ function needText(name: string, condition: string, value: number): string {
 
 export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (outcome: Outcome) => void }) {
   const [view, setView] = useState<StoryView | null>(null);
+  const [pages, setPages] = useState<LedgerPage[]>([]);
   const [played, setPlayed] = useState<StoryOutcome["played"]>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -42,7 +44,11 @@ export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (o
     [onOutcome],
   );
 
-  const refresh = useCallback(() => api.story(tinkerId).then(take).catch((reason: Error) => setError(reason.message)), [tinkerId, take]);
+  const refresh = useCallback(() => {
+    // Pages arrive from fights on the Workshop tab, so they are looked for with the story.
+    api.pages(tinkerId).then((result) => setPages(result.pages), () => undefined);
+    return api.story(tinkerId).then(take).catch((reason: Error) => setError(reason.message));
+  }, [tinkerId, take]);
 
   useEffect(() => {
     refresh();
@@ -134,6 +140,8 @@ export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (o
         <Card key={scene.id} scene={scene} nerve={view.nerve} busy={busy} onPlay={(option) => act(api.play(tinkerId, "storylet", scene.id, option))} />
       ))}
 
+      <HestersLedger pages={pages} />
+
       {(view.upcoming.length > 0 || view.cooling.length > 0) && (
         <View style={ui.panel}>
           <Text style={[ui.heading, { fontSize: 15 }]}>Coming up</Text>
@@ -217,6 +225,43 @@ function Card({
           <Text style={ui.muted}>Discard (free)</Text>
         </Pressable>
       )}
+    </View>
+  );
+}
+
+/** Hester Vane's notebook, a page at a time: found pages open to their text; the rest are only counted. */
+function HestersLedger({ pages }: { pages: LedgerPage[] }) {
+  const [open, setOpen] = useState<string | null>(null);
+  if (pages.length === 0) return null;
+  const found = pages.filter((page) => page.held);
+  return (
+    <View style={{ gap: 8 }}>
+      <Text style={ui.heading}>Hester's Ledger</Text>
+      <Text style={ui.muted}>
+        {found.length === 0
+          ? "Not a page of it yet. Hester's notebook came apart somewhere in the city."
+          : `${found.length} of ${pages.length} pages found.`}
+      </Text>
+      {found.map((page) => {
+        const shown = open === page.item;
+        return (
+          <Pressable
+            key={page.item}
+            onPress={() => setOpen(shown ? null : page.item)}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: shown }}
+            style={[ui.panel, { gap: 6 }]}
+          >
+            <Text style={[ui.text, { color: colors.brass }]}>{page.title ?? page.name}</Text>
+            {shown &&
+              (page.text ? (
+                <Text style={[ui.text, { lineHeight: 21, fontStyle: "italic" }]}>{page.text}</Text>
+              ) : (
+                <Text style={ui.muted}>Hester's hand, too cramped to make out yet. (Not yet transcribed.)</Text>
+              ))}
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
