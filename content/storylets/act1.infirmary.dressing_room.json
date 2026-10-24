@@ -1,0 +1,33 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.infirmary.dressing_room",
+  "act": 1,
+  "location": "infirmary",
+  "reveal_layer": 1,
+  "requires": { "flag.in_st_pinion": "==1" },
+  "nerve": 1,
+  "cooldown_hours": 6,
+  "description": "Every morning at St. Pinion's the hurts are dressed in the order of the ward book, and this morning the ward book has you near the bottom. The dressing room's steriliser, a copper drum on a gas ring, takes an hour to come to the boil because its lid gasket has perished. Every patient on the bench knows it. The dresser knows it best of all. She has a roll of lint, a jar of something yellow, and the patience of a woman who has been told it will be seen to.",
+  "options": [
+    {
+      "label": "Reseat the steriliser's lid on a new gasket, cut from the galosh somebody left under the bench.",
+      "challenge": { "quality": "tinkering", "difficulty": 8 },
+      "success": {
+        "text": "Galosh makes a poor gasket, and a better one than the one it replaces. The drum comes to the boil in a quarter of the time. The dresser, without remarking on it, moves your name up the book with her pencil, and your hurt is dressed while the lint is still hot from the drum, by someone in a good mood. It is a different experience entirely.",
+        "changes": { "needle.scald": "-2" }
+      },
+      "failure": {
+        "text": "The lid comes off with the drum still at the boil, and you learn, on a hand that had nothing wrong with it, what a steriliser is for. The dresser dresses the hand and the hurt together, at the bottom of the book, and writes something in the margin that she does not read out.",
+        "changes": { "needle.scald": "+1" }
+      }
+    },
+    {
+      "label": "Give the dresser twenty Brass Ingots towards a new steriliser, and your place at the top of the book.",
+      "requires": { "item.rustmoor.brass_ingot": ">=20" },
+      "success": {
+        "text": "The dresser weighs the ingots in her apron, decides they are real, and sends them down to the porter's lodge with a note. Your name moves to the top of the book in ink. The old steriliser takes its hour regardless, but you are first under it, and first out of the room, and the yellow jar is still full when it reaches you.",
+        "changes": { "item.rustmoor.brass_ingot": "-20", "needle.scald": "-3" }
+      }
+    }
+  ]
+}

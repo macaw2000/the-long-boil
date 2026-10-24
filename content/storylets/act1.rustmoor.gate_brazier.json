@@ -6,14 +6,15 @@
   "reveal_layer": 1,
   "requires": { "act1.progress": ">=15", "scavenging": ">=3" },
   "nerve": 1,
+  "cooldown_hours": 24,
   "description": "At the tip gate, where Rustmoor's chains bolt onto the city's outer rim, the pickers keep a brazier going in an oil drum. It is the only warm thing on the tip after dark, and it has rules: you feed it or you stand at the back, and nobody asks what is in your sack. Tonight its grate has burned through again, and the fire sits on the bottom of the drum, sulking.",
   "options": [
     {
       "label": "Go out along the heaps and find enough sound iron to bend a new grate.",
       "challenge": { "quality": "scavenging", "difficulty": 8 },
       "success": {
-        "text": "Half a bedstead, a mangle roller and the fire-irons from some Gaugehill drawing room make a grate that will see out the week. The pickers watch you fit it without offering to help, which is the custom. Then they move up and leave you the front place, which is also the custom, and you sit with your hands out until they stop aching.",
-        "changes": { "needle.scald": "-1" }
+        "text": "Half a bedstead, a mangle roller and the fire-irons from some Gaugehill drawing room make a grate that will see out the week. The pickers watch you fit it without offering to help, which is the custom. Then they move up and leave you the front place, which is also the custom, and you sit with your hands out until they stop aching. The gauge you found face down in the same heap, its glass cracked across, rides home in your sack, and nobody asks what is in it.",
+        "changes": { "needle.scald": "-1", "item.rustmoor.cracked_gauge_glass": "+1" }
       },
       "failure": {
         "text": "The bedstead you choose has opinions about being bent and expresses them with a spring. You come back with a cut thumb, a bruised shin and nothing fit for a grate. The pickers make room for you at the back, where it is cold, and pass you a rag for the thumb without comment.",

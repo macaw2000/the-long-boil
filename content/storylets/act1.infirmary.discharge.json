@@ -1,0 +1,26 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.infirmary.discharge",
+  "act": 1,
+  "location": "infirmary",
+  "reveal_layer": 1,
+  "requires": { "flag.in_st_pinion": "==1", "needle.scald": "<=4" },
+  "nerve": 1,
+  "description": "The ward sister with the ledger the size of a door unwinds your bandage, looks at the hurt rather than at you, and says it will do. At St. Pinion's that is a clean bill of health. Your boots are under the bed where you left them. Your coat is in the porter's lodge, on a numbered peg, with a ticket pinned to the collar.",
+  "options": [
+    {
+      "label": "Sign yourself out in the ward book, under the sister's eye.",
+      "success": {
+        "text": "The sister turns the ledger round and gives you the pen. Your line runs from the night you came in to this morning, and the column for remarks, blank until now, says Mended, in ink. You sign at the end of it. She blots it, turns the ledger back, and has forgotten you before the ink is dry.",
+        "changes": { "flag.in_st_pinion": 0 }
+      }
+    },
+    {
+      "label": "Go out by the porter's lodge, and collect your coat from its peg.",
+      "success": {
+        "text": "The porter finds your coat by its ticket and holds it for you while you find the sleeves. The porter has been waiting since you came in for somebody to say goodbye to, and says it at length, and shuts the door on the last of it. Outside, the first lungful of Kettleport is coal smoke. You find you have missed it.",
+        "changes": { "flag.in_st_pinion": 0 }
+      }
+    }
+  ]
+}

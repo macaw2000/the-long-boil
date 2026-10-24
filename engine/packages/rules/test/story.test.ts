@@ -134,6 +134,39 @@ describe("the Needles", () => {
   });
 });
 
+describe("a stay at St. Pinion's", () => {
+  const scene = (id: string, location: string, requires: Record<string, string>, changes: Record<string, string | number>) => ({
+    id, act: 1, location, requires, nerve: 1, description: "d",
+    options: [{ label: "l", success: { text: "t", changes } }],
+  });
+  const ward = scene("act1.infirmary.ward", "infirmary", { "needle.scald": ">=8", "flag.in_st_pinion": "==0" }, { "flag.in_st_pinion": 1 });
+  const out = scene("act1.infirmary.out", "infirmary", { "flag.in_st_pinion": "==1" }, { "flag.in_st_pinion": 0, "needle.scald": "-4" });
+  const street = scene("act1.row.street", "row", {}, { "needle.notice": "+1" });
+  const rigged = { ...content, storylets: new Map([ward, out, street].map((s) => [s.id, s])) };
+
+  it("sends a redlined Tinker to the Infirmary before admission, and holds Scald at 8", () => {
+    const tinker = newTinker({}, 0, 0, 1);
+    const redlined = { ...newStory(0), qualities: { "needle.scald": 8 }, needleAt: { "needle.scald": 0 } };
+    expect(availableStorylets(tinker, redlined, rigged, 0).map((s) => s.id)).toEqual([ward.id]);
+    expect(() => playScene(redlined, tinker, rigged, "storylet", street.id, 0, 0)).toThrow(/St. Pinion's/);
+    expect(refreshStory(redlined, tinker, rigged, 72 * HOUR).story.qualities["needle.scald"]).toBe(8);
+  });
+
+  it("offers only the Infirmary, holds Scald, and lets it fall again from discharge", () => {
+    const tinker = newTinker({}, 0, 0, 1);
+    const redlined = { ...newStory(0), qualities: { "needle.scald": 8 }, needleAt: { "needle.scald": 0 } };
+    const admitted = playScene(redlined, tinker, rigged, "storylet", ward.id, 0, HOUR).story;
+    expect(availableStorylets(tinker, admitted, rigged, HOUR).map((s) => s.id)).toEqual([out.id]);
+    expect(() => playScene(admitted, tinker, rigged, "storylet", street.id, 0, HOUR)).toThrow(/St. Pinion's/);
+    expect(refreshStory(admitted, tinker, rigged, 72 * HOUR).story.qualities["needle.scald"]).toBe(8);
+    const discharged = playScene(admitted, tinker, rigged, "storylet", out.id, 0, 72 * HOUR).story;
+    expect(discharged.qualities["needle.scald"]).toBe(4);
+    expect(availableStorylets(tinker, discharged, rigged, 72 * HOUR).map((s) => s.id)).toContain(street.id);
+    expect(refreshStory(discharged, tinker, rigged, 95 * HOUR).story.qualities["needle.scald"]).toBe(4);
+    expect(refreshStory(discharged, tinker, rigged, 96 * HOUR).story.qualities["needle.scald"]).toBe(3);
+  });
+});
+
 describe("cooldowns", () => {
   it("closes a storylet for its cooldown_hours once played, then opens it again", () => {
     const tinker = newTinker({}, 0, 0, 1);

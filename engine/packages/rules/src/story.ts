@@ -31,6 +31,32 @@ export const CHECK_INS = "record.check_ins";
 /** Work order 016: the back rent is 15 Crowns; a successful repair takes 10 off. */
 export const BACK_RENT = 15;
 export const BACK_RENT_REDUCTION = 10;
+/**
+ * Work order 020: a stay at the Infirmary of St. Pinion. While the flag is
+ * set, the story offers only Infirmary scenes and Scald does not fall on its
+ * own; letters still arrive, and the workshop is untouched (GDD section 5).
+ */
+export const INFIRMARY_FLAG = "flag.in_st_pinion";
+export const INFIRMARY = "infirmary";
+
+export function inInfirmary(story: StoryState): boolean {
+  return (story.qualities[INFIRMARY_FLAG] ?? 0) === 1;
+}
+
+/**
+ * Redlined Scald or a stay at St. Pinion's: the story sends the Tinker to the
+ * Infirmary (GDD section 5, "At 8, the Needle is redlined and the story sends
+ * you somewhere you would rather not be"), and Scald holds until discharge.
+ */
+export function heldAtInfirmary(story: StoryState): boolean {
+  return inInfirmary(story) || (story.qualities["needle.scald"] ?? 0) >= 8;
+}
+
+/** While held, only the Infirmary's own scenes are open. */
+function openDuringStay(scene: Scene, story: StoryState): boolean {
+  return !heldAtInfirmary(story) || scene.location === INFIRMARY;
+}
+
 /** Work order 018: Tallow's Foundry Pass goes on the account at 600 Crowns (from GDD appendix A.2). */
 export const FOUNDRY_PASS_DEBT = 600;
 
@@ -214,6 +240,8 @@ export function refreshStory(previous: StoryState, previousTinker: TinkerState, 
     const value = story.qualities[needle] ?? 0;
     const since = story.needleAt[needle];
     if (value <= 0 || since === undefined) continue;
+    // Redline and a stay at St. Pinion's hold Scald where it is until the Tinker is discharged.
+    if (needle === "needle.scald" && heldAtInfirmary(story)) continue;
     const falls = Math.min(value, Math.floor((now - since) / NEEDLE_FALL_MS));
     for (let i = 1; i <= falls; i++) events.push({ type: "needle_fell", at: since + i * NEEDLE_FALL_MS, needle, value: value - i });
     story.qualities[needle] = value - falls;
@@ -290,14 +318,16 @@ export interface UpcomingScene {
 export function upcomingStorylets(tinker: TinkerState, story: StoryState, content: Content): UpcomingScene[] {
   return [...content.storylets.values()].flatMap((scene): UpcomingScene[] => {
     const needs = unmet(scene.requires, tinker, story, content);
-    return needs.length > 0 && needs.every(([name]) => earned(name)) ? [{ id: scene.id, location: scene.location, needs }] : [];
+    return openDuringStay(scene, story) && needs.length > 0 && needs.every(([name]) => earned(name))
+      ? [{ id: scene.id, location: scene.location, needs }]
+      : [];
   });
 }
 
 /** Storylets the Tinker can see now: every one whose requirements hold and that is not cooling down. */
 export function availableStorylets(tinker: TinkerState, story: StoryState, content: Content, now = Number.NEGATIVE_INFINITY): Scene[] {
   return [...content.storylets.values()].filter(
-    (scene) => unmet(scene.requires, tinker, story, content).length === 0 && coolsUntil(scene, story, now) === null,
+    (scene) => openDuringStay(scene, story) && unmet(scene.requires, tinker, story, content).length === 0 && coolsUntil(scene, story, now) === null,
   );
 }
 
@@ -305,7 +335,9 @@ export function availableStorylets(tinker: TinkerState, story: StoryState, conte
 export function coolingStorylets(tinker: TinkerState, story: StoryState, content: Content, now: number): { id: string; location: string; opensAt: number }[] {
   return [...content.storylets.values()].flatMap((scene) => {
     const until = coolsUntil(scene, story, now);
-    return until !== null && unmet(scene.requires, tinker, story, content).length === 0 ? [{ id: scene.id, location: scene.location, opensAt: until }] : [];
+    return until !== null && openDuringStay(scene, story) && unmet(scene.requires, tinker, story, content).length === 0
+      ? [{ id: scene.id, location: scene.location, opensAt: until }]
+      : [];
   });
 }
 
@@ -331,6 +363,7 @@ export function playScene(
     throw new StoryRefusal(`${sceneId} is not open to you now`);
   }
   if (kind === "storylet" && coolsUntil(scene, previous, now) !== null) throw new StoryRefusal(`${sceneId} is closed until later`);
+  if (kind === "storylet" && !openDuringStay(scene, previous)) throw new StoryRefusal("you are at St. Pinion's until you are discharged");
   const option = scene.options[optionIndex];
   if (!option) throw new StoryRefusal(`${sceneId} has no option ${optionIndex}`);
   if (unmet(option.requires, previousTinker, previous, content).length) throw new StoryRefusal("that option is not open to you");
@@ -377,6 +410,8 @@ export function playScene(
     story.answered.push(sceneId);
   }
   if (kind === "storylet" && scene.cooldown_hours) story.playedAt[sceneId] = now;
+  // Discharged: Scald's daily fall starts counting again from now.
+  if (inInfirmary(previous) && !inInfirmary(story) && (story.qualities["needle.scald"] ?? 0) > 0) story.needleAt["needle.scald"] = now;
 
   const event: StoryEvent = { type: "scene_played", at: now, kind, scene: sceneId, option: optionIndex, nerve: scene.nerve, challenge, success, qualities, items, crowns: 0 };
   return { story, tinker, event, outcome };

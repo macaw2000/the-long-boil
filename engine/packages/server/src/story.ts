@@ -36,6 +36,8 @@ export interface StoryView {
   cooling: { id: string; location: string; opensAt: string }[];
   backRent: number;
   debts: { id: string; label: string; crowns: number }[];
+  /** A stay at St. Pinion's (work order 020). */
+  inInfirmary: boolean;
 }
 
 function sceneView(scene: Scene, kind: "storylet" | "letter", tinker: TinkerState, story: StoryState, content: GameContent): SceneView {
@@ -69,6 +71,7 @@ function storyView(tinker: TinkerState, story: StoryState, content: GameContent,
       .map((scene) => ({ id: scene.id, location: scene.location, opensAt: new Date(scene.opensAt).toISOString() })),
     backRent: rules.backRentOwed(story),
     debts: rules.debtsOwed(story).map(({ id, label, crowns }) => ({ id, label, crowns })),
+    inInfirmary: rules.heldAtInfirmary(story),
   };
 }
 

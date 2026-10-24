@@ -27,7 +27,7 @@
       "failure": {
         "text": "You are elbow-deep in bedsprings when the first squeak comes back down the gantry, and the second, and then a great many more. You leave by the shortest road, which turns out to be over a fence topped with broken bottles. You come home with a torn coat, a cut palm, and no paper at all.",
         "changes": {
-          "needle.scald": "+1"
+          "needle.scald": "+2"
         }
       }
     },

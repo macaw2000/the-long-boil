@@ -6,6 +6,7 @@
   "reveal_layer": 1,
   "requires": { "act1.progress": ">=5" },
   "nerve": 1,
+  "cooldown_hours": 24,
   "description": "Most evenings, at about the same hour, the Post terminal on Sprocket Row chokes. The main tube climbs from Pip's counter, turns a hard corner under the eaves, and the corner is where canisters go to reconsider. Pip stands beneath it prodding with a broom handle. A queue forms. Everyone in the queue has a theory about the bend and is happy to share it, and Pip has heard every theory twice.",
   "options": [
     {

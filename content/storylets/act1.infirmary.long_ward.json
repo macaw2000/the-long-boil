@@ -1,0 +1,28 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.infirmary.long_ward",
+  "act": 1,
+  "location": "infirmary",
+  "reveal_layer": 1,
+  "requires": { "flag.in_st_pinion": "==1" },
+  "nerve": 1,
+  "cooldown_hours": 6,
+  "description": "The long ward at St. Pinion's has forty beds, forty lockers and one window, and the window does not open. The sisters' cure for a scald is their cure for everything: lie still, eat what you are given, and do not get up to look at the radiators. Every Tinker on the ward has got up to look at the radiators. The man in the next bed is a Stoker, bandaged to both elbows, who has been here a fortnight and has advice on all of it.",
+  "options": [
+    {
+      "label": "Lie still, eat the ward's porridge, and do exactly as the sisters say.",
+      "success": {
+        "text": "You lie still. You eat the porridge, which is grey and does its best. The Stoker in the next bed tells you which sister is soft and which is softer, and that neither is the one you think. By morning the hurt lets you hold a cup without spilling it, and the sister marks you down as mending, in pencil.",
+        "changes": { "needle.scald": "-1" }
+      }
+    },
+    {
+      "label": "Eat your own Rations in bed, one at every meal, and sleep between them.",
+      "requires": { "item.rustmoor.rustmoor_ration": ">=10" },
+      "success": {
+        "text": "St. Pinion's porridge stays on its trolley. You work through your own Rations in bed, a meal at a time, and sleep in the gaps like a cat in a warm window. The Stoker in the next bed watches the wax papers pile up on your locker and says nothing, which on the long ward is envy. By the end of it the bandage comes off a size smaller.",
+        "changes": { "item.rustmoor.rustmoor_ration": "-10", "needle.scald": "-2" }
+      }
+    }
+  ]
+}

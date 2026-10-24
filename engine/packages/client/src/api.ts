@@ -102,6 +102,7 @@ export interface Tinker {
     debts: { id: string; label: string; crowns: number }[];
     openScenes: number;
     qualities: Record<string, number>;
+    inInfirmary: boolean;
   };
 }
 
@@ -167,6 +168,7 @@ export interface StoryView {
   cooling: { id: string; location: string; opensAt: string }[];
   backRent: number;
   debts: { id: string; label: string; crowns: number }[];
+  inInfirmary: boolean;
 }
 
 export type FightOutlook =

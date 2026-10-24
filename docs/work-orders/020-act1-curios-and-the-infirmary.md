@@ -48,3 +48,36 @@ GDD section 5 names the rewards a storylet can give and the risks that make it m
 
 - Draftsman: the items, economy entries, derivations, and the faucet figure.
 - Scrivener: your usual hand-back, with validator output verbatim, each Scald change and its reason, and a table of every item cost and reward for the draftsman.
+
+## Settled after part 1
+
+Recorded on 23 October 2026, following from Jeremy's "run as written":
+
+- **Curios may be story rewards.** This work order overrides work order 019's rule that no outcome gives an item a collector buys, for the four capped Curios only.
+- **Each of the 4 scenes that gives a Curio carries `"cooldown_hours": 24`,** so supply matches the collectors' cap of 7 a week per Curio.
+- **Open for Jeremy at review:** the Curio price (30 Crowns each, capped 7 a week; the draftsman's proposal, tied to the Clock Movement).
+
+## Settled after the draftsman's review
+
+Jeremy accepted every recommendation on 24 October 2026:
+
+- **Curios stay as drafted:** four placements, 24-hour cooldowns, 30 Crowns capped at 7 a week (the price revisited when Calibrating exists).
+- **Scald on failure:** the repeatable district challenges go back to `+1` (stair_lamp, gate_brazier, tube_bend); the one-shot spine risks keep `+2` (rat_nests, scrapjaws_den), the GDD's own figure. tube_bend gets `"cooldown_hours": 24`.
+- **rooks_table gets `"cooldown_hours": 24`,** ending its unlimited Arrears loop.
+- **A held stay at St. Pinion's.** A new flag, `flag.in_st_pinion`, now in the registry:
+  - Admission (`ward_book`, requires Scald 8 and the flag at 0) sets the flag.
+  - While the flag is set, the Story tab offers only Infirmary scenes and Scald does not fall on its own (engine rules). Letters still arrive; smelting, fighting and trading carry on.
+  - The slow way out: `long_ward` and `dressing_room` (each requiring the flag) lower Scald over several scenes, each with `"cooldown_hours": 6` so the stay spans a couple of visits.
+  - A fifth scene, `discharge` (requiring the flag and Scald 4 or less), clears the flag.
+  - The fast way out: `night_nurse` (requiring the flag) clears the flag on success.
+  - The exits follow the draftsman's ladder: -1 free; -2 for 10 Rations, 1 Arrears or a Tinkering 8 roll; -3 for 20 Rations, 20 Brass Ingots, 2 Arrears or a Cooking 10 roll.
+
+## Settled after review
+
+Jeremy accepted every recommendation on 24 October 2026, after the inspector's review:
+
+- **The inspector's four fixes:** admission (`ward_book`) is the price of the bed and lowers no Scald; `night_nurse` takes `"cooldown_hours": 6`; stair_lamp's ribbon line and crooked_balance's coin line read true on repeat and invent no minting.
+- **Redline sends the Tinker to the Infirmary** (engine): at Scald 8, before admission as well as during the stay, only Infirmary scenes are open and Scald holds until discharge.
+- **The Misstruck Crown's flavour** becomes "A Crown stamped with its needle pointing down, which no clerk at the window will take."
+- **The Infirmary speaks of "the hurt",** not "the bad hand" or "the burn", since Scald can come from a shin, a cheek or a palm.
+- **Left as they are:** Ration options winning while the bound starter crate lasts; the heel of bread stays cut from stair_lamp; discharge keeps two exits of different tone.

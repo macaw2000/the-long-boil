@@ -1,0 +1,27 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.infirmary.ward_book",
+  "act": 1,
+  "location": "infirmary",
+  "reveal_layer": 1,
+  "requires": { "needle.scald": ">=8", "flag.in_st_pinion": "==0" },
+  "nerve": 1,
+  "description": "You do not remember arriving at the Infirmary of St. Pinion, only being there. The receiving hall smells of carbolic and boiled linen, and the benches are full of people holding one arm with the other. A ward sister with a ledger the size of a door takes your name, your trade and the nature of the hurt, in that order of interest. St. Pinion's, she explains, mends anyone. It does not mend them for nothing, and the beds are reckoned by the night.",
+  "options": [
+    {
+      "label": "Sign the ward book on account, and take whatever bed is going.",
+      "success": {
+        "text": "The bed that is going stands beside a radiator that bangs all night and never once gets warm. You sleep anyway, the flat black sleep of the scalded, under a blanket stencilled ST. P. In the morning the sister shows you your line in the ward book. There is a figure at the end of it, and the figure has already been carried forward.",
+        "changes": { "needle.arrears": "+2", "flag.in_st_pinion": 1 }
+      }
+    },
+    {
+      "label": "Pay your keep in kind: twenty Rations for the ward kitchen.",
+      "requires": { "item.rustmoor.rustmoor_ration": ">=20" },
+      "success": {
+        "text": "The ward kitchen takes your Rations without counting them, which at St. Pinion's is a compliment. That night you eat one of them back, warmed, off a tin plate, in a bed with clean sheets and a view of a wall. Nobody enters anything against your name. The sister, passing, tells you to keep still. You keep still.",
+        "changes": { "item.rustmoor.rustmoor_ration": "-20", "flag.in_st_pinion": 1 }
+      }
+    }
+  ]
+}

@@ -17,7 +17,7 @@
       },
       "failure": {
         "text": "The gantry has an opinion about your weight and expresses it at the worst moment. You come down into a drift of tin cans, loudly, and the grinding below stops. You leave with a twisted ankle and one clear look at the mouth of the pit, which is more than you wanted.",
-        "changes": { "needle.scald": "+1", "act1.progress": 50 }
+        "changes": { "needle.scald": "+2", "act1.progress": 50 }
       }
     },
     {

@@ -31,7 +31,7 @@
     "lore": ["lore.whistle_notations", "lore.ledger_pages"],
     "nerve": ["nerve"],
     "record": ["record.check_ins"],
-    "flag": ["flag.asked_brassbuckle_plate", "flag.back_rent_reduced", "flag.kept_brass_plate", "flag.owes_back_rent", "flag.owes_foundry_pass", "flag.own_reading", "flag.page_kept", "flag.page_to_gauntlett", "flag.page_to_inkwell", "flag.page_to_rook", "flag.rook_cooperated", "flag.rook_evaded"]
+    "flag": ["flag.asked_brassbuckle_plate", "flag.back_rent_reduced", "flag.kept_brass_plate", "flag.owes_back_rent", "flag.owes_foundry_pass", "flag.own_reading", "flag.page_kept", "flag.page_to_gauntlett", "flag.page_to_inkwell", "flag.page_to_rook", "flag.in_st_pinion", "flag.rook_cooperated", "flag.rook_evaded"]
   },
   "open_questions": [
     "The flag list is empty. The GDD names example flags (gave Page 1 to Inkwell, partnered with the Baron) but no complete set. Flags get added here as each act's beats are written.",

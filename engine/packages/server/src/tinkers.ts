@@ -47,6 +47,8 @@ export interface StorySummary {
   debts: { id: string; label: string; crowns: number }[];
   /** Storylets open to play now, for the Story tab's nudge. */
   openScenes: number;
+  /** A stay at St. Pinion's: only its scenes are open, and Scald holds (work order 020). */
+  inInfirmary: boolean;
   /** Every story quality above 0, for the first-session guide. */
   qualities: Record<string, number>;
 }
@@ -243,6 +245,7 @@ function summarizeStory(story: StoryState, tinker: TinkerState, content: GameCon
     backRent: rules.backRentOwed(story),
     debts: rules.debtsOwed(story).map(({ id, label, crowns }) => ({ id, label, crowns })),
     openScenes: rules.availableStorylets(tinker, story, content.rules, now).length,
+    inInfirmary: rules.heldAtInfirmary(story),
     qualities: Object.fromEntries(Object.entries(story.qualities).filter(([, value]) => value > 0)),
   };
 }

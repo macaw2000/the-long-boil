@@ -374,6 +374,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
           <Bar fraction={tinker.story.nerve / tinker.story.nerveCap} color={colors.verdigris} />
         </View>
         <CountUp value={tinker.crowns} suffix=" Crowns" style={[ui.number, { color: colors.brass, fontSize: 15 }]} />
+        {tinker.story.inInfirmary && <Badge count={1} label="St. Pinion's" tone={colors.scald} />}
         <View style={{ flexDirection: "row", gap: 8 }} accessibilityLabel="The four Needles">
           {Object.entries(tinker.story.needles).map(([needle, value]) => (
             <Text key={needle} style={[ui.number, { color: value >= 8 ? colors.scald : value > 0 ? colors.copper : colors.muted }]}>

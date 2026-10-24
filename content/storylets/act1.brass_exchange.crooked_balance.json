@@ -14,8 +14,8 @@
       "requires": { "needle.arrears": ">=1" },
       "challenge": { "quality": "tinkering", "difficulty": 12 },
       "success": {
-        "text": "The clerk lets you behind the grille, which is irregular, and watches you nudge the counterpoise a hair to the left, which is more irregular still. The balance settles dead level. He initials a slip and sets it against your name. The queue says nothing, loudly.",
-        "changes": { "needle.arrears": "-2" }
+        "text": "The clerk lets you behind the grille, which is irregular, and watches you nudge the counterpoise a hair to the left, which is more irregular still. The balance settles dead level. In the dust under the pan, where the clerks sweep the coins they will not take, lies a Crown struck with its needle pointing down. It goes into your pocket while he initials a slip and sets it against your name. The queue says nothing, loudly.",
+        "changes": { "needle.arrears": "-2", "item.rustmoor.misstruck_crown": "+1" }
       },
       "failure": {
         "text": "The counterpoise turns out to be soldered in place, and soldered rather well. You unsolder it. The House charges you for the solder, for the clerk's time, and for a new counterpoise, and enters all three against your name in a fine hand.",

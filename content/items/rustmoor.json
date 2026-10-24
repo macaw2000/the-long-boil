@@ -185,6 +185,26 @@
       "id": "item.rustmoor.foundry_pass",
       "name": "Foundry Pass",
       "flavour": "Leave to pass the Cinderworks gate, made out to you and nobody else."
+    },
+    {
+      "id": "item.rustmoor.board_memo",
+      "name": "Board Memo",
+      "flavour": "A Board of Gauges memo on cream paper, chewed at one corner by a rat with opinions about stationery."
+    },
+    {
+      "id": "item.rustmoor.cracked_gauge_glass",
+      "name": "Cracked Gauge Glass",
+      "flavour": "A gauge face thrown off Gaugehill, its glass cracked and its needle stuck at reassuring."
+    },
+    {
+      "id": "item.rustmoor.ballast_day_ribbon",
+      "name": "Ballast Day Ribbon",
+      "flavour": "A commemorative ribbon from the last Ballast Day, kept in a Lowvents drawer by someone who did not attend."
+    },
+    {
+      "id": "item.rustmoor.misstruck_crown",
+      "name": "Misstruck Crown",
+      "flavour": "A Crown stamped with its needle pointing down, which no clerk at the window will take."
     }
   ]
 }

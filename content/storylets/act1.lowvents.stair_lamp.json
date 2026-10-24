@@ -6,17 +6,18 @@
   "reveal_layer": 1,
   "requires": { "act1.progress": ">=5" },
   "nerve": 1,
+  "cooldown_hours": 24,
   "description": "Halfway down the long stair, the lamp on the landing is out again; it goes out more often than it stays lit. The Stokers coming off shift pass it by memory, sacks of coal on their shoulders, counting steps under their breath. Somebody has chalked an arrow on the wall beneath it, pointing down, which is accurate and no help at all. The burner is within reach if you stand on the rail, and the rail is within reach of the Lowvents.",
   "options": [
     {
       "label": "Stand on the rail and coax the landing lamp's burner back to life by feel.",
       "challenge": { "quality": "tinkering", "difficulty": 8 },
       "success": {
-        "text": "The jet is furred with soot as thick as felt. You clear it with a hairpin borrowed from the dark, and the lamp catches with a soft cough and a circle of yellow light. The next Stoker up the stair stops, looks at it, looks at you, and hands you up the heel of her bread and a swallow of cold tea from her can.",
-        "changes": { "needle.scald": "-1" }
+        "text": "The jet is furred with soot as thick as felt. You clear it with a hairpin borrowed from the dark, and the lamp catches with a soft cough and a circle of yellow light. The door on the landing opens a crack, and a hand sets a folded ribbon on the rail beside you, one of the last Ballast Day's. Every drawer on the stair has one, kept forty-one years by somebody who did not attend.",
+        "changes": { "needle.scald": "-1", "item.rustmoor.ballast_day_ribbon": "+1" }
       },
       "failure": {
-        "text": "The burner catches all at once, a hand's breadth from your face, and goes out again just as quickly. You climb down smelling of singed wool, with the arrow on the wall still pointing helpfully down. A Stoker passing below asks whether you meant to do that. You tell her yes.",
+        "text": "The burner catches all at once, a hand's breadth from your face, and goes out again just as quickly. You climb down smelling of singed wool, with a blister rising along one cheekbone and the arrow on the wall still pointing helpfully down. A Stoker passing below asks whether you meant to do that. You tell her yes.",
         "changes": { "needle.scald": "+1" }
       }
     },

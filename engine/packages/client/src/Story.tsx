@@ -100,6 +100,14 @@ export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (o
         ))}
       </View>
 
+      {view.inInfirmary && (
+        <View style={[ui.panel, { borderColor: colors.scald }]}>
+          <Text style={[ui.heading, { color: colors.scald }]}>At the Infirmary of St. Pinion</Text>
+          <Text style={ui.muted}>
+            Scald redlined. Until you are discharged, the story waits here and Scald will not ease on its own. Your workshop carries on.
+          </Text>
+        </View>
+      )}
       {view.debts.map((debt) => (
         <Text key={debt.id} style={ui.muted}>
           {debt.label}: {debt.crowns} Crowns, payable at the Counting-House window on the Exchange tab.

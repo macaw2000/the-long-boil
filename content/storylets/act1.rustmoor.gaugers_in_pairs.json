@@ -6,6 +6,7 @@
   "reveal_layer": 1,
   "requires": { "act1.progress": ">=40", "scavenging": ">=9" },
   "nerve": 1,
+  "cooldown_hours": 24,
   "description": "Since Inspector Rook took an interest in the tip, the Gaugers walk Rustmoor in pairs at dusk, in good boots, writing down who is picking where. They stop nobody. They do not need to. Tonight a pair is working along the crane gantry towards your heap, and your heap, like every heap in Rustmoor, has a fair amount of Board paperwork in it.",
   "options": [
     {
@@ -20,8 +21,8 @@
       "label": "Slip down among the chain-anchors and wait in the dark for them to pass.",
       "challenge": { "quality": "scavenging", "difficulty": 14 },
       "success": {
-        "text": "You know the tip better than its visitors do. You fold yourself between two anchor-plates and listen to good boots go by overhead, unhurried, and fade towards the gate. When you climb back up, your heap is exactly as you left it. Nobody has written anything down.",
-        "changes": { "needle.notice": "-1" }
+        "text": "You know the tip better than its visitors do. You fold yourself between two anchor-plates, in a hollow some rat has lined with Board paper, and listen to good boots go by overhead, unhurried, and fade towards the gate. When you climb back up, your heap is exactly as you left it, and one of the rat's memos is stuck to your elbow. Nobody has written anything down. You keep the memo.",
+        "changes": { "needle.notice": "-1", "item.rustmoor.board_memo": "+1" }
       },
       "failure": {
         "text": "The anchor-plate you choose is greased, and you arrive at the bottom of it rather faster than planned, with a noise like a coal delivery. A lantern finds you. A Gauger asks if you are hurt and writes the answer down, along with your name, the time and the anchor's number.",

@@ -1,0 +1,33 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.infirmary.night_nurse",
+  "act": 1,
+  "location": "infirmary",
+  "reveal_layer": 1,
+  "requires": { "flag.in_st_pinion": "==1" },
+  "nerve": 1,
+  "cooldown_hours": 6,
+  "description": "St. Pinion's at night belongs to the night nurse. The sisters go home at eight; she comes on at eight, with a lamp, a watch pinned upside down to her apron, and the power to sign discharge slips, which the sisters would rather she did not have. She is said to be fond of a hot supper, and not to have had one since the spring. Her gas ring is at the end of the ward, with a frying pan hung above it like a portrait.",
+  "options": [
+    {
+      "label": "Cook her a midnight supper from a Rustmoor Ration in her own pan.",
+      "requires": { "item.rustmoor.rustmoor_ration": ">=1" },
+      "challenge": { "quality": "cooking", "difficulty": 10 },
+      "success": {
+        "text": "You fry the Ration in her pan with a scrape of her dripping and serve it on the lid of a dressing tin. She eats standing, by lamplight, and does not speak until the lid is clean. Then she takes a discharge slip from her apron, signs it on her knee, and dates it for the morning. \"Go home,\" she says, \"and do not come back hungry.\"",
+        "changes": { "item.rustmoor.rustmoor_ration": "-1", "needle.scald": "-3", "flag.in_st_pinion": 0 }
+      },
+      "failure": {
+        "text": "The Ration catches before you have it turned, and the smell walks the length of the ward and wakes it. The night nurse opens the window that does not open, airs the ward with a folded Gazette, and enters a pan, a night's gas and forty interrupted sleeps against your name. She does not sign anything else.",
+        "changes": { "item.rustmoor.rustmoor_ration": "-1", "needle.arrears": "+1" }
+      }
+    },
+    {
+      "label": "Ask her, plainly, for a discharge slip at the change of shift.",
+      "success": {
+        "text": "She looks at you over the lamp for some time, then at the ward book, then at her watch, upside down. \"Not on an empty stomach,\" she says, and does not say whose. She changes your dressing herself, with lint from her own drawer, and moves you to the one bed on the ward whose radiator works. In the morning the lint and the radiator are both in the ward book, against your name.",
+        "changes": { "needle.scald": "-2", "needle.arrears": "+1" }
+      }
+    }
+  ]
+}

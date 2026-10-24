@@ -6,6 +6,7 @@
   "reveal_layer": 1,
   "requires": { "act1.progress": ">=50" },
   "nerve": 1,
+  "cooldown_hours": 24,
   "description": "At four o'clock Inspector Rook takes her tea at a table by the Exchange urn, with a view of the whole trading floor and of the door you have just come through. The table has two chairs. The second is always empty, and always, somehow, pointed at you. Her notebook lies closed beside the sugar. Her pencil does not.",
   "options": [
     {
