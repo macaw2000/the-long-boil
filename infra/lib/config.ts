@@ -32,10 +32,15 @@ export interface Settings extends EnvironmentShape {
   hostedZoneId: string | undefined;
   /** The hosted zone's name, when the site is a subdomain of it. Defaults to domainName. */
   hostedZoneName: string | undefined;
+  /**
+   * Names that redirect to domainName: www.<domain> when the site is the
+   * zone's apex. One canonical address, because sign-in tokens are kept per
+   * address and Cognito returns players only to addresses it knows.
+   */
+  redirectDomains: string[];
   cognitoDomainPrefix: string;
   googleClientId: string | undefined;
   alertEmail: string | undefined;
-  monthlyBudgetUsd: number;
   /** owner/name of the GitHub repository allowed to deploy. */
   githubRepo: string | undefined;
   imageTag: string;
@@ -66,9 +71,6 @@ export function readSettings(app: App): Settings {
     throw new Error("domainName and hostedZoneId go together: give both or neither.");
   }
 
-  const budget = Number(text("monthlyBudgetUsd") ?? 110);
-  if (!Number.isFinite(budget) || budget <= 0) throw new Error("monthlyBudgetUsd must be a positive number.");
-
   const desired = text("desiredCount");
 
   return {
@@ -79,11 +81,10 @@ export function readSettings(app: App): Settings {
     domainName,
     hostedZoneId,
     hostedZoneName: text("hostedZoneName") ?? domainName,
+    redirectDomains: domainName && (text("hostedZoneName") ?? domainName) === domainName ? [`www.${domainName}`] : [],
     cognitoDomainPrefix: text("cognitoDomainPrefix") ?? `long-boil-${envName}`,
     googleClientId: text("googleClientId"),
     alertEmail: text("alertEmail"),
-    // GDD section 11 puts the build phase at about $106 a month.
-    monthlyBudgetUsd: budget,
     githubRepo: text("githubRepo"),
     imageTag: text("imageTag") ?? "latest",
     cloudFrontPrefixListId: text("cloudFrontPrefixListId") ?? CLOUDFRONT_PREFIX_LIST_US_WEST_2,

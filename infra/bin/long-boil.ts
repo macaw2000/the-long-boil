@@ -24,6 +24,7 @@ if (settings.domainName && settings.hostedZoneId) {
     env: { account: settings.account, region: "us-east-1" },
     crossRegionReferences: true,
     domainName: settings.domainName,
+    alternateNames: settings.redirectDomains,
     hostedZoneId: settings.hostedZoneId,
     hostedZoneName: settings.hostedZoneName ?? settings.domainName,
   });

@@ -15,7 +15,7 @@ One environment per synth, chosen with `-c env=dev`. Only `dev` exists; `prod` i
 
 | Stack | Region | Holds |
 | --- | --- | --- |
-| `LongBoil-dev-Foundation` | us-west-2 | ECR repository, monthly budget, GitHub OIDC provider and deploy role |
+| `LongBoil-dev-Foundation` | us-west-2 | ECR repository, monthly budget, daily spend email, GitHub OIDC provider and deploy role |
 | `LongBoil-dev-Certificate` | us-east-1 | The ACM certificate for CloudFront. Only with a custom domain |
 | `LongBoil-dev-App` | us-west-2 | VPC (no NAT), Aurora Serverless v2, ECS on Fargate (arm64) behind an ALB, S3 and CloudFront, Cognito |
 
@@ -35,8 +35,7 @@ Pass with `-c key=value`. An empty value counts as not given.
 | `hostedZoneName` | `domainName` | The zone's name, when the site is a subdomain of it |
 | `cognitoDomainPrefix` | `long-boil-<env>` | Hosted sign-in at `<prefix>.auth.us-west-2.amazoncognito.com`. Must be unused across all of AWS |
 | `googleClientId` | none (no Google sign-in) | Google OAuth client id. Its secret is read from Secrets Manager (below) |
-| `alertEmail` | none (no budget, with a synth warning) | Who gets the budget alarms |
-| `monthlyBudgetUsd` | `110` | The monthly cost budget; alarms at 80% actual and 100% forecast. The GDD's build phase is about $106 |
+| `alertEmail` | none (no budget, with a synth warning) | Who gets the budget alarms ($100 a month: at 80% actual and 100% forecast) and a spend email every morning (yesterday's spend by service and the month so far, from Cost Explorer) |
 | `githubRepo` | none (no deploy role) | `owner/name` allowed to deploy from `main` |
 | `cloudFrontPrefixListId` | `pl-82a045eb` | CloudFront's origin-facing prefix list in us-west-2, the only source the ALB admits |
 | `desiredCount` | per environment (dev 1) | Server task count. `0` parks dev |
@@ -76,9 +75,9 @@ In this order, once the accounts exist (GDD section 11, "Accounts and environmen
    docker build --platform linux/arm64 -t <EcrRepositoryUri>:latest .   # from the repository root
    docker push <EcrRepositoryUri>:latest
    ```
-   Confirm the budget's subscription email.
+   Confirm the budget's subscription email and the daily spend email's SNS subscription.
 6. **Everything else**, with the same context: `npx cdk deploy --all -c githubRepo=... -c alertEmail=...`
-7. **Switch the workflow on.** In GitHub's repository variables set `AWS_DEPLOY_ROLE_ARN` to the `GitHubDeployRoleArn` output, and set any of `ALERT_EMAIL`, `MONTHLY_BUDGET_USD`, `DOMAIN_NAME`, `HOSTED_ZONE_ID`, `HOSTED_ZONE_NAME`, `GOOGLE_CLIENT_ID`, `COGNITO_DOMAIN_PREFIX` that step 6 used. From then on each push to `main` deploys dev (`.github/workflows/deploy-dev.yml`).
+7. **Switch the workflow on.** In GitHub's repository variables set `AWS_DEPLOY_ROLE_ARN` to the `GitHubDeployRoleArn` output, and set any of `ALERT_EMAIL`, `DOMAIN_NAME`, `HOSTED_ZONE_ID`, `HOSTED_ZONE_NAME`, `GOOGLE_CLIENT_ID`, `COGNITO_DOMAIN_PREFIX` that step 6 used. From then on each push to `main` deploys dev (`.github/workflows/deploy-dev.yml`).
 8. **CloudFront plan.** Dev stays on the free plan. Prod's flat-rate Pro plan (decision 2) is chosen in the console; CloudFormation does not set it.
 
 ## Not here yet

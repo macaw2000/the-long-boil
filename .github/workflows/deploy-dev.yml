@@ -73,7 +73,6 @@ jobs:
             -c imageTag=${{ github.sha }} \
             -c githubRepo=${{ github.repository }} \
             -c alertEmail=${{ vars.ALERT_EMAIL }} \
-            -c monthlyBudgetUsd=${{ vars.MONTHLY_BUDGET_USD || '110' }} \
             -c domainName=${{ vars.DOMAIN_NAME }} \
             -c hostedZoneId=${{ vars.HOSTED_ZONE_ID }} \
             -c hostedZoneName=${{ vars.HOSTED_ZONE_NAME }} \
@@ -103,7 +102,8 @@ jobs:
           npm ci --no-audit --no-fund
           npm run build
           cd packages/client
-          npx expo export --platform web --output-dir dist
+          # --clear: Metro caches the inlined EXPO_PUBLIC_* values between builds.
+          npx expo export --platform web --output-dir dist --clear
 
       - name: Sync to S3 and invalidate
         working-directory: engine/packages/client/dist

@@ -224,6 +224,10 @@ export class AppStack extends Stack {
       const target = route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution));
       new route53.ARecord(this, "SiteA", { zone, recordName: settings.domainName, target });
       new route53.AaaaRecord(this, "SiteAaaa", { zone, recordName: settings.domainName, target });
+      settings.redirectDomains.forEach((name, index) => {
+        new route53.ARecord(this, `RedirectA${index}`, { zone, recordName: name, target });
+        new route53.AaaaRecord(this, `RedirectAaaa${index}`, { zone, recordName: name, target });
+      });
     }
 
     this.grantDeployRole(settings, siteBucket, distribution);
@@ -261,14 +265,24 @@ export class AppStack extends Stack {
     // A single-page app: any path that is not a file is served index.html.
     // This is done with a function on the S3 behaviour rather than custom
     // error responses, because those apply to the whole distribution and
-    // would turn the API's own 403s and 404s into index.html.
+    // would turn the API's own 403s and 404s into index.html. The same
+    // function sends www.<domain> to the canonical domain with a 301.
+    const redirects = JSON.stringify(settings.redirectDomains);
     const spaRewrite = new cloudfront.Function(this, "SpaRewrite", {
       runtime: cloudfront.FunctionRuntime.JS_2_0,
-      comment: "Serve index.html for client routes",
+      comment: "Serve index.html for client routes; redirect www",
       code: cloudfront.FunctionCode.fromInline(
         [
           "function handler(event) {",
           "  var request = event.request;",
+          `  var host = request.headers.host ? request.headers.host.value : '';`,
+          `  if (${redirects}.indexOf(host) !== -1) {`,
+          "    var query = Object.keys(request.querystring).map(function (key) {",
+          "      return key + '=' + request.querystring[key].value;",
+          "    }).join('&');",
+          `    var location = 'https://${settings.domainName ?? ""}' + request.uri + (query ? '?' + query : '');`,
+          "    return { statusCode: 301, statusDescription: 'Moved Permanently', headers: { location: { value: location } } };",
+          "  }",
           "  var last = request.uri.split('/').pop();",
           "  if (last.indexOf('.') === -1) request.uri = '/index.html';",
           "  return request;",
@@ -288,7 +302,7 @@ export class AppStack extends Stack {
       defaultRootObject: "index.html",
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       httpVersion: cloudfront.HttpVersion.HTTP2_AND_3,
-      ...(certificate && settings.domainName ? { certificate, domainNames: [settings.domainName] } : {}),
+      ...(certificate && settings.domainName ? { certificate, domainNames: [settings.domainName, ...settings.redirectDomains] } : {}),
       defaultBehavior: {
         origin: origins.S3BucketOrigin.withOriginAccessControl(bucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,

@@ -10,6 +10,8 @@ import type { Construct } from "constructs";
 
 export interface CertificateStackProps extends StackProps {
   domainName: string;
+  /** Further names on the same certificate, such as www. */
+  alternateNames: string[];
   hostedZoneId: string;
   hostedZoneName: string;
 }
@@ -25,6 +27,7 @@ export class CertificateStack extends Stack {
     });
     this.certificate = new acm.Certificate(this, "SiteCertificate", {
       domainName: props.domainName,
+      subjectAlternativeNames: props.alternateNames,
       validation: acm.CertificateValidation.fromDns(zone),
     });
   }
