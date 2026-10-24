@@ -4,6 +4,7 @@
 // multiple of their pixel size and shown at that size, so they stay crisp.
 
 import { useEffect, useRef, useState } from "react";
+import { Easing } from "react-native";
 import { Animated, Image, Text, View } from "react-native";
 import type { Content, Tinker } from "./api";
 import { useReducedMotion } from "./Juice";
@@ -44,6 +45,71 @@ function Frame({ frames, tick, size, flip, style }: { frames: number[]; tick: nu
   );
 }
 
+type Puff = { id: number; x: number; y: number; kind: "spark" | "dust" | "glint" | "damage"; text?: string };
+let puffId = 0;
+
+/**
+ * One burst at a point in the scene: sparks or dust scattering, a glint, or a
+ * damage number rising. It plays once and then asks to be removed.
+ */
+function PuffView({ puff, onDone }: { puff: Puff; onDone: (id: number) => void }) {
+  const t = useRef(new Animated.Value(0)).current;
+  const angles = useRef(Array.from({ length: puff.kind === "damage" ? 0 : 7 }, () => Math.random() * Math.PI - Math.PI)).current;
+  useEffect(() => {
+    Animated.timing(t, { toValue: 1, duration: puff.kind === "damage" ? 800 : 480, easing: Easing.out(Easing.quad), useNativeDriver: false }).start(() =>
+      onDone(puff.id),
+    );
+    // Each burst plays once from when it mounts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  if (puff.kind === "damage") {
+    return (
+      <Animated.Text
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          left: puff.x,
+          top: puff.y,
+          color: colors.steam,
+          fontWeight: "900",
+          fontSize: 18,
+          textShadowColor: colors.soot,
+          textShadowRadius: 3,
+          opacity: t.interpolate({ inputRange: [0, 0.7, 1], outputRange: [1, 1, 0] }),
+          transform: [
+            { translateY: t.interpolate({ inputRange: [0, 1], outputRange: [0, -34] }) },
+            { scale: t.interpolate({ inputRange: [0, 0.15, 1], outputRange: [0.5, 1.4, 1] }) },
+          ],
+        }}
+      >
+        {puff.text}
+      </Animated.Text>
+    );
+  }
+  const tone = puff.kind === "spark" ? [colors.brass, "#E07A2E", "#efe4cc"] : puff.kind === "dust" ? ["#8E979A", "#A9A9A2", "#5E6466"] : ["#efe4cc", colors.brass];
+  const reach = puff.kind === "dust" ? 22 : puff.kind === "glint" ? 10 : 30;
+  return (
+    <View pointerEvents="none" style={{ position: "absolute", left: puff.x, top: puff.y }}>
+      {angles.map((angle, index) => (
+        <Animated.View
+          key={index}
+          style={{
+            position: "absolute",
+            width: puff.kind === "dust" ? 5 : 4,
+            height: puff.kind === "dust" ? 5 : 4,
+            backgroundColor: tone[index % tone.length],
+            opacity: t.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }),
+            transform: [
+              { translateX: t.interpolate({ inputRange: [0, 1], outputRange: [0, Math.cos(angle) * reach] }) },
+              { translateY: t.interpolate({ inputRange: [0, 1], outputRange: [0, Math.sin(angle) * reach + (puff.kind === "spark" ? 10 : 0)] }) },
+            ],
+          }}
+        />
+      ))}
+    </View>
+  );
+}
+
 /** What the Tinker does with each skill's work. */
 const POSE: Record<string, string> = {
   smithing: "hammer",
@@ -79,6 +145,37 @@ export function Scene({ tinker, content, progress, working }: { tinker: Tinker; 
     last.current = progress;
   }, [progress, fighting]);
 
+  const reduced = useReducedMotion();
+  const [puffs, setPuffs] = useState<Puff[]>([]);
+  const lastSwing = useRef(progress);
+  const shake = useRef(new Animated.Value(0)).current;
+
+  // Each beat of work or a fight lands with something to see.
+  useEffect(() => {
+    if (reduced || !working || !head || tick % 2 !== 1) return;
+    const add = (puff: Omit<Puff, "id">) => setPuffs((list) => [...list.slice(-12), { ...puff, id: ++puffId }]);
+    if (monster) {
+      if (falling) return;
+      const dealt = Math.max(1, Math.round((progress - lastSwing.current) * monster.hp));
+      lastSwing.current = progress;
+      const x = monster.boss ? 200 : 190;
+      add({ x, y: FLOOR - 70, kind: "spark" });
+      add({ x: x + 10, y: FLOOR - (monster.boss ? 150 : 110), kind: "damage", text: `-${dealt}` });
+      if (monster.boss) {
+        shake.setValue(1);
+        Animated.timing(shake, { toValue: 0, duration: 240, useNativeDriver: false }).start();
+      }
+    } else if (pose === "hammer") {
+      add({ x: 125, y: FLOOR - 26, kind: "spark" });
+    } else if (pose === "pick") {
+      add({ x: 128, y: FLOOR - 20, kind: "dust" });
+    } else if (pose === "tinker") {
+      add({ x: 124, y: FLOOR - 52, kind: "glint" });
+    }
+    // Fires once per beat of the shared clock.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tick]);
+
   const tinkerFrames = characters.tinker!;
   const pose = !working || !head ? "idle" : monster ? "attack" : (POSE[action?.skill ?? ""] ?? "hammer");
   const monsterFrames = monster ? characters[monster.id] : undefined;
@@ -87,8 +184,9 @@ export function Scene({ tinker, content, progress, working }: { tinker: Tinker; 
   const swinging = fighting && tick % 2 === 1;
 
   return (
-    <View
+    <Animated.View
       style={{
+        transform: [{ translateX: shake.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [0, -4, 4, -3, 0] }) }],
         height: SCENE_HEIGHT,
         borderRadius: 6,
         overflow: "hidden",
@@ -118,7 +216,10 @@ export function Scene({ tinker, content, progress, working }: { tinker: Tinker; 
       )}
       {!working && head && <Text style={[ui.muted, { position: "absolute", right: 10, bottom: 8 }]}>The Boiler is dry.</Text>}
       {!head && <Text style={[ui.muted, { position: "absolute", right: 10, bottom: 8, color: colors.ink }]}>Idle. Queue some work.</Text>}
-    </View>
+      {puffs.map((puff) => (
+        <PuffView key={puff.id} puff={puff} onDone={(id) => setPuffs((list) => list.filter((entry) => entry.id !== id))} />
+      ))}
+    </Animated.View>
   );
 }
 

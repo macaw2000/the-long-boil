@@ -38,6 +38,7 @@ export interface Monster {
   boss: boolean;
   weakness: string;
   seconds_per_kill: number;
+  hp: number;
 }
 
 export interface Weapon {
