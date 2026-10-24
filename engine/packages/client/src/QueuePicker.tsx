@@ -1,15 +1,24 @@
 // Choosing one queue slot: a skilling action or a Rustmoor monster, and a count.
-// "Fill" offers the count that 12 hours of steam (or the materials held) allow.
+// The count starts at about an hour of work (or what the materials held allow);
+// quick buttons offer 1, 3 and 6 hours or a full Boiler, and the time a count
+// takes is shown beside it, so a number like 800 says what it means.
 
 import { useEffect, useMemo, useState } from "react";
 import { Image, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { api, type Content, type FightOutlook, type QueueEntry, type Tinker } from "./api";
-import { seconds, titleCase } from "./format";
+import { duration, seconds, titleCase } from "./format";
 import { ItemIcon } from "./Sprite";
 import { characters } from "./sprites";
 import { colors, ui } from "./theme";
 
 const BOILER_SECONDS = 12 * 3600;
+const DEFAULT_SECONDS = 3600;
+const SPANS: { label: string; seconds: number }[] = [
+  { label: "1h", seconds: 3600 },
+  { label: "3h", seconds: 3 * 3600 },
+  { label: "6h", seconds: 6 * 3600 },
+  { label: "Fill", seconds: BOILER_SECONDS },
+];
 
 export function QueuePicker({
   content,
@@ -51,21 +60,28 @@ export function QueuePicker({
       .map(([skill, actions]) => ({ skill, actions: actions.sort((a, b) => a.level_required - b.level_required) }));
   }, [content.actions]);
 
-  function fillFor(id: string): number {
+  /** Seconds one repetition takes: the action's time, or this Tinker's expected time per kill. */
+  function secondsEach(id: string): number {
     const action = content.actions.find((candidate) => candidate.id === id);
-    if (action) {
-      const byTime = Math.floor(BOILER_SECONDS / action.seconds);
-      const byInputs = Math.min(...action.inputs.map((input) => Math.floor((held.get(input.item) ?? 0) / input.qty)));
-      return Math.max(1, Math.min(byTime, action.inputs.length ? byInputs : byTime));
-    }
-    const monster = content.monsters.find((candidate) => candidate.id === id);
-    if (monster?.boss) return 1;
-    return Math.max(1, Math.floor(BOILER_SECONDS / (monster?.seconds_per_kill ?? 60)));
+    if (action) return action.seconds;
+    const outlook = fights.get(id);
+    if (outlook?.ready) return outlook.seconds;
+    return content.monsters.find((candidate) => candidate.id === id)?.seconds_per_kill ?? 60;
+  }
+
+  /** How many fit in a span of steam, and in the materials held. A boss is one attempt at a time. */
+  function countFor(id: string, span: number): number {
+    if (content.monsters.find((candidate) => candidate.id === id)?.boss) return 1;
+    const byTime = Math.max(1, Math.floor(span / secondsEach(id)));
+    const action = content.actions.find((candidate) => candidate.id === id);
+    if (!action || action.inputs.length === 0) return byTime;
+    const byInputs = Math.min(...action.inputs.map((input) => Math.floor((held.get(input.item) ?? 0) / input.qty)));
+    return Math.max(1, Math.min(byTime, byInputs));
   }
 
   function choose(id: string) {
     setChosen(id);
-    setCount(String(fillFor(id)));
+    setCount(String(countFor(id, DEFAULT_SECONDS)));
   }
 
   const parsed = Number(count);
@@ -138,6 +154,32 @@ export function QueuePicker({
             ))}
         </View>
       </ScrollView>
+      {chosen !== null && !content.monsters.find((monster) => monster.id === chosen)?.boss && (
+        <View style={{ flexDirection: "row", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+          {SPANS.map((span) => {
+            const n = countFor(chosen, span.seconds);
+            return (
+              <Pressable
+                key={span.label}
+                onPress={() => setCount(String(n))}
+                accessibilityRole="button"
+                accessibilityLabel={`${span.label}: ${n}`}
+                style={{
+                  borderWidth: 1,
+                  borderColor: Number(count) === n ? colors.brass : colors.panelEdge,
+                  borderRadius: 4,
+                  paddingHorizontal: 8,
+                  paddingVertical: 3,
+                }}
+              >
+                <Text style={[ui.number, { fontSize: 12, color: Number(count) === n ? colors.brass : colors.muted }]}>
+                  {span.label} · {n.toLocaleString()}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      )}
       <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
         <TextInput
           style={[ui.input, { width: 100 }]}
@@ -160,6 +202,12 @@ export function QueuePicker({
           <Text style={ui.muted}>Cancel</Text>
         </Pressable>
       </View>
+      {valid && (
+        <Text style={ui.muted}>
+          {parsed.toLocaleString()} × {seconds(secondsEach(chosen))} = {duration(parsed * secondsEach(chosen) * 1000)} of steam
+          {parsed * secondsEach(chosen) > BOILER_SECONDS ? " (more than one Boiler: it carries on after your next check-in)" : ""}
+        </Text>
+      )}
       {warning && <Text style={[ui.muted, { color: colors.copper }]}>Careful: {warning}.</Text>}
       {tinker.queue.length === 1 && <Text style={ui.muted}>This goes second, after {name(tinker.queue[0]!.actionId)} finishes.</Text>}
     </View>
