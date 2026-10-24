@@ -160,7 +160,7 @@ export type FightOutlook =
 
 export interface StoryOutcome extends Outcome {
   view: StoryView;
-  played: { scene: string; success: boolean; text: string; odds: number | null } | null;
+  played: { scene: string; success: boolean; text: string; odds: number | null; roll: number | null } | null;
 }
 
 export interface MarketView {

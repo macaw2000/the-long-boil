@@ -3,11 +3,12 @@
 // and Nerve gauges on the top bar, the four Needles beside the name. Narrow
 // screens stack the three columns. Further tabs hold the Story and the Exchange.
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { api, type Content, type Ledger as LedgerData, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
 import { Exchange } from "./Exchange";
 import { Glow } from "./Glow";
+import { Badge, CanisterDrop, CountUp, Floaters, Gauge, ScaldVignette, Sparks, SteamTube, useFloaters } from "./Juice";
 import { currentStep, GuideCard, nudges, type GuideState, type Target } from "./Guide";
 import { Story } from "./Story";
 import { duration, levelProgress, namer, seconds, titleCase, tradeLine } from "./format";
@@ -34,6 +35,43 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
     saveGuide(tinkerId, next);
   };
 
+  const [floaters, addFloater, removeFloater] = useFloaters();
+  const [skillBursts, setSkillBursts] = useState<Record<string, number>>({});
+  const [canisters, setCanisters] = useState(0);
+  const previous = useRef<Tinker | null>(null);
+
+  // What changed since the last look, as things the player can watch arrive.
+  const celebrate = useCallback(
+    (next: Tinker) => {
+      const before = previous.current;
+      previous.current = next;
+      if (!before) return;
+      const count = (tinker: Tinker) => {
+        const totals = new Map<string, number>();
+        for (const stack of tinker.inventory) totals.set(stack.item, (totals.get(stack.item) ?? 0) + stack.qty);
+        return totals;
+      };
+      const was = count(before);
+      for (const [item, qty] of count(next)) {
+        const gained = qty - (was.get(item) ?? 0);
+        if (gained > 0) addFloater(`+${gained.toLocaleString()} ${name(item)}`);
+      }
+      const gainedCrowns = next.crowns - before.crowns;
+      if (gainedCrowns > 0) addFloater(`+${gainedCrowns.toLocaleString()} Crowns`, colors.brass);
+      for (const skill of next.skills) {
+        const old = before.skills.find((entry) => entry.skill === skill.skill)?.level ?? 1;
+        if (skill.level > old) {
+          addFloater(`${titleCase(skill.skill)} ${skill.level}!`, colors.verdigris);
+          setSkillBursts((bursts) => ({ ...bursts, [skill.skill]: (bursts[skill.skill] ?? 0) + 1 }));
+        }
+      }
+      if (next.story.letters > before.story.letters) setCanisters((drops) => drops + 1);
+    },
+    // addFloater is stable in effect: it only appends to state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [name],
+  );
+
   const noteRecent = useCallback(
     (ledger: LedgerData, trades: TradeNote[]) => {
       const lines = ledger.lines.map((line) =>
@@ -54,10 +92,14 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
     [name],
   );
 
-  const apply = useCallback((outcome: Outcome) => {
-    setTinker(outcome.tinker);
-    setError(null);
-  }, []);
+  const apply = useCallback(
+    (outcome: Outcome) => {
+      celebrate(outcome.tinker);
+      setTinker(outcome.tinker);
+      setError(null);
+    },
+    [celebrate],
+  );
 
   // Opening the workshop is a check-in: it resolves the time away and refills the Boiler.
   useEffect(() => {
@@ -128,10 +170,12 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
         const progress = levelProgress(content, skill.xp, skill.level);
         return (
           <View key={skill.skill} style={{ gap: 3 }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-              <Text style={ui.text}>{titleCase(skill.skill)}</Text>
-              <Text style={ui.number}>{skill.level}</Text>
-            </View>
+            <Sparks bursts={skillBursts[skill.skill] ?? 0}>
+              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <Text style={ui.text}>{titleCase(skill.skill)}</Text>
+                <Text style={ui.number}>{skill.level}</Text>
+              </View>
+            </Sparks>
             {progress && <Bar fraction={progress.into / progress.span} color={colors.verdigris} />}
             <Text style={[ui.muted, { fontSize: 11 }]}>
               {skill.xp.toLocaleString()} XP{progress ? ` · ${(progress.span - progress.into).toLocaleString()} to go` : ""}
@@ -153,6 +197,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
 
   const centre = (
     <View style={{ gap: 12 }}>
+      <Floaters floaters={floaters} onDone={removeFloater} />
       {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} onClose={() => setAway(null)} />}
       <Glow active={lit.has("bench")}>
       <View style={ui.panel}>
@@ -180,7 +225,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
               </View>
               {slot === 0 && headSeconds > 0 && (
                 <>
-                  <Bar fraction={Math.min(1, elapsed / (headSeconds * 1000))} color={colors.copper} />
+                  <SteamTube fraction={Math.min(1, elapsed / (headSeconds * 1000))} working={Boolean(working)} />
                   <Text style={[ui.muted, { fontSize: 11 }]}>
                     {working
                       ? `${fight ? "about " : ""}${seconds(Math.max(0, headSeconds - elapsed / 1000))} until the next ${fight ? "kill" : "one"}`
@@ -274,6 +319,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
 
   return (
     <View style={{ flex: 1 }}>
+      <ScaldVignette scald={tinker.story.needles["needle.scald"] ?? 0} />
       <View
         style={{
           flexDirection: "row",
@@ -288,10 +334,15 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
       >
         <Text style={[ui.heading, { fontSize: 20 }]}>No. 9 Sprocket Row</Text>
         <Text style={ui.muted}>{tinker.name}</Text>
-        <Glow active={lit.has("boiler")} style={{ flex: 1, minWidth: 180, maxWidth: 320 }}>
-          <View style={{ gap: 3 }}>
-            <Text style={ui.muted}>Boiler · {steamLeft > 0 ? `${duration(steamLeft)} of steam` : "dry"}</Text>
-            <Bar fraction={Math.max(0, steamLeft) / BOILER_MS} color={colors.brass} />
+        <Glow active={lit.has("boiler")}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <Gauge fraction={Math.max(0, steamLeft) / BOILER_MS} />
+            <View>
+              <Text style={ui.muted}>Boiler</Text>
+              <Text style={[ui.number, { color: steamLeft > 2 * 3_600_000 ? colors.ink : colors.scald }]}>
+                {steamLeft > 0 ? duration(steamLeft) : "dry"}
+              </Text>
+            </View>
           </View>
         </Glow>
         <View style={{ minWidth: 140, maxWidth: 200, flex: 1, gap: 3 }}>
@@ -300,7 +351,7 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
           </Text>
           <Bar fraction={tinker.story.nerve / tinker.story.nerveCap} color={colors.verdigris} />
         </View>
-        <Text style={[ui.number, { color: colors.brass, fontSize: 15 }]}>{tinker.crowns.toLocaleString()} Crowns</Text>
+        <CountUp value={tinker.crowns} suffix=" Crowns" style={[ui.number, { color: colors.brass, fontSize: 15 }]} />
         <View style={{ flexDirection: "row", gap: 8 }} accessibilityLabel="The four Needles">
           {Object.entries(tinker.story.needles).map(([needle, value]) => (
             <Text key={needle} style={[ui.number, { color: value >= 8 ? colors.scald : value > 0 ? colors.copper : colors.muted }]}>
@@ -326,10 +377,13 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
               borderBottomColor: tab === choice ? colors.brass : "transparent",
             }}
           >
-            <Text style={[ui.text, { color: tab === choice ? colors.brass : colors.muted }]}>
-              {titleCase(choice)}
-              {choice === "story" && tinker.story.letters > 0 ? ` (${tinker.story.letters})` : ""}
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+              <Text style={[ui.text, { color: tab === choice ? colors.brass : colors.muted }]}>{titleCase(choice)}</Text>
+              {choice === "story" && <Badge count={tinker.story.letters + (tinker.story.openScenes > 0 && tinker.story.nerve > 0 ? 1 : 0)} label={tinker.story.letters > 0 ? String(tinker.story.letters) : tinker.story.openScenes > 0 && tinker.story.nerve > 0 ? "•" : undefined} />}
+              {choice === "exchange" && tinker.story.debts.some((debt) => tinker.crowns >= debt.crowns) && <Badge count={1} label="!" tone={colors.copper} />}
+              {choice === "workshop" && tinker.queue.length === 0 && <Badge count={1} label="idle" tone={colors.scald} />}
+            </View>
+            {choice === "story" && <CanisterDrop drops={canisters} />}
           </Pressable>
           </Glow>
         ))}

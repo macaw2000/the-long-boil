@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { api, type Outcome, type SceneView, type StoryOutcome, type StoryView } from "./api";
 import { titleCase } from "./format";
+import { OddsDial } from "./Juice";
 import { colors, ui } from "./theme";
 
 const REFRESH_MS = 10_000;
@@ -78,6 +79,11 @@ export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (o
               <Text style={ui.muted}>Put it aside</Text>
             </Pressable>
           </View>
+          {played.odds !== null && played.roll !== null && (
+            <View style={{ alignItems: "center" }}>
+              <OddsDial odds={played.odds} roll={played.roll} success={played.success} />
+            </View>
+          )}
           <Text style={[ui.text, { lineHeight: 21 }]}>{played.text}</Text>
         </View>
       )}
