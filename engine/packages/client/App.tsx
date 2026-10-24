@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { Platform, Text, View } from "react-native";
 import { api, setClockOffset, whenSignedOut, type Content } from "./src/api";
-import { accessToken, cognitoEnabled, finishSignIn } from "./src/auth";
+import { bearerToken, cognitoEnabled, finishSignIn } from "./src/auth";
 import { SignIn } from "./src/SignIn";
 import { colors, ui } from "./src/theme";
 import { Workshop } from "./src/Workshop";
@@ -36,15 +36,25 @@ export default function App() {
   const [tinkerId, setTinkerId] = useState<number | null>(remembered);
   // Under the dev login everyone is signed in; with Cognito, unknown until a returning code is traded and the tokens looked at.
   const [signedIn, setSignedIn] = useState<boolean | null>(cognitoEnabled ? null : true);
+  // Admins get the dev tools; under the dev login everyone does.
+  const [admin, setAdmin] = useState(!cognitoEnabled);
 
   useEffect(() => {
     if (!cognitoEnabled) return;
     whenSignedOut(() => setSignedIn(false));
     finishSignIn()
       .catch(() => undefined)
-      .then(accessToken)
+      .then(bearerToken)
       .then((token) => setSignedIn(Boolean(token)));
   }, []);
+
+  useEffect(() => {
+    if (!cognitoEnabled || !signedIn) return;
+    api
+      .me()
+      .then((me) => setAdmin(me.admin))
+      .catch(() => setAdmin(false));
+  }, [signedIn]);
 
   useEffect(() => {
     api
@@ -71,7 +81,7 @@ export default function App() {
       ) : tinkerId === null || !signedIn ? (
         <SignIn signedIn={signedIn} onEnter={(_login, id) => open(id)} />
       ) : (
-        <Workshop key={tinkerId} content={content} tinkerId={tinkerId} onLeave={() => open(null)} />
+        <Workshop key={tinkerId} content={content} tinkerId={tinkerId} admin={admin} onLeave={() => open(null)} />
       )}
     </View>
   );

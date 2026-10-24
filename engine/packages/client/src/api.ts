@@ -1,7 +1,7 @@
 // The server's HTTP API, as the client sees it. The shapes mirror
 // packages/server/src/tinkers.ts and packages/rules/src/ledger.ts.
 
-import { accessToken } from "./auth";
+import { bearerToken } from "./auth";
 
 const BASE = process.env.EXPO_PUBLIC_API_URL ?? "http://127.0.0.1:3000";
 
@@ -282,12 +282,12 @@ export type Notice = { type: "changed" } | { type: "mutes" } | { type: "guild" }
 /** The live connection's address, on the same server as the HTTP API. */
 /** A browser cannot give a WebSocket headers, so the sign-in token rides in the query. */
 export async function liveUrl(tinkerId: number): Promise<string> {
-  const token = await accessToken();
+  const token = await bearerToken();
   return `${BASE.replace(/^http/, "ws")}/live/${tinkerId}${token ? `?token=${encodeURIComponent(token)}` : ""}`;
 }
 
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
-  const token = await accessToken();
+  const token = await bearerToken();
   const response = await fetch(`${BASE}${path}`, {
     method,
     headers: {
@@ -304,7 +304,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 
 export const api = {
   content: () => request<Content>("GET", "/content"),
-  me: () => request<{ login: string | null }>("GET", "/me"),
+  me: () => request<{ login: string | null; admin: boolean }>("GET", "/me"),
   listTinkers: (login: string) =>
     request<{ tinkers: { id: number; name: string }[] }>("GET", `/accounts/${encodeURIComponent(login)}/tinkers`),
   createTinker: (login: string, name: string) => request<Outcome>("POST", "/tinkers", { login, name }),

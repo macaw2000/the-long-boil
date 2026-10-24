@@ -173,8 +173,9 @@ export class AppStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
-    // The environment is the contract with engine/packages/server. Never set
-    // LONG_BOIL_DEV (the skippable clock) or LONG_BOIL_OPEN_TRADING here.
+    // The environment is the contract with engine/packages/server. Dev runs
+    // the skippable clock (LONG_BOIL_DEV) for admins only; prod never does.
+    // LONG_BOIL_OPEN_TRADING is never set: admins skip the gate by sign-in.
     taskDefinition.addContainer("server", {
       image: ecs.ContainerImage.fromEcrRepository(props.repository, settings.imageTag),
       portMappings: [{ containerPort: SERVER_PORT }],
@@ -192,6 +193,8 @@ export class AppStack extends Stack {
         COGNITO_USER_POOL_ID: userPool.userPoolId,
         COGNITO_CLIENT_ID: client.userPoolClientId,
         CORS_ORIGINS: siteUrl,
+        ADMIN_EMAILS: settings.adminEmails,
+        ...(settings.devTools ? { LONG_BOIL_DEV: "1" } : {}),
       },
       secrets: {
         PGUSER: ecs.Secret.fromSecretsManager(databaseSecret, "username"),

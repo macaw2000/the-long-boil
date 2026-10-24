@@ -79,6 +79,7 @@ jobs:
             -c hostedZoneName=${{ vars.HOSTED_ZONE_NAME }} \
             -c googleClientId=${{ vars.GOOGLE_CLIENT_ID }} \
             -c discordClientId=${{ vars.DISCORD_CLIENT_ID }} \
+            -c adminEmails=${{ vars.ADMIN_EMAILS }} \
             -c cognitoDomainPrefix=${{ vars.COGNITO_DOMAIN_PREFIX || 'long-boil-dev' }}
 
       - name: Read stack outputs

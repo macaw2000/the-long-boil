@@ -1,10 +1,11 @@
 // Real sign-in (build plan milestone 11) against a real PostgreSQL database,
 // long_boil_test, rebuilt from the migrations. A stand-in Auth takes the
-// place of Cognito: the token "good:<login>" speaks for that login.
+// place of Cognito: the token "good:<login>" speaks for that login, and
+// "admin:<login>" for an admin.
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { buildApi } from "../src/api.js";
-import { Unauthorized, type Auth } from "../src/auth.js";
+import { buildApi, devClockInDatabase } from "../src/api.js";
+import { Unauthorized, isAdmin, type Auth } from "../src/auth.js";
 import { loadContent } from "../src/content-loader.js";
 import { connect, migrate } from "../src/db.js";
 
@@ -13,8 +14,9 @@ const content = loadContent();
 const clock = Date.UTC(2026, 9, 22, 8, 0, 0);
 const auth: Auth = {
   async verify(token) {
-    if (!token.startsWith("good:")) throw new Unauthorized("sign in again");
-    return token.slice("good:".length);
+    if (token.startsWith("good:")) return { login: token.slice("good:".length), admin: false };
+    if (token.startsWith("admin:")) return { login: token.slice("admin:".length), admin: true };
+    throw new Unauthorized("sign in again");
   },
 };
 const app = buildApi({ db, content, now: () => clock, auth, prefix: "/api" });
@@ -54,7 +56,7 @@ describe("signing in with Cognito", () => {
     expect((await call("GET", "/api/me")).status).toBe(401);
     const forged = await app.inject({ method: "GET", url: "/api/me", headers: { authorization: "Bearer forged" } });
     expect(forged.statusCode).toBe(401);
-    expect((await call("GET", "/api/me", "cognito:ada")).body).toEqual({ login: "cognito:ada" });
+    expect((await call("GET", "/api/me", "cognito:ada")).body).toEqual({ login: "cognito:ada", admin: false });
   });
 
   it("makes Tinkers only on the token's own account", async () => {
@@ -88,11 +90,64 @@ describe("signing in with Cognito", () => {
   });
 });
 
+describe("admins", () => {
+  const google = (email: string, verified: unknown = true) => ({
+    email,
+    email_verified: verified,
+    identities: [{ providerName: "Google" }],
+  });
+  const admins = new Set(["macaw2000@gmail.com"]);
+
+  it("are verified Google accounts on the list, and no one else", () => {
+    expect(isAdmin(google("macaw2000@gmail.com"), admins)).toBe(true);
+    expect(isAdmin(google("Macaw2000@Gmail.com", "true"), admins)).toBe(true);
+    expect(isAdmin(google("macaw2000@gmail.com", false), admins)).toBe(false);
+    expect(isAdmin(google("someone@gmail.com"), admins)).toBe(false);
+    // The same email signed in through Discord is a different account and not an admin.
+    expect(isAdmin({ ...google("macaw2000@gmail.com"), identities: [{ providerName: "Discord" }] }, admins)).toBe(false);
+    expect(isAdmin({ email: "macaw2000@gmail.com", email_verified: true }, admins)).toBe(false);
+  });
+
+  it("alone may skip the dev clock, which the database keeps", async () => {
+    const dev = await devClockInDatabase(db);
+    const devApp = buildApi({ db, content, now: dev.now, auth, prefix: "/api", devClock: dev.clock });
+    const skip = (token: string) =>
+      devApp.inject({ method: "POST", url: "/api/dev/skip", headers: { authorization: `Bearer ${token}` }, payload: { hours: 2 } });
+    expect((await skip("good:cognito:ada")).statusCode).toBe(403);
+    const skipped = await skip("admin:cognito:jeremy");
+    expect(skipped.statusCode).toBe(200);
+    expect(skipped.json().offsetMs).toBe(2 * 3_600_000);
+    expect((await skip("admin:cognito:jeremy")).json().offsetMs).toBe(4 * 3_600_000);
+    // A new server, as after a deploy, picks up where the last left off.
+    expect((await devClockInDatabase(db)).clock.offset()).toBe(4 * 3_600_000);
+    await devApp.close();
+  });
+
+  it("skip the trading gate; everyone else keeps it", async () => {
+    const sell = { item: "item.rustmoor.brass_ingot", side: "sell", price: 10, qty: 1 };
+    const cara = (await call("POST", "/api/tinkers", "cognito:cara", { login: "cognito:cara", name: "Cara" })).body.tinker.id;
+    expect((await call("POST", `/api/tinkers/${cara}/orders`, "cognito:cara", sell)).status).toBe(403);
+    const admin = await app.inject({
+      method: "POST",
+      url: "/api/tinkers",
+      headers: { authorization: "Bearer admin:cognito:jeremy" },
+      payload: { login: "cognito:jeremy", name: "Jeremy" },
+    });
+    const placed = await app.inject({
+      method: "POST",
+      url: `/api/tinkers/${admin.json().tinker.id}/orders`,
+      headers: { authorization: "Bearer admin:cognito:jeremy" },
+      payload: sell,
+    });
+    expect(placed.statusCode).toBe(201);
+  });
+});
+
 describe("the dev login", () => {
   it("still trusts the login it is given, and says no one is signed in", async () => {
     const dev = buildApi({ db, content, now: () => clock });
     const me = await dev.inject({ method: "GET", url: "/me" });
-    expect(me.json()).toEqual({ login: null });
+    expect(me.json()).toEqual({ login: null, admin: true });
     const made = await dev.inject({ method: "POST", url: "/tinkers", payload: { login: "dev-cara", name: "Cara" } });
     expect(made.statusCode).toBe(201);
     await dev.close();

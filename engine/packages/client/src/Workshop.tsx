@@ -28,7 +28,7 @@ import { colors, ui } from "./theme";
 const LOOK_EVERY_MS = 5_000;
 const BOILER_MS = 12 * 3_600_000;
 
-export function Workshop({ content, tinkerId, onLeave }: { content: Content; tinkerId: number; onLeave: () => void }) {
+export function Workshop({ content, tinkerId, admin, onLeave }: { content: Content; tinkerId: number; admin: boolean; onLeave: () => void }) {
   const [tinker, setTinker] = useState<Tinker | null>(null);
   const [away, setAway] = useState<{ ledger: LedgerData; trades: TradeNote[] } | null>(null);
   const [tab, setTab] = useState<"workshop" | "story" | "exchange" | "guild" | "chat">("workshop");
@@ -450,7 +450,8 @@ export function Workshop({ content, tinkerId, onLeave }: { content: Content; tin
           <Text style={ui.muted}>Leave</Text>
         </Pressable>
       </View>
-      {content.dev && (
+      {/* The dev tools: wherever the server runs a dev clock, for admins only (everyone under the dev login). */}
+      {content.dev && admin && (
         <View
           style={{
             flexDirection: "row",

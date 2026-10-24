@@ -25,8 +25,10 @@ const PENDING_KEY = "long-boil.sign-in";
 /** A token this close to expiring is refreshed first, so it does not lapse in flight. */
 const EARLY_MS = 60_000;
 
+// The ID token is what the server checks: it names the email and provider
+// that signed in, which is how the server knows an admin (server auth.ts).
 interface Tokens {
-  access: string;
+  id: string;
   refresh: string;
   expiresAt: number;
 }
@@ -46,7 +48,9 @@ function randomString(): string {
 
 function readTokens(): Tokens | null {
   try {
-    return JSON.parse(globalThis.localStorage.getItem(TOKENS_KEY) ?? "null") as Tokens | null;
+    const tokens = JSON.parse(globalThis.localStorage.getItem(TOKENS_KEY) ?? "null") as Tokens | null;
+    // Tokens saved before the server checked ID tokens have none; sign in again.
+    return tokens?.id ? tokens : null;
   } catch {
     return null;
   }
@@ -57,7 +61,7 @@ function writeTokens(tokens: Tokens | null) {
   else globalThis.localStorage.removeItem(TOKENS_KEY);
 }
 
-async function tokenRequest(body: Record<string, string>): Promise<{ access_token: string; refresh_token?: string; expires_in: number }> {
+async function tokenRequest(body: Record<string, string>): Promise<{ id_token: string; refresh_token?: string; expires_in: number }> {
   const response = await fetch(`https://${DOMAIN}/oauth2/token`, {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
@@ -105,22 +109,22 @@ export async function finishSignIn(): Promise<void> {
   // A code this browser did not ask for is ignored, so a crafted link cannot sign someone in as another player.
   if (!pending || params.get("state") !== pending.state) return;
   const got = await tokenRequest({ grant_type: "authorization_code", code, redirect_uri: redirectUri(), code_verifier: pending.verifier });
-  writeTokens({ access: got.access_token, refresh: got.refresh_token ?? "", expiresAt: Date.now() + got.expires_in * 1000 });
+  writeTokens({ id: got.id_token, refresh: got.refresh_token ?? "", expiresAt: Date.now() + got.expires_in * 1000 });
 }
 
 let refreshing: Promise<string | null> | null = null;
 
-/** The access token to send, refreshed if it is about to expire; null when signed out or under the dev login. */
-export async function accessToken(): Promise<string | null> {
+/** The ID token to send, refreshed if it is about to expire; null when signed out or under the dev login. */
+export async function bearerToken(): Promise<string | null> {
   if (!cognitoEnabled) return null;
   const tokens = readTokens();
   if (!tokens) return null;
-  if (tokens.expiresAt - EARLY_MS > Date.now()) return tokens.access;
+  if (tokens.expiresAt - EARLY_MS > Date.now()) return tokens.id;
   // Many requests can find the token stale at once; they share one refresh.
   refreshing ??= tokenRequest({ grant_type: "refresh_token", refresh_token: tokens.refresh })
     .then((got) => {
-      writeTokens({ ...tokens, access: got.access_token, expiresAt: Date.now() + got.expires_in * 1000 });
-      return got.access_token;
+      writeTokens({ ...tokens, id: got.id_token, expiresAt: Date.now() + got.expires_in * 1000 });
+      return got.id_token;
     })
     .catch(() => {
       writeTokens(null);

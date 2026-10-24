@@ -4,6 +4,7 @@
 // city chat; everything a player does still goes through these HTTP routes.
 // With an Auth (milestone 11) every route but /health and /content needs a
 // Cognito token, and a route naming a Tinker needs it to be the caller's.
+// Admins (auth.ts) may use the /dev routes and skip the trading gate.
 
 import cors from "@fastify/cors";
 import websocket from "@fastify/websocket";
@@ -71,11 +72,16 @@ declare module "fastify" {
   interface FastifyRequest {
     /** The signed-in account's login, when there is an Auth. */
     login: string | null;
+    /** An admin's request, or any request under the dev login, which has no one to tell apart. */
+    admin: boolean;
   }
 }
 
 /** How often the live connection pings, well inside CloudFront's 10-minute idle limit. */
 const PING_MS = 45_000;
+
+/** The trading gate as admins see it: open. */
+const NO_GATE: TradingRules = { level: 0, days: 0 };
 
 /** Routes anyone may call, signed in or not: the load balancer's health check and the game's content. */
 const OPEN_ROUTES = new Set(["/health", "/content"]);
@@ -83,7 +89,7 @@ const OPEN_ROUTES = new Set(["/health", "/content"]);
 export interface DevClock {
   /** How far the server's clock runs ahead of the wall clock, in ms. */
   offset(): number;
-  skip(ms: number): number;
+  skip(ms: number): Promise<number>;
 }
 
 /**
@@ -97,9 +103,36 @@ export function devClock(file?: string): { clock: DevClock; now: () => number } 
   return {
     clock: {
       offset: () => offset,
-      skip: (ms) => {
+      skip: async (ms) => {
         offset += ms;
         if (file) writeFileSync(file, JSON.stringify({ offsetMs: offset }) + "\n");
+        return offset;
+      },
+    },
+    now: () => Date.now() + offset,
+  };
+}
+
+/**
+ * The same clock for a deployed dev server, whose disk does not outlive a
+ * deploy: the offset is kept in the database (migration 011). One clock for
+ * the whole server, so a skip moves time for every player on it. With more
+ * than one server, each would need to reload it; dev runs one.
+ */
+export async function devClockInDatabase(db: Db): Promise<{ clock: DevClock; now: () => number }> {
+  const row = await db.query<{ offset_ms: string }>("SELECT offset_ms FROM dev_clock");
+  let offset = Number(row.rows[0]?.offset_ms ?? 0);
+  return {
+    clock: {
+      offset: () => offset,
+      skip: async (ms) => {
+        const saved = await db.query<{ offset_ms: string }>(
+          `INSERT INTO dev_clock (offset_ms) VALUES ($1)
+           ON CONFLICT (only_row) DO UPDATE SET offset_ms = dev_clock.offset_ms + EXCLUDED.offset_ms
+           RETURNING offset_ms`,
+          [ms],
+        );
+        offset = Number(saved.rows[0]!.offset_ms);
         return offset;
       },
     },
@@ -126,19 +159,25 @@ export function buildApi({
   app.register(websocket, { options: { maxPayload: 4096 } });
 
   app.decorateRequest("login", null);
+  app.decorateRequest("admin", !auth);
   if (auth) {
     // Runs before the WebSocket upgrade too, so a bad token never opens a live connection.
     app.addHook("preHandler", async (request) => {
       if (OPEN_ROUTES.has(request.routeOptions.url ?? "")) return;
       const token = tokenOf(request.headers, request.query);
       if (!token) throw new Unauthorized("sign in first");
-      request.login = await auth.verify(token);
+      const identity = await auth.verify(token);
+      request.login = identity.login;
+      request.admin = identity.admin;
+      if (request.routeOptions.url?.startsWith("/dev/") && !identity.admin) throw new Refused("admins only");
       const id = Number((request.params as { id?: string }).id);
       if (Number.isInteger(id) && id > 0 && !(await ownsTinker(request.login, id))) throw new Refused("that is not your Tinker");
       const login = (request.params as { login?: string }).login ?? (request.body as { login?: unknown } | undefined)?.login;
       if (login !== undefined && login !== request.login) throw new Refused("that is not your account");
     });
   }
+  /** The gate for this request: none for an admin, otherwise the server's. */
+  const gate = (request: { admin: boolean }) => (auth && request.admin ? NO_GATE : trading);
   const ownsTinker = async (login: string, id: number) =>
     (await db.query("SELECT 1 FROM tinkers t JOIN accounts a ON a.id = t.account_id WHERE t.id = $1 AND a.login = $2", [id, login])).rowCount === 1;
 
@@ -163,8 +202,8 @@ export function buildApi({
   // Answers without touching the database, so the load balancer's checks never wake a paused Aurora (GDD section 11, decision 3).
   app.get("/health", async () => ({ ok: true }));
 
-  // Who the token speaks for, so the client can list and open its own Tinkers; null under the dev login.
-  app.get("/me", async (request) => ({ login: request.login }));
+  // Who the token speaks for, so the client can list and open its own Tinkers (null under the dev login), and whether to show the dev tools.
+  app.get("/me", async (request) => ({ login: request.login, admin: request.admin }));
 
   app.get("/content", async () => ({
     version: content.rules.version,
@@ -187,7 +226,7 @@ export function buildApi({
           body: { type: "object", required: ["hours"], properties: { hours: { type: "number", exclusiveMinimum: 0, maximum: 168 } } },
         },
       },
-      async (request) => ({ offsetMs: clock.skip(request.body.hours * 3_600_000), now: new Date(now()).toISOString() }),
+      async (request) => ({ offsetMs: await clock.skip(request.body.hours * 3_600_000), now: new Date(now()).toISOString() }),
     );
     app.post<{ Params: { id: string }; Body: { qualities?: Record<string, number>; fillNerve?: boolean } }>(
       "/dev/tinkers/:id/story",
@@ -282,7 +321,7 @@ export function buildApi({
   );
 
   app.get<{ Params: { id: string } }>("/tinkers/:id/market", async (request) =>
-    marketView(db, content, Number(request.params.id), now(), trading),
+    marketView(db, content, Number(request.params.id), now(), gate(request)),
   );
 
   app.post<{ Params: { id: string }; Body: { item: string; side: "buy" | "sell"; price: number; qty: number } }>(
@@ -302,7 +341,7 @@ export function buildApi({
       },
     },
     async (request, reply) => {
-      const { counterparties, ...result } = await placeOrder(db, content, Number(request.params.id), request.body, now(), trading);
+      const { counterparties, ...result } = await placeOrder(db, content, Number(request.params.id), request.body, now(), gate(request));
       for (const other of counterparties) broadcast.publish(tinkerChannel(other), { type: "changed" });
       return reply.code(201).send(result);
     },
@@ -345,18 +384,18 @@ export function buildApi({
   );
 
   app.get<{ Params: { id: string } }>("/tinkers/:id/work-orders", async (request) =>
-    readDesk(db, content, Number(request.params.id), now(), trading),
+    readDesk(db, content, Number(request.params.id), now(), gate(request)),
   );
   app.post<{ Params: { id: string; offer: string }; Body: { order: string } }>(
     "/tinkers/:id/work-orders/:offer/choose",
     { schema: { body: { type: "object", required: ["order"], properties: { order: { type: "string" } } } } },
-    async (request) => chooseSeal(db, content, Number(request.params.id), Number(request.params.offer), request.body.order, now(), trading),
+    async (request) => chooseSeal(db, content, Number(request.params.id), Number(request.params.offer), request.body.order, now(), gate(request)),
   );
   app.post<{ Params: { id: string; offer: string } }>("/tinkers/:id/work-orders/:offer/turn-in", async (request) =>
-    turnIn(db, content, Number(request.params.id), Number(request.params.offer), now(), trading),
+    turnIn(db, content, Number(request.params.id), Number(request.params.offer), now(), gate(request)),
   );
   app.delete<{ Params: { id: string; offer: string } }>("/tinkers/:id/work-orders/:offer", async (request) =>
-    discardOffer(db, content, Number(request.params.id), Number(request.params.offer), now(), trading),
+    discardOffer(db, content, Number(request.params.id), Number(request.params.offer), now(), gate(request)),
   );
 
   // Guilds (milestone 10). Every change tells the other Tinkers it touched, so their screens and guild chat follow.
@@ -365,52 +404,52 @@ export function buildApi({
     return outcome.view;
   };
   const idOf = (params: { id: string }) => Number(params.id);
-  app.get<{ Params: { id: string } }>("/tinkers/:id/guild", async (request) => (await readGuild(db, content, idOf(request.params), now(), trading)).view);
+  app.get<{ Params: { id: string } }>("/tinkers/:id/guild", async (request) => (await readGuild(db, content, idOf(request.params), now(), gate(request))).view);
   app.post<{ Params: { id: string }; Body: { name: string; crowns: number } }>(
     "/tinkers/:id/guild",
     { schema: { body: { type: "object", required: ["name", "crowns"], properties: { name: { type: "string", maxLength: 80 }, crowns: { type: "integer", minimum: 1 } } } } },
-    async (request) => guildDone(idOf(request.params), await foundGuild(db, content, idOf(request.params), request.body.name, request.body.crowns, now(), trading)),
+    async (request) => guildDone(idOf(request.params), await foundGuild(db, content, idOf(request.params), request.body.name, request.body.crowns, now(), gate(request))),
   );
   app.post<{ Params: { id: string; guild: string }; Body: { crowns: number } }>(
     "/tinkers/:id/guilds/:guild/pledge",
     { schema: { body: { type: "object", required: ["crowns"], properties: { crowns: { type: "integer", minimum: 1 } } } } },
     async (request) =>
-      guildDone(idOf(request.params), await pledgeToGuild(db, content, idOf(request.params), Number(request.params.guild), request.body.crowns, now(), trading)),
+      guildDone(idOf(request.params), await pledgeToGuild(db, content, idOf(request.params), Number(request.params.guild), request.body.crowns, now(), gate(request))),
   );
   app.post<{ Params: { id: string; guild: string } }>("/tinkers/:id/guilds/:guild/apply", async (request) =>
-    guildDone(idOf(request.params), await applyToGuild(db, content, idOf(request.params), Number(request.params.guild), now(), trading)),
+    guildDone(idOf(request.params), await applyToGuild(db, content, idOf(request.params), Number(request.params.guild), now(), gate(request))),
   );
   app.post<{ Params: { id: string; guild: string } }>("/tinkers/:id/guilds/:guild/accept", async (request) =>
-    guildDone(idOf(request.params), await acceptInvite(db, content, idOf(request.params), Number(request.params.guild), now(), trading)),
+    guildDone(idOf(request.params), await acceptInvite(db, content, idOf(request.params), Number(request.params.guild), now(), gate(request))),
   );
   app.delete<{ Params: { id: string; guild: string; other: string } }>("/tinkers/:id/guilds/:guild/requests/:other", async (request) =>
     guildDone(
       idOf(request.params),
-      await dropRequest(db, content, idOf(request.params), Number(request.params.guild), Number(request.params.other), now(), trading),
+      await dropRequest(db, content, idOf(request.params), Number(request.params.guild), Number(request.params.other), now(), gate(request)),
     ),
   );
   app.post<{ Params: { id: string; other: string } }>("/tinkers/:id/guild/invite/:other", async (request) =>
-    guildDone(idOf(request.params), await inviteToGuild(db, content, idOf(request.params), Number(request.params.other), now(), trading)),
+    guildDone(idOf(request.params), await inviteToGuild(db, content, idOf(request.params), Number(request.params.other), now(), gate(request))),
   );
   app.post<{ Params: { id: string; other: string } }>("/tinkers/:id/guild/applications/:other/accept", async (request) =>
-    guildDone(idOf(request.params), await acceptApplication(db, content, idOf(request.params), Number(request.params.other), now(), trading)),
+    guildDone(idOf(request.params), await acceptApplication(db, content, idOf(request.params), Number(request.params.other), now(), gate(request))),
   );
   app.put<{ Params: { id: string; other: string }; Body: { rank: "leader" | "officer" | "member" } }>(
     "/tinkers/:id/guild/members/:other/rank",
     { schema: { body: { type: "object", required: ["rank"], properties: { rank: { enum: ["leader", "officer", "member"] } } } } },
     async (request) =>
-      guildDone(idOf(request.params), await setRank(db, content, idOf(request.params), Number(request.params.other), request.body.rank, now(), trading)),
+      guildDone(idOf(request.params), await setRank(db, content, idOf(request.params), Number(request.params.other), request.body.rank, now(), gate(request))),
   );
   app.delete<{ Params: { id: string; other: string } }>("/tinkers/:id/guild/members/:other", async (request) =>
-    guildDone(idOf(request.params), await removeMember(db, content, idOf(request.params), Number(request.params.other), now(), trading)),
+    guildDone(idOf(request.params), await removeMember(db, content, idOf(request.params), Number(request.params.other), now(), gate(request))),
   );
   app.post<{ Params: { id: string }; Body: { name: string } }>(
     "/tinkers/:id/guild/rename",
     { schema: { body: { type: "object", required: ["name"], properties: { name: { type: "string", maxLength: 80 } } } } },
-    async (request) => guildDone(idOf(request.params), await renameGuild(db, content, idOf(request.params), request.body.name, now(), trading)),
+    async (request) => guildDone(idOf(request.params), await renameGuild(db, content, idOf(request.params), request.body.name, now(), gate(request))),
   );
   app.post<{ Params: { id: string } }>("/tinkers/:id/guild/disband", async (request) =>
-    guildDone(idOf(request.params), await disbandGuild(db, content, idOf(request.params), now(), trading)),
+    guildDone(idOf(request.params), await disbandGuild(db, content, idOf(request.params), now(), gate(request))),
   );
 
   type ChannelName = "city" | "trade" | "help" | "guild" | "whisper";

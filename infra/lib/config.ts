@@ -16,11 +16,13 @@ interface EnvironmentShape {
   retainData: boolean;
   desiredCount: number;
   logRetentionDays: number;
+  /** The dev clock (LONG_BOIL_DEV) for admins. Never in prod: a skip moves time for every player. */
+  devTools: boolean;
 }
 
 const SHAPES: Record<string, EnvironmentShape> = {
-  dev: { auroraMinAcu: 0, auroraMaxAcu: 2, retainData: false, desiredCount: 1, logRetentionDays: 14 },
-  // prod: { auroraMinAcu: 0.5, auroraMaxAcu: 4, retainData: true, desiredCount: 2, logRetentionDays: 90 },
+  dev: { auroraMinAcu: 0, auroraMaxAcu: 2, retainData: false, desiredCount: 1, logRetentionDays: 14, devTools: true },
+  // prod: { auroraMinAcu: 0.5, auroraMaxAcu: 4, retainData: true, desiredCount: 2, logRetentionDays: 90, devTools: false },
 };
 
 export interface Settings extends EnvironmentShape {
@@ -42,6 +44,8 @@ export interface Settings extends EnvironmentShape {
   googleClientId: string | undefined;
   /** Discord application id; its secret is in Secrets Manager, like Google's. */
   discordClientId: string | undefined;
+  /** Google accounts that are admins (dev tools, no trading gate), comma-separated. */
+  adminEmails: string;
   alertEmail: string | undefined;
   /** owner/name of the GitHub repository allowed to deploy. */
   githubRepo: string | undefined;
@@ -89,6 +93,7 @@ export function readSettings(app: App): Settings {
     cognitoDomainPrefix: text("cognitoDomainPrefix") ?? `long-boil-${envName}`,
     googleClientId: text("googleClientId"),
     discordClientId: text("discordClientId"),
+    adminEmails: text("adminEmails") ?? "",
     alertEmail: text("alertEmail"),
     githubRepo: text("githubRepo"),
     githubRepoIds: text("githubRepoIds"),

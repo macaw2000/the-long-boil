@@ -35,6 +35,7 @@ Pass with `-c key=value`. An empty value counts as not given.
 | `hostedZoneName` | `domainName` | The zone's name, when the site is a subdomain of it |
 | `cognitoDomainPrefix` | `long-boil-<env>` | Hosted sign-in at `<prefix>.auth.us-west-2.amazoncognito.com`. Must be unused across all of AWS |
 | `googleClientId` | none (no Google sign-in) | Google OAuth client id. Its secret is read from Secrets Manager (below) |
+| `adminEmails` | none | Google accounts, comma-separated, that get the dev tools (skipping the dev clock, story controls) and skip the trading gate. The same email through Discord is not an admin |
 | `discordClientId` | none (no Discord sign-in) | Discord application id. Its secret is read from Secrets Manager (below) |
 | `alertEmail` | none (no budget, with a synth warning) | Who gets the budget alarms ($100 a month: at 80% actual and 100% forecast) and a spend email every morning (yesterday's spend by service and the month so far, from Cost Explorer) |
 | `githubRepo` | none (no deploy role) | `owner/name` allowed to deploy from `main` |
@@ -50,9 +51,9 @@ The task definition sets the contract with `engine/packages/server`:
 
 - `HOST=0.0.0.0`, `PORT=3000`, `API_PREFIX=/api`
 - `PGHOST`, `PGPORT`, `PGDATABASE=long_boil`, `PGSSLMODE=require`; `PGUSER` and `PGPASSWORD` as ECS secrets from the Aurora secret (`long-boil/<env>/aurora`)
-- `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `CORS_ORIGINS=https://<site domain>`
+- `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `CORS_ORIGINS=https://<site domain>`, and `ADMIN_EMAILS` from the context
 
-`LONG_BOIL_DEV` and `LONG_BOIL_OPEN_TRADING` are never set. The ALB health check is `GET /api/health`; it must not query Postgres, or dev's Aurora never pauses.
+Dev also sets `LONG_BOIL_DEV=1`: the dev clock, kept in the database and skippable by admins only, and one clock for the whole server. `LONG_BOIL_OPEN_TRADING` is never set. The ALB health check is `GET /api/health`; it must not query Postgres, or dev's Aurora never pauses.
 
 ## Outputs
 
@@ -80,7 +81,7 @@ In this order, once the accounts exist (GDD section 11, "Accounts and environmen
    ```
    Confirm the budget's subscription email and the daily spend email's SNS subscription.
 6. **Everything else**, with the same context: `npx cdk deploy --all -c githubRepo=... -c githubRepoIds=... -c alertEmail=...`
-7. **Switch the workflow on.** In GitHub's repository variables set `AWS_DEPLOY_ROLE_ARN` to the `GitHubDeployRoleArn` output, and set any of `ALERT_EMAIL`, `DOMAIN_NAME`, `HOSTED_ZONE_ID`, `HOSTED_ZONE_NAME`, `GOOGLE_CLIENT_ID`, `DISCORD_CLIENT_ID`, `COGNITO_DOMAIN_PREFIX` that step 6 used. From then on each push to `main` deploys dev (`.github/workflows/deploy-dev.yml`).
+7. **Switch the workflow on.** In GitHub's repository variables set `AWS_DEPLOY_ROLE_ARN` to the `GitHubDeployRoleArn` output, and set any of `ALERT_EMAIL`, `DOMAIN_NAME`, `HOSTED_ZONE_ID`, `HOSTED_ZONE_NAME`, `GOOGLE_CLIENT_ID`, `DISCORD_CLIENT_ID`, `ADMIN_EMAILS`, `COGNITO_DOMAIN_PREFIX` that step 6 used. From then on each push to `main` deploys dev (`.github/workflows/deploy-dev.yml`).
 8. **CloudFront plan.** Dev stays on the free plan. Prod's flat-rate Pro plan (decision 2) is chosen in the console; CloudFormation does not set it.
 
 ## Not here yet
