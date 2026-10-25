@@ -7,25 +7,28 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { ActionBar } from "./ActionBar";
 import { api, gameNow, setClockOffset, type Content, type GuildView, type Ledger as LedgerData, type Notice, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
+import { Backdrop } from "./Backdrop";
 import { Chat, channelOf, useChat, useWhispers } from "./Chat";
-import { Guild } from "./Guild";
 import { Exchange } from "./Exchange";
-import { WorkOrders } from "./WorkOrders";
+import { duration, namer, titleCase, tradeLine } from "./format";
+import { Glow } from "./Glow";
+import { currentStep, GuideCard, nudges, type GuideState, type Target } from "./Guide";
+import { Guild } from "./Guild";
+import { skillOf } from "./jobs";
+import { CanisterDrop, Floaters, ScaldVignette, useFloaters } from "./Juice";
+import { Ledger, STALL_REASONS } from "./Ledger";
+import { useLive } from "./live";
 import { Loadout } from "./Loadout";
 import { NewGear } from "./NewGear";
-import { Glow } from "./Glow";
+import { BottomBar, SideNav, SkillStrip, type Place, type PlaceBadge } from "./SideNav";
+import { SkillView } from "./SkillView";
 import { ItemIcon, Scene } from "./Sprite";
-import { Badge, CanisterDrop, CountUp, Floaters, Gauge, ScaldVignette, Sparks, SteamTube, useFloaters } from "./Juice";
-import { currentStep, GuideCard, nudges, type GuideState, type Target } from "./Guide";
+import { Stores } from "./Stores";
 import { Story } from "./Story";
-import { duration, levelProgress, namer, seconds, titleCase, tradeLine } from "./format";
-import { Ledger, STALL_REASONS } from "./Ledger";
-import { QueuePicker } from "./QueuePicker";
-import { useLive } from "./live";
-import type { GlossaryTerm } from "./glossary";
-import { Term } from "./Term";
 import { colors, ui } from "./theme";
+import { WorkOrders } from "./WorkOrders";
 
 const LOOK_EVERY_MS = 5_000;
 const BOILER_MS = 12 * 3_600_000;
@@ -33,9 +36,8 @@ const BOILER_MS = 12 * 3_600_000;
 export function Workshop({ content, tinkerId, admin, onLeave }: { content: Content; tinkerId: number; admin: boolean; onLeave: () => void }) {
   const [tinker, setTinker] = useState<Tinker | null>(null);
   const [away, setAway] = useState<{ ledger: LedgerData; trades: TradeNote[] } | null>(null);
-  const [tab, setTab] = useState<"workshop" | "story" | "exchange" | "guild" | "chat">("workshop");
+  const [place, setPlace] = useState<Place>("skill:prospecting");
   const [recent, setRecent] = useState<string[]>([]);
-  const [picking, setPicking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(gameNow());
   // Dev only: the story controls, and a key that remounts the Story tab after them.
@@ -264,32 +266,14 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   // The guide points at one thing at a time; after it, the nudges point at whatever is ready.
   const step = currentStep(tinker, guide);
   const lit: Set<Target> = step ? new Set([step.target]) : nudges(tinker, content, now);
-  const tabFor = (target: Target): "workshop" | "story" | "exchange" => (target === "story" || target === "exchange" ? target : "workshop");
-  const tabLit = (choice: "workshop" | "story" | "exchange" | "guild" | "chat") => [...lit].some((target) => tabFor(target) === choice) && tab !== choice;
+  // Each guide target lights the place that holds it.
+  const placeOf = (target: Target): Place | null =>
+    target === "story" ? "story" : target === "exchange" ? "exchange" : null;
+  const litPlaces = new Set<Place>([...lit].map(placeOf).filter((value): value is Place => value !== null && value !== place));
 
-  const skills = (
-    <View style={ui.panel}>
-      <Text style={ui.heading}>Skills</Text>
-      {tinker.skills.length === 0 && <Text style={ui.muted}>Every skill at 1. Queue some work.</Text>}
-      {tinker.skills.map((skill) => {
-        const progress = levelProgress(content, skill.xp, skill.level);
-        return (
-          <View key={skill.skill} style={{ gap: 3 }}>
-            <Sparks bursts={skillBursts[skill.skill] ?? 0}>
-              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Text style={ui.text}>{titleCase(skill.skill)}</Text>
-                <Text style={ui.number}>{skill.level}</Text>
-              </View>
-            </Sparks>
-            {progress && <Bar fraction={progress.into / progress.span} color={colors.verdigris} />}
-            <Text style={[ui.muted, { fontSize: 11 }]}>
-              {skill.xp.toLocaleString()} XP{progress ? ` · ${(progress.span - progress.into).toLocaleString()} to go` : ""}
-            </Text>
-          </View>
-        );
-      })}
-    </View>
-  );
+  // Where the guide's queueing steps want the player: spanners at Tinkering, rats at the fights.
+  const guidedPlace: Place | null = step?.id === "queue_spanners" ? "skill:tinkering" : step?.id === "rats" ? "skill:fight" : null;
+  if (guidedPlace && lit.has("queue") && place !== guidedPlace) litPlaces.add(guidedPlace);
 
   const head = tinker.queue[0];
   const headSeconds = head
@@ -300,168 +284,99 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const working = head && steamLeft > 0;
   const elapsed = working ? tinker.progressMs + Math.max(0, now - new Date(tinker.resolvedTo).getTime()) : tinker.progressMs;
 
-  const centre = (
-    <View style={{ gap: 12 }}>
-      <Scene tinker={tinker} content={content} progress={headSeconds > 0 ? Math.min(1, elapsed / (headSeconds * 1000)) : 0} working={Boolean(working)} />
-      <Floaters floaters={floaters} onDone={removeFloater} icon={(item) => <ItemIcon item={item} size={22} />} />
-      {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} onClose={() => setAway(null)} />}
-      <Glow active={lit.has("bench")}>
-      <View style={ui.panel}>
-        <Text style={ui.heading}>At the bench</Text>
-        {tinker.queue.length === 0 && <Text style={ui.muted}>The bench is idle. Queue up to two jobs.</Text>}
-        {tinker.queue.map((entry, slot) => {
-          const fight = content.monsters.some((monster) => monster.id === entry.actionId);
-          return (
-            <View key={`${slot}-${entry.actionId}`} style={{ gap: 4 }}>
-              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                <Text style={ui.text}>
-                  {slot === 0 ? (fight ? "Fighting " : "Now: ") : "Then: "}
-                  {name(entry.actionId)}
-                </Text>
-                <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
-                  <Text style={ui.number}>{entry.remaining.toLocaleString()} left</Text>
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={`Remove ${name(entry.actionId)}`}
-                    onPress={() => setQueue(tinker.queue.filter((_, index) => index !== slot))}
-                  >
-                    <Text style={[ui.muted, { color: colors.scald }]}>remove</Text>
-                  </Pressable>
-                </View>
-              </View>
-              {slot === 0 && headSeconds > 0 && (
-                <>
-                  <SteamTube fraction={Math.min(1, elapsed / (headSeconds * 1000))} working={Boolean(working)} />
-                  <Text style={[ui.muted, { fontSize: 11 }]}>
-                    {working
-                      ? `${fight ? "about " : ""}${seconds(Math.max(0, headSeconds - elapsed / 1000))} until the next ${fight ? "kill" : "one"}`
-                      : "Stopped: the Boiler is dry."}
-                  </Text>
-                </>
-              )}
-            </View>
-          );
-        })}
-        {tinker.queue.length < 2 && !picking && (
-          <Glow active={lit.has("queue")} style={{ alignSelf: "flex-start" }}>
-            <Pressable style={ui.button} onPress={() => setPicking(true)} accessibilityRole="button">
-              <Text style={ui.buttonText}>Queue work</Text>
-            </Pressable>
-          </Glow>
-        )}
-      </View>
-      </Glow>
-      {picking && (
-        <QueuePicker
-          content={content}
-          tinker={tinker}
-          name={name}
-          onCancel={() => setPicking(false)}
-          onPick={(entry) => {
-            setPicking(false);
-            setQueue([...tinker.queue, entry]);
-          }}
-        />
-      )}
-      {recent.length > 0 && (
-        <View style={ui.panel}>
-          <Text style={ui.heading}>Just now</Text>
-          {recent.map((line, index) => (
-            <Text key={index} style={[ui.muted, index === 0 && { color: colors.ink }]}>
-              {line}
-            </Text>
-          ))}
-        </View>
-      )}
-    </View>
-  );
-
   const equipWeapon = (item: string) => {
     setNewGear(null);
     return run(api.equip(tinkerId, item));
   };
 
-  const stores = (
-    <View style={{ gap: 12 }}>
-      <Glow active={lit.has("loadout")}>
-        <Loadout content={content} tinker={tinker} name={name} onEquip={equipWeapon} />
-      </Glow>
-      <View style={ui.panel}>
-        <Text style={ui.heading}>Stores</Text>
-        {tinker.inventory.length === 0 && <Text style={ui.muted}>Empty shelves.</Text>}
-        {tinker.inventory.map((stack) => (
-          <View key={`${stack.item}-${stack.bound}`} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1 }}>
-              <ItemIcon item={stack.item} size={28} />
-              <Text style={ui.text}>
-                {name(stack.item)}
-                {stack.bound ? <Text style={ui.muted}> (bound)</Text> : null}
-              </Text>
-            </View>
-            <CountUp value={stack.qty} style={ui.number} />
-          </View>
-        ))}
-      </View>
+  const badges: Partial<Record<Place, PlaceBadge>> = {
+    story: {
+      count: tinker.story.letters + (tinker.story.openScenes > 0 && tinker.story.nerve > 0 ? 1 : 0),
+      label: tinker.story.letters > 0 ? String(tinker.story.letters) : tinker.story.openScenes > 0 && tinker.story.nerve > 0 ? "•" : undefined,
+    },
+    exchange: tinker.story.debts.some((debt) => tinker.crowns >= debt.crowns)
+      ? { count: 1, label: "!", tone: colors.copper }
+      : { count: tinker.workOrders, tone: colors.verdigris },
+    guild: {
+      count: (guildView?.invites.length ?? 0) + (guildView?.guild?.requests.filter((request) => request.kind === "application").length ?? 0),
+      tone: colors.verdigris,
+    },
+    chat: place === "chat" ? undefined : { count: chat.unread + trade.unread + help.unread + guildChat.unread + whispers.unread, tone: colors.verdigris },
+  };
+
+  const scene = (
+    <View>
+      <Scene tinker={tinker} content={content} progress={headSeconds > 0 ? Math.min(1, elapsed / (headSeconds * 1000)) : 0} working={Boolean(working)} />
+      <Floaters floaters={floaters} onDone={removeFloater} icon={(item) => <ItemIcon item={item} size={22} />} />
     </View>
   );
 
+  const loadout = (
+    <Glow active={lit.has("loadout")}>
+      <Loadout content={content} tinker={tinker} name={name} onEquip={equipWeapon} portrait={wide ? 128 : 192} />
+    </Glow>
+  );
+
+  const chatPanel = (
+    <Chat
+      tinkerId={tinkerId}
+      rooms={{ city: chat, trade, help, guild: guildView?.guild ? guildChat : null }}
+      whispers={whispers}
+      guildName={guildView?.guild?.name}
+      connected={connected}
+      onInvite={inviteToGuild}
+    />
+  );
+
+  const skillPlace = place.startsWith("skill:") ? place.slice("skill:".length) : null;
+  const page =
+    skillPlace !== null ? (
+      <SkillView
+        key={skillPlace}
+        skill={skillPlace}
+        content={content}
+        tinker={tinker}
+        name={name}
+        scene={scene}
+        queueLit={lit.has("queue")}
+        onStart={(entry) => setQueue([entry, ...tinker.queue.slice(1)])}
+        onQueue={(entry) => setQueue([...tinker.queue, entry].slice(0, 2))}
+      />
+    ) : place === "story" ? (
+      <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} />
+    ) : place === "guild" ? (
+      <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} crownsHeld={tinker.crowns} />
+    ) : place === "exchange" ? (
+      <View style={{ gap: 12 }}>
+        <WorkOrders content={content} tinker={tinker} name={name} onOutcome={apply} />
+        <Exchange content={content} tinker={tinker} name={name} run={run} />
+      </View>
+    ) : place === "stores" ? (
+      <View style={{ gap: 12 }}>
+        <Stores tinker={tinker} name={name} />
+        {loadout}
+      </View>
+    ) : (
+      <View style={{ height: 520 }}>{chatPanel}</View>
+    );
+
   return (
     <View style={{ flex: 1 }}>
+      <Backdrop place={place} />
       <ScaldVignette scald={tinker.story.needles["needle.scald"] ?? 0} />
-      <View
-        style={{
-          flexDirection: "row",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: 16,
-          paddingHorizontal: 16,
-          paddingVertical: 10,
-          borderBottomWidth: 1,
-          borderBottomColor: colors.panelEdge,
-          // Above the tabs, so a tooltip opening down from the bar is not hidden under them.
-          zIndex: 10,
-        }}
-      >
-        <Text style={[ui.heading, { fontSize: 20 }]}>No. 9 Sprocket Row</Text>
-        <Text style={ui.muted}>{tinker.name}</Text>
-        <Glow active={lit.has("boiler")}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <Gauge fraction={Math.max(0, steamLeft) / BOILER_MS} />
-            <View>
-              <Term term="boiler">
-                <Text style={ui.muted}>Boiler</Text>
-              </Term>
-              <Text style={[ui.number, { color: steamLeft > 2 * 3_600_000 ? colors.ink : colors.scald }]}>
-                {steamLeft > 0 ? duration(steamLeft) : "dry"}
-              </Text>
-            </View>
-          </View>
-        </Glow>
-        <View style={{ minWidth: 140, maxWidth: 200, flex: 1, gap: 3 }}>
-          <Term term="nerve">
-            <Text style={ui.muted}>
-              Nerve · {tinker.story.nerve}/{tinker.story.nerveCap}
-            </Text>
-          </Term>
-          <Bar fraction={tinker.story.nerve / tinker.story.nerveCap} color={colors.verdigris} />
-        </View>
-        <Term term="crowns">
-          <CountUp value={tinker.crowns} suffix=" Crowns" style={[ui.number, { color: colors.brass, fontSize: 15 }]} />
-        </Term>
-        {tinker.story.inInfirmary && <Badge count={1} label="St. Pinion's" tone={colors.scald} />}
-        <View style={{ flexDirection: "row", gap: 8 }} accessibilityLabel="The four Needles">
-          {Object.entries(tinker.story.needles).map(([needle, value]) => (
-            <Term key={needle} term={needle as GlossaryTerm}>
-              <Text style={[ui.number, { color: value >= 8 ? colors.scald : value > 0 ? colors.copper : colors.muted }]}>
-                {titleCase(needle.split(".")[1] ?? needle)} {value}
-              </Text>
-            </Term>
-          ))}
-        </View>
-        <Pressable onPress={onLeave} accessibilityRole="button">
-          <Text style={ui.muted}>Leave</Text>
-        </Pressable>
-      </View>
+      <ActionBar
+        content={content}
+        tinker={tinker}
+        name={name}
+        now={now}
+        wide={wide}
+        elapsedMs={elapsed}
+        headSeconds={headSeconds}
+        lit={lit}
+        onRemove={(slot) => setQueue(tinker.queue.filter((_, index) => index !== slot))}
+        onAdd={() => setPlace(guidedPlace ?? (place.startsWith("skill:") ? place : head ? `skill:${skillOf(content, head.actionId)}` : "skill:prospecting"))}
+        onLeave={onLeave}
+      />
       {/* The dev tools: wherever the server runs a dev clock, for admins only (everyone under the dev login). */}
       {content.dev && admin && (
         <View
@@ -513,94 +428,46 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           </Pressable>
         </View>
       )}
-      <View style={{ flexDirection: "row", gap: 4, paddingHorizontal: 16, paddingTop: 10 }}>
-        {(wide ? (["workshop", "story", "exchange", "guild"] as const) : (["workshop", "story", "exchange", "guild", "chat"] as const)).map((choice) => (
-          <Glow key={choice} active={tabLit(choice)}>
-          <Pressable
-            onPress={() => setTab(choice)}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: tab === choice }}
-            style={{
-              paddingVertical: 6,
-              paddingHorizontal: 14,
-              borderBottomWidth: 2,
-              borderBottomColor: tab === choice ? colors.brass : "transparent",
-            }}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-              <Text style={[ui.text, { color: tab === choice ? colors.brass : colors.muted }]}>{titleCase(choice)}</Text>
-              {choice === "story" && <Badge count={tinker.story.letters + (tinker.story.openScenes > 0 && tinker.story.nerve > 0 ? 1 : 0)} label={tinker.story.letters > 0 ? String(tinker.story.letters) : tinker.story.openScenes > 0 && tinker.story.nerve > 0 ? "•" : undefined} />}
-              {choice === "exchange" && tinker.story.debts.some((debt) => tinker.crowns >= debt.crowns) && <Badge count={1} label="!" tone={colors.copper} />}
-              {choice === "exchange" && <Badge count={tinker.workOrders} tone={colors.verdigris} />}
-              {choice === "workshop" && tinker.queue.length === 0 && <Badge count={1} label="idle" tone={colors.scald} />}
-              {choice === "chat" && tab !== "chat" && <Badge count={chat.unread + trade.unread + help.unread + guildChat.unread + whispers.unread} tone={colors.verdigris} />}
-              {choice === "guild" && (
-                <Badge count={(guildView?.invites.length ?? 0) + (guildView?.guild?.requests.filter((request) => request.kind === "application").length ?? 0)} tone={colors.verdigris} />
-              )}
-            </View>
-            {choice === "story" && <CanisterDrop drops={canisters} />}
-          </Pressable>
-          </Glow>
-        ))}
-      </View>
-      {step && (
-        <View style={{ paddingHorizontal: 16, paddingTop: 10 }}>
-          <GuideCard
-            step={step}
-            content={content}
-            onAcknowledge={() => setGuide({ ...guide, acknowledged: [...guide.acknowledged, step.id] })}
-            onSkip={() => setGuide({ ...guide, skipped: true })}
-          />
-        </View>
-      )}
-      {error && <Text style={[ui.text, { color: colors.scald, paddingHorizontal: 16, paddingTop: 8 }]}>{error}</Text>}
+      {!wide && skillPlace !== null && <SkillStrip content={content} tinker={tinker} place={place} onPlace={setPlace} />}
       <View style={{ flex: 1, flexDirection: "row" }}>
-        <View style={{ flex: 1 }}>
-          {tab === "workshop" || (tab === "chat" && wide) ? (
-            <ScrollView contentContainerStyle={{ padding: 16, gap: 12, flexDirection: wide ? "row" : "column", alignItems: "flex-start" }}>
-              <View style={{ width: wide ? 240 : "100%" }}>{skills}</View>
-              <View style={{ flex: wide ? 1 : undefined, width: wide ? undefined : "100%" }}>{centre}</View>
-              <View style={{ width: wide ? 300 : "100%" }}>{stores}</View>
-            </ScrollView>
-          ) : tab === "chat" && !wide ? (
-            <View style={{ flex: 1, padding: 16 }}>
-              <Chat
-                tinkerId={tinkerId}
-                rooms={{ city: chat, trade, help, guild: guildView?.guild ? guildChat : null }}
-                whispers={whispers}
-                guildName={guildView?.guild?.name}
-                connected={connected}
-                onInvite={inviteToGuild}
-              />
-            </View>
-          ) : tab === "guild" ? (
-            <ScrollView contentContainerStyle={{ padding: 16, alignItems: "center" }}>
-              <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} crownsHeld={tinker.crowns} />
-            </ScrollView>
-          ) : tab === "story" ? (
-            <ScrollView contentContainerStyle={{ padding: 16, alignItems: "center" }}>
-              <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} />
-            </ScrollView>
-          ) : (
-            <ScrollView contentContainerStyle={{ padding: 16 }}>
-              <WorkOrders content={content} tinker={tinker} name={name} onOutcome={apply} />
-              <Exchange content={content} tinker={tinker} name={name} run={run} />
-            </ScrollView>
-          )}
-        </View>
         {wide && (
-          <View style={{ width: 300, padding: 16, paddingLeft: 0 }}>
-            <Chat
-                tinkerId={tinkerId}
-                rooms={{ city: chat, trade, help, guild: guildView?.guild ? guildChat : null }}
-                whispers={whispers}
-                guildName={guildView?.guild?.name}
-                connected={connected}
-                onInvite={inviteToGuild}
-              />
+          <View style={{ borderRightWidth: 1, borderRightColor: colors.panelEdge, backgroundColor: "rgba(20, 16, 12, 0.6)" }}>
+            <SideNav content={content} tinker={tinker} place={place} onPlace={setPlace} badges={badges} lit={litPlaces} />
+            <CanisterDrop drops={canisters} />
           </View>
         )}
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, gap: 12, maxWidth: 900, width: "100%", alignSelf: "center" }}>
+          {step && (
+            <GuideCard
+              step={step}
+              content={content}
+              onAcknowledge={() => setGuide({ ...guide, acknowledged: [...guide.acknowledged, step.id] })}
+              onSkip={() => setGuide({ ...guide, skipped: true })}
+            />
+          )}
+          {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
+          {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} onClose={() => setAway(null)} />}
+          {page}
+          {recent.length > 0 && skillPlace !== null && (
+            <View style={ui.panel}>
+              <Text style={ui.heading}>Just now</Text>
+              {recent.map((line, index) => (
+                <Text key={index} style={[ui.muted, index === 0 && { color: colors.ink }]}>
+                  {line}
+                </Text>
+              ))}
+            </View>
+          )}
+        </ScrollView>
+        {wide && (
+          <ScrollView style={{ width: 330, flexGrow: 0 }} contentContainerStyle={{ padding: 16, paddingLeft: 0, gap: 12 }}>
+            <Stores tinker={tinker} name={name} />
+            {loadout}
+            <View style={{ height: 460 }}>{chatPanel}</View>
+          </ScrollView>
+        )}
       </View>
+      {!wide && <BottomBar place={place} onPlace={setPlace} badges={badges} lit={litPlaces} />}
       {newGear && (
         <NewGear item={newGear} content={content} tinker={tinker} name={name} onEquip={equipWeapon} onClose={() => setNewGear(null)} />
       )}

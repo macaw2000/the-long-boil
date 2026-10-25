@@ -242,7 +242,7 @@ function summarizeStory(story: StoryState, tinker: TinkerState, content: GameCon
     nerve: story.nerve,
     nerveCap: rules.NERVE_CAP,
     nextNerveAt: full ? null : new Date(story.nerveAt + rules.NERVE_MS).toISOString(),
-    needles: Object.fromEntries(rules.NEEDLES.map((needle) => [needle, story.qualities[needle] ?? 0])),
+    needles: rules.visibleNeedles(story.qualities),
     letters: story.hand.length,
     backRent: rules.backRentOwed(story),
     debts: rules.debtsOwed(story).map(({ id, label, crowns }) => ({ id, label, crowns })),

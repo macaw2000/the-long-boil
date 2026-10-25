@@ -18,6 +18,17 @@ export const NERVE_MS = 36 * MINUTE_MS;
 /** GDD section 5, The Four Needles: each "falls by 1 every 24 hours on its own". */
 export const NEEDLE_FALL_MS = 24 * HOUR_MS;
 export const NEEDLES = ["needle.scald", "needle.arrears", "needle.notice", "needle.haze"] as const;
+
+/**
+ * The Needles a player can see, with their readings. Haze enters the game in
+ * Act II, with the Whistle (GDD section 4, Act II beat 2), so it stays hidden
+ * until then, or until something has raised it; the other three show from
+ * the start.
+ */
+export function visibleNeedles(qualities: Readonly<Record<string, number>>): Record<string, number> {
+  const shown = NEEDLES.filter((needle) => needle !== "needle.haze" || (qualities[needle] ?? 0) > 0 || (qualities["act2.progress"] ?? 0) > 0);
+  return Object.fromEntries(shown.map((needle) => [needle, qualities[needle] ?? 0]));
+}
 /** GDD section 5, The Pneumatic Post: "You hold up to 3, and a new one arrives every 2 hours". */
 export const HAND_SIZE = 3;
 export const POST_MS = 2 * HOUR_MS;

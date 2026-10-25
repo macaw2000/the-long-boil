@@ -5,7 +5,7 @@
 // the dev login takes any name typed here.
 
 import { useEffect, useState } from "react";
-import { ImageBackground, Pressable, Text, TextInput, View } from "react-native";
+import { Image, ImageBackground, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { api } from "./api";
 import { art } from "./art";
 import { cognitoEnabled, providers, signOut, startSignIn, type Provider } from "./auth";
@@ -46,95 +46,154 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
       .catch((reason: Error) => setError(reason.message));
 
   const signInWith = (provider?: Provider) => startSignIn(provider).catch((reason: Error) => setError(reason.message));
+  const { width, height } = useWindowDimensions();
+  const tall = height > width * 1.1;
 
-  return (
-    // The art's title sits at the top, so the panel sits at the bottom, over the rooftop.
+  const panel = (
+    <View
+      style={[
+        ui.panel,
+        {
+          width: "100%",
+          maxWidth: 440,
+          gap: 14,
+          padding: 22,
+          backgroundColor: "rgba(27, 23, 18, 0.9)",
+          borderColor: colors.brass,
+          borderWidth: 2,
+          borderRadius: 10,
+          shadowColor: "#000",
+          shadowOpacity: 0.6,
+          shadowRadius: 24,
+        },
+      ]}
+    >
+      <Text style={[ui.heading, { fontSize: 22, textAlign: "center" }]}>{cognitoEnabled && !signedIn ? "Sign in to play" : "Your workshop"}</Text>
+      <Text style={[ui.muted, { textAlign: "center" }]}>A solicitor's letter: the tenancy of No. 9 Sprocket Row, "contents included", is yours.</Text>
+      {cognitoEnabled && !signedIn ? (
+        <View style={{ gap: 10 }}>
+          {providers.length ? (
+            providers.map((provider) => <ProviderButton key={provider} provider={provider} onPress={() => signInWith(provider)} />)
+          ) : (
+            <Pressable style={[ui.button, { paddingVertical: 14 }]} onPress={() => signInWith()} accessibilityRole="button">
+              <Text style={[ui.buttonText, { fontSize: 17 }]}>Sign in</Text>
+            </Pressable>
+          )}
+        </View>
+      ) : cognitoEnabled ? null : (
+        <TextInput
+          style={ui.input}
+          value={login}
+          onChangeText={(text) => {
+            setLogin(text);
+            setTinkers(null);
+          }}
+          onSubmitEditing={() => lookUp()}
+          placeholder="login (any name, for now)"
+          placeholderTextColor={colors.muted}
+          autoCapitalize="none"
+          accessibilityLabel="Login"
+        />
+      )}
+      {cognitoEnabled && (!signedIn || tinkers === null) ? null : tinkers === null ? (
+        <Pressable
+          style={[ui.button, !login.trim() && { opacity: 0.4 }]}
+          disabled={!login.trim()}
+          onPress={() => lookUp()}
+          accessibilityRole="button"
+        >
+          <Text style={ui.buttonText}>Sign in</Text>
+        </Pressable>
+      ) : (
+        <View style={{ gap: 8 }}>
+          {tinkers.map((tinker) => (
+            <Pressable key={tinker.id} style={ui.button} onPress={() => onEnter(login.trim(), tinker.id)} accessibilityRole="button">
+              <Text style={ui.buttonText}>Open {tinker.name}'s workshop</Text>
+            </Pressable>
+          ))}
+          {tinkers.length < 3 && (
+            <View style={{ flexDirection: "row", gap: 8 }}>
+              <TextInput
+                style={[ui.input, { flex: 1 }]}
+                value={name}
+                onChangeText={setName}
+                onSubmitEditing={() => name.trim() && create()}
+                placeholder="a new Tinker's name"
+                placeholderTextColor={colors.muted}
+                maxLength={40}
+                accessibilityLabel="New Tinker's name"
+              />
+              <Pressable style={[ui.button, !name.trim() && { opacity: 0.4 }]} disabled={!name.trim()} onPress={create} accessibilityRole="button">
+                <Text style={ui.buttonText}>Take the keys</Text>
+              </Pressable>
+            </View>
+          )}
+        </View>
+      )}
+      {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
+      {cognitoEnabled && signedIn && (
+        <Pressable onPress={signOut} accessibilityRole="button">
+          <Text style={ui.muted}>Sign out</Text>
+        </Pressable>
+      )}
+    </View>
+  );
+
+  return tall ? (
+    // A phone held upright: the whole painting across the top, so its title is not cropped, and the panel below.
+    <ScrollView style={{ flex: 1, backgroundColor: colors.soot }} contentContainerStyle={{ alignItems: "center", paddingBottom: 24 }}>
+      <Image
+        source={{ uri: art("splash.jpg") }}
+        resizeMode="cover"
+        style={{ width: "100%", aspectRatio: SPLASH_ASPECT }}
+        accessibilityLabel="The Long Boil: a young Tinker on a brass rooftop among airships"
+      />
+      <View style={{ width: "100%", paddingHorizontal: 16, marginTop: -28 }}>{panel}</View>
+    </ScrollView>
+  ) : (
+    // The art's title fills the top half, so the panel sits just below it, in
+    // the middle of the picture where the eye lands, not down at the edge.
     <ImageBackground
       source={{ uri: art("splash.jpg") }}
       resizeMode="cover"
-      style={{ flex: 1, alignItems: "center", justifyContent: "flex-end", padding: 16, paddingBottom: 32, backgroundColor: colors.soot }}
+      style={{ flex: 1, alignItems: "center", padding: 16, backgroundColor: colors.soot }}
       accessibilityLabel="The Long Boil: a young Tinker on a brass rooftop among airships"
     >
-      <View style={[ui.panel, { width: "100%", maxWidth: 420, gap: 12, backgroundColor: "rgba(38, 32, 26, 0.92)" }]}>
-        <Text style={ui.muted}>
-          A solicitor's letter: the tenancy of No. 9 Sprocket Row, "contents included", is yours.
-        </Text>
-        {cognitoEnabled && !signedIn ? (
-          <View style={{ gap: 8 }}>
-            {providers.length ? (
-              providers.map((provider) => (
-                <Pressable key={provider} style={ui.button} onPress={() => signInWith(provider)} accessibilityRole="button">
-                  <Text style={ui.buttonText}>Continue with {provider}</Text>
-                </Pressable>
-              ))
-            ) : (
-              <Pressable style={ui.button} onPress={() => signInWith()} accessibilityRole="button">
-                <Text style={ui.buttonText}>Sign in</Text>
-              </Pressable>
-            )}
-          </View>
-        ) : cognitoEnabled ? null : (
-          <TextInput
-            style={ui.input}
-            value={login}
-            onChangeText={(text) => {
-              setLogin(text);
-              setTinkers(null);
-            }}
-            onSubmitEditing={() => lookUp()}
-            placeholder="login (any name, for now)"
-            placeholderTextColor={colors.muted}
-            autoCapitalize="none"
-            accessibilityLabel="Login"
-          />
-        )}
-        {cognitoEnabled && (!signedIn || tinkers === null) ? null : tinkers === null ? (
-          <Pressable
-            style={[ui.button, !login.trim() && { opacity: 0.4 }]}
-            disabled={!login.trim()}
-            onPress={() => lookUp()}
-            accessibilityRole="button"
-          >
-            <Text style={ui.buttonText}>Sign in</Text>
-          </Pressable>
-        ) : (
-          <View style={{ gap: 8 }}>
-            {tinkers.map((tinker) => (
-              <Pressable key={tinker.id} style={ui.button} onPress={() => onEnter(login.trim(), tinker.id)} accessibilityRole="button">
-                <Text style={ui.buttonText}>Open {tinker.name}'s workshop</Text>
-              </Pressable>
-            ))}
-            {tinkers.length < 3 && (
-              <View style={{ flexDirection: "row", gap: 8 }}>
-                <TextInput
-                  style={[ui.input, { flex: 1 }]}
-                  value={name}
-                  onChangeText={setName}
-                  onSubmitEditing={() => name.trim() && create()}
-                  placeholder="a new Tinker's name"
-                  placeholderTextColor={colors.muted}
-                  maxLength={40}
-                  accessibilityLabel="New Tinker's name"
-                />
-                <Pressable
-                  style={[ui.button, !name.trim() && { opacity: 0.4 }]}
-                  disabled={!name.trim()}
-                  onPress={create}
-                  accessibilityRole="button"
-                >
-                  <Text style={ui.buttonText}>Take the keys</Text>
-                </Pressable>
-              </View>
-            )}
-          </View>
-        )}
-        {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
-        {cognitoEnabled && signedIn && (
-          <Pressable onPress={signOut} accessibilityRole="button">
-            <Text style={ui.muted}>Sign out</Text>
-          </Pressable>
-        )}
-      </View>
+      <View style={{ flex: 1.15 }} />
+      {panel}
+      <View style={{ flex: 0.6 }} />
     </ImageBackground>
+  );
+}
+
+/** art/splash.jpg is 1376 by 768. */
+const SPLASH_ASPECT = 1376 / 768;
+
+/** Each provider in its own colours, so the buttons read as Google and Discord at a glance. */
+const PROVIDER_STYLES: Record<Provider, { background: string; text: string; mark: string; markColour: string }> = {
+  Google: { background: "#ffffff", text: "#1f1f1f", mark: "G", markColour: "#4285F4" },
+  Discord: { background: "#5865F2", text: "#ffffff", mark: "◉", markColour: "#ffffff" },
+};
+
+function ProviderButton({ provider, onPress }: { provider: Provider; onPress: () => void }) {
+  const look = PROVIDER_STYLES[provider];
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`Continue with ${provider}`}
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 12,
+        paddingVertical: 14,
+        borderRadius: 8,
+        backgroundColor: look.background,
+      }}
+    >
+      <Text style={{ fontSize: 20, fontWeight: "700", color: look.markColour }}>{look.mark}</Text>
+      <Text style={{ fontSize: 17, fontWeight: "600", color: look.text, fontFamily: "system-ui, sans-serif" }}>Continue with {provider}</Text>
+    </Pressable>
   );
 }

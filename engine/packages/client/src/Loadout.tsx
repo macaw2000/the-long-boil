@@ -29,10 +29,11 @@ export const STYLE_COLOURS: Record<string, string> = {
   aetherics: colors.verdigris,
 };
 
+// 3x the 64-pixel portrait; a narrow column asks for 2x, so the pixels stay whole.
 const PORTRAIT = 192;
 
 /** The Tinker as the paperdoll shows it: holding the equipped weapon, breathing. */
-function Portrait({ weapon, flash }: { weapon: string | null; flash: Animated.Value }) {
+function Portrait({ weapon, flash, size }: { weapon: string | null; flash: Animated.Value; size: number }) {
   const reduced = useReducedMotion();
   const [frame, setFrame] = useState(0);
   useEffect(() => {
@@ -42,19 +43,19 @@ function Portrait({ weapon, flash }: { weapon: string | null; flash: Animated.Va
   }, [reduced]);
   const frames = (weapon && characters[`tinker:${weapon}`]?.portrait) || characters["tinker:bare"]!.portrait!;
   return (
-    <View style={{ width: PORTRAIT, height: PORTRAIT, alignItems: "center", justifyContent: "center" }}>
+    <View style={{ width: size, height: size, alignItems: "center", justifyContent: "center" }}>
       <View
         style={{
           position: "absolute",
           bottom: 14,
-          width: 120,
+          width: size * 0.625,
           height: 18,
           borderRadius: 60,
           backgroundColor: "#000",
           opacity: 0.35,
         }}
       />
-      <Image source={frames[frame % frames.length] as number} style={{ width: PORTRAIT, height: PORTRAIT }} accessibilityIgnoresInvertColors />
+      <Image source={frames[frame % frames.length] as number} style={{ width: size, height: size }} accessibilityIgnoresInvertColors />
       <Animated.View pointerEvents="none" style={{ position: "absolute", inset: 0, backgroundColor: colors.ink, opacity: flash }} />
     </View>
   );
@@ -127,11 +128,14 @@ export function Loadout({
   tinker,
   name,
   onEquip,
+  portrait = PORTRAIT,
 }: {
   content: Content;
   tinker: Tinker;
   name: (item: string) => string;
   onEquip: (item: string) => Promise<unknown>;
+  /** The portrait's size: 192 (3x) where there is room, 128 (2x) in a narrow column. */
+  portrait?: number;
 }) {
   const reduced = useReducedMotion();
   const [weapons, setWeapons] = useState<LoadoutWeapon[]>([]);
@@ -204,7 +208,7 @@ export function Loadout({
           }}
         >
           <Slot label="Weapon" item={tinker.weapon} tierLevel={equippedWeapon?.level_required} pop={pop} />
-          <Portrait weapon={tinker.weapon} flash={flash} />
+          <Portrait weapon={tinker.weapon} flash={flash} size={portrait} />
           <Slot label="Armour" item={null} locked="With Tailoring, in the Cinderworks" />
           {banner && (
             <Animated.Text
