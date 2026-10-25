@@ -1,8 +1,8 @@
 // A quiet painting behind each place in the workshop, from the art synced to
 // /art/bg/ (art.ts): the workshop for the skills, Rustmoor for the fights, the
-// Exchange floor, and so on. It sits far back under a dark wash, so it gives
-// the screen a sense of place without fighting the text. Until a painting
-// exists, the plain soot background shows.
+// Exchange floor, and so on. A light dark wash keeps text that sits on it
+// readable; the panels are solid, so the painting can be seen clearly
+// around them. Until a painting exists, the plain soot background shows.
 
 import { Image, View } from "react-native";
 import { art } from "./art";
@@ -26,8 +26,8 @@ function paintingFor(place: Place): string {
 export function Backdrop({ place }: { place: Place }) {
   return (
     <View pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.soot }}>
-      <Image source={{ uri: art(paintingFor(place)) }} resizeMode="cover" style={{ width: "100%", height: "100%", opacity: 0.22 }} />
-      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(27, 23, 18, 0.55)" }} />
+      <Image source={{ uri: art(paintingFor(place)) }} resizeMode="cover" style={{ width: "100%", height: "100%", opacity: 0.7 }} />
+      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(27, 23, 18, 0.35)" }} />
     </View>
   );
 }
