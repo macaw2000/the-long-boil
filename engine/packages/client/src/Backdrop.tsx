@@ -26,8 +26,8 @@ function paintingFor(place: Place): string {
 export function Backdrop({ place }: { place: Place }) {
   return (
     <View pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.soot }}>
-      <Image source={{ uri: art(paintingFor(place)) }} resizeMode="cover" style={{ width: "100%", height: "100%", opacity: 0.7 }} />
-      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(27, 23, 18, 0.35)" }} />
+      <Image source={{ uri: art(paintingFor(place)) }} resizeMode="cover" style={{ width: "100%", height: "100%", opacity: 0.5 }} />
+      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(27, 23, 18, 0.45)" }} />
     </View>
   );
 }
