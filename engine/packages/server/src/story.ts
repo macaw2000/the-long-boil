@@ -53,12 +53,22 @@ function sceneView(scene: Scene, kind: "storylet" | "letter", tinker: TinkerStat
   };
 }
 
+/**
+ * Whether a Needle shows yet. Haze enters the game in Act II, with the
+ * Whistle (GDD section 4, Act II beat 2), so it stays hidden until then, or
+ * until something has raised it. The other three show from the start.
+ */
+function needleShown(needle: string, story: StoryState): boolean {
+  if (needle !== "needle.haze") return true;
+  return (story.qualities["needle.haze"] ?? 0) > 0 || (story.qualities["act2.progress"] ?? 0) > 0;
+}
+
 function storyView(tinker: TinkerState, story: StoryState, content: GameContent, now: number): StoryView {
   return {
     nerve: story.nerve,
     nerveCap: rules.NERVE_CAP,
     nextNerveAt: story.nerve >= rules.NERVE_CAP ? null : new Date(story.nerveAt + rules.NERVE_MS).toISOString(),
-    needles: Object.fromEntries(rules.NEEDLES.map((needle) => [needle, story.qualities[needle] ?? 0])),
+    needles: Object.fromEntries(rules.NEEDLES.filter((needle) => needleShown(needle, story)).map((needle) => [needle, story.qualities[needle] ?? 0])),
     qualities: Object.fromEntries(Object.entries(story.qualities).filter(([, value]) => value > 0)),
     letters: story.hand.flatMap((id) => {
       const letter = content.rules.letters.get(id);

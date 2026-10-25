@@ -9,6 +9,8 @@ import { Pressable, Text, View } from "react-native";
 import { api, type LedgerPage, type Outcome, type SceneView, type StoryOutcome, type StoryView } from "./api";
 import { titleCase } from "./format";
 import { OddsDial } from "./Juice";
+import type { GlossaryTerm } from "./glossary";
+import { Term } from "./Term";
 import { colors, ui } from "./theme";
 
 const REFRESH_MS = 10_000;
@@ -94,15 +96,22 @@ export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (o
         </View>
       )}
 
-      <View style={[ui.panel, { flexDirection: "row", flexWrap: "wrap", gap: 16 }]}>
-        <Text style={ui.text}>
-          Nerve {view.nerve}/{view.nerveCap}
-          {view.nextNerveAt ? <Text style={ui.muted}> · next at {new Date(view.nextNerveAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</Text> : null}
-        </Text>
-        {Object.entries(view.needles).map(([needle, value]) => (
-          <Text key={needle} style={[ui.text, { color: value >= 8 ? colors.scald : value > 0 ? colors.copper : colors.muted }]}>
-            {qualityName(needle)} {value}/8
+      <View style={[ui.panel, { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 16, zIndex: 10 }]}>
+        <Term term="nerve">
+          <Text style={ui.text}>
+            Nerve {view.nerve}/{view.nerveCap}
+            {view.nextNerveAt ? <Text style={ui.muted}> · next at {new Date(view.nextNerveAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</Text> : null}
           </Text>
+        </Term>
+        <Term term="needles">
+          <Text style={ui.muted}>Needles:</Text>
+        </Term>
+        {Object.entries(view.needles).map(([needle, value]) => (
+          <Term key={needle} term={needle as GlossaryTerm}>
+            <Text style={[ui.text, { color: value >= 8 ? colors.scald : value > 0 ? colors.copper : colors.muted }]}>
+              {qualityName(needle)} {value}/8
+            </Text>
+          </Term>
         ))}
       </View>
 

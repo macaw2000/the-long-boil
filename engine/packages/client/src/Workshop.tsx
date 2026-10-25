@@ -23,6 +23,8 @@ import { duration, levelProgress, namer, seconds, titleCase, tradeLine } from ".
 import { Ledger, STALL_REASONS } from "./Ledger";
 import { QueuePicker } from "./QueuePicker";
 import { useLive } from "./live";
+import type { GlossaryTerm } from "./glossary";
+import { Term } from "./Term";
 import { colors, ui } from "./theme";
 
 const LOOK_EVERY_MS = 5_000;
@@ -416,6 +418,8 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           paddingVertical: 10,
           borderBottomWidth: 1,
           borderBottomColor: colors.panelEdge,
+          // Above the tabs, so a tooltip opening down from the bar is not hidden under them.
+          zIndex: 10,
         }}
       >
         <Text style={[ui.heading, { fontSize: 20 }]}>No. 9 Sprocket Row</Text>
@@ -424,7 +428,9 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             <Gauge fraction={Math.max(0, steamLeft) / BOILER_MS} />
             <View>
-              <Text style={ui.muted}>Boiler</Text>
+              <Term term="boiler">
+                <Text style={ui.muted}>Boiler</Text>
+              </Term>
               <Text style={[ui.number, { color: steamLeft > 2 * 3_600_000 ? colors.ink : colors.scald }]}>
                 {steamLeft > 0 ? duration(steamLeft) : "dry"}
               </Text>
@@ -432,18 +438,24 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           </View>
         </Glow>
         <View style={{ minWidth: 140, maxWidth: 200, flex: 1, gap: 3 }}>
-          <Text style={ui.muted}>
-            Nerve · {tinker.story.nerve}/{tinker.story.nerveCap}
-          </Text>
+          <Term term="nerve">
+            <Text style={ui.muted}>
+              Nerve · {tinker.story.nerve}/{tinker.story.nerveCap}
+            </Text>
+          </Term>
           <Bar fraction={tinker.story.nerve / tinker.story.nerveCap} color={colors.verdigris} />
         </View>
-        <CountUp value={tinker.crowns} suffix=" Crowns" style={[ui.number, { color: colors.brass, fontSize: 15 }]} />
+        <Term term="crowns">
+          <CountUp value={tinker.crowns} suffix=" Crowns" style={[ui.number, { color: colors.brass, fontSize: 15 }]} />
+        </Term>
         {tinker.story.inInfirmary && <Badge count={1} label="St. Pinion's" tone={colors.scald} />}
         <View style={{ flexDirection: "row", gap: 8 }} accessibilityLabel="The four Needles">
           {Object.entries(tinker.story.needles).map(([needle, value]) => (
-            <Text key={needle} style={[ui.number, { color: value >= 8 ? colors.scald : value > 0 ? colors.copper : colors.muted }]}>
-              {titleCase(needle.split(".")[1] ?? needle)} {value}
-            </Text>
+            <Term key={needle} term={needle as GlossaryTerm}>
+              <Text style={[ui.number, { color: value >= 8 ? colors.scald : value > 0 ? colors.copper : colors.muted }]}>
+                {titleCase(needle.split(".")[1] ?? needle)} {value}
+              </Text>
+            </Term>
           ))}
         </View>
         <Pressable onPress={onLeave} accessibilityRole="button">
