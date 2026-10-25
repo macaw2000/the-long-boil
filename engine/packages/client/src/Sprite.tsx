@@ -212,18 +212,24 @@ export function Scene({ tinker, content, progress, working }: { tinker: Tinker; 
   const fighting = Boolean(monster && working);
   const tick = useFrameClock(fighting ? 4 : 3, true);
 
-  // A kill shows as the progress wrapping back to the start.
+  // A kill shows as the progress wrapping back to the start: the monster falls, then the next one comes on.
   const [falling, setFalling] = useState(false);
   const last = useRef(progress);
   useEffect(() => {
-    if (fighting && progress < last.current - 0.3) {
-      setFalling(true);
-      const timer = setTimeout(() => setFalling(false), 900);
-      last.current = progress;
-      return () => clearTimeout(timer);
-    }
+    if (fighting && progress < last.current - 0.3) setFalling(true);
     last.current = progress;
   }, [progress, fighting]);
+  // The fall's own timer, apart from the effect above: that one runs on every tick of
+  // progress, and cleaning up there cancelled the timer, so a dead monster stayed down.
+  useEffect(() => {
+    if (!falling) return;
+    if (!fighting) {
+      setFalling(false);
+      return;
+    }
+    const timer = setTimeout(() => setFalling(false), 900);
+    return () => clearTimeout(timer);
+  }, [falling, fighting]);
 
   const reduced = useReducedMotion();
   const [puffs, setPuffs] = useState<Puff[]>([]);
