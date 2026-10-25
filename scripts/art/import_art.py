@@ -13,6 +13,7 @@ Run from the repo root (it needs Pillow: pip install pillow):
 Reads  art/concepts/sheets/*.jpeg (the originals, kept out of the public sync)
 Writes engine/packages/client/assets/art/*.png  (sprites; the build index prefers these)
        art/bg/*.jpg                             (the paintings behind each place)
+       engine/packages/client/assets/{icon,favicon,...}.png  (the app and browser icons)
 Then run scripts/art/build_sprites.py to rebuild the client's sprite index.
 """
 
@@ -318,7 +319,62 @@ def main() -> None:
             strip.save(SPRITES / f"bg_{place}.png", optimize=True)
             written += 1
 
+    written += app_icons()
     print(f"wrote {written} files to {SPRITES.relative_to(ROOT)} and {PAINTINGS.relative_to(ROOT)}")
+
+
+SOOT = (43, 37, 34, 255)
+CLIENT_ASSETS = ROOT / "engine" / "packages" / "client" / "assets"
+
+
+def app_icons() -> int:
+    """
+    The game's icon (art/concepts/sheets/icon.jpeg): a brass kettle-boiler on
+    soot in a rounded square. Gemini filled the corners outside the rounding
+    with white. The browser's icon keeps the rounding with clear corners; the
+    app icons fill them with soot, since phones round app icons themselves.
+    """
+    source = Image.open(SHEETS / "icon.jpeg").convert("RGBA")
+    pixels = source.load()
+    width, height = source.size
+    # The white corners: light pixels in each corner region, reached from the very corner.
+    corner = round(width * 0.12)
+    clear = source.copy()
+    filled = source.copy()
+    clear_px, filled_px = clear.load(), filled.load()
+    for cx, cy in ((0, 0), (width - 1, 0), (0, height - 1), (width - 1, height - 1)):
+        stack = [(cx, cy)]
+        seen = set()
+        while stack:
+            x, y = stack.pop()
+            if (x, y) in seen or not (0 <= x < width and 0 <= y < height):
+                continue
+            if abs(x - cx) > corner or abs(y - cy) > corner:
+                continue
+            r, g, b, _ = pixels[x, y]
+            if r + g + b < 3 * 150:
+                continue
+            seen.add((x, y))
+            clear_px[x, y] = (0, 0, 0, 0)
+            filled_px[x, y] = SOOT
+            stack.extend(((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)))
+
+    filled.save(CLIENT_ASSETS / "icon.png", optimize=True)
+    filled.resize((512, 512), Image.LANCZOS).save(CLIENT_ASSETS / "splash-icon.png", optimize=True)
+    clear.resize((64, 64), Image.LANCZOS).save(CLIENT_ASSETS / "favicon.png", optimize=True)
+    # Android's adaptive icon: the whole square as the foreground over a soot background, and a white silhouette.
+    filled.save(CLIENT_ASSETS / "android-icon-foreground.png", optimize=True)
+    Image.new("RGBA", (width, height), SOOT).save(CLIENT_ASSETS / "android-icon-background.png", optimize=True)
+    silhouette = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    silhouette_px = silhouette.load()
+    filled_px = filled.load()
+    for y in range(height):
+        for x in range(width):
+            r, g, b, _ = filled_px[x, y]
+            if r + g + b > 3 * 70:
+                silhouette_px[x, y] = (255, 255, 255, 255)
+    silhouette.save(CLIENT_ASSETS / "android-icon-monochrome.png", optimize=True)
+    return 6
 
 
 if __name__ == "__main__":
