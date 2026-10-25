@@ -28,6 +28,8 @@ export interface TinkerView {
   skills: { skill: string; xp: number; level: number }[];
   queue: QueueEntry[];
   progressMs: number;
+  /** How long one go of the queue's head takes, kills included: a fight's time depends on the Tinker. */
+  headMs: number | null;
   steamUntil: string;
   resolvedTo: string;
   weapon: string | null;
@@ -320,6 +322,7 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent, now =
       .sort((a, b) => a.skill.localeCompare(b.skill)),
     queue: loaded.state.queue,
     progressMs: loaded.state.progressMs,
+    headMs: rules.headMs(loaded.state, content.rules),
     steamUntil: row.steam_until.toISOString(),
     resolvedTo: row.resolved_to.toISOString(),
     weapon: loaded.state.weapon,

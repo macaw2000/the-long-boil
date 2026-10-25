@@ -283,6 +283,10 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     : 0;
   const working = head && steamLeft > 0;
   const elapsed = working ? tinker.progressMs + Math.max(0, now - new Date(tinker.resolvedTo).getTime()) : tinker.progressMs;
+  // The server's time for one go, since a kill takes as long as the Tinker's fighting does.
+  const goMs = tinker.headMs ?? headSeconds * 1000;
+  // Between looks, goes still to come carry on from the start, so each kill shows as one.
+  const headProgress = goMs <= 0 ? 0 : head && head.remaining > 1 ? (elapsed % goMs) / goMs : Math.min(1, elapsed / goMs);
 
   const equipWeapon = (item: string) => {
     setNewGear(null);
@@ -306,7 +310,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
 
   const scene = (
     <View>
-      <Scene tinker={tinker} content={content} progress={headSeconds > 0 ? Math.min(1, elapsed / (headSeconds * 1000)) : 0} working={Boolean(working)} />
+      <Scene tinker={tinker} content={content} progress={headProgress} working={Boolean(working)} />
       <Floaters floaters={floaters} onDone={removeFloater} icon={(item) => <ItemIcon item={item} size={22} />} />
     </View>
   );
@@ -370,8 +374,8 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         name={name}
         now={now}
         wide={wide}
-        elapsedMs={elapsed}
-        headSeconds={headSeconds}
+        elapsedMs={headProgress * goMs}
+        headSeconds={goMs / 1000}
         lit={lit}
         onRemove={(slot) => setQueue(tinker.queue.filter((_, index) => index !== slot))}
         onAdd={() => setPlace(guidedPlace ?? (place.startsWith("skill:") ? place : head ? `skill:${skillOf(content, head.actionId)}` : "skill:prospecting"))}

@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 import {
   equip,
   fighterFor,
+  headMs,
   newTinker,
   planBoss,
   planKill,
@@ -121,6 +122,14 @@ describe("drops and Rations", () => {
     expect(after.inventory["item.rustmoor.ledger_page_drop_2"]).toBe(1);
     expect(after.inventory["item.rustmoor.ledger_page_drop_3"]).toBeUndefined();
     expect(after.pity.rustmoor!.next).toBe(2);
+  });
+
+  it("tells the screen how long the next kill takes, which is longer than the monster's floor", () => {
+    const state = setQueue(reference("melee", 1, 1, "item.rustmoor.brass_spanner", 10), [{ actionId: RUNT, remaining: 2 }]);
+    const ms = headMs(state, content)!;
+    expect(ms).toBeGreaterThan(content.monsters.get(RUNT)!.seconds_per_kill * 1000);
+    expect(resolve(state, content, ms - 1).events.some((event) => event.type === "monster_killed")).toBe(false);
+    expect(resolve(state, content, ms).events.some((event) => event.type === "monster_killed")).toBe(true);
   });
 
   it("will not fight without a weapon", () => {

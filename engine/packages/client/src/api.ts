@@ -97,6 +97,8 @@ export interface Tinker {
   skills: { skill: string; xp: number; level: number }[];
   queue: QueueEntry[];
   progressMs: number;
+  /** How long one go of the queue's head takes; a fight's time depends on the Tinker. */
+  headMs: number | null;
   steamUntil: string;
   resolvedTo: string;
   weapon: string | null;

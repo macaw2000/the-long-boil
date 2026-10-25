@@ -274,6 +274,14 @@ function stepFor(state: TinkerState, content: Content, id: string): Step {
   return { kind: "stall", reason: "unknown_action" };
 }
 
+/** How long one go of the queue's head takes now, by the same step the queue runs; null if it would stall or the queue is empty. */
+export function headMs(state: TinkerState, content: Content): number | null {
+  const head = state.queue[0];
+  if (!head) return null;
+  const step = stepFor(state, content, head.actionId);
+  return step.kind === "run" ? step.ms : null;
+}
+
 export type FightOutlook =
   | { monsterId: string; ready: false; reason: "no_weapon" | "level" | "cannot_win" }
   | { monsterId: string; ready: true; seconds: number; winChance: number | null; rations: number };
