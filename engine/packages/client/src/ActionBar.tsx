@@ -11,7 +11,7 @@ import type { GlossaryTerm } from "./glossary";
 import { jobTitle } from "./jobs";
 import { Glow } from "./Glow";
 import { Badge, CountUp, Gauge, SteamTube } from "./Juice";
-import { ItemIcon } from "./Sprite";
+import { ItemIcon, UiIcon } from "./Sprite";
 import { MonsterPicture } from "./SkillView";
 import { Term } from "./Term";
 import { colors, ui } from "./theme";
@@ -134,7 +134,7 @@ export function ActionBar({
         </View>
       </Glow>
 
-      <View style={{ flexDirection: "row", alignItems: "center", gap: wide ? 18 : 12, flexWrap: "wrap" }}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: wide ? 18 : 12, flexWrap: "wrap", ...(wide ? {} : { width: "100%" }) }}>
         <Glow active={lit.has("boiler")}>
           <Term term="boiler">
             <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
@@ -146,20 +146,20 @@ export function ActionBar({
           </Term>
         </Glow>
         <Term term="nerve">
-          <Stat label="Nerve">
+          <Stat label="Nerve" icon="nerve">
             <Text style={[ui.number, { color: colors.verdigris }]}>
               {tinker.story.nerve}/{tinker.story.nerveCap}
             </Text>
           </Stat>
         </Term>
         <Term term="crowns">
-          <Stat label="Crowns">
+          <Stat label="Crowns" icon="crowns">
             <CountUp value={tinker.crowns} style={[ui.number, { color: colors.brass }]} />
           </Stat>
         </Term>
         {Object.entries(tinker.story.needles).map(([needle, value]) => (
           <Term key={needle} term={needle as GlossaryTerm}>
-            <Stat label={titleCase(needle.split(".")[1] ?? needle)}>
+            <Stat label={titleCase(needle.split(".")[1] ?? needle)} icon={needle.split(".")[1]}>
               <Text style={[ui.number, { color: value >= 8 ? colors.scald : value > 0 ? colors.copper : colors.muted }]}>{value}</Text>
             </Stat>
           </Term>
@@ -173,11 +173,15 @@ export function ActionBar({
   );
 }
 
-function Stat({ label, children }: { label: string; children: ReactNode }) {
+/** A reading on the bar: its icon where one is drawn, then its name over its value. */
+function Stat({ label, icon, children }: { label: string; icon?: string; children: ReactNode }) {
   return (
-    <View style={{ alignItems: "center" }}>
-      <Text style={[ui.muted, { fontSize: 10, letterSpacing: 0.5 }]}>{label.toUpperCase()}</Text>
-      {children}
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+      {icon && <UiIcon name={icon} size={24} />}
+      <View style={{ alignItems: "center" }}>
+        <Text style={[ui.muted, { fontSize: 10, letterSpacing: 0.5 }]}>{label.toUpperCase()}</Text>
+        {children}
+      </View>
     </View>
   );
 }

@@ -10,11 +10,11 @@ import type { Content, QueueEntry, Tinker } from "./api";
 import { duration, levelProgress, seconds, titleCase } from "./format";
 import { FIGHT, SPANS, BOILER_SECONDS, DEFAULT_SECONDS, jobTitle, notReadyText, usePlanner, type Planner } from "./jobs";
 import { Glow } from "./Glow";
-import { ItemIcon } from "./Sprite";
+import { ItemIcon, skillIconSource } from "./Sprite";
 import { characters } from "./sprites";
 import { colors, ui } from "./theme";
 
-/** A stand-in icon per skill until skill icons are drawn: the first thing the skill makes. */
+/** A stand-in icon per skill where no skill icon is drawn: the first thing the skill makes. */
 export const SKILL_ICONS: Record<string, string> = {
   prospecting: "item.rustmoor.copper",
   smithing: "item.rustmoor.brass_ingot",
@@ -24,6 +24,8 @@ export const SKILL_ICONS: Record<string, string> = {
 };
 
 export function SkillIcon({ skill, size = 24 }: { skill: string; size?: number }) {
+  const drawn = skillIconSource(skill);
+  if (drawn !== undefined) return <Image source={drawn} style={{ width: size, height: size }} accessibilityIgnoresInvertColors />;
   if (skill === FIGHT) return <MonsterPicture id="monster.rustmoor.rust_rat_runt" size={size} />;
   return <ItemIcon item={SKILL_ICONS[skill] ?? "item.fallback"} size={size} />;
 }
@@ -114,7 +116,7 @@ export function SkillView({
                     selected={chosen === monster.id}
                     locked={false}
                     onPress={() => choose(monster.id)}
-                    picture={<MonsterPicture id={monster.id} size={48} />}
+                    picture={<MonsterPicture id={monster.id} size={64} />}
                     title={monster.name}
                     line={line}
                     accent={monster.boss ? colors.copper : undefined}

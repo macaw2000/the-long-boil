@@ -5,10 +5,11 @@
 // Hester's Ledger closes the tab: the pages found, each readable once held.
 
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import { api, type LedgerPage, type Outcome, type SceneView, type StoryOutcome, type StoryView } from "./api";
 import { titleCase } from "./format";
 import { OddsDial } from "./Juice";
+import { vignetteSource } from "./Sprite";
 import type { GlossaryTerm } from "./glossary";
 import { Term } from "./Term";
 import { colors, ui } from "./theme";
@@ -196,12 +197,20 @@ function Card({
   return (
     <View style={ui.panel}>
       <View style={{ flexDirection: "row", gap: 12 }}>
-        {/* The 96x96 vignette (GDD section 7) waits for art; a brass plate holds its place. */}
-        <View
-          style={{ width: 96, height: 96, borderRadius: 4, backgroundColor: colors.soot, borderWidth: 1, borderColor: colors.brassDim, alignItems: "center", justifyContent: "center" }}
-        >
-          <Text style={[ui.muted, { fontSize: 11, textAlign: "center" }]}>{titleCase(scene.location.replace(/_/g, " "))}</Text>
-        </View>
+        {/* The 96x96 vignette of the scene's place (GDD section 7); a brass plate with its name where none is drawn. */}
+        {vignetteSource(scene.location) !== undefined ? (
+          <Image
+            source={vignetteSource(scene.location)!}
+            style={{ width: 96, height: 96, borderRadius: 4, borderWidth: 1, borderColor: colors.brassDim }}
+            accessibilityLabel={titleCase(scene.location.replace(/_/g, " "))}
+          />
+        ) : (
+          <View
+            style={{ width: 96, height: 96, borderRadius: 4, backgroundColor: colors.soot, borderWidth: 1, borderColor: colors.brassDim, alignItems: "center", justifyContent: "center" }}
+          >
+            <Text style={[ui.muted, { fontSize: 11, textAlign: "center" }]}>{titleCase(scene.location.replace(/_/g, " "))}</Text>
+          </View>
+        )}
         <View style={{ flex: 1, gap: 6 }}>
           {scene.sender && <Text style={[ui.muted, { color: colors.brass }]}>From {scene.sender}</Text>}
           <Text style={[ui.text, { lineHeight: 21 }]}>{scene.description}</Text>

@@ -11,6 +11,7 @@ import { Glow } from "./Glow";
 import { FIGHT, SKILL_ORDER } from "./jobs";
 import { Badge } from "./Juice";
 import { SkillIcon } from "./SkillView";
+import { UiIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
 export type Place = "story" | "exchange" | "guild" | "stores" | "chat" | `skill:${string}`;
@@ -20,6 +21,9 @@ export interface PlaceBadge {
   label?: string;
   tone?: string;
 }
+
+/** Each place's icon, from the interface sheet: the Post's canister, the Exchange's scale, a guild's shield. */
+const PLACE_ICONS: Partial<Record<Place | "work", string>> = { story: "post", exchange: "exchange", guild: "guild", chat: "chat", stores: "boiler" };
 
 export function skillsOf(content: Content): string[] {
   const present = new Set(content.actions.map((action) => action.skill));
@@ -48,7 +52,10 @@ export function SideNav({
     <ScrollView style={{ width: 210 }} contentContainerStyle={{ paddingVertical: 12, gap: 2 }}>
       {(["story", "exchange", "guild"] as const).map((choice) => (
         <NavRow key={choice} active={place === choice} lit={lit.has(choice)} onPress={() => onPlace(choice)} badge={badges[choice]}>
-          <Text style={[ui.text, { fontSize: 15, color: place === choice ? colors.brass : colors.ink }]}>{titleCase(choice)}</Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <UiIcon name={PLACE_ICONS[choice]!} size={26} />
+            <Text style={[ui.text, { fontSize: 15, color: place === choice ? colors.brass : colors.ink }]}>{titleCase(choice)}</Text>
+          </View>
         </NavRow>
       ))}
       <Text style={[ui.muted, { fontSize: 10, letterSpacing: 1, paddingHorizontal: 14, paddingTop: 14, paddingBottom: 4 }]}>SKILLS</Text>
@@ -159,7 +166,8 @@ export function BottomBar({
               accessibilityState={{ selected: active }}
               style={{ alignItems: "center", paddingVertical: 10, borderTopWidth: 2, borderTopColor: active ? colors.brass : "transparent" }}
             >
-              <Text style={[ui.text, { fontSize: 13, color: active ? colors.brass : colors.muted }]}>{label}</Text>
+              {key === "work" ? <SkillIcon skill="tinkering" size={22} /> : PLACE_ICONS[key] ? <UiIcon name={PLACE_ICONS[key]!} size={22} /> : null}
+              <Text style={[ui.text, { fontSize: 12, color: active ? colors.brass : colors.muted }]}>{label}</Text>
               {badge && badge.count > 0 && (
                 <View style={{ position: "absolute", top: 2, right: 6 }}>
                   <Badge count={badge.count} label={badge.label} tone={badge.tone} />

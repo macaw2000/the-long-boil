@@ -92,6 +92,14 @@ The square picture on each Story card, which today is a plain brass box with the
 [pixel-art block] A 3 by 2 sheet of six small square scenes, each a framed vignette of a place in Kettleport, no people: (1) Sprocket Row, a narrow workshop street with pneumatic tubes; (2) the Rustmoor Scrapyards, scrap heaps under grey sky; (3) the Lowvents, a steep iron stair down to steaming vents; (4) the Polytechnic, a brass-domed lecture hall; (5) the Brass Exchange, the big brass order board; (6) the Infirmary of St. Pinion, a quiet ward with iron beds. [format block, but say "a 3 by 2 grid" and "3:2 aspect ratio"]
 ```
 
+## Done, 25 October 2026
+
+Every sheet above was drawn and is in the game. The originals are kept in `art/concepts/sheets/`, out of the public sync. `scripts/art/import_art.py` cuts them into `engine/packages/client/assets/art/` and `art/bg/`, and `scripts/art/build_sprites.py` points the client at the real art wherever it exists. Notes for the next round:
+
+- **Rust Rats:** Gemini painted labels into the sheet; the import finds each rat by shape, so a relabelled or uneven sheet still works, but small smoke puffs are dropped with the labels.
+- **Scrapjaw:** the second attack frame runs off the left of its cell, so its tail is clipped.
+- **Still needed: the Tinker holding each weapon.** The real Tinker is drawn bare-handed, so until then every weapon shows the bare-handed Tinker in fights and in the Loadout. One sheet: the Tinker with each of the 14 weapons (Sheet B), idle and attacking, two frames each, same format as Sheet 5.
+
 ## Order of work
 
 Backgrounds and skill icons change the look most for the least work, so start there. Then Sheets A and B (every tile and the stores grid use them), the Rust Rats and Scrapjaw, the Tinker, and the vignettes.

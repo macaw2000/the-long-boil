@@ -8,7 +8,7 @@ import { Easing } from "react-native";
 import { Animated, Image, Text, View } from "react-native";
 import type { Content, Tinker } from "./api";
 import { useReducedMotion } from "./Juice";
-import { backgrounds, characters, icons } from "./sprites";
+import { backgrounds, characters, icons, skills, ui as uiIcons, vignettes } from "./sprites";
 import { colors, ui } from "./theme";
 
 const CHARACTER_PX = 144; // 48 pixels at 3x
@@ -20,6 +20,23 @@ const FLOOR = 150; // where feet stand, in scene pixels
 export function ItemIcon({ item, size = 24 }: { item: string; size?: number }) {
   const source = icons[item] ?? icons.fallback;
   return <Image source={source as number} style={{ width: size, height: size }} accessibilityIgnoresInvertColors />;
+}
+
+/** One of the interface's own icons (Crowns, Nerve, the Needles, the places), or nothing if it is not drawn. */
+export function UiIcon({ name, size = 18 }: { name: string; size?: number }) {
+  const source = uiIcons[name];
+  if (source === undefined) return null;
+  return <Image source={source as number} style={{ width: size, height: size }} accessibilityIgnoresInvertColors />;
+}
+
+/** A skill's icon, or undefined if it is not drawn. */
+export function skillIconSource(skill: string): number | undefined {
+  return skills[skill];
+}
+
+/** The small picture of a story location, or undefined if it is not drawn. */
+export function vignetteSource(location: string): number | undefined {
+  return vignettes[location];
 }
 
 /** A shared frame clock, so the Tinker's swing and the monster's flinch land together. */
@@ -177,9 +194,9 @@ function boltPoints(puff: Puff): { x: number; y: number }[] {
 const POSE: Record<string, string> = {
   smithing: "hammer",
   prospecting: "pick",
-  scavenging: "pick",
+  scavenging: "scavenge",
   tinkering: "tinker",
-  cooking: "tinker",
+  cooking: "cook",
 };
 
 /**
@@ -267,7 +284,8 @@ export function Scene({ tinker, content, progress, working }: { tinker: Tinker; 
     >
       <Image
         source={(fighting ? backgrounds.rustmoor : backgrounds.workshop) as number}
-        style={{ position: "absolute", left: "50%", marginLeft: -240, width: 480, height: SCENE_HEIGHT }}
+        resizeMode="cover"
+        style={{ position: "absolute", left: 0, right: 0, width: "100%", height: SCENE_HEIGHT }}
         accessibilityIgnoresInvertColors
       />
       <View style={{ position: "absolute", left: 12, top: FLOOR - 132 }}>

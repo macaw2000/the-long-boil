@@ -1,0 +1,325 @@
+"""Cuts the Gemini art sheets into the game's sprites, icons and backgrounds.
+
+The sheets were drawn to docs/art-requests.md: pixel art on a flat magenta
+(#FF00FF) background in a grid of equal cells. This script removes the
+magenta, cuts each cell, sizes it to the slot the game draws it in, and
+lines up a character's frames on one ground line so an animation does not
+jump. Two sheets need more care: the Rust Rats came with labels painted in,
+so each rat is found by its shape rather than its cell, and the story
+vignettes have a place name under each picture, which is cropped off.
+
+Run from the repo root (it needs Pillow: pip install pillow):
+    python3 scripts/art/import_art.py
+Reads  art/concepts/sheets/*.jpeg (the originals, kept out of the public sync)
+Writes engine/packages/client/assets/art/*.png  (sprites; the build index prefers these)
+       art/bg/*.jpg                             (the paintings behind each place)
+Then run scripts/art/build_sprites.py to rebuild the client's sprite index.
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parents[2]
+SHEETS = ROOT / "art" / "concepts" / "sheets"
+SPRITES = ROOT / "engine" / "packages" / "client" / "assets" / "art"
+PAINTINGS = ROOT / "art" / "bg"
+
+# Slot sizes, as the client draws them (scripts/art/build_sprites.py): icons
+# 64, characters 144, the boss and the Loadout portrait 192, vignettes 192.
+ICON = 64
+CHARACTER = 144
+BOSS = 192
+PORTRAIT = 192
+VIGNETTE = 192
+
+
+# ------------------------------------------------------------ the magenta key
+
+
+def is_magenta(r: int, g: int, b: int) -> bool:
+    """The background: strongly red and blue, little green. JPEG blurs it, so allow a margin."""
+    return r > 150 and b > 150 and g < 120 and min(r, b) - g > 80
+
+
+def keyed(image: Image.Image) -> Image.Image:
+    """The image with its magenta made transparent, and the pink fringe JPEG leaves at edges darkened."""
+    image = image.convert("RGBA")
+    pixels = image.load()
+    width, height = image.size
+    for y in range(height):
+        for x in range(width):
+            r, g, b, _ = pixels[x, y]
+            if is_magenta(r, g, b):
+                pixels[x, y] = (0, 0, 0, 0)
+            elif min(r, b) - g > 45 and r > 90 and b > 90:
+                # A half-magenta edge pixel: keep it, but as the outline's dark colour.
+                pixels[x, y] = (43, 37, 34, 255)
+    return image
+
+
+def content_box(image: Image.Image) -> tuple[int, int, int, int] | None:
+    """The box around everything not transparent."""
+    return image.getchannel("A").getbbox()
+
+
+def cells(sheet: Image.Image, cols: int, rows: int, inset: float = 0.03) -> list[Image.Image]:
+    """The grid's cells, read left to right then top to bottom, each trimmed by a little to drop gridlines."""
+    width, height = sheet.size
+    cell_w, cell_h = width / cols, height / rows
+    out = []
+    for row in range(rows):
+        for col in range(cols):
+            left, top = col * cell_w, row * cell_h
+            box = (
+                round(left + cell_w * inset),
+                round(top + cell_h * inset),
+                round(left + cell_w * (1 - inset)),
+                round(top + cell_h * (1 - inset)),
+            )
+            out.append(sheet.crop(box))
+    return out
+
+
+# --------------------------------------------------------------- fitting
+
+
+def fit_icon(cell: Image.Image, size: int = ICON, margin: float = 0.06) -> Image.Image:
+    """An icon centred in a square, as large as it fits."""
+    box = content_box(cell)
+    canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    if not box:
+        return canvas
+    art = cell.crop(box)
+    room = size * (1 - 2 * margin)
+    scale = min(room / art.width, room / art.height)
+    art = art.resize((max(1, round(art.width * scale)), max(1, round(art.height * scale))), Image.LANCZOS)
+    canvas.alpha_composite(art, ((size - art.width) // 2, (size - art.height) // 2))
+    return canvas
+
+
+def fit_frames(frames: list[Image.Image], size: int, margin: float = 0.05, flip: bool = False) -> list[Image.Image]:
+    """
+    A character's frames at one scale, centred across and standing on one
+    ground line, so the animation does not jump. The scale is set by the
+    largest frame, so every frame fits.
+    """
+    boxes = [content_box(frame) for frame in frames]
+    arts = [frame.crop(box) if box else Image.new("RGBA", (1, 1)) for frame, box in zip(frames, boxes)]
+    widest = max(art.width for art in arts)
+    tallest = max(art.height for art in arts)
+    room = size * (1 - 2 * margin)
+    scale = min(room / widest, room / tallest)
+    out = []
+    for art in arts:
+        if flip:
+            art = art.transpose(Image.FLIP_LEFT_RIGHT)
+        art = art.resize((max(1, round(art.width * scale)), max(1, round(art.height * scale))), Image.LANCZOS)
+        canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        ground = round(size * (1 - margin))
+        canvas.alpha_composite(art, ((size - art.width) // 2, ground - art.height))
+        out.append(canvas)
+    return out
+
+
+def save(image: Image.Image, name: str) -> None:
+    SPRITES.mkdir(parents=True, exist_ok=True)
+    image.save(SPRITES / f"{name}.png", optimize=True)
+
+
+# ------------------------------------------------------- shapes, for the rats
+
+
+def components(image: Image.Image, min_area: int) -> list[tuple[int, int, int, int, int]]:
+    """Each separate shape in a keyed image as (left, top, right, bottom, area), smaller ones dropped."""
+    alpha = image.getchannel("A")
+    width, height = image.size
+    solid = bytearray(1 if a else 0 for a in alpha.tobytes())
+    seen = bytearray(width * height)
+    found = []
+    for start in range(width * height):
+        if not solid[start] or seen[start]:
+            continue
+        stack = [start]
+        seen[start] = 1
+        left, top, right, bottom, area = width, height, 0, 0, 0
+        while stack:
+            index = stack.pop()
+            x, y = index % width, index // width
+            area += 1
+            left, top, right, bottom = min(left, x), min(top, y), max(right, x), max(bottom, y)
+            for neighbour in (index - 1 if x else -1, index + 1 if x < width - 1 else -1, index - width, index + width):
+                if 0 <= neighbour < width * height and solid[neighbour] and not seen[neighbour]:
+                    seen[neighbour] = 1
+                    stack.append(neighbour)
+        if area >= min_area:
+            found.append((left, top, right + 1, bottom + 1, area))
+    return found
+
+
+def rows_by_gaps(centres: list[float], count: int) -> list[float]:
+    """Where to split sorted centres into `count` rows: at the largest gaps."""
+    ordered = sorted(centres)
+    gaps = sorted(range(1, len(ordered)), key=lambda i: ordered[i] - ordered[i - 1], reverse=True)[: count - 1]
+    return sorted((ordered[i - 1] + ordered[i]) / 2 for i in gaps)
+
+
+def without_gridlines(image: Image.Image, dark: int = 70, share: float = 0.9) -> Image.Image:
+    """
+    The image with its gridlines made clear: a row or column of pixels that
+    is dark almost all the way across the sheet, which no sprite is. Left in,
+    a gridline would join every sprite into one shape.
+    """
+    pixels = image.load()
+    width, height = image.size
+
+    def is_dark(x: int, y: int) -> bool:
+        r, g, b, a = pixels[x, y]
+        return a > 0 and r + g + b < dark * 3
+
+    rows = [y for y in range(height) if sum(1 for x in range(width) if is_dark(x, y)) > width * share]
+    cols = [x for x in range(width) if sum(1 for y in range(height) if is_dark(x, y)) > height * share]
+    for y in rows:
+        for dy in (-2, -1, 0, 1, 2):
+            if 0 <= y + dy < height:
+                for x in range(width):
+                    pixels[x, y + dy] = (0, 0, 0, 0)
+    for x in cols:
+        for dx in (-2, -1, 0, 1, 2):
+            if 0 <= x + dx < width:
+                for y in range(height):
+                    pixels[x + dx, y] = (0, 0, 0, 0)
+    return image
+
+
+def rat_frames(sheet: Image.Image) -> list[list[Image.Image]]:
+    """The four rats' five frames each, found by shape; painted labels and loose smoke puffs are too small to count."""
+    image = without_gridlines(keyed(sheet))
+    shapes = components(image, min_area=2500)
+    width = image.width
+    splits = rows_by_gaps([(top + bottom) / 2 for _, top, _, bottom, _ in shapes], 4)
+    grid: dict[tuple[int, int], list[tuple[int, int, int, int]]] = {}
+    for left, top, right, bottom, _ in shapes:
+        col = min(4, int(((left + right) / 2) / (width / 5)))
+        row = sum(1 for split in splits if (top + bottom) / 2 > split)
+        grid.setdefault((row, col), []).append((left, top, right, bottom))
+    rats = []
+    for row in range(4):
+        frames = []
+        for col in range(5):
+            boxes = grid.get((row, col))
+            if not boxes:
+                raise SystemExit(f"rust-rats.jpeg: no rat found in row {row + 1}, frame {col + 1}")
+            box = (min(b[0] for b in boxes), min(b[1] for b in boxes), max(b[2] for b in boxes), max(b[3] for b in boxes))
+            # Keep only the shapes found in this cell: a label inside the box is blanked out.
+            frame = Image.new("RGBA", image.size, (0, 0, 0, 0))
+            for b in boxes:
+                frame.alpha_composite(image.crop(b), (b[0], b[1]))
+            frames.append(frame.crop(box))
+        rats.append(frames)
+    return rats
+
+
+# ------------------------------------------------------------------ sheets
+
+
+SKILLS = ["prospecting", "smithing", "tinkering", "cooking", "scavenging", "fight"]
+
+SHEET_A = ["copper", "iron_ore", "coal", "garnet", "brass_ingot", "iron_ingot", "steel_ingot", "rat_scrap",
+           "barley_meal", "salt_pork", "rustmoor_ration", "bent_nails", "umbrella_ribs", "odd_spoons", "clock_movement",
+           "cracked_gauge_glass"]
+SHEET_B = ["steel_blade", "brass_spanner", "iron_crowbar", "riveting_hammer", "scrapjaws_cleaver", "brass_catapult", "iron_rifle",
+           "steel_carbine", "garnet_rifle", "copper_coil", "spark_rod", "brass_sparker", "garnet_rod", "brass_key", "iron_lock",
+           "garnet_sight"]
+# Sheet C: the first five are items, the rest the interface's own icons. One Ledger Page icon serves all five pages.
+SHEET_C_ITEMS = ["ledger_page", "foundry_pass", "board_memo", "ballast_day_ribbon", "misstruck_crown"]
+SHEET_C_UI = ["crowns", "nerve", "scald", "arrears", "notice", "boiler", "post", "exchange", "guild", "chat", "locked"]
+LEDGER_PAGES = ["ledger_page_1", "ledger_page_drop_1", "ledger_page_drop_2", "ledger_page_drop_3", "ledger_page_drop_4"]
+
+RATS = ["rust_rat_runt", "rust_rat_scrounger", "rust_rat_tinplate", "rust_rat_gaffer"]
+FRAMES = ["idle0", "idle1", "attack0", "attack1", "dead"]
+
+# The Tinker sheet, two frames a pose: the client's pose names.
+TINKER_POSES = ["idle", "pick", "hammer", "tinker", "cook", "scavenge", "attack", "portrait"]
+
+VIGNETTES = ["sprocket_row", "rustmoor", "lowvents", "polytechnic", "brass_exchange", "infirmary"]
+
+BACKGROUNDS = ["workshop", "rustmoor", "sprocket_row", "brass_exchange", "guildhall"]
+
+
+def sheet(name: str) -> Image.Image:
+    return Image.open(SHEETS / name).convert("RGB")
+
+
+def main() -> None:
+    written = 0
+
+    for skill, cell in zip(SKILLS, cells(sheet("skillicons.jpeg"), 3, 2)):
+        save(fit_icon(keyed(cell)), f"skill_{skill}")
+        written += 1
+
+    for names, file in ((SHEET_A, "sheet-a-materials-and-food-icons.jpeg"), (SHEET_B, "sheet-b-weapons-and-tools.jpeg")):
+        for item, cell in zip(names, cells(sheet(file), 4, 4)):
+            save(fit_icon(keyed(cell)), f"icon_{item}")
+            written += 1
+
+    sheet_c = [fit_icon(keyed(cell)) for cell in cells(sheet("sheet-c-papers-curios-icons.jpeg"), 4, 4)]
+    for item, icon in zip(SHEET_C_ITEMS, sheet_c):
+        for name in LEDGER_PAGES if item == "ledger_page" else [item]:
+            save(icon, f"icon_{name}")
+            written += 1
+    for name, icon in zip(SHEET_C_UI, sheet_c[len(SHEET_C_ITEMS):]):
+        save(icon, f"ui_{name}")
+        written += 1
+
+    # Gemini drew the monsters facing right; in the scene they stand on the right, facing the Tinker.
+    for variant, frames in zip(RATS, rat_frames(sheet("rust-rats.jpeg"))):
+        for frame_name, frame in zip(FRAMES, fit_frames(frames, CHARACTER, flip=True)):
+            save(frame, f"{variant}_{frame_name}")
+            written += 1
+    scrapjaw = [keyed(cell) for cell in cells(sheet("scrapjaw.jpeg"), 3, 2, inset=0.01)][:5]
+    for frame_name, frame in zip(FRAMES, fit_frames(scrapjaw, BOSS, flip=True)):
+        save(frame, f"scrapjaw_{frame_name}")
+        written += 1
+
+    tinker = [keyed(cell) for cell in cells(sheet("tinker-at-work.jpeg"), 4, 4)]
+    working = fit_frames(tinker[:14], CHARACTER)
+    for index, pose in enumerate(TINKER_POSES[:-1]):
+        for frame in (0, 1):
+            save(working[index * 2 + frame], f"tinker_{pose}_{frame}")
+            written += 1
+    for frame, image in enumerate(fit_frames(tinker[14:], PORTRAIT)):
+        save(image, f"tinker_bare_portrait_{frame}")
+        written += 1
+
+    # Each vignette is a framed picture with its place's name painted below; keep the picture, square.
+    for place, cell in zip(VIGNETTES, cells(sheet("story-vignettes.jpeg"), 3, 2, inset=0.02)):
+        picture = cell.crop((0, 0, cell.width, round(cell.height * 0.86)))
+        side = min(picture.size)
+        left = (picture.width - side) // 2
+        square = picture.crop((left, 0, left + side, side)).convert("RGBA")
+        save(square.resize((VIGNETTE, VIGNETTE), Image.LANCZOS), f"vignette_{place}")
+        written += 1
+
+    # The paintings: full size behind each place, and a wide strip for the scene above the bench.
+    PAINTINGS.mkdir(parents=True, exist_ok=True)
+    for place in BACKGROUNDS:
+        painting = sheet(f"{place}-bg.jpeg")
+        painting.save(PAINTINGS / f"{place}.jpg", quality=82, optimize=True, progressive=True)
+        written += 1
+        if place in ("workshop", "rustmoor"):
+            # The scene is 2.5 wide to 1 high; take the band where the floor is.
+            width = painting.width
+            height = round(width / 2.5)
+            top = max(0, min(painting.height - height, round(painting.height * 0.55 - height / 2)))
+            strip = painting.crop((0, top, width, top + height)).resize((960, 384), Image.LANCZOS)
+            strip.save(SPRITES / f"bg_{place}.png", optimize=True)
+            written += 1
+
+    print(f"wrote {written} files to {SPRITES.relative_to(ROOT)} and {PAINTINGS.relative_to(ROOT)}")
+
+
+if __name__ == "__main__":
+    main()

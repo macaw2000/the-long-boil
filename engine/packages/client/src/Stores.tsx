@@ -1,11 +1,11 @@
 // The stores as a grid of icons with counts, after Milky Way Idle's
 // inventory: the name shows on hover or tap, and bound items carry a small
-// lock mark.
+// padlock, from the interface sheet.
 
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import type { Tinker } from "./api";
-import { ItemIcon } from "./Sprite";
+import { ItemIcon, UiIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
 function short(qty: number): string {
@@ -46,7 +46,11 @@ export function Stores({ tinker, name }: { tinker: Tinker; name: (id: string) =>
             >
               <ItemIcon item={stack.item} size={32} />
               <Text style={[ui.number, { position: "absolute", right: 3, bottom: 1, fontSize: 11, color: colors.ink }]}>{short(stack.qty)}</Text>
-              {stack.bound && <Text style={{ position: "absolute", left: 3, top: 1, fontSize: 9, color: colors.muted }}>⛓</Text>}
+              {stack.bound && (
+                <View style={{ position: "absolute", left: 2, top: 2 }}>
+                  <UiIcon name="locked" size={13} />
+                </View>
+              )}
             </Pressable>
           );
         })}

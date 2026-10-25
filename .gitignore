@@ -6,3 +6,4 @@ infra/cdk.out/
 infra/cdk-outputs.json
 .claude/settings.local.json
 engine/packages/client/dist/
+__pycache__/
