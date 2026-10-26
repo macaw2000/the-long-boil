@@ -289,7 +289,10 @@ def main() -> None:
     working = fit_frames(tinker[:14], CHARACTER)
     for index, pose in enumerate(TINKER_POSES[:-1]):
         for frame in (0, 1):
-            save(working[index * 2 + frame], f"tinker_{pose}_{frame}")
+            # Gemini drew scavenging's second frame as another scene (no pile, a wrench, standing),
+            # so the two flicker between poses; hold the first until a matching pair is drawn.
+            source = index * 2 if pose == "scavenge" else index * 2 + frame
+            save(working[source], f"tinker_{pose}_{frame}")
             written += 1
     for frame, image in enumerate(fit_frames(tinker[14:], PORTRAIT)):
         save(image, f"tinker_bare_portrait_{frame}")
