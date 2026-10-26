@@ -11,7 +11,7 @@ import { ActionBar } from "./ActionBar";
 import { api, gameNow, setClockOffset, type Content, type GuildView, type Ledger as LedgerData, type Notice, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
 import { Backdrop } from "./Backdrop";
 import { Chat, channelOf, useChat, useWhispers } from "./Chat";
-import { Exchange } from "./Exchange";
+import { Bills, Exchange } from "./Exchange";
 import { duration, namer, titleCase, tradeLine } from "./format";
 import { Glow } from "./Glow";
 import { currentStep, GuideCard, nudges, type GuideState, type Target } from "./Guide";
@@ -352,6 +352,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} crownsHeld={tinker.crowns} />
     ) : place === "exchange" ? (
       <View style={{ gap: 12 }}>
+        {tinker.story.debts.length > 0 && <Bills tinker={tinker} act={run} />}
         <WorkOrders content={content} tinker={tinker} name={name} onOutcome={apply} />
         <Exchange content={content} tinker={tinker} name={name} run={run} />
       </View>

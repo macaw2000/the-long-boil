@@ -64,6 +64,40 @@ export function Exchange({
 
 type Act = (call: Promise<Outcome>) => Promise<unknown>;
 
+/**
+ * What the story says the Tinker owes, apart from the window's selling so a
+ * bill is never mistaken for something to sell. It heads the Exchange. Short of Crowns, it says how
+ * many more, and where they come from.
+ */
+export function Bills({ tinker, act }: { tinker: Tinker; act: Act }) {
+  return (
+    <View style={[ui.panel, { borderColor: colors.copper }]}>
+      <Text style={ui.heading}>Bills</Text>
+      {tinker.story.debts.map((debt) => {
+        const short = debt.crowns - tinker.crowns;
+        return (
+          <View key={debt.id} style={{ gap: 6 }}>
+            <Text style={ui.text}>
+              {debt.label}: {debt.crowns} Crowns. You have {tinker.crowns}.
+            </Text>
+            <Pressable
+              style={[ui.button, { alignSelf: "flex-start" }, short > 0 && { opacity: 0.4 }]}
+              disabled={short > 0}
+              onPress={() => act(api.payDebt(tinker.id, debt.id))}
+              accessibilityRole="button"
+            >
+              <Text style={ui.buttonText}>Pay {debt.crowns} Crowns</Text>
+            </Pressable>
+            {short > 0 && (
+              <Text style={ui.muted}>{short} more Crowns needed. Sell something at the window below, or fight a few more rats.</Text>
+            )}
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
 /** The Counting-House window: the collectors and the grocer's counter. */
 function Window({ content, tinker, market, name, act }: { content: Content; tinker: Tinker; market: MarketView | null; name: (id: string) => string; act: Act }) {
   const collected = Object.entries(content.economy).filter(([, terms]) => terms.collectorPrice !== null);
@@ -90,21 +124,6 @@ function Window({ content, tinker, market, name, act }: { content: Content; tink
           />
         );
       })}
-      {tinker.story.debts.map((debt) => (
-        <View key={debt.id} style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8, marginTop: 6 }}>
-          <Text style={[ui.text, { flex: 1 }]}>
-            {debt.label}: {debt.crowns} Crowns
-          </Text>
-          <Pressable
-            style={[ui.button, { paddingVertical: 4 }, tinker.crowns < debt.crowns && { opacity: 0.4 }]}
-            disabled={tinker.crowns < debt.crowns}
-            onPress={() => act(api.payDebt(tinker.id, debt.id))}
-            accessibilityRole="button"
-          >
-            <Text style={ui.buttonText}>Pay</Text>
-          </Pressable>
-        </View>
-      ))}
       <Text style={[ui.heading, { fontSize: 15, marginTop: 6 }]}>The grocer's counter</Text>
       {groceries.map(([item, terms]) => (
         <CountRow

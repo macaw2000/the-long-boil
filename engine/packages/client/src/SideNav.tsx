@@ -148,7 +148,7 @@ export function BottomBar({
   const items: { key: Place | "work"; label: string }[] = [
     { key: "work", label: "Work" },
     { key: "story", label: "Story" },
-    { key: "exchange", label: "Market" },
+    { key: "exchange", label: "Exchange" },
     { key: "guild", label: "Guild" },
     { key: "stores", label: "Stores" },
     { key: "chat", label: "Chat" },

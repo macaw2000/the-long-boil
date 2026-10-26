@@ -70,7 +70,7 @@ const STEPS: Step[] = [
   {
     id: "pay_bill",
     target: "exchange",
-    fallback: "On the Exchange tab, sell the scrap at the Counting-House window and pay Pip's bill.",
+    fallback: "On the Exchange tab, press Pay on Pip's bill. Short of Crowns? Sell rat scrap at the window first.",
     done: (tinker) => prologue(tinker) >= 50 && tinker.story.backRent === 0,
   },
   {

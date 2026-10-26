@@ -126,7 +126,7 @@ export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (o
       )}
       {view.debts.map((debt) => (
         <Text key={debt.id} style={ui.muted}>
-          {debt.label}: {debt.crowns} Crowns, payable at the Counting-House window on the Exchange tab.
+          {debt.label}: {debt.crowns} Crowns. Pay it under Bills on the Exchange tab.
         </Text>
       ))}
 
