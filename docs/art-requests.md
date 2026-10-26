@@ -98,7 +98,7 @@ Every sheet above was drawn and is in the game. The originals are kept in `art/c
 
 - **Rust Rats:** Gemini painted labels into the sheet; the import finds each rat by shape, so a relabelled or uneven sheet still works, but small smoke puffs are dropped with the labels.
 - **Scrapjaw:** the second attack frame runs off the left of its cell, so its tail is clipped.
-- **Still needed: a matching pair for Scavenging.** Gemini drew its second frame as another scene: no scrap pile, standing, holding a wrench. The game holds the first frame for both until a pair is redrawn. Prompt, same format as Sheet 5, 2 frames side by side: `[pixel-art block] The same young Tinker in goggles and a patched leather apron, side view facing right, crouched over a scrap pile digging with a hook, 2 frames: the hook going into the pile, then the hook pulling out a bent nail. The pile, the Tinker's position and size are identical in both frames; only the arm, hook and a few bits of scrap move. [format block]`
+- **Scavenging, redrawn 25 October** (`tinker-scavenge.jpeg`): the first sheet's pair were two different scenes. Gemini ignored the 2 by 2 grid and drew two large cells over eight small ones; the import uses row 3's columns 3 and 1, the only cells with the same stance and pile. Columns 2 and 4 of each row lose the pile, and row 4 stands about 13 pixels further right.
 - **Still needed: the Tinker holding each weapon.** The real Tinker is drawn bare-handed, so until then every weapon shows the bare-handed Tinker in fights and in the Loadout. One sheet: the Tinker with each of the 14 weapons (Sheet B), idle and attacking, two frames each, same format as Sheet 5.
 
 ## Order of work

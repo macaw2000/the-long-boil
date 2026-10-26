@@ -261,9 +261,7 @@ export function Scene({ tinker, content, progress, working }: { tinker: Tinker; 
     } else if (pose === "tinker") {
       add({ x: 124, y: FLOOR - 52, kind: "glint" });
     } else if (pose === "scavenge") {
-      // Its two frames are one held pose for now, so the rummaging shows in the pile.
       add({ x: 128, y: FLOOR - 18, kind: "dust" });
-      if (tick % 4 === 1) add({ x: 118, y: FLOOR - 34, kind: "glint" });
     }
     // Fires once per beat of the shared clock.
     // eslint-disable-next-line react-hooks/exhaustive-deps

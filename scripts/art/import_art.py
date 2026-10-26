@@ -286,13 +286,14 @@ def main() -> None:
         written += 1
 
     tinker = [keyed(cell) for cell in cells(sheet("tinker-at-work.jpeg"), 4, 4)]
+    # Scavenging was redrawn: the first sheet's pair were two different scenes. Of the redraw's
+    # cells only row 3's columns 3 and 1 (hook raised, hook in the pile) share one stance and pile.
+    scavenging = [keyed(cell) for cell in cells(sheet("tinker-scavenge.jpeg"), 4, 4)]
+    tinker[10:12] = [scavenging[10], scavenging[8]]
     working = fit_frames(tinker[:14], CHARACTER)
     for index, pose in enumerate(TINKER_POSES[:-1]):
         for frame in (0, 1):
-            # Gemini drew scavenging's second frame as another scene (no pile, a wrench, standing),
-            # so the two flicker between poses; hold the first until a matching pair is drawn.
-            source = index * 2 if pose == "scavenge" else index * 2 + frame
-            save(working[source], f"tinker_{pose}_{frame}")
+            save(working[index * 2 + frame], f"tinker_{pose}_{frame}")
             written += 1
     for frame, image in enumerate(fit_frames(tinker[14:], PORTRAIT)):
         save(image, f"tinker_bare_portrait_{frame}")
