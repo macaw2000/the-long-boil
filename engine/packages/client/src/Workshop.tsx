@@ -112,13 +112,20 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     [name],
   );
 
+  // Opening the workshop goes to whatever the Tinker is busy at, once; after that the player moves.
+  const placed = useRef(false);
   const apply = useCallback(
     (outcome: Outcome) => {
       celebrate(outcome.tinker);
       setTinker(outcome.tinker);
       setError(null);
+      if (!placed.current) {
+        placed.current = true;
+        const busy = outcome.tinker.queue[0];
+        if (busy) setPlace(`skill:${skillOf(content, busy.actionId)}`);
+      }
     },
-    [celebrate],
+    [celebrate, content],
   );
 
   // Opening the workshop is a check-in: it resolves the time away and refills the Boiler.
@@ -282,6 +289,8 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       0)
     : 0;
   const working = head && steamLeft > 0;
+  // Where Work leads: the skill the Tinker is busy at, or the first skill when idle.
+  const workPlace: Place = head ? `skill:${skillOf(content, head.actionId)}` : "skill:prospecting";
   const elapsed = working ? tinker.progressMs + Math.max(0, now - new Date(tinker.resolvedTo).getTime()) : tinker.progressMs;
   // The server's time for one go, since a kill takes as long as the Tinker's fighting does.
   const goMs = tinker.headMs ?? headSeconds * 1000;
@@ -379,7 +388,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         headSeconds={goMs / 1000}
         lit={lit}
         onRemove={(slot) => setQueue(tinker.queue.filter((_, index) => index !== slot))}
-        onAdd={() => setPlace(guidedPlace ?? (place.startsWith("skill:") ? place : head ? `skill:${skillOf(content, head.actionId)}` : "skill:prospecting"))}
+        onAdd={() => setPlace(guidedPlace ?? (place.startsWith("skill:") ? place : workPlace))}
         onLeave={onLeave}
       />
       {/* The dev tools: wherever the server runs a dev clock, for admins only (everyone under the dev login). */}
@@ -472,7 +481,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           </ScrollView>
         )}
       </View>
-      {!wide && <BottomBar place={place} onPlace={setPlace} badges={badges} lit={litPlaces} />}
+      {!wide && <BottomBar place={place} workPlace={workPlace} onPlace={setPlace} badges={badges} lit={litPlaces} />}
       {newGear && (
         <NewGear item={newGear} content={content} tinker={tinker} name={name} onEquip={equipWeapon} onClose={() => setNewGear(null)} />
       )}

@@ -135,11 +135,14 @@ function NavRow({
 /** A phone's places, along the bottom: the work, then the city, then the stores and chat. */
 export function BottomBar({
   place,
+  workPlace,
   onPlace,
   badges,
   lit,
 }: {
   place: Place;
+  /** Where Work leads from elsewhere: the skill the Tinker is busy at. */
+  workPlace: Place;
   onPlace: (place: Place) => void;
   badges: Partial<Record<Place, PlaceBadge>>;
   lit: Set<Place>;
@@ -161,7 +164,7 @@ export function BottomBar({
         return (
           <Glow key={key} active={key !== "work" && lit.has(key)} style={{ flex: 1 }}>
             <Pressable
-              onPress={() => onPlace(key === "work" ? (working ? place : "skill:prospecting") : key)}
+              onPress={() => onPlace(key === "work" ? (working ? place : workPlace) : key)}
               accessibilityRole="tab"
               accessibilityState={{ selected: active }}
               style={{ alignItems: "center", paddingVertical: 10, borderTopWidth: 2, borderTopColor: active ? colors.brass : "transparent" }}
