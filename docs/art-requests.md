@@ -82,7 +82,7 @@ The Tinker in the centre scene, for every skill. Use the Oct 16 Tinker sheet as 
 [pixel-art block] The same young Tinker in goggles and a patched leather apron, side view facing right, 16 frames in a 4 by 4 grid, read left to right, top to bottom, two frames per pose: idle (standing, breathing) x2; Prospecting (swinging a pick at an ore rock) x2; Smithing (hammering at an anvil) x2; Tinkering (turning a spanner on a small machine on a bench) x2; Cooking (stirring a steaming pot) x2; Scavenging (digging through a scrap pile with a hook) x2; fighting bare-handed (fists up, then punching) x2; front-facing portrait for the Loadout (standing, then a slight bob) x2. [format block]
 ```
 
-Holding each of the 14 weapons in the Loadout portrait is a later sheet. Ask me for that prompt when this one is in.
+The Tinker holding each of the 13 weapons is section 8.
 
 ## 6. Story vignettes (1 sheet, 3 by 2)
 
@@ -99,7 +99,7 @@ Every sheet above was drawn and is in the game. The originals are kept in `art/c
 - **Rust Rats:** Gemini painted labels into the sheet; the import finds each rat by shape, so a relabelled or uneven sheet still works, but small smoke puffs are dropped with the labels.
 - **Scrapjaw:** the second attack frame runs off the left of its cell, so its tail is clipped.
 - **Scavenging, redrawn 25 October** (`tinker-scavenge.jpeg`): the first sheet's pair were two different scenes. Gemini ignored the 2 by 2 grid and drew two large cells over eight small ones; the import uses row 3's columns 3 and 1, the only cells with the same stance and pile. Columns 2 and 4 of each row lose the pile, and row 4 stands about 13 pixels further right.
-- **Still needed: the Tinker holding each weapon.** The real Tinker is drawn bare-handed, so until then every weapon shows the bare-handed Tinker in fights and in the Loadout. One sheet: the Tinker with each of the 14 weapons (Sheet B), idle and attacking, two frames each, same format as Sheet 5.
+- **Still needed: the Tinker holding each weapon.** The real Tinker is drawn bare-handed, so until then every weapon shows the bare-handed Tinker in fights and in the Loadout. Section 8 has the two sheets.
 
 ## 7. The Cog Shop (1 sheet, 2 by 2), 27 October 2026
 
@@ -107,6 +107,20 @@ The Cog Shop shows a fallback box for the Cog Crate, and nothing for the shop's 
 
 ```
 [pixel-art block] A 2 by 2 sheet of four small icons, each centred in its cell: (1) a Cog Crate, a small sealed wooden crate banded in brass, stencilled with a gear, its lid nailed shut; (2) a single Gilded Cog, a gold gear wheel with a bright rim, for the Cogs count beside Crowns; (3) the Cog Shop, a brass shop bell over a gear, for the places list beside Story, Exchange and Guild; (4) the Boiler Boost, a pressure gauge with its needle pushed into the red and a small flame under it. [format block, but say "a 2 by 2 grid" and "1:1 aspect ratio"]
+```
+
+## 8. The Tinker armed (2 sheets), 27 October 2026
+
+The Tinker is drawn bare-handed, so every weapon in `content/gear/rustmoor.json` shows the bare-handed Tinker in fights and in the Loadout. These two sheets give each of the 13 weapons two frames: a ready stance, then the attack. Attach the Tinker at work sheet (`tinker-at-work.jpeg`) so it is the same person.
+
+**Sheet W1, melee and the first guns, 4 by 4:**
+```
+[pixel-art block] The same young Tinker in goggles and a patched leather apron, side view facing right, holding a weapon. 16 frames in a 4 by 4 grid, read left to right, top to bottom, two frames per weapon: (a) ready stance holding it, (b) attacking with it. Weapons in order: Brass Spanner; Steel Blade (short sword); Iron Crowbar; Riveting Hammer; Scrapjaw's Cleaver (a huge jagged cleaver made of scrap); Brass Catapult (slingshot, drawn back on frame b); Iron Rifle (firing, small muzzle flash); Steel Carbine (firing). [format block, but say "a 4 by 4 grid"]
+```
+
+**Sheet W2, the Garnet Rifle and the aetherics, 4 by 3:**
+```
+[pixel-art block] The same Tinker, same pose rules, 12 cells in a 4 by 3 grid, read left to right, top to bottom, two frames per weapon (ready, then attacking); the last two cells are empty magenta: Garnet Rifle (a rifle with a red gem in the stock, firing); Copper Coil (a coiled wire wand, a crackling arc on frame b); Spark Rod (a spark at the tip); Brass Sparker (a pistol-shaped spark thrower); Garnet Rod (a rod tipped with a red gem, glowing on frame b). [format block, but say "a 4 by 3 grid" and "4:3 aspect ratio"]
 ```
 
 ## Order of work
