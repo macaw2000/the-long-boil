@@ -92,7 +92,3 @@ These are good to mock up early because they define the game's feel more than an
 2. Generate the three zones and the Lightning Baron using that reference.
 3. Move to sprites with a pixel-art tool, starting with the base Tinker and Rust Rat.
 4. Keep every keeper in `art/concepts/` in this repo, with the prompt saved next to it as a `.txt` file of the same name, so any image can be regenerated or extended later.
-
-## 7. Rights note
-
-Purely AI-generated images generally can't be copyrighted in the US. That's fine for a capstone. If the game goes commercial, treat AI images as concepts, and have final sprites drawn or substantially reworked by an artist, or use a tool trained on licensed images such as Adobe Firefly.
