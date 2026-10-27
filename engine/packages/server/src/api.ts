@@ -46,7 +46,7 @@ import {
 } from "./market.js";
 import { readLedgerPages } from "./pages.js";
 import { BadSignature, MAX_CRATES, type Payments } from "./payments.js";
-import { buyUpgrade, grantCrates, openCrates, readShop } from "./shop.js";
+import { buyUpgrade, grantCrates, openCrates, readShop, rememberStripeCustomer, revokeCrates, stripeCustomerOf } from "./shop.js";
 import { devSetStory, discardLetter, payDebt, playStory, readStory } from "./story.js";
 import { BadRequest, NotFound, checkIn, createTinker, equip, fightOutlooks, listTinkers, loadout, look, setQueue } from "./tinkers.js";
 
@@ -428,7 +428,7 @@ export function buildApi({
       const shop = content.rules.shop;
       if (!payments || !shop) throw new BadRequest("crates are not sold for money on this server");
       const tinkerId = Number(request.params.id);
-      if (!(await db.query("SELECT 1 FROM tinkers WHERE id = $1", [tinkerId])).rowCount) throw new NotFound(`no Tinker ${tinkerId}`);
+      const customer = await stripeCustomerOf(db, tinkerId);
       const url = await payments.checkout({
         tinkerId,
         crates: request.body.crates,
@@ -436,29 +436,43 @@ export function buildApi({
         cogsPerCrate: shop.crate.cogs,
         lockHours: shop.crate.lockHours,
         siteUrl,
+        customer,
       });
       return { url };
     },
   );
   // Stripe's report of a payment. Signed, so it needs no sign-in; the signature
   // covers the exact bytes, so this route alone keeps its body raw. A paid
-  // session queues its crates once, however often Stripe sends it.
+  // session queues its crates once, however often Stripe sends it; a refund
+  // or dispute revokes them if they are still locked. Anything Stripe sends
+  // that cannot be acted on is still acknowledged, or Stripe retries for days.
   if (payments) {
     app.register(async (hook) => {
       hook.addContentTypeParser("application/json", { parseAs: "buffer" }, (_request, body, done) => done(null, body));
       hook.post<{ Body: Buffer }>("/stripe/webhook", async (request, reply) => {
         const signature = request.headers["stripe-signature"];
         if (typeof signature !== "string") return reply.code(400).send({ error: "no Stripe signature" });
-        let paid;
+        let news;
         try {
-          paid = payments.paidFrom(request.body, signature);
+          news = payments.newsFrom(request.body, signature);
         } catch (error) {
           if (error instanceof BadSignature) return reply.code(400).send({ error: "bad Stripe signature" });
           throw error;
         }
-        if (paid) {
-          await grantCrates(db, content, paid.tinkerId, paid.crates, now(), { source: "stripe", reference: paid.sessionId });
-          broadcast.publish(tinkerChannel(paid.tinkerId), { type: "changed" });
+        if (news?.type === "paid") {
+          try {
+            await grantCrates(db, content, news.tinkerId, news.crates, now(), { source: "stripe", reference: news.sessionId, paymentIntent: news.paymentIntent });
+          } catch (error) {
+            if (!(error instanceof NotFound)) throw error;
+            request.log.warn({ session: news.sessionId, tinker: news.tinkerId }, "Stripe payment for a Tinker that is gone; refund it by hand");
+            return { received: true };
+          }
+          if (news.customer) await rememberStripeCustomer(db, news.tinkerId, news.customer);
+          broadcast.publish(tinkerChannel(news.tinkerId), { type: "changed" });
+        } else if (news?.type === "reversed") {
+          const result = await revokeCrates(db, news.paymentIntent, now());
+          if (result?.revoked) broadcast.publish(tinkerChannel(result.tinkerId), { type: "changed" });
+          else request.log.warn({ paymentIntent: news.paymentIntent, why: news.why, tinker: result?.tinkerId }, result ? "Stripe payment reversed after its crates were delivered" : "Stripe reversed a payment with no crates");
         }
         return { received: true };
       });

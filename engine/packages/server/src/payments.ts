@@ -21,14 +21,30 @@ export interface CheckoutRequest {
   lockHours: number;
   /** Where Stripe sends the player back to. */
   siteUrl: string;
+  /** The account's Stripe Customer from an earlier checkout; without one, Checkout makes one, for a later subscription to use. */
+  customer?: string | null;
 }
 
 /** A paid checkout: who bought, how many crates, and the session that is the payment's reference. */
 export interface Paid {
+  type: "paid";
   sessionId: string;
   tinkerId: number;
   crates: number;
+  /** The payment a later refund or dispute names. */
+  paymentIntent: string | null;
+  /** The Stripe Customer who paid, kept on the account. */
+  customer: string | null;
 }
+
+/** A payment taken back, in full by a refund or by a dispute: its crates should not be delivered. */
+export interface Reversed {
+  type: "reversed";
+  paymentIntent: string;
+  why: "refunded" | "disputed";
+}
+
+export type PaymentNews = Paid | Reversed;
 
 export interface Payments {
   /** Test-mode keys only, unless live payments were asked for. */
@@ -37,9 +53,10 @@ export interface Payments {
   checkout(request: CheckoutRequest): Promise<string>;
   /**
    * Checks a webhook's signature against its raw body and reads it: a paid
-   * session, or null for any other event. Throws when the signature is bad.
+   * session, a reversed payment, or null for any other event. Throws when the
+   * signature is bad.
    */
-  paidFrom(rawBody: Buffer, signature: string): Paid | null;
+  newsFrom(rawBody: Buffer, signature: string): PaymentNews | null;
 }
 
 export class BadSignature extends Error {}
@@ -49,7 +66,8 @@ const INTEGRATION = "long-boil-cog-crate-qhvbmzrd";
 
 /**
  * Stripe with an API key and the webhook's signing secret. The key should be
- * a restricted key (rk_) that may only write Checkout Sessions. A live key
+ * a restricted key (rk_) that may only write Checkout Sessions and read
+ * Customers. A live key
  * is refused unless `allowLive`: the capstone runs in test mode.
  */
 export function stripePayments({ apiKey, webhookSecret, allowLive = false }: { apiKey: string; webhookSecret: string; allowLive?: boolean }): Payments {
@@ -58,10 +76,11 @@ export function stripePayments({ apiKey, webhookSecret, allowLive = false }: { a
   const stripe = new Stripe(apiKey);
   return {
     testMode,
-    async checkout({ tinkerId, crates, priceCents, cogsPerCrate, lockHours, siteUrl }) {
+    async checkout({ tinkerId, crates, priceCents, cogsPerCrate, lockHours, siteUrl, customer }) {
       const session = await stripe.checkout.sessions.create({
         mode: "payment",
         integration_identifier: INTEGRATION,
+        ...(customer ? { customer } : { customer_creation: "always" as const }),
         line_items: [
           {
             quantity: crates,
@@ -80,25 +99,42 @@ export function stripePayments({ apiKey, webhookSecret, allowLive = false }: { a
       if (!session.url) throw new Error("Stripe opened a checkout with no page");
       return session.url;
     },
-    paidFrom(rawBody, signature) {
+    newsFrom(rawBody, signature) {
       let event: Stripe.Event;
       try {
         event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
       } catch (error) {
         throw new BadSignature((error as Error).message);
       }
-      return paidSession(event);
+      return paymentNews(event);
     },
   };
 }
 
-/** A completed, paid Checkout Session from a webhook event, or null. Card payments are paid at completion; a delayed method reports later. */
-export function paidSession(event: Stripe.Event): Paid | null {
+/** The id of an expandable Stripe field, whether Stripe sent the id or the object. */
+function idOf(field: string | { id: string } | null | undefined): string | null {
+  return typeof field === "string" ? field : (field?.id ?? null);
+}
+
+/**
+ * What a webhook event means for crates, or null. A Checkout Session is paid
+ * at completion for a card, later for a delayed method. A charge refunded in
+ * full, or disputed, reverses its payment; a partial refund does not.
+ */
+export function paymentNews(event: Stripe.Event): PaymentNews | null {
+  if (event.type === "charge.refunded") {
+    const paymentIntent = idOf(event.data.object.payment_intent);
+    return event.data.object.refunded && paymentIntent ? { type: "reversed", paymentIntent, why: "refunded" } : null;
+  }
+  if (event.type === "charge.dispute.created") {
+    const paymentIntent = idOf(event.data.object.payment_intent);
+    return paymentIntent ? { type: "reversed", paymentIntent, why: "disputed" } : null;
+  }
   if (event.type !== "checkout.session.completed" && event.type !== "checkout.session.async_payment_succeeded") return null;
   const session = event.data.object;
   if (session.payment_status !== "paid") return null;
   const tinkerId = Number(session.metadata?.tinkerId);
   const crates = Number(session.metadata?.crates);
   if (!Number.isInteger(tinkerId) || tinkerId < 1 || !Number.isInteger(crates) || crates < 1) return null;
-  return { sessionId: session.id, tinkerId, crates };
+  return { type: "paid", sessionId: session.id, tinkerId, crates, paymentIntent: idOf(session.payment_intent), customer: idOf(session.customer) };
 }

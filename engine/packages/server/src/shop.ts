@@ -35,7 +35,7 @@ export async function deliverCrates(tx: Tx, content: GameContent, tinkerId: numb
   if (!shop) return;
   const due = (
     await tx.query(
-      `UPDATE crate_deliveries SET delivered_at = $2 WHERE tinker_id = $1 AND delivered_at IS NULL AND unlocks_at <= $2
+      `UPDATE crate_deliveries SET delivered_at = $2 WHERE tinker_id = $1 AND delivered_at IS NULL AND revoked_at IS NULL AND unlocks_at <= $2
        RETURNING id, qty, source, unlocks_at`,
       [tinkerId, new Date(now)],
     )
@@ -75,7 +75,7 @@ async function shopView(tx: Tx, content: GameContent, tinkerId: number, now: num
     (await tx.query("SELECT qty FROM inventory WHERE tinker_id = $1 AND item = $2 AND NOT bound", [tinkerId, shop.crate.item])).rows[0]?.qty ?? 0,
   );
   const arriving = (
-    await tx.query("SELECT qty, unlocks_at FROM crate_deliveries WHERE tinker_id = $1 AND delivered_at IS NULL ORDER BY unlocks_at, id", [tinkerId])
+    await tx.query("SELECT qty, unlocks_at FROM crate_deliveries WHERE tinker_id = $1 AND delivered_at IS NULL AND revoked_at IS NULL ORDER BY unlocks_at, id", [tinkerId])
   ).rows.map((row) => ({ qty: row.qty, unlocksAt: row.unlocks_at.toISOString() }));
   return {
     cogs,
@@ -168,7 +168,8 @@ export async function buyUpgrade(db: Db, content: GameContent, tinkerId: number,
 /**
  * Queues crates for a Tinker: an admin's grant now, a Stripe payment in the
  * next step. A grant is unlocked unless `locked`; a payment always waits out
- * the lock. A `reference` already used delivers nothing more.
+ * the lock. A `reference` already used delivers nothing more; a payment's
+ * `paymentIntent` is kept so a refund or dispute can revoke it.
  */
 export async function grantCrates(
   db: Db,
@@ -176,7 +177,7 @@ export async function grantCrates(
   tinkerId: number,
   qty: number,
   now: number,
-  options: { locked?: boolean; source?: "grant" | "stripe"; reference?: string } = {},
+  options: { locked?: boolean; source?: "grant" | "stripe"; reference?: string; paymentIntent?: string | null } = {},
 ): Promise<ShopOutcome> {
   if (!Number.isInteger(qty) || qty < 1) throw new BadRequest("a count must be a whole number of at least 1");
   const { crate } = shopOf(content);
@@ -185,10 +186,46 @@ export async function grantCrates(
   const known = await db.query("SELECT 1 FROM tinkers WHERE id = $1", [tinkerId]);
   if (!known.rowCount) throw new NotFound(`no Tinker ${tinkerId}`);
   await db.query(
-    `INSERT INTO crate_deliveries (tinker_id, qty, source, reference, created_at, unlocks_at) VALUES ($1, $2, $3, $4, $5, $6)
-     ON CONFLICT (reference) DO NOTHING`,
-    [tinkerId, qty, source, options.reference ?? null, new Date(now), new Date(now + lockMs)],
+    `INSERT INTO crate_deliveries (tinker_id, qty, source, reference, payment_intent, created_at, unlocks_at) VALUES ($1, $2, $3, $4, $5, $6, $7)
+     ON CONFLICT DO NOTHING`,
+    [tinkerId, qty, source, options.reference ?? null, options.paymentIntent ?? null, new Date(now), new Date(now + lockMs)],
   );
   // Reading the shop delivers the crates at once when they are not locked.
   return readShop(db, content, tinkerId, now);
+}
+
+/**
+ * Revokes the crates a payment bought, when Stripe reports it refunded in full
+ * or disputed. Crates still locked are never delivered; crates already
+ * delivered stay, and are reported so a person can decide (the lock is what
+ * gives the time to catch this).
+ */
+export async function revokeCrates(
+  db: Db,
+  paymentIntent: string,
+  now: number,
+): Promise<{ tinkerId: number; revoked: boolean } | null> {
+  const revoked = await db.query(
+    "UPDATE crate_deliveries SET revoked_at = $2 WHERE payment_intent = $1 AND delivered_at IS NULL AND revoked_at IS NULL RETURNING tinker_id",
+    [paymentIntent, new Date(now)],
+  );
+  if (revoked.rowCount) return { tinkerId: Number(revoked.rows[0].tinker_id), revoked: true };
+  const found = await db.query("SELECT tinker_id, delivered_at FROM crate_deliveries WHERE payment_intent = $1", [paymentIntent]);
+  if (!found.rowCount) return null;
+  return { tinkerId: Number(found.rows[0].tinker_id), revoked: found.rows[0].delivered_at === null };
+}
+
+/** The Stripe Customer an account's earlier checkout made, or null. */
+export async function stripeCustomerOf(db: Db, tinkerId: number): Promise<string | null> {
+  const row = (await db.query("SELECT a.stripe_customer FROM tinkers t JOIN accounts a ON a.id = t.account_id WHERE t.id = $1", [tinkerId])).rows[0];
+  if (!row) throw new NotFound(`no Tinker ${tinkerId}`);
+  return row.stripe_customer;
+}
+
+/** Keeps the Stripe Customer a paid checkout made on the Tinker's account, if it has none yet. */
+export async function rememberStripeCustomer(db: Db, tinkerId: number, customer: string): Promise<void> {
+  await db.query(
+    "UPDATE accounts SET stripe_customer = $2 WHERE id = (SELECT account_id FROM tinkers WHERE id = $1) AND stripe_customer IS NULL",
+    [tinkerId, customer],
+  );
 }
