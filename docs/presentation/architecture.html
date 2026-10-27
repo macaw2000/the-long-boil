@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Long Boil: Architecture</title>
+<style>
+  :root {
+    --soot: #1b1712; --panel: #26201a; --edge: #3d3226; --brass: #c9a25a; --brass-dim: #8a7040;
+    --copper: #b8693d; --ink: #efe7d6; --muted: #9c907c; --verdigris: #5e9c86; --scald: #d0573f; --steam: #d9d2c3;
+    --aws: #e8a33d; --ext: #7aa7d6; --ai: #b48ad6;
+  }
+  @page { size: 1600px 900px; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--soot); color: var(--ink); font-family: Georgia, "Times New Roman", serif; }
+  .page { width: 1600px; height: 900px; position: relative; overflow: hidden; page-break-after: always;
+    background: radial-gradient(ellipse at 50% 0%, #2c241b 0%, var(--soot) 70%); }
+  .page:last-child { page-break-after: auto; }
+  header { position: absolute; left: 48px; right: 48px; top: 30px; display: flex; align-items: center; gap: 18px; }
+  header img { width: 58px; height: 58px; border-radius: 10px; border: 1px solid var(--brass-dim); }
+  h1 { font-size: 34px; color: var(--brass); letter-spacing: 0.5px; }
+  .sub { color: var(--muted); font-size: 16px; margin-top: 3px; }
+  .legend { margin-left: auto; display: flex; gap: 16px; font-size: 13px; color: var(--muted); align-items: center; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 2px solid; }
+  .mono { font-family: ui-monospace, Menlo, monospace; }
+
+  /* Boxes on the runtime page are placed absolutely, so the arrows can be drawn between known points. */
+  .box { position: absolute; background: var(--panel); border: 2px solid var(--edge); border-radius: 10px; padding: 10px 13px; }
+  .box h3 { font-size: 16px; color: var(--ink); margin-bottom: 3px; }
+  .box p { font-size: 12.5px; color: var(--muted); line-height: 1.35; }
+  .box .tag { font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .aws { border-color: var(--aws); } .aws .tag { color: var(--aws); }
+  .ext { border-color: var(--ext); } .ext .tag { color: var(--ext); }
+  .ours { border-color: var(--brass); } .ours .tag { color: var(--brass); }
+  .ai { border-color: var(--ai); } .ai .tag { color: var(--ai); }
+  .planned { border-style: dashed; opacity: 0.85; }
+  .region { position: absolute; border: 1.5px dashed #5a4a36; border-radius: 16px; }
+  .region > .label { position: absolute; top: -11px; left: 18px; background: var(--soot); padding: 0 8px; font-size: 13px; color: var(--aws); font-family: ui-monospace, Menlo, monospace; letter-spacing: 1px; }
+  svg.wires { position: absolute; inset: 0; pointer-events: none; }
+  svg.wires text { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; fill: var(--steam); }
+  footer { position: absolute; left: 48px; right: 48px; bottom: 18px; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; }
+
+  /* The build page flows in lanes. */
+  .lanes { position: absolute; left: 48px; right: 48px; top: 122px; bottom: 50px; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; }
+  .lane { background: rgba(38, 32, 26, 0.6); border: 1px solid var(--edge); border-radius: 14px; padding: 12px 16px 14px; }
+  .lane h2 { font-size: 21px; color: var(--brass); margin-bottom: 9px; display: flex; align-items: baseline; gap: 12px; }
+  .lane h2 small { font-size: 14.5px; color: var(--muted); font-weight: normal; }
+  .flow { display: flex; align-items: stretch; gap: 0; }
+  .step { background: var(--panel); border: 2px solid var(--edge); border-radius: 9px; padding: 11px 12px; flex: 1; min-width: 0; }
+  .step h4 { font-size: 16.5px; margin-bottom: 4px; }
+  .step p { font-size: 13.5px; color: var(--muted); line-height: 1.38; }
+  .step .who { font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
+  .step.ai { border-color: var(--ai); } .step.ai .who { color: var(--ai); }
+  .step.code { border-color: var(--verdigris); } .step.code .who { color: var(--verdigris); }
+  .step.me { border-color: var(--brass); } .step.me .who { color: var(--brass); }
+  .step.ext { border-color: var(--ext); } .step.ext .who { color: var(--ext); }
+  .arrow { width: 22px; flex: none; display: flex; align-items: center; justify-content: center; color: var(--brass); font-size: 18px; }
+  .back { font-size: 13.5px; color: var(--scald); margin-top: 7px; }
+  .stack { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .stack div { background: var(--panel); border: 1px solid var(--edge); border-radius: 8px; padding: 7px 10px; }
+  .stack b { color: var(--brass); font-size: 15px; display: block; margin-bottom: 2px; }
+  .stack span { font-size: 13.5px; color: var(--muted); line-height: 1.35; display: block; }
+  .art { display: flex; gap: 0; align-items: stretch; }
+  .thumb { display: flex; gap: 8px; align-items: center; }
+  .thumb img { height: 96px; border-radius: 5px; border: 1px solid var(--edge); image-rendering: pixelated; background: #000; }
+  .bottomrow { display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; }
+</style>
+</head>
+<body>
+
+<!-- Page 1: how the game runs -->
+<section class="page">
+  <header>
+    <img src="../../engine/packages/client/assets/icon.png" alt="">
+    <div>
+      <h1>The Long Boil · How it runs</h1>
+      <div class="sub">A steampunk idle MMO for web and phone · live at thelongboil.com on AWS (us-west-2), deployed on every push</div>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="border-color:var(--aws)"></i>AWS</span>
+      <span><i class="sw" style="border-color:var(--brass)"></i>Our code</span>
+      <span><i class="sw" style="border-color:var(--ext)"></i>Outside service</span>
+      <span><i class="sw" style="border-color:var(--muted);border-style:dashed"></i>Planned</span>
+    </div>
+  </header>
+
+  <div class="region" style="left:300px; top:118px; width:1252px; height:470px;"><span class="label">AWS · us-west-2 · managed with CDK (TypeScript)</span></div>
+
+  <!-- Players -->
+  <div class="box ours" style="left:40px; top:200px; width:220px; height:178px;">
+    <div class="tag">Player</div>
+    <h3>The game client</h3>
+    <p>Expo + React Native Web, TypeScript. An installable web app (PWA) that runs on desktop and phone.</p>
+    <p style="margin-top:6px">Pixel-art sprites, the queue, the Story, the Exchange, chat.</p>
+    <img src="../../engine/packages/client/assets/art/tinker_hammer_0.png" style="position:absolute; right:8px; bottom:6px; width:46px; image-rendering:pixelated" alt="">
+  </div>
+
+  <!-- Edge -->
+  <div class="box aws" style="left:330px; top:150px; width:230px; height:118px;">
+    <div class="tag">Route 53 · ACM</div>
+    <h3>Domain and HTTPS</h3>
+    <p>thelongboil.com DNS and its TLS certificate; www redirects by a CloudFront Function.</p>
+  </div>
+  <div class="box aws" style="left:330px; top:300px; width:230px; height:126px;">
+    <div class="tag">CloudFront</div>
+    <h3>One front door</h3>
+    <p>Serves the app from S3, and sends <span class="mono">/api/*</span> and the live WebSocket on to the game servers.</p>
+  </div>
+
+  <!-- Middle -->
+  <div class="box aws" style="left:640px; top:150px; width:230px; height:108px;">
+    <div class="tag">S3</div>
+    <h3>The app and its art</h3>
+    <p>The built web app, sprites and background paintings.</p>
+  </div>
+  <div class="box aws" style="left:640px; top:300px; width:230px; height:126px;">
+    <div class="tag">Application Load Balancer</div>
+    <h3>Holds connections</h3>
+    <p>HTTP and WebSockets. Answers only CloudFront, which signs every request with a secret header.</p>
+  </div>
+
+  <!-- Game server -->
+  <div class="box ours" style="left:950px; top:262px; width:270px; height:206px; border-width:3px;">
+    <div class="tag" style="color:var(--aws)">ECS Fargate · Graviton (ARM)</div>
+    <h3 style="font-size:18px; color:var(--brass)">The game server</h3>
+    <p>Node.js 22, TypeScript, Fastify. The authoritative rules engine: idle work resolved offline, combat, drops, the Exchange order book, the story engine, guilds, chat, the Cog Shop.</p>
+    <p style="margin-top:6px">Every change is an event in an ordered log, with seeded randomness, so any result can be replayed.</p>
+  </div>
+  <div class="box aws" style="left:950px; top:150px; width:270px; height:78px;">
+    <div class="tag">ECR</div>
+    <h3>Container images</h3>
+    <p>One image per commit.</p>
+  </div>
+
+  <!-- Data -->
+  <div class="box aws" style="left:1300px; top:262px; width:230px; height:206px;">
+    <div class="tag">Aurora PostgreSQL · Serverless v2</div>
+    <h3>The source of truth</h3>
+    <p>Tinkers, inventory, the event log, Exchange orders and fills, story qualities, guilds, chat, Cog Crate deliveries.</p>
+    <p style="margin-top:6px">Scales to zero when dev is idle.</p>
+  </div>
+  <div class="box aws" style="left:1300px; top:150px; width:230px; height:78px;">
+    <div class="tag">Secrets Manager</div>
+    <h3>Keys, never in code</h3>
+    <p>Database, Google, Discord, Stripe.</p>
+  </div>
+
+  <!-- Inside AWS, lower row -->
+  <div class="box aws" style="left:330px; top:470px; width:300px; height:98px;">
+    <div class="tag">Cognito</div>
+    <h3>Sign-in</h3>
+    <p>Hosted login with PKCE. The server checks a Cognito token on every request.</p>
+  </div>
+  <div class="box aws" style="left:660px; top:470px; width:270px; height:98px;">
+    <div class="tag">Budgets · EventBridge · Lambda · SNS</div>
+    <h3>Cost guard</h3>
+    <p>A $100 budget alarm and a daily spend email.</p>
+  </div>
+  <div class="box aws planned" style="left:960px; top:786px; width:570px; height:66px;">
+    <div class="tag">Planned on AWS, in the design</div>
+    <p style="color:var(--steam)">Valkey (sessions, leaderboards) · AppConfig (content without a deploy) · EventBridge + SQS (scheduled jobs) · SES (email) · Admin console</p>
+  </div>
+
+  <!-- Outside AWS -->
+  <div class="box ext" style="left:330px; top:640px; width:300px; height:96px;">
+    <div class="tag">Google · Discord</div>
+    <h3>Identity providers</h3>
+    <p>Players sign in with an account they already have.</p>
+  </div>
+  <div class="box ext" style="left:660px; top:640px; width:270px; height:132px;">
+    <div class="tag">Stripe (test mode)</div>
+    <h3>Cog Crate payments</h3>
+    <p>Hosted Checkout takes the card. A signed webhook tells the server, which delivers each paid crate exactly once.</p>
+  </div>
+  <div class="box ext" style="left:960px; top:640px; width:300px; height:132px;">
+    <div class="tag">GitHub Actions</div>
+    <h3>CI and deploy</h3>
+    <p>Every push: 177 tests, 13 content validators, then a Docker build and CDK deploy. Signs in to AWS with OIDC, so no AWS keys are stored.</p>
+  </div>
+  <div class="box ext" style="left:1290px; top:640px; width:240px; height:132px;">
+    <div class="tag">Fair play promise</div>
+    <h3>Cogs buy time, not power</h3>
+    <p>Never story, Nerve or stats. Crates trade for in-game Crowns, so anyone can earn them.</p>
+  </div>
+
+  <svg class="wires" viewBox="0 0 1600 900">
+    <defs>
+      <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c9a25a"/></marker>
+      <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7aa7d6"/></marker>
+    </defs>
+    <g stroke="#c9a25a" stroke-width="2.2" fill="none" marker-end="url(#a)">
+      <path d="M260,330 L326,355"/>                 <!-- player -> cloudfront -->
+      <path d="M445,296 L445,272"/>                 <!-- cloudfront -> dns (resolves) -->
+      <path d="M560,340 L636,210"/>                 <!-- cloudfront -> s3 -->
+      <path d="M560,365 L636,365"/>                 <!-- cloudfront -> alb -->
+      <path d="M870,365 L946,365"/>                 <!-- alb -> server -->
+      <path d="M1220,365 L1296,365"/>               <!-- server -> aurora -->
+      <path d="M1220,290 L1296,215"/>               <!-- server -> secrets -->
+      <path d="M1085,230 L1085,258"/>               <!-- ecr -> server -->
+      <path d="M150,378 L150,520 L326,520"/>        <!-- player -> cognito -->
+    </g>
+    <g stroke="#7aa7d6" stroke-width="2.2" fill="none" marker-end="url(#b)">
+      <path d="M480,568 L480,636"/>                 <!-- cognito -> google/discord -->
+      <path d="M120,378 L120,805 L795,805 L795,778"/> <!-- player -> stripe -->
+      <path d="M900,640 L900,612 L940,612 L940,440 L946,440"/> <!-- stripe -> server webhook, through the gap -->
+      <path d="M1250,640 L1250,600 L1262,600 L1262,190 L1224,190"/> <!-- github -> ecr, up the gap -->
+    </g>
+    <text x="268" y="326">play</text>
+    <text x="622" y="292">app + art</text>
+    <text x="571" y="356">/api, ws</text>
+    <text x="1228" y="356">SQL</text>
+    <text x="158" y="514">sign in</text>
+    <text x="490" y="608">OAuth</text>
+    <text x="128" y="797">checkout (card details go only to Stripe)</text>
+    <text x="790" y="628">signed webhook</text>
+    <text x="1268" y="612">image</text>
+  </svg>
+
+  <footer>
+    <span>Region and services from <span class="mono">infra/</span> (AWS CDK) · runtime from <span class="mono">engine/</span></span>
+    <span>The Long Boil · capstone · October 2026</span>
+  </footer>
+</section>
+
+<!-- Page 2: how it is built -->
+<section class="page">
+  <header>
+    <img src="../../engine/packages/client/assets/icon.png" alt="">
+    <div>
+      <h1>The Long Boil · How it is built</h1>
+      <div class="sub">One developer, AI agents with one job each, deterministic checks between them, and a human sign-off on everything players see</div>
+    </div>
+    <div class="legend">
+      <span><i class="sw" style="border-color:var(--brass)"></i>Me</span>
+      <span><i class="sw" style="border-color:var(--ai)"></i>Claude agent</span>
+      <span><i class="sw" style="border-color:var(--verdigris)"></i>Code check</span>
+      <span><i class="sw" style="border-color:var(--ext)"></i>Gemini</span>
+    </div>
+  </header>
+
+  <div class="lanes">
+    <div class="lane">
+      <h2>Content: game data written by agents <small>items, monsters, drops, recipes, storylets, letters · all JSON in git, never hard-coded</small></h2>
+      <div class="flow">
+        <div class="step me"><div class="who">Me</div><h4>Brief and canon</h4><p>Design doc, a work order per step, and a canon bible. Each agent sees only the story layers it is cleared for.</p></div>
+        <div class="arrow">›</div>
+        <div class="step ai"><div class="who">Claude Code · Opus 5.5</div><h4>Orchestrator</h4><p>Builds the engine with me and hands bounded work to six specialist sub-agents.</p></div>
+        <div class="arrow">›</div>
+        <div class="step ai"><div class="who">Draftsman · Scrivener</div><h4>Draft</h4><p>Draftsman: numbers (stats, drops, recipes). Scrivener: story scenes and letters in the house voice.</p></div>
+        <div class="arrow">›</div>
+        <div class="step code"><div class="who">13 validators · Python</div><h4>Deterministic checks</h4><p>Schema, stat budgets, drop odds, XP pacing, story graph reachability, reveal timing, banned words. Built by the Toolwright agent.</p></div>
+        <div class="arrow">›</div>
+        <div class="step ai"><div class="who">Inspector</div><h4>Review</h4><p>What code cannot check: voice, lore, names, and whether a secret slips out too early.</p></div>
+        <div class="arrow">›</div>
+        <div class="step ai"><div class="who">Assayer</div><h4>Simulate</h4><p>Plays the numbers forward: pacing, Crown faucets and sinks, story pace.</p></div>
+        <div class="arrow">›</div>
+        <div class="step me"><div class="who">Me</div><h4>Approve</h4><p>Nothing ships without my sign-off. Then git → CI → deploy.</p></div>
+      </div>
+      <div class="back">↺ A draft that fails a check or the Inspector goes back to its author. &nbsp;·&nbsp; The <b>Registrar</b> agent records every item's history in a provenance register: 139 items, each with who drafted, checked, reviewed and approved it.</div>
+    </div>
+
+    <div class="lane">
+      <h2>Art: pixel art drawn by Gemini <small>I write exact sheet specs; scripts cut them into game sprites</small></h2>
+      <div class="art">
+        <div class="step me" style="flex:0.9"><div class="who">Me</div><h4>Sheet spec</h4><p>Prompt with a fixed grid, size and flat magenta background (<span class="mono">docs/art-requests.md</span>).</p></div>
+        <div class="arrow">›</div>
+        <div class="step ext" style="flex:1.4"><div class="who">Google Gemini</div><h4>Draws the sheet</h4>
+          <div class="thumb"><img src="../../art/concepts/sheets/rust-rats.jpeg" alt=""><img src="../../art/concepts/sheets/rustmoor-bg.jpeg" alt=""></div></div>
+        <div class="arrow">›</div>
+        <div class="step code" style="flex:1"><div class="who">import_art.py</div><h4>Slice and key out</h4><p>Finds each cell, removes the magenta, checks frames line up (sheets often break the grid).</p></div>
+        <div class="arrow">›</div>
+        <div class="step code" style="flex:1.1"><div class="who">build_sprites.py</div><h4>Into the game</h4>
+          <div class="thumb"><img src="../../engine/packages/client/assets/art/rust_rat_runt_idle0.png" alt="" style="height:64px"><img src="../../engine/packages/client/assets/art/tinker_hammer_0.png" alt="" style="height:64px"><img src="../../engine/packages/client/assets/art/icon_brass_spanner.png" alt="" style="height:52px"></div></div>
+        <div class="arrow">›</div>
+        <div class="step code" style="flex:1"><div class="who">Playwright</div><h4>Screenshot check</h4><p>Desktop and phone screenshots of every UI change before it ships.</p></div>
+      </div>
+    </div>
+
+    <div class="bottomrow">
+      <div class="lane">
+        <h2>Tech stack</h2>
+        <div class="stack">
+          <div><b>Client</b><span>Expo 57, React Native Web, React 19, TypeScript</span></div>
+          <div><b>Server</b><span>Node.js 22, Fastify 5, WebSockets, a pure TypeScript rules engine</span></div>
+          <div><b>Data</b><span>PostgreSQL (Aurora), an event log, Docker Postgres locally</span></div>
+          <div><b>Infra</b><span>AWS CDK, Docker, GitHub Actions with OIDC</span></div>
+          <div><b>Quality</b><span>Vitest (177 tests against real Postgres), Python validators, Playwright</span></div>
+        </div>
+      </div>
+      <div class="lane" style="border-style:dashed">
+        <h2>Next <small>in the design, not built yet</small></h2>
+        <p style="font-size:14.5px; color:var(--steam); line-height:1.5">
+          Agents move into AWS: <b style="color:var(--ai)">Step Functions</b> runs each agent as a Lambda calling Claude on <b style="color:var(--ai)">Amazon Bedrock</b>, with my approval as a task token. Two more agents: the <b style="color:var(--ai)">Foreman</b> (turns a patch brief into work orders) and the <b style="color:var(--ai)">Chronicler</b> (writes the in-game newspaper from game data).
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>Agents and validators from <span class="mono">.claude/agents/</span> and <span class="mono">scripts/validate/</span> · art from <span class="mono">scripts/art/</span></span>
+    <span>The Long Boil · capstone · October 2026</span>
+  </footer>
+</section>
+
+</body>
+</html>
