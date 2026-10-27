@@ -273,13 +273,37 @@ function HestersLedger({ pages }: { pages: LedgerPage[] }) {
             <Text style={[ui.text, { color: colors.brass }]}>{page.title ?? page.name}</Text>
             {shown &&
               (page.text ? (
-                <Text style={[ui.text, { lineHeight: 21, fontStyle: "italic" }]}>{page.text}</Text>
+                <PageText text={page.text} />
               ) : (
                 <Text style={ui.muted}>Hester's hand, too cramped to make out yet. (Not yet transcribed.)</Text>
               ))}
           </Pressable>
         );
       })}
+    </View>
+  );
+}
+
+/** A page's text in Hester's hand. A line with tabs in it is a ruled row: its cells line up in columns. */
+function PageText({ text }: { text: string }) {
+  const hand = [ui.text, { lineHeight: 21, fontStyle: "italic" as const }];
+  return (
+    <View>
+      {text.split("\n").map((line, i) =>
+        line.includes("\t") ? (
+          <View key={i} style={{ flexDirection: "row", maxWidth: 320 }}>
+            {line.split("\t").map((cell, j) => (
+              <Text key={j} style={[hand, { flex: 1, fontVariant: ["tabular-nums"] }]}>
+                {cell}
+              </Text>
+            ))}
+          </View>
+        ) : (
+          <Text key={i} style={hand}>
+            {line}
+          </Text>
+        ),
+      )}
     </View>
   );
 }

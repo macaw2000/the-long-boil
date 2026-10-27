@@ -1,0 +1,8 @@
+{
+  "schema": "ledger_page/1",
+  "id": "ledger.rustmoor.page_1",
+  "item": "item.rustmoor.ledger_page_1",
+  "reveal_layer": 1,
+  "title": "Board and Mine",
+  "text": "H. Vane\nThe Scald, rise in fathoms\nYear\tBoard\tMine\n1\t1\t3\n2\t0\t4\n3\t1\t4\n4\t0\t5\n5\t1\t5\n6\t0\t6\n7\t1\t7\n8\t0\t7\n9\t1\t8\n10\t0\t9\n11\t1\t12\n\t6\t70"
+}

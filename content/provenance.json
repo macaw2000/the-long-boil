@@ -8871,6 +8871,246 @@
         }
       ],
       "retirement": null
+    },
+    {
+      "id": "ledger.rustmoor.page_1",
+      "type": "ledger_page",
+      "path": "content/ledger/rustmoor.page_1.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+      "status": "validated",
+      "drafted_by": "claude",
+      "model": "claude-opus-5-5",
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-27T23:30:40Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-27T23:30:30Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-27T23:30:40Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "ledger.rustmoor.drop_1",
+      "type": "ledger_page",
+      "path": "content/ledger/rustmoor.drop_1.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+      "status": "validated",
+      "drafted_by": "claude",
+      "model": "claude-opus-5-5",
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-27T23:30:40Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-27T23:30:30Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-27T23:30:40Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "ledger.rustmoor.drop_2",
+      "type": "ledger_page",
+      "path": "content/ledger/rustmoor.drop_2.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+      "status": "validated",
+      "drafted_by": "claude",
+      "model": "claude-opus-5-5",
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-27T23:30:40Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-27T23:30:30Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-27T23:30:40Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "ledger.rustmoor.drop_3",
+      "type": "ledger_page",
+      "path": "content/ledger/rustmoor.drop_3.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+      "status": "validated",
+      "drafted_by": "claude",
+      "model": "claude-opus-5-5",
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-27T23:30:40Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-27T23:30:30Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-27T23:30:40Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "ledger.rustmoor.drop_4",
+      "type": "ledger_page",
+      "path": "content/ledger/rustmoor.drop_4.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+      "status": "validated",
+      "drafted_by": "claude",
+      "model": "claude-opus-5-5",
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-27T23:30:40Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-27T23:30:30Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-27T23:30:40Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
     }
   ]
 }
