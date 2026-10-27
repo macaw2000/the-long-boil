@@ -22,8 +22,8 @@ export interface PlaceBadge {
   tone?: string;
 }
 
-/** Each place's icon, from the interface sheet: the Post's canister, the Exchange's scale, a guild's shield. */
-const PLACE_ICONS: Partial<Record<Place | "work", string>> = { story: "post", exchange: "exchange", guild: "guild", chat: "chat", stores: "boiler" };
+/** Each place's icon, from the interface sheets: the Post's canister, the Exchange's scale, a guild's shield, the shop's bell. */
+const PLACE_ICONS: Partial<Record<Place | "work", string>> = { story: "post", exchange: "exchange", guild: "guild", chat: "chat", stores: "boiler", shop: "shop" };
 
 export function skillsOf(content: Content): string[] {
   const present = new Set(content.actions.map((action) => action.skill));
@@ -53,7 +53,6 @@ export function SideNav({
       {(["story", "exchange", "guild", "shop"] as const).map((choice) => (
         <NavRow key={choice} active={place === choice} lit={lit.has(choice)} onPress={() => onPlace(choice)} badge={badges[choice]}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            {/* The Cog Shop's icon is not drawn yet; the space keeps the names in line. */}
             <View style={{ width: 26, height: 26 }}>{PLACE_ICONS[choice] && <UiIcon name={PLACE_ICONS[choice]!} size={26} />}</View>
             <Text style={[ui.text, { fontSize: 15, color: place === choice ? colors.brass : colors.ink }]}>{choice === "shop" ? "Cog Shop" : titleCase(choice)}</Text>
           </View>

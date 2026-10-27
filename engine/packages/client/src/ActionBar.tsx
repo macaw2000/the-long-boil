@@ -169,7 +169,7 @@ export function ActionBar({
           </Stat>
         </Term>
         <Pressable onPress={onShop} accessibilityRole="button" accessibilityLabel={`${tinker.cogs} Gilded Cogs; open the Cog Shop`}>
-          <Stat label="Cogs">
+          <Stat label="Cogs" icon="cogs">
             <CountUp value={tinker.cogs} style={[ui.number, { color: colors.brass }]} />
           </Stat>
         </Pressable>

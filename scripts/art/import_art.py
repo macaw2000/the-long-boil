@@ -125,6 +125,40 @@ def fit_frames(frames: list[Image.Image], size: int, margin: float = 0.05, flip:
     return out
 
 
+def fit_together(frames: list[Image.Image], size: int, tall: int, reference: int = 0, margin: float = 0.05) -> list[Image.Image]:
+    """
+    Frames cut from one sheet, kept where each sits in its cell and scaled
+    alike, so the figure in frames[reference] is `tall` pixels high, and
+    standing on the same ground line as fit_frames. Used where a lunge
+    should read as a lunge, which centring each frame on its own box would
+    undo, and so the Tinker is one size on every sheet.
+    """
+    boxes = [box for box in (content_box(frame) for frame in frames) if box]
+    left, top = min(b[0] for b in boxes), min(b[1] for b in boxes)
+    right, bottom = max(b[2] for b in boxes), max(b[3] for b in boxes)
+    own = content_box(frames[reference])
+    scale = tall / (own[3] - own[1])
+    width, height = round((right - left) * scale), round((bottom - top) * scale)
+    ground = round(size * (1 - margin))
+    out = []
+    for frame in frames:
+        art = frame.crop((left, top, right, bottom)).resize((width, height), Image.LANCZOS)
+        canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        canvas.alpha_composite(art, ((size - width) // 2, ground - height))
+        out.append(canvas)
+    return out
+
+
+def feet_like(frame: Image.Image, like: Image.Image, band: float = 0.1) -> Image.Image:
+    """The frame moved sideways so its feet stand where `like`'s do: for a pose that should not move."""
+    def feet(image: Image.Image) -> float:
+        box = image.crop((0, round(image.height * (1 - band)), image.width, image.height)).getchannel("A").getbbox()
+        return (box[0] + box[2]) / 2
+    moved = Image.new("RGBA", frame.size, (0, 0, 0, 0))
+    moved.alpha_composite(frame, (round(feet(like) - feet(frame)), 0))
+    return moved
+
+
 def save(image: Image.Image, name: str) -> None:
     SPRITES.mkdir(parents=True, exist_ok=True)
     image.save(SPRITES / f"{name}.png", optimize=True)
@@ -242,8 +276,22 @@ LEDGER_PAGES = ["ledger_page_1", "ledger_page_drop_1", "ledger_page_drop_2", "le
 RATS = ["rust_rat_runt", "rust_rat_scrounger", "rust_rat_tinplate", "rust_rat_gaffer"]
 FRAMES = ["idle0", "idle1", "attack0", "attack1", "dead"]
 
-# The Tinker sheet, two frames a pose: the client's pose names.
+# The Tinker sheet, two frames a pose: the client's pose names. Redrawn on 27 October in the
+# armed sheets' style, so the Tinker at work and the Tinker fighting are the same person.
 TINKER_POSES = ["idle", "pick", "hammer", "tinker", "cook", "scavenge", "attack", "portrait"]
+
+# The armed Tinker: a ready frame then an attack frame per weapon, on two sheets.
+ARMED = {
+    "tinker-armed-w1.jpeg": (4, 4, ["brass_spanner", "steel_blade", "iron_crowbar", "riveting_hammer", "scrapjaws_cleaver",
+                                    "brass_catapult", "iron_rifle", "steel_carbine"]),
+    "tinker-armed-w2.jpeg": (4, 3, ["garnet_rifle", "copper_coil", "spark_rod", "brass_sparker", "garnet_rod"]),
+}
+# The Tinker's height on screen, head to foot, in the scene and in the Loadout.
+TINKER_TALL = 119
+PORTRAIT_TALL = 173
+
+# The Cog Shop sheet: the crate is an item; the rest are the interface's own icons.
+COG_SHOP_UI = ["cogs", "shop", "boost"]
 
 VIGNETTES = ["sprocket_row", "rustmoor", "lowvents", "polytechnic", "brass_exchange", "infirmary"]
 
@@ -285,18 +333,39 @@ def main() -> None:
         save(frame, f"scrapjaw_{frame_name}")
         written += 1
 
-    tinker = [keyed(cell) for cell in cells(sheet("tinker-at-work.jpeg"), 4, 4)]
-    # Scavenging was redrawn: the first sheet's pair were two different scenes. Of the redraw's
-    # cells only row 3's columns 3 and 1 (hook raised, hook in the pile) share one stance and pile.
-    scavenging = [keyed(cell) for cell in cells(sheet("tinker-scavenge.jpeg"), 4, 4)]
-    tinker[10:12] = [scavenging[10], scavenging[8]]
-    working = fit_frames(tinker[:14], CHARACTER)
+    # Gemini's thin gridlines run into the cells and the feet reach the cells' edges, so the
+    # gridlines are cleared first and the cells barely trimmed.
+    tinker = cells(without_gridlines(keyed(sheet("tinker-at-work.jpeg"))), 4, 4, inset=0.004)
+    # The second breath was drawn about 30 pixels to the right; standing still, it should not move.
+    tinker[1] = feet_like(tinker[1], tinker[0])
+    working = fit_together(tinker[:14], CHARACTER, TINKER_TALL)
     for index, pose in enumerate(TINKER_POSES[:-1]):
         for frame in (0, 1):
             save(working[index * 2 + frame], f"tinker_{pose}_{frame}")
             written += 1
-    for frame, image in enumerate(fit_frames(tinker[14:], PORTRAIT)):
+    for frame, image in enumerate(fit_together(tinker[14:], PORTRAIT, PORTRAIT_TALL)):
         save(image, f"tinker_bare_portrait_{frame}")
+        written += 1
+
+    for file, (cols, rows, weapons) in ARMED.items():
+        armed = cells(without_gridlines(keyed(sheet(file))), cols, rows, inset=0.004)[: len(weapons) * 2]
+        scene = fit_together(armed, CHARACTER, TINKER_TALL)
+        portrait = fit_together(armed, PORTRAIT, PORTRAIT_TALL)
+        for index, weapon in enumerate(weapons):
+            ready, strike = index * 2, index * 2 + 1
+            for name, frames in (("idle", (ready, ready)), ("attack", (ready, strike))):
+                for frame, cell in enumerate(frames):
+                    save(scene[cell], f"tinker_{weapon}_{name}_{frame}")
+                    written += 1
+            for frame in (0, 1):
+                save(portrait[ready], f"tinker_{weapon}_portrait_{frame}")
+                written += 1
+
+    shop = [fit_icon(cell) for cell in cells(without_gridlines(keyed(sheet("cog-shop.jpeg"))), 2, 2, inset=0.01)]
+    save(shop[0], "icon_cog_crate")
+    written += 1
+    for name, icon in zip(COG_SHOP_UI, shop[1:]):
+        save(icon, f"ui_{name}")
         written += 1
 
     # Each vignette is a framed picture with its place's name painted below; keep the picture, square.

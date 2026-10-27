@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Platform, Pressable, Text, View } from "react-native";
 import { api, type Content, type Outcome, type Purchase, type ShopOutcome, type ShopView, type Tinker } from "./api";
 import { duration } from "./format";
-import { ItemIcon } from "./Sprite";
+import { ItemIcon, UiIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
 export type CheckoutReturn = "paid" | "cancelled" | null;
@@ -86,7 +86,7 @@ export function Shop({
 
   const { terms, upgrades } = shop;
   const boostLeft = upgrades.boostUntil ? new Date(upgrades.boostUntil).getTime() - now : 0;
-  const cards: { id: Purchase; title: string; does: string; state: string }[] = [
+  const cards: { id: Purchase; title: string; icon?: string; does: string; state: string }[] = [
     {
       id: "queue_slot",
       title: "Extra queue slot",
@@ -96,18 +96,21 @@ export function Shop({
     {
       id: "boiler_upgrade",
       title: "Boiler upgrade",
+      icon: "boiler",
       does: `${terms.boilerUpgrade.hours} more hours of steam, up to ${terms.boilerUpgrade.maxHours}, for players who sleep or work long shifts.`,
       state: `${upgrades.boilerHours} hours now`,
     },
     {
       id: "night_lamp",
       title: "Night Lamp",
+      icon: "nerve",
       does: `Raises the Nerve cap to ${terms.nightLamp.nerveCap}, so twice-a-day players keep pace. It buys no Nerve.`,
       state: `Nerve cap ${upgrades.nerveCap}`,
     },
     {
       id: "boiler_boost",
       title: "Boiler Boost",
+      icon: "boost",
       does: `Work runs ${terms.boost.percent}% faster for ${terms.boost.hours} hours. Another adds ${terms.boost.hours} more.`,
       state: boostLeft > 0 ? `Burning for ${duration(boostLeft)}` : "Not burning",
     },
@@ -117,8 +120,14 @@ export function Shop({
     <View style={{ gap: 12 }}>
       <View style={[ui.panel, { gap: 10 }]}>
         <View style={{ flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-          <Text style={ui.heading}>Cog Shop</Text>
-          <Text style={[ui.number, { fontSize: 16, color: colors.brass }]}>{shop.cogs.toLocaleString()} Cogs</Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <UiIcon name="shop" size={32} />
+            <Text style={ui.heading}>Cog Shop</Text>
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+            <UiIcon name="cogs" size={24} />
+            <Text style={[ui.number, { fontSize: 16, color: colors.brass }]}>{shop.cogs.toLocaleString()} Cogs</Text>
+          </View>
         </View>
         <Text style={ui.muted}>Gilded Cogs buy time savers. They never buy Nerve, story, Favour or gear with stats.</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
@@ -174,7 +183,10 @@ export function Shop({
           const price = shop.offers.find((offer) => offer.id === card.id)?.cogs ?? null;
           return (
             <View key={card.id} style={[ui.panel, { flexBasis: 300, flexGrow: 1, gap: 6 }]}>
-              <Text style={[ui.text, { fontSize: 15, color: colors.brass }]}>{card.title}</Text>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                {card.icon && <UiIcon name={card.icon} size={32} />}
+                <Text style={[ui.text, { fontSize: 15, color: colors.brass }]}>{card.title}</Text>
+              </View>
               <Text style={ui.muted}>{card.does}</Text>
               <Text style={[ui.number, { fontSize: 12 }]}>{card.state}</Text>
               {price === null ? (

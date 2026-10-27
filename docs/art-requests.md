@@ -98,10 +98,11 @@ Every sheet above was drawn and is in the game. The originals are kept in `art/c
 
 - **Rust Rats:** Gemini painted labels into the sheet; the import finds each rat by shape, so a relabelled or uneven sheet still works, but small smoke puffs are dropped with the labels.
 - **Scrapjaw:** the second attack frame runs off the left of its cell, so its tail is clipped.
-- **Scavenging, redrawn 25 October** (`tinker-scavenge.jpeg`): the first sheet's pair were two different scenes. Gemini ignored the 2 by 2 grid and drew two large cells over eight small ones; the import uses row 3's columns 3 and 1, the only cells with the same stance and pile. Columns 2 and 4 of each row lose the pile, and row 4 stands about 13 pixels further right.
-- **Still needed: the Tinker holding each weapon.** The real Tinker is drawn bare-handed, so until then every weapon shows the bare-handed Tinker in fights and in the Loadout. Section 8 has the two sheets.
+- **The Tinker, redrawn 27 October:** sheet W1 (section 8) drew a better Tinker, with a face, so the Tinker at work was redrawn to match it and replaces both the first sheet and the 25 October scavenging redraw. Its second idle frame stood about 30 pixels right of the first; the import moves it back by the feet.
 
 ## 7. The Cog Shop (1 sheet, 2 by 2), 27 October 2026
+
+Done: `cog-shop.jpeg` is in the game, as the Cog Crate's item icon and the interface icons `cogs`, `shop` and `boost`.
 
 The Cog Shop shows a fallback box for the Cog Crate, and nothing for the shop's own icon or the Cogs on the top bar. One small sheet, 64 by 64 each, matching the interface icons (Crowns, Nerve, the Post).
 
@@ -110,6 +111,8 @@ The Cog Shop shows a fallback box for the Cog Crate, and nothing for the shop's 
 ```
 
 ## 8. The Tinker armed (2 sheets), 27 October 2026
+
+Done: `tinker-armed-w1.jpeg` and `tinker-armed-w2.jpeg` are in the game. The first W2 drew the old Tinker, so it was redrawn with W1 attached as the reference. Both sheets came with thin gridlines and feet touching the cell edges; the import clears the lines and barely trims the cells. Every weapon idles on its ready frame and attacks from ready to strike, and the Loadout shows the ready frame.
 
 The Tinker is drawn bare-handed, so every weapon in `content/gear/rustmoor.json` shows the bare-handed Tinker in fights and in the Loadout. These two sheets give each of the 13 weapons two frames: a ready stance, then the attack. Attach the Tinker at work sheet (`tinker-at-work.jpeg`) so it is the same person.
 

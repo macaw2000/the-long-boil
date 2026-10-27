@@ -28,6 +28,7 @@ OUT = ROOT / "engine" / "packages" / "client" / "assets" / "sprites"
 REAL = ROOT / "engine" / "packages" / "client" / "assets" / "art"
 INDEX = ROOT / "engine" / "packages" / "client" / "src" / "sprites.ts"
 ITEMS = ROOT / "content" / "items" / "rustmoor.json"
+GLOBAL_ITEMS = ROOT / "content" / "items" / "global.json"
 
 # The art brief's palette, plus shades derived from it.
 BRASS = "#B5893B"
@@ -707,10 +708,12 @@ def main() -> None:
             "portrait": [save(f"tinker_{short}_portrait_{f}", armed(weapon, "idle", f), 4) for f in (0, 1)],
         }
     index["characters"]["tinker:bare"] = {"portrait": [save(f"tinker_bare_portrait_{f}", tinker("idle", f), 4) for f in (0, 1)]}
-    # The real Tinker is drawn bare-handed; until a sheet with each weapon in hand is drawn, every
-    # weapon shows the real Tinker rather than the placeholder, so the two styles never meet on screen.
+    # A weapon the real Tinker has not been drawn holding shows the real Tinker bare-handed
+    # rather than the placeholder, so the two styles never meet on screen.
     if (REAL / "tinker_attack_0.png").exists():
         for weapon in WEAPON_STYLES:
+            if (REAL / f"tinker_{weapon}_attack_1.png").exists():
+                continue
             index["characters"][f"tinker:item.rustmoor.{weapon}"] = {
                 "idle": tinker_anims["idle"],
                 "attack": tinker_anims["attack"],
@@ -731,6 +734,11 @@ def main() -> None:
     items = [item["id"] for item in json.loads(ITEMS.read_text())["items"]]
     for item in items + ["fallback"]:
         index["icons"][item] = save(f"icon_{item.split('.')[-1]}", icon(item), 2)
+    # Items outside a zone (the Cog Crate) have no placeholder: real art, or the fallback crate.
+    for item in json.loads(GLOBAL_ITEMS.read_text())["items"]:
+        name = f"icon_{item['id'].split('.')[-1]}"
+        if (REAL / f"{name}.png").exists():
+            index["icons"][item["id"]] = name
 
     index["backgrounds"]["workshop"] = save("bg_workshop", workshop_background(), 3)
     index["backgrounds"]["rustmoor"] = save("bg_rustmoor", rustmoor_background(), 3)
