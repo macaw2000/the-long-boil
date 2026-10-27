@@ -464,7 +464,7 @@ export function buildApi({
             await grantCrates(db, content, news.tinkerId, news.crates, now(), { source: "stripe", reference: news.sessionId, paymentIntent: news.paymentIntent });
           } catch (error) {
             if (!(error instanceof NotFound)) throw error;
-            request.log.warn({ session: news.sessionId, tinker: news.tinkerId }, "Stripe payment for a Tinker that is gone; refund it by hand");
+            console.warn(`Stripe payment ${news.sessionId} for Tinker ${news.tinkerId}, who is gone; refund it by hand`);
             return { received: true };
           }
           if (news.customer) await rememberStripeCustomer(db, news.tinkerId, news.customer);
@@ -472,7 +472,7 @@ export function buildApi({
         } else if (news?.type === "reversed") {
           const result = await revokeCrates(db, news.paymentIntent, now());
           if (result?.revoked) broadcast.publish(tinkerChannel(result.tinkerId), { type: "changed" });
-          else request.log.warn({ paymentIntent: news.paymentIntent, why: news.why, tinker: result?.tinkerId }, result ? "Stripe payment reversed after its crates were delivered" : "Stripe reversed a payment with no crates");
+          else console.warn(result ? `Stripe payment ${news.paymentIntent} ${news.why} after Tinker ${result.tinkerId}'s crates were delivered` : `Stripe payment ${news.paymentIntent} ${news.why}, with no crates`);
         }
         return { received: true };
       });
