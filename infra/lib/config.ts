@@ -44,6 +44,8 @@ export interface Settings extends EnvironmentShape {
   googleClientId: string | undefined;
   /** Discord application id; its secret is in Secrets Manager, like Google's. */
   discordClientId: string | undefined;
+  /** Stripe Checkout for Cog Crates: its keys are read from the long-boil/<env>/stripe secret, which must exist first. */
+  stripe: boolean;
   /** Google accounts that are admins (dev tools, no trading gate), comma-separated. */
   adminEmails: string;
   alertEmail: string | undefined;
@@ -93,6 +95,7 @@ export function readSettings(app: App): Settings {
     cognitoDomainPrefix: text("cognitoDomainPrefix") ?? `long-boil-${envName}`,
     googleClientId: text("googleClientId"),
     discordClientId: text("discordClientId"),
+    stripe: text("stripe") === "1",
     adminEmails: text("adminEmails") ?? "",
     alertEmail: text("alertEmail"),
     githubRepo: text("githubRepo"),

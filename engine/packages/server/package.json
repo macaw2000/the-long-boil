@@ -13,7 +13,8 @@
     "@long-boil/rules": "0.1.0",
     "aws-jwt-verify": "5.2.1",
     "fastify": "5.12.5",
-    "pg": "8.16.3"
+    "pg": "8.16.3",
+    "stripe": "23.0.0"
   },
   "devDependencies": {
     "@types/pg": "8.15.5"

@@ -193,12 +193,15 @@ export class AppStack extends Stack {
         COGNITO_USER_POOL_ID: userPool.userPoolId,
         COGNITO_CLIENT_ID: client.userPoolClientId,
         CORS_ORIGINS: siteUrl,
+        SITE_URL: siteUrl,
         ADMIN_EMAILS: settings.adminEmails,
         ...(settings.devTools ? { LONG_BOIL_DEV: "1" } : {}),
       },
       secrets: {
         PGUSER: ecs.Secret.fromSecretsManager(databaseSecret, "username"),
         PGPASSWORD: ecs.Secret.fromSecretsManager(databaseSecret, "password"),
+        // Stripe's restricted key and webhook signing secret, made by hand (README). Only this task may read them.
+        ...(settings.stripe ? stripeSecrets(this, settings.envName) : {}),
       },
     });
 
@@ -473,4 +476,13 @@ export class AppStack extends Stack {
     bucket.grantDelete(role);
     distribution.grantCreateInvalidation(role);
   }
+}
+
+/** The Stripe keys as container secrets, from long-boil/<env>/stripe: fields apiKey (a restricted rk_test_ key) and webhookSecret. */
+function stripeSecrets(scope: Construct, envName: string): Record<string, ecs.Secret> {
+  const secret = secretsmanager.Secret.fromSecretNameV2(scope, "StripeSecret", `long-boil/${envName}/stripe`);
+  return {
+    STRIPE_API_KEY: ecs.Secret.fromSecretsManager(secret, "apiKey"),
+    STRIPE_WEBHOOK_SECRET: ecs.Secret.fromSecretsManager(secret, "webhookSecret"),
+  };
 }

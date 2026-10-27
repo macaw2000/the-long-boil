@@ -71,6 +71,9 @@ In this order, once the accounts exist (GDD section 11, "Accounts and environmen
 3. **Google sign-in** (optional). Create an OAuth client in Google Cloud with the redirect URI `https://<cognitoDomainPrefix>.auth.us-west-2.amazoncognito.com/oauth2/idpresponse`, then store its secret:
    `aws secretsmanager create-secret --region us-west-2 --name long-boil/dev/google-oauth --secret-string '{"clientSecret":"..."}'`
    **Discord sign-in** (optional), the same way: in the Discord Developer Portal create an application, add the same `.../oauth2/idpresponse` redirect under OAuth2, then store its client secret as `long-boil/dev/discord-oauth`, field `clientSecret`. Discord publishes an OpenID Connect discovery document, so Cognito federates with it directly.
+   **Stripe Checkout** (optional; sells Cog Crates, in test mode). In a Stripe sandbox, create a restricted key (`rk_test_...`) whose only permission is Checkout Sessions: Write, and a webhook endpoint at `https://<domain>/api/stripe/webhook` for the events `checkout.session.completed` and `checkout.session.async_payment_succeeded`. Store both:
+   `aws secretsmanager create-secret --region us-west-2 --name long-boil/dev/stripe --secret-string '{"apiKey":"rk_test_...","webhookSecret":"whsec_..."}'`
+   then deploy with `-c stripe=1` (the repository variable `STRIPE=1`). Without the secret, a deploy with `stripe=1` cannot start the server. A live key is refused unless the server also has `STRIPE_ALLOW_LIVE=1`.
 4. **Domain** (optional). The hosted zone must already exist in Route 53 in this account.
 5. **Foundation and first image.**
    ```
@@ -81,7 +84,7 @@ In this order, once the accounts exist (GDD section 11, "Accounts and environmen
    ```
    Confirm the budget's subscription email and the daily spend email's SNS subscription.
 6. **Everything else**, with the same context: `npx cdk deploy --all -c githubRepo=... -c githubRepoIds=... -c alertEmail=...`
-7. **Switch the workflow on.** In GitHub's repository variables set `AWS_DEPLOY_ROLE_ARN` to the `GitHubDeployRoleArn` output, and set any of `ALERT_EMAIL`, `DOMAIN_NAME`, `HOSTED_ZONE_ID`, `HOSTED_ZONE_NAME`, `GOOGLE_CLIENT_ID`, `DISCORD_CLIENT_ID`, `ADMIN_EMAILS`, `COGNITO_DOMAIN_PREFIX` that step 6 used. From then on each push to `main` deploys dev (`.github/workflows/deploy-dev.yml`).
+7. **Switch the workflow on.** In GitHub's repository variables set `AWS_DEPLOY_ROLE_ARN` to the `GitHubDeployRoleArn` output, and set any of `ALERT_EMAIL`, `DOMAIN_NAME`, `HOSTED_ZONE_ID`, `HOSTED_ZONE_NAME`, `GOOGLE_CLIENT_ID`, `DISCORD_CLIENT_ID`, `STRIPE`, `ADMIN_EMAILS`, `COGNITO_DOMAIN_PREFIX` that step 6 used. From then on each push to `main` deploys dev (`.github/workflows/deploy-dev.yml`).
 8. **CloudFront plan.** Dev stays on the free plan. Prod's flat-rate Pro plan (decision 2) is chosen in the console; CloudFormation does not set it.
 
 ## Not here yet

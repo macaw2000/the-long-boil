@@ -45,6 +45,7 @@ import {
   type TradingRules,
 } from "./market.js";
 import { readLedgerPages } from "./pages.js";
+import { BadSignature, MAX_CRATES, type Payments } from "./payments.js";
 import { buyUpgrade, grantCrates, openCrates, readShop } from "./shop.js";
 import { devSetStory, discardLetter, payDebt, playStory, readStory } from "./story.js";
 import { BadRequest, NotFound, checkIn, createTinker, equip, fightOutlooks, listTinkers, loadout, look, setQueue } from "./tinkers.js";
@@ -69,6 +70,10 @@ export interface ApiOptions {
   auth?: Auth;
   /** A path the API also answers under, such as /api behind CloudFront, which sends /api/* to the server unchanged. */
   prefix?: string;
+  /** Stripe Checkout for Cog Crates; without it, crates are not sold for money. */
+  payments?: Payments;
+  /** The site's own address, where Stripe sends a player back to. */
+  siteUrl?: string;
 }
 
 declare module "fastify" {
@@ -86,8 +91,8 @@ const PING_MS = 45_000;
 /** The trading gate as admins see it: open. */
 const NO_GATE: TradingRules = { level: 0, days: 0 };
 
-/** Routes anyone may call, signed in or not: the load balancer's health check and the game's content. */
-const OPEN_ROUTES = new Set(["/health", "/content"]);
+/** Routes anyone may call, signed in or not: the load balancer's health check, the game's content, and Stripe's webhook, which carries its own signature. */
+const OPEN_ROUTES = new Set(["/health", "/content", "/stripe/webhook"]);
 
 export interface DevClock {
   /** How far the server's clock runs ahead of the wall clock, in ms. */
@@ -153,6 +158,8 @@ export function buildApi({
   broadcast = localBroadcast(),
   auth,
   prefix,
+  payments,
+  siteUrl = "http://localhost:8081",
 }: ApiOptions): FastifyInstance {
   const app = Fastify(
     prefix ? { rewriteUrl: (request) => (request.url?.startsWith(`${prefix}/`) ? request.url.slice(prefix.length) : (request.url ?? "/")) } : {},
@@ -219,6 +226,7 @@ export function buildApi({
     dev: clock ? { offsetMs: clock.offset() } : null,
     totalXp: content.rules.totalXp,
     shop: content.rules.shop,
+    payments: payments && content.rules.shop ? { testMode: payments.testMode } : null,
     ration: { item: content.rules.ration.item, bossCap: content.rules.combat.BOSS_RATION_CAP_PER_ATTEMPT ?? 0 },
   }));
 
@@ -412,6 +420,51 @@ export function buildApi({
     { schema: { body: { type: "object", required: ["qty"], properties: { qty: { type: "integer", minimum: 1 } } } } },
     async (request) => openCrates(db, content, Number(request.params.id), request.body.qty, now()),
   );
+  // Buying crates for money: a Stripe Checkout page to send the player to.
+  app.post<{ Params: { id: string }; Body: { crates: number } }>(
+    "/tinkers/:id/shop/checkout",
+    { schema: { body: { type: "object", required: ["crates"], properties: { crates: { type: "integer", minimum: 1, maximum: MAX_CRATES } } } } },
+    async (request) => {
+      const shop = content.rules.shop;
+      if (!payments || !shop) throw new BadRequest("crates are not sold for money on this server");
+      const tinkerId = Number(request.params.id);
+      if (!(await db.query("SELECT 1 FROM tinkers WHERE id = $1", [tinkerId])).rowCount) throw new NotFound(`no Tinker ${tinkerId}`);
+      const url = await payments.checkout({
+        tinkerId,
+        crates: request.body.crates,
+        priceCents: shop.crate.priceCents,
+        cogsPerCrate: shop.crate.cogs,
+        lockHours: shop.crate.lockHours,
+        siteUrl,
+      });
+      return { url };
+    },
+  );
+  // Stripe's report of a payment. Signed, so it needs no sign-in; the signature
+  // covers the exact bytes, so this route alone keeps its body raw. A paid
+  // session queues its crates once, however often Stripe sends it.
+  if (payments) {
+    app.register(async (hook) => {
+      hook.addContentTypeParser("application/json", { parseAs: "buffer" }, (_request, body, done) => done(null, body));
+      hook.post<{ Body: Buffer }>("/stripe/webhook", async (request, reply) => {
+        const signature = request.headers["stripe-signature"];
+        if (typeof signature !== "string") return reply.code(400).send({ error: "no Stripe signature" });
+        let paid;
+        try {
+          paid = payments.paidFrom(request.body, signature);
+        } catch (error) {
+          if (error instanceof BadSignature) return reply.code(400).send({ error: "bad Stripe signature" });
+          throw error;
+        }
+        if (paid) {
+          await grantCrates(db, content, paid.tinkerId, paid.crates, now(), { source: "stripe", reference: paid.sessionId });
+          broadcast.publish(tinkerChannel(paid.tinkerId), { type: "changed" });
+        }
+        return { received: true };
+      });
+    });
+  }
+
   app.post<{ Params: { id: string }; Body: { purchase: Purchase } }>(
     "/tinkers/:id/shop/buy",
     { schema: { body: { type: "object", required: ["purchase"], properties: { purchase: { enum: [...PURCHASES] } } } } },

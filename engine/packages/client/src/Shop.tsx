@@ -1,15 +1,49 @@
-// The Cog Shop (GDD section 8): Cog Crates to open, crates still locked, and
-// the four time savers Cogs buy. Nothing here buys story, Nerve or power;
-// the page says so, because the promise is the point.
+// The Cog Shop (GDD section 8): Cog Crates to buy and open, crates still
+// locked, and the four time savers Cogs buy. Nothing here buys story, Nerve
+// or power; the page says so, because the promise is the point. Buying goes
+// to Stripe's own checkout page, which sends the player back with
+// ?checkout=paid or ?checkout=cancelled.
 
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
-import { api, type Outcome, type Purchase, type ShopOutcome, type ShopView, type Tinker } from "./api";
+import { Platform, Pressable, Text, View } from "react-native";
+import { api, type Content, type Outcome, type Purchase, type ShopOutcome, type ShopView, type Tinker } from "./api";
 import { duration } from "./format";
 import { ItemIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
-export function Shop({ tinker, now, onOutcome }: { tinker: Tinker; now: number; onOutcome: (outcome: Outcome) => void }) {
+export type CheckoutReturn = "paid" | "cancelled" | null;
+
+/** Whether this page load is a return from Stripe's checkout; the address is tidied so a reload does not say it again. */
+export function takeCheckoutReturn(): CheckoutReturn {
+  if (Platform.OS !== "web") return null;
+  try {
+    const url = new URL(globalThis.location.href);
+    const value = url.searchParams.get("checkout");
+    if (value === null) return null;
+    url.searchParams.delete("checkout");
+    globalThis.history.replaceState(null, "", url.toString());
+    return value === "paid" ? "paid" : "cancelled";
+  } catch {
+    return null;
+  }
+}
+
+/** Crates offered for money at once: one, or a stack. */
+const BUNDLES = [1, 5];
+
+export function Shop({
+  content,
+  tinker,
+  now,
+  returned,
+  onOutcome,
+}: {
+  content: Content;
+  tinker: Tinker;
+  now: number;
+  returned: CheckoutReturn;
+  onOutcome: (outcome: Outcome) => void;
+}) {
   const tinkerId = tinker.id;
   const [shop, setShop] = useState<ShopView | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +70,17 @@ export function Shop({ tinker, now, onOutcome }: { tinker: Tinker; now: number; 
   useEffect(() => {
     take(api.shop(tinkerId));
   }, [take, tinkerId, changed]);
+
+  const pay = (crates: number) => {
+    setBusy(true);
+    api
+      .checkout(tinkerId, crates)
+      .then(({ url }) => globalThis.location.assign(url))
+      .catch((reason: Error) => {
+        setError(reason.message);
+        setBusy(false);
+      });
+  };
 
   if (!shop) return <Text style={error ? [ui.text, { color: colors.scald }] : ui.muted}>{error ?? "Opening the shop…"}</Text>;
 
@@ -95,7 +140,33 @@ export function Shop({ tinker, now, onOutcome }: { tinker: Tinker; now: number; 
             {shop.crate.lockHours} hours before it can be opened or sold.
           </Text>
         ))}
-        <Text style={[ui.muted, { fontSize: 12 }]}>Buying crates for ${(shop.crate.priceCents / 100).toFixed(2)} opens soon.</Text>
+        {returned === "paid" && (
+          <Text style={[ui.text, { color: colors.verdigris }]}>
+            Paid, thank you. Your crates are on their way and unlock in {shop.crate.lockHours} hours; they show below as soon as Stripe confirms.
+          </Text>
+        )}
+        {returned === "cancelled" && <Text style={ui.muted}>Checkout cancelled; nothing was charged.</Text>}
+        {content.payments ? (
+          <View style={{ gap: 6 }}>
+            <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
+              {BUNDLES.map((crates) => (
+                <Button
+                  key={crates}
+                  label={`Buy ${crates} ${crates === 1 ? "crate" : "crates"} · $${((crates * shop.crate.priceCents) / 100).toFixed(2)}`}
+                  disabled={busy}
+                  onPress={() => pay(crates)}
+                />
+              ))}
+            </View>
+            {content.payments.testMode && (
+              <Text style={[ui.muted, { fontSize: 12, color: colors.copper }]}>
+                Test mode: no real money moves. Pay with card 4242 4242 4242 4242, any future date and any CVC.
+              </Text>
+            )}
+          </View>
+        ) : (
+          <Text style={[ui.muted, { fontSize: 12 }]}>Buying crates for ${(shop.crate.priceCents / 100).toFixed(2)} opens soon.</Text>
+        )}
       </View>
 
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>

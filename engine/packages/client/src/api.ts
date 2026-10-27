@@ -84,6 +84,8 @@ export interface Content {
   totalXp: number[];
   /** The Cog Shop's terms; the crate's own Exchange tax is the one the Exchange shows for it. */
   shop: { crate: { item: string; exchangeTax: number } } | null;
+  /** Whether crates are sold for money here (Stripe Checkout), and in test mode; null when they are not. */
+  payments: { testMode: boolean } | null;
   /** The food a fight eats, and how many a boss attempt may. */
   ration: { item: string; bossCap: number };
 }
@@ -366,6 +368,7 @@ export const api = {
   shop: (id: number) => request<ShopOutcome>("GET", `/tinkers/${id}/shop`),
   openCrates: (id: number, qty: number) => request<ShopOutcome>("POST", `/tinkers/${id}/shop/open`, { qty }),
   buy: (id: number, purchase: Purchase) => request<ShopOutcome>("POST", `/tinkers/${id}/shop/buy`, { purchase }),
+  checkout: (id: number, crates: number) => request<{ url: string }>("POST", `/tinkers/${id}/shop/checkout`, { crates }),
   devCrates: (id: number, qty: number, locked = false) => request<ShopOutcome>("POST", `/dev/tinkers/${id}/crates`, { qty, locked }),
   fights: (id: number) => request<{ fights: FightOutlook[] }>("GET", `/tinkers/${id}/fights`),
   loadout: (id: number) => request<{ weapons: LoadoutWeapon[] }>("GET", `/tinkers/${id}/loadout`),

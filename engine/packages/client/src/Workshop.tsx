@@ -23,7 +23,7 @@ import { useLive } from "./live";
 import { Loadout } from "./Loadout";
 import { NewGear } from "./NewGear";
 import { BottomBar, SideNav, SkillStrip, type Place, type PlaceBadge } from "./SideNav";
-import { Shop } from "./Shop";
+import { Shop, takeCheckoutReturn } from "./Shop";
 import { SkillView } from "./SkillView";
 import { ItemIcon, Scene } from "./Sprite";
 import { Stores } from "./Stores";
@@ -37,7 +37,9 @@ const BOILER_MS = 12 * 3_600_000;
 export function Workshop({ content, tinkerId, admin, onLeave }: { content: Content; tinkerId: number; admin: boolean; onLeave: () => void }) {
   const [tinker, setTinker] = useState<Tinker | null>(null);
   const [away, setAway] = useState<{ ledger: LedgerData; trades: TradeNote[] } | null>(null);
-  const [place, setPlace] = useState<Place>("skill:prospecting");
+  // Back from Stripe's checkout: open at the shop, which says how it went.
+  const [checkoutReturn] = useState(takeCheckoutReturn);
+  const [place, setPlace] = useState<Place>(checkoutReturn ? "shop" : "skill:prospecting");
   const [recent, setRecent] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(gameNow());
@@ -114,7 +116,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   );
 
   // Opening the workshop goes to whatever the Tinker is busy at, once; after that the player moves.
-  const placed = useRef(false);
+  const placed = useRef(checkoutReturn !== null);
   const apply = useCallback(
     (outcome: Outcome) => {
       celebrate(outcome.tinker);
@@ -358,7 +360,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         onGrocer={() => setPlace("exchange")}
       />
     ) : place === "shop" ? (
-      <Shop tinker={tinker} now={now} onOutcome={apply} />
+      <Shop content={content} tinker={tinker} now={now} returned={checkoutReturn} onOutcome={apply} />
     ) : place === "story" ? (
       <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} />
     ) : place === "guild" ? (

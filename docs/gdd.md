@@ -493,7 +493,7 @@ A crate of 10 Cogs starts at $4.99. Every price here is a starting point the Ass
 
 **Lines that never move.** Cogs never buy Nerve, storylets, Needle resets, Ledger Pages, Favour, Reckoning pledges, or gear with stats. A player who never pays can own everything a paying player owns by trading Crowns for crates.
 
-**Payments path.** Stripe Checkout runs in test mode for the capstone. Its webhook reaches a Lambda that grants crates exactly once per Stripe event ID. Live payments, and the app-store builds whose billing rules differ outside the US, come after the capstone.
+**Payments path.** Stripe Checkout runs in test mode for the capstone. Its signed webhook reaches the game server, which grants crates exactly once per Checkout Session, held by a unique key in Postgres. Live payments, and the app-store builds whose billing rules differ outside the US, come after the capstone.
 
 ## 9. AI Architecture
 
@@ -568,7 +568,7 @@ One TypeScript codebase on Expo (React Native plus React Native Web) ships the w
 - **Data:** Aurora PostgreSQL for inventory, orders, qualities, and the event log; Valkey for sessions, chat, and ranks.
 - **Content and config:** items, monsters, storylets, and tuning values live in git, are validated in CI, and deploy through AWS AppConfig, which versions every change and can roll one back.
 - **Sign-in:** Cognito with Google and Discord; 3 Tinkers per account, 1 trading.
-- **Payments:** a Stripe Checkout webhook reaches a Lambda that grants crates once per event ID.
+- **Payments:** a signed Stripe Checkout webhook reaches the game server, which grants crates once per Checkout Session.
 - **Agents:** Step Functions runs each agent as a Lambda calling Claude on Bedrock; my approval is a Step Functions task token that the admin console completes.
 - **Admin console:** an MFA-gated web app to tune drop rates, XP curves, costs, taxes, and the Boiler cap through the config store, preview storylets, watch economy dashboards, manage players, and approve agent patches, all audit-logged.
 
@@ -661,12 +661,11 @@ Players enter through one CloudFront domain. The database sits in private subnet
 | Game | Application Load Balancer | Holds players' WebSocket connections and spreads them across game servers |
 | Game | ECS on Fargate (Graviton) | The authoritative Node.js game server; Fargate Spot for background job workers |
 | Game | ECR | Container images |
-| Data | Aurora PostgreSQL Serverless v2 | Inventory, Exchange orders, qualities, the event log; pauses to zero in dev |
+| Data | Aurora PostgreSQL Serverless v2 | Inventory, Exchange orders, qualities, the event log, and paid Checkout Sessions, so a webhook never grants a crate twice; pauses to zero in dev |
 | Data | ElastiCache Serverless for Valkey | Sessions, chat, leaderboards |
-| Data | DynamoDB | Stripe event IDs, so a webhook never grants a crate twice |
 | Data | S3 and Athena | Monthly event-log archive and ad-hoc economy queries |
 | Jobs | EventBridge Scheduler and SQS | Work Orders every 8 hours, weekly Guild Contracts, the daily Gazette, Reckoning tallies |
-| Jobs | Lambda | Job handlers, the Stripe webhook (via a function URL), Cognito triggers, the Discord sign-in shim |
+| Jobs | Lambda | Job handlers, Cognito triggers, the Discord sign-in shim |
 | Identity | Cognito | Sign-in with Google and Discord |
 | Agents | Step Functions | Runs the six-agent pipeline, with my approval as a task token |
 | Agents | Amazon Bedrock | Claude Opus 5.5, Sonnet 5.5, and Haiku 5.5 for the agents |
@@ -714,7 +713,7 @@ Production sizing grows with each phase: 2 small game servers (0.5 vCPU, 1 GB) i
 | ElastiCache Serverless for Valkey | 6 | 13 | 25 | 70 |
 | CloudFront flat-rate plan | 0 | 15 | 15 | 15 |
 | Cognito | 0 | 1 | 14 | 83 |
-| Lambda, Step Functions, SQS, EventBridge, DynamoDB, SES | 2 | 5 | 10 | 22 |
+| Lambda, Step Functions, SQS, EventBridge, SES | 2 | 5 | 10 | 22 |
 | AppConfig and Secrets Manager | 2 | 5 | 5 | 6 |
 | CloudWatch | 4 | 16 | 29 | 64 |
 | GuardDuty, KMS, CloudTrail, backups | 1 | 9 | 17 | 51 |

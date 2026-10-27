@@ -1,6 +1,7 @@
 import { join } from "node:path";
 import { buildApi, devClock, devClockInDatabase } from "./api.js";
 import { cognitoAuth } from "./auth.js";
+import { stripePayments } from "./payments.js";
 import { loadContent } from "./content-loader.js";
 import { connect, migrate } from "./db.js";
 
@@ -25,6 +26,12 @@ const dev =
     : auth
       ? await devClockInDatabase(db)
       : devClock(join(import.meta.dirname, "../../../.dev-clock.json"));
+// Stripe Checkout for Cog Crates (GDD section 8): both STRIPE_API_KEY and STRIPE_WEBHOOK_SECRET, or neither.
+const { STRIPE_API_KEY: apiKey, STRIPE_WEBHOOK_SECRET: webhookSecret } = process.env;
+if (Boolean(apiKey) !== Boolean(webhookSecret)) throw new Error("set both STRIPE_API_KEY and STRIPE_WEBHOOK_SECRET, or neither");
+const payments = apiKey && webhookSecret ? stripePayments({ apiKey, webhookSecret, allowLive: process.env.STRIPE_ALLOW_LIVE === "1" }) : undefined;
+// SITE_URL: where Stripe sends a player back to after paying.
+const siteUrl = process.env.SITE_URL || undefined;
 // API_PREFIX=/api behind CloudFront, which sends /api/* to the server with the path unchanged.
 const prefix = process.env.API_PREFIX || undefined;
 const app = buildApi({
@@ -35,8 +42,11 @@ const app = buildApi({
   ...(dev ? { devClock: dev.clock, now: dev.now } : {}),
   ...(auth ? { auth } : {}),
   ...(prefix ? { prefix } : {}),
+  ...(payments ? { payments } : {}),
+  ...(siteUrl ? { siteUrl } : {}),
 });
 if (dev) console.log("dev clock on: POST /dev/skip moves time forward");
+console.log(payments ? `payments: Stripe Checkout, ${payments.testMode ? "test mode" : "LIVE"}` : "payments: none (crates are not sold for money)");
 console.log(auth ? `sign-in: Cognito user pool ${userPoolId}, ${adminEmails.length} admin email(s)` : "sign-in: dev login (trusts any login)");
 const port = Number(process.env.PORT ?? 3000);
 // HOST=0.0.0.0 in a container; the default keeps a dev server off the network.
