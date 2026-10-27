@@ -7160,7 +7160,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-24T01:05:45Z",
+        "run": "2026-10-27T17:24:10Z",
         "checks": [
           "schema",
           "provenance",
@@ -7173,14 +7173,15 @@
           "qualities",
           "story_graph",
           "reveal",
-          "style"
+          "style",
+          "work_orders"
         ],
         "waiver": null
       },
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass: the rats and equip lines now match the real controls; Brassbuckle's voice and Layer 0 hold across all nine cards. Reviewed files as of the 2026-10-24T01:05:45Z validator run."
+        "notes": "Pass with notes: the come_back line no longer reads as an in-game task (the old 'Go and eat something' collided with the real Ration trigger, GDD 'eat a Ration below 40% HP'); it meets work order 021: Boiler and queue keep working, the city will have written, names the Queue work button and Leave it running, 39 words, Layer 0. Note for Jeremy: the character half is thinner than the other eight cards; 'Nothing here needs watching' is practical and echoes first_spanner, but has none of her protective dryness. Taste call left to him. Reviewed as of the 2026-10-27T17:24:10Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -7207,6 +7208,21 @@
         },
         {
           "at": "2026-10-24T01:06:26Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-27T17:24:10Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-27T17:24:10Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-27T17:25:06Z",
           "status": "reviewed",
           "by": "inspector"
         }

@@ -45,6 +45,7 @@ export function SkillView({
   queueLit,
   onStart,
   onQueue,
+  onGrocer,
 }: {
   skill: string;
   content: Content;
@@ -56,6 +57,8 @@ export function SkillView({
   queueLit: boolean;
   onStart: (entry: QueueEntry) => void;
   onQueue: (entry: QueueEntry) => void;
+  /** Goes to the grocer's counter, for an ingredient no skill makes. */
+  onGrocer: () => void;
 }) {
   const planner = usePlanner(content, tinker, name);
   const [chosen, setChosen] = useState<string | null>(null);
@@ -157,6 +160,7 @@ export function SkillView({
             setChosen(null);
             onQueue(entry);
           }}
+          onGrocer={onGrocer}
         />
       )}
     </View>
@@ -224,6 +228,7 @@ function JobDetail({
   setCount,
   onStart,
   onQueue,
+  onGrocer,
 }: {
   id: string;
   content: Content;
@@ -234,6 +239,8 @@ function JobDetail({
   setCount: (count: string) => void;
   onStart: (entry: QueueEntry) => void;
   onQueue: (entry: QueueEntry) => void;
+  /** Goes to the grocer's counter, for an ingredient no skill makes. */
+  onGrocer: () => void;
 }) {
   const action = content.actions.find((candidate) => candidate.id === id);
   const monster = content.monsters.find((candidate) => candidate.id === id);
@@ -260,6 +267,19 @@ function JobDetail({
           </Text>
         </View>
       )}
+      {/* No skill makes Cooking's ingredients; say where they are sold, and go there. */}
+      {action?.inputs
+        .filter((input) => content.economy[input.item]?.grocerPrice != null && (planner.held.get(input.item) ?? 0) < input.qty)
+        .map((input) => (
+          <Pressable key={input.item} onPress={onGrocer} accessibilityRole="link" style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+            <ItemIcon item={input.item} size={20} />
+            <Text style={ui.muted}>
+              {name(input.item)} is sold at the grocer's counter, {content.economy[input.item]!.grocerPrice} Crowns each: on the Exchange, in the
+              Counting-House window, below the collectors.{" "}
+              <Text style={{ color: colors.brass, textDecorationLine: "underline" }}>Go there</Text>
+            </Text>
+          </Pressable>
+        ))}
       {monster && (
         <Text style={ui.muted}>
           Level {monster.level} · weak to {monster.weakness}

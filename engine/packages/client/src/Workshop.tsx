@@ -355,6 +355,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         queueLit={lit.has("queue")}
         onStart={(entry) => setQueue([entry, ...tinker.queue.slice(1)])}
         onQueue={(entry) => setQueue([...tinker.queue, entry].slice(0, tinker.upgrades.queueSlots))}
+        onGrocer={() => setPlace("exchange")}
       />
     ) : place === "shop" ? (
       <Shop tinker={tinker} now={now} onOutcome={apply} />

@@ -1,6 +1,7 @@
 // The stores as a grid of icons with counts, after Milky Way Idle's
 // inventory: the name shows on hover or tap, and bound items carry a small
-// padlock, from the interface sheet.
+// padlock, from the interface sheet. The padlock means "not for sale", not
+// "not for use", so the name line says so.
 
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
@@ -16,7 +17,8 @@ function short(qty: number): string {
 
 export function Stores({ tinker, name }: { tinker: Tinker; name: (id: string) => string }) {
   const [shown, setShown] = useState<string | null>(null);
-  const label = (stack: Tinker["inventory"][number]) => `${name(stack.item)}${stack.bound ? " (bound)" : ""}: ${stack.qty.toLocaleString()}`;
+  const label = (stack: Tinker["inventory"][number]) =>
+    `${name(stack.item)}: ${stack.qty.toLocaleString()}${stack.bound ? ". Bound: yours to use, but not to sell or trade" : ""}`;
   const current = tinker.inventory.find((stack) => `${stack.item}-${stack.bound}` === shown);
   return (
     <View style={[ui.panel, { gap: 10 }]}>
