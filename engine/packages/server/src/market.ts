@@ -194,8 +194,10 @@ export async function placeOrder(
       book.map((row) => ({ id: Number(row.id), price: Number(row.price), qtyOpen: Number(row.qty_open) })),
     );
 
+    const shop = content.rules.shop;
+    const taxRate = shop && item === shop.crate.item ? shop.crate.exchangeTax : rules.SALES_TAX;
     for (const fill of fills) {
-      const tax = rules.salesTax(fill.price * fill.qty);
+      const tax = rules.salesTax(fill.price * fill.qty, taxRate);
       const maker = makers.get(fill.orderId)!;
       await tx.query(
         `INSERT INTO exchange_fills (item, price, qty, tax, buy_order_id, sell_order_id, buyer_id, seller_id, at, buyer_collected, seller_collected)

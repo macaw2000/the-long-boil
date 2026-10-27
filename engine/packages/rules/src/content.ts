@@ -4,6 +4,7 @@
 // and later from AWS AppConfig.
 
 import type { CombatConstants, DropTable, Monster, Weapon } from "./combat.js";
+import type { CogShop } from "./shop.js";
 import type { Scene } from "./story.js";
 import type { WorkOrder } from "./work_orders.js";
 
@@ -47,6 +48,8 @@ export interface Content {
   workOrders: ReadonlyMap<string, WorkOrder>;
   /** Items the grocer's counter sells, which any Tinker can buy. */
   grocer: ReadonlySet<string>;
+  /** The Cog Shop's terms, or null in content that has no shop. */
+  shop: CogShop | null;
 }
 
 export interface CurveRow {
@@ -79,6 +82,7 @@ export interface ContentSources {
   letters?: Scene[];
   workOrders?: WorkOrder[];
   grocer?: string[];
+  shop?: CogShop | null;
 }
 
 function index<T>(rows: T[], key: (row: T) => string, what: string): Map<string, T> {
@@ -137,5 +141,6 @@ export function buildContent(sources: ContentSources): Content {
     letters: index(sources.letters ?? [], (scene) => scene.id, "letter id"),
     workOrders: index(sources.workOrders ?? [], (order) => order.id, "work order id"),
     grocer: new Set(sources.grocer ?? []),
+    shop: sources.shop ?? null,
   };
 }

@@ -1,0 +1,10 @@
+{
+  "schema": "item/1",
+  "items": [
+    {
+      "id": "item.global.cog_crate",
+      "name": "Cog Crate",
+      "flavour": "A sealed crate of ten Gilded Cogs, stencilled with the Board's mark and a warning about prying."
+    }
+  ]
+}

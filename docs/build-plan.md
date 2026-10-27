@@ -78,6 +78,13 @@ Milestones 1 to 6 are built. The GDD makes Kettleport a shared city (sections 6 
     - Deployed on 24 October 2026 to dev at https://thelongboil.com (www redirects there), in Jeremy's existing AWS account rather than the GDD's separate accounts, with Google and Discord sign-in (Discord through its OpenID Connect discovery, no shim; Jeremy signed in with it the same day), a $100 budget and a daily spend email. The load balancer answers only requests carrying CloudFront's secret header. Pushes to main deploy dev from GitHub.
     - Admins (verified Google accounts on ADMIN_EMAILS) get the dev clock, the story tools and no trading gate on the deployed dev server.
     - Still open for phase 0: the Activate Founders application, Bedrock quotas when the agent pipeline moves to AWS, SES for Cognito's email before alpha, and the GDD's separate accounts if they are ever wanted.
+12. **The Cog Shop** (GDD section 8), in two steps: the shop first, then Stripe Checkout in test mode (Jeremy, 27 October 2026). Step 1 is built:
+    - Gilded Cogs are kept per Tinker, like Crowns. A Cog Crate (`item.global.cog_crate`) is an ordinary unbound item: it opens for 10 Cogs, or sells on the Exchange at its own 15% tax, so a player who never pays can buy Cogs with Crowns.
+    - Crates wait in `crate_deliveries` until their lock ends (72 hours for a bought crate) and land in the inventory the next time the Tinker is touched. Each delivery's `reference` is unique, so a payment reported twice delivers once.
+    - Cogs buy the four time savers in `content/tuning/cog-shop.json` (schema `tuning.cog_shop/1`): a third queue slot (30), +2 Boiler hours up to 24 (20 each; buying one refills the Boiler to its new hours), the Night Lamp's Nerve cap of 14 (40; it buys no Nerve), and the Boiler Boost, 20% faster work for 24 hours (5; another adds 24 more). A go that starts under the Boost finishes at its pace, fixed as the go starts, so offline resolution still equals step-by-step replay. The prices are the GDD's starting points; the assayer models them before launch.
+    - Admins grant crates from the dev bar (`POST /dev/tinkers/:id/crates`), unlocked or locked.
+    - Cosmetics wait for art. The shop's icons are in docs/art-requests.md, section 7.
+    - Step 2: Stripe Checkout in test mode, whose webhook queues a locked delivery with the Stripe event id as its reference.
 
 ## Prerequisites on this machine
 

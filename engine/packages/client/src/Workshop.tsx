@@ -23,6 +23,7 @@ import { useLive } from "./live";
 import { Loadout } from "./Loadout";
 import { NewGear } from "./NewGear";
 import { BottomBar, SideNav, SkillStrip, type Place, type PlaceBadge } from "./SideNav";
+import { Shop } from "./Shop";
 import { SkillView } from "./SkillView";
 import { ItemIcon, Scene } from "./Sprite";
 import { Stores } from "./Stores";
@@ -353,8 +354,10 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         scene={scene}
         queueLit={lit.has("queue")}
         onStart={(entry) => setQueue([entry, ...tinker.queue.slice(1)])}
-        onQueue={(entry) => setQueue([...tinker.queue, entry].slice(0, 2))}
+        onQueue={(entry) => setQueue([...tinker.queue, entry].slice(0, tinker.upgrades.queueSlots))}
       />
+    ) : place === "shop" ? (
+      <Shop tinker={tinker} now={now} onOutcome={apply} />
     ) : place === "story" ? (
       <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} />
     ) : place === "guild" ? (
@@ -389,6 +392,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         lit={lit}
         onRemove={(slot) => setQueue(tinker.queue.filter((_, index) => index !== slot))}
         onAdd={() => setPlace(guidedPlace ?? (place.startsWith("skill:") ? place : workPlace))}
+        onShop={() => setPlace("shop")}
         onLeave={onLeave}
       />
       {/* The dev tools: wherever the server runs a dev clock, for admins only (everyone under the dev login). */}
@@ -420,6 +424,25 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
             { label: "Fill Nerve", change: { fillNerve: true } },
           ].map(({ label, change }) => (
             <Pressable key={label} onPress={() => devStory(change)} accessibilityRole="button" style={devButton}>
+              <Text style={[ui.number, { color: colors.copper }]}>{label}</Text>
+            </Pressable>
+          ))}
+          <Text style={[ui.muted, { color: colors.copper, marginLeft: 12 }]}>Shop</Text>
+          {[
+            { label: "+3 crates", locked: false },
+            { label: "+1 locked", locked: true },
+          ].map(({ label, locked }) => (
+            <Pressable
+              key={label}
+              onPress={() =>
+                api
+                  .devCrates(tinkerId, locked ? 1 : 3, locked)
+                  .then(apply)
+                  .catch((reason: Error) => setError(reason.message))
+              }
+              accessibilityRole="button"
+              style={devButton}
+            >
               <Text style={[ui.number, { color: colors.copper }]}>{label}</Text>
             </Pressable>
           ))}

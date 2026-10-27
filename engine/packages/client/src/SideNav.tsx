@@ -14,7 +14,7 @@ import { SkillIcon } from "./SkillView";
 import { UiIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
-export type Place = "story" | "exchange" | "guild" | "stores" | "chat" | `skill:${string}`;
+export type Place = "story" | "exchange" | "guild" | "shop" | "stores" | "chat" | `skill:${string}`;
 
 export interface PlaceBadge {
   count: number;
@@ -50,11 +50,12 @@ export function SideNav({
   const working = tinker.queue[0]?.actionId;
   return (
     <ScrollView style={{ width: 210 }} contentContainerStyle={{ paddingVertical: 12, gap: 2 }}>
-      {(["story", "exchange", "guild"] as const).map((choice) => (
+      {(["story", "exchange", "guild", "shop"] as const).map((choice) => (
         <NavRow key={choice} active={place === choice} lit={lit.has(choice)} onPress={() => onPlace(choice)} badge={badges[choice]}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <UiIcon name={PLACE_ICONS[choice]!} size={26} />
-            <Text style={[ui.text, { fontSize: 15, color: place === choice ? colors.brass : colors.ink }]}>{titleCase(choice)}</Text>
+            {/* The Cog Shop's icon is not drawn yet; the space keeps the names in line. */}
+            <View style={{ width: 26, height: 26 }}>{PLACE_ICONS[choice] && <UiIcon name={PLACE_ICONS[choice]!} size={26} />}</View>
+            <Text style={[ui.text, { fontSize: 15, color: place === choice ? colors.brass : colors.ink }]}>{choice === "shop" ? "Cog Shop" : titleCase(choice)}</Text>
           </View>
         </NavRow>
       ))}

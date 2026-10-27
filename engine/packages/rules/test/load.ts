@@ -1,7 +1,7 @@
 // Test helper: builds Content from the real files in content/.
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { buildContent, type Content } from "../src/index.js";
+import { buildContent, readCogShop, type Content } from "../src/index.js";
 
 const CONTENT_DIR = join(import.meta.dirname, "../../../../content");
 
@@ -40,5 +40,6 @@ export function loadRealContent(): Content {
       .flatMap((file) => Object.entries(file.items ?? {}))
       .filter(([, terms]) => (terms as { grocer_price?: number | null }).grocer_price != null)
       .map(([item]) => item),
+    shop: readCogShop(readJson(join(CONTENT_DIR, "tuning", "cog-shop.json"))),
   });
 }

@@ -7,3 +7,4 @@ export * from "./exchange.js";
 export * from "./story.js";
 export * from "./work_orders.js";
 export * from "./guilds.js";
+export * from "./shop.js";

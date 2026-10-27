@@ -7,6 +7,7 @@
 // Admins (auth.ts) may use the /dev routes and skip the trading gate.
 
 import cors from "@fastify/cors";
+import { PURCHASES, type Purchase } from "@long-boil/rules";
 import websocket from "@fastify/websocket";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import Fastify, { type FastifyInstance } from "fastify";
@@ -44,6 +45,7 @@ import {
   type TradingRules,
 } from "./market.js";
 import { readLedgerPages } from "./pages.js";
+import { buyUpgrade, grantCrates, openCrates, readShop } from "./shop.js";
 import { devSetStory, discardLetter, payDebt, playStory, readStory } from "./story.js";
 import { BadRequest, NotFound, checkIn, createTinker, equip, fightOutlooks, listTinkers, loadout, look, setQueue } from "./tinkers.js";
 
@@ -216,6 +218,7 @@ export function buildApi({
     guide: content.guide,
     dev: clock ? { offsetMs: clock.offset() } : null,
     totalXp: content.rules.totalXp,
+    shop: content.rules.shop,
   }));
 
   if (clock) {
@@ -243,6 +246,20 @@ export function buildApi({
         },
       },
       async (request) => devSetStory(db, content, Number(request.params.id), request.body, now()),
+    );
+    // Crates for testing the Cog Shop before Stripe sells them; `locked` makes them wait out the lock as a bought crate does.
+    app.post<{ Params: { id: string }; Body: { qty: number; locked?: boolean } }>(
+      "/dev/tinkers/:id/crates",
+      {
+        schema: {
+          body: {
+            type: "object",
+            required: ["qty"],
+            properties: { qty: { type: "integer", minimum: 1, maximum: 100 }, locked: { type: "boolean" } },
+          },
+        },
+      },
+      async (request) => grantCrates(db, content, Number(request.params.id), request.body.qty, now(), { locked: request.body.locked === true }),
     );
   }
 
@@ -283,7 +300,7 @@ export function buildApi({
           properties: {
             queue: {
               type: "array",
-              maxItems: 2,
+              maxItems: 3,
               items: {
                 type: "object",
                 required: ["actionId", "remaining"],
@@ -385,6 +402,19 @@ export function buildApi({
 
   app.post<{ Params: { id: string; debt: string } }>("/tinkers/:id/debts/:debt", async (request) =>
     payDebt(db, content, Number(request.params.id), request.params.debt, now()),
+  );
+
+  // The Cog Shop (GDD section 8).
+  app.get<{ Params: { id: string } }>("/tinkers/:id/shop", async (request) => readShop(db, content, Number(request.params.id), now()));
+  app.post<{ Params: { id: string }; Body: { qty: number } }>(
+    "/tinkers/:id/shop/open",
+    { schema: { body: { type: "object", required: ["qty"], properties: { qty: { type: "integer", minimum: 1 } } } } },
+    async (request) => openCrates(db, content, Number(request.params.id), request.body.qty, now()),
+  );
+  app.post<{ Params: { id: string }; Body: { purchase: Purchase } }>(
+    "/tinkers/:id/shop/buy",
+    { schema: { body: { type: "object", required: ["purchase"], properties: { purchase: { enum: [...PURCHASES] } } } } },
+    async (request) => buyUpgrade(db, content, Number(request.params.id), request.body.purchase, now()),
   );
 
   app.get<{ Params: { id: string } }>("/tinkers/:id/work-orders", async (request) =>

@@ -1,6 +1,7 @@
 // The action queue and the Boiler (GDD section 6, Offline play).
 //
-// A Tinker's queue holds up to two entries, each with a count: a skilling
+// A Tinker's queue holds two entries, or three with the Cog Shop's extra
+// slot, each with a count: a skilling
 // action, or a monster to fight. Time is resolved on demand: resolve()
 // advances a state from where it was last resolved to `now`, working through
 // the queue until the count runs out, the inputs run out, or the Boiler runs
@@ -9,6 +10,7 @@
 // and the same events.
 
 import type { Action, Content } from "./content.js";
+import { boostedMs } from "./shop.js";
 import { levelFor } from "./xp.js";
 import {
   fighterFor,
@@ -21,6 +23,7 @@ import {
   type Monster,
 } from "./combat.js";
 
+/** The queue's slots before the Cog Shop's extra one. */
 export const QUEUE_SLOTS = 2;
 export const BOILER_HOURS = 12;
 const HOUR_MS = 3_600_000;
@@ -52,6 +55,14 @@ export interface TinkerState {
   pity: Record<string, { kills: number; next: number }>;
   /** Bosses this Tinker has beaten at least once. */
   bossesBeaten: string[];
+  /** Epoch ms the Boiler Boost burns out; 0 when none was ever bought. */
+  boostUntil: number;
+  /**
+   * Whether the head's current go runs boosted. Fixed as the go starts, so a
+   * go that starts under the Boost finishes at the Boost's pace, however the
+   * span is split between resolves.
+   */
+  headBoosted: boolean;
 }
 
 type Drops = Record<string, number>;
@@ -274,12 +285,23 @@ function stepFor(state: TinkerState, content: Content, id: string): Step {
   return { kind: "stall", reason: "unknown_action" };
 }
 
+/** A step's time, boosted or not, at the Cog Shop's Boost. */
+function paced(ms: number, boosted: boolean, content: Content): number {
+  return boosted && content.shop ? boostedMs(ms, content.shop.boost.percent) : ms;
+}
+
+/** Whether a go starting at `at` runs under the Boost. */
+function boostedAt(state: TinkerState, at: number): boolean {
+  return at < state.boostUntil;
+}
+
 /** How long one go of the queue's head takes now, by the same step the queue runs; null if it would stall or the queue is empty. */
 export function headMs(state: TinkerState, content: Content): number | null {
   const head = state.queue[0];
   if (!head) return null;
   const step = stepFor(state, content, head.actionId);
-  return step.kind === "run" ? step.ms : null;
+  if (step.kind !== "run") return null;
+  return paced(step.ms, state.progressMs > 0 ? state.headBoosted : boostedAt(state, state.resolvedTo), content);
 }
 
 export type FightOutlook =
@@ -298,14 +320,15 @@ export function fightOutlook(state: TinkerState, content: Content, monster: Mons
   if (fighter.styleLevel < weapon.level_required) return { monsterId: monster.id, ready: false, reason: "level" };
   const c = content.combat;
   const held = state.inventory[content.ration.item] ?? 0;
+  const seconds = (planned: number) => paced(Math.round(planned * 1000), boostedAt(state, state.resolvedTo), content) / 1000;
   if (monster.boss) {
     const rations = Math.min(c.BOSS_RATION_CAP_PER_ATTEMPT ?? 0, held);
     const plan = planBoss(c, fighter, monster, content.ration.heal, rations);
-    return { monsterId: monster.id, ready: true, seconds: plan.seconds, winChance: plan.win, rations };
+    return { monsterId: monster.id, ready: true, seconds: seconds(plan.seconds), winChance: plan.win, rations };
   }
   const plan = planKill(c, fighter, monster, content.ration.heal, held > 0);
   if (!plan) return { monsterId: monster.id, ready: false, reason: "cannot_win" };
-  return { monsterId: monster.id, ready: true, seconds: plan.seconds, winChance: null, rations: plan.rations };
+  return { monsterId: monster.id, ready: true, seconds: seconds(plan.seconds), winChance: null, rations: plan.rations };
 }
 
 /** Advances a Tinker's queue from state.resolvedTo to now. Returns a new state; the input is untouched. */
@@ -326,7 +349,8 @@ export function resolve(previous: TinkerState, content: Content, now: number): R
       continue;
     }
 
-    const needed = step.ms - state.progressMs;
+    if (state.progressMs === 0) state.headBoosted = boostedAt(state, t);
+    const needed = paced(step.ms, state.headBoosted, content) - state.progressMs;
     if (t + needed > workEnd) {
       state.progressMs += workEnd - t;
       t = workEnd;
@@ -361,8 +385,8 @@ export function checkIn(state: TinkerState, content: Content, now: number, boile
 }
 
 /** Replaces the queue. Resolve first, so time already spent is not lost. */
-export function setQueue(state: TinkerState, queue: QueueEntry[]): TinkerState {
-  if (queue.length > QUEUE_SLOTS) throw new Error(`the queue holds ${QUEUE_SLOTS} actions`);
+export function setQueue(state: TinkerState, queue: QueueEntry[], slots = QUEUE_SLOTS): TinkerState {
+  if (queue.length > slots) throw new Error(`the queue holds ${slots} actions`);
   if (queue.some((entry) => !Number.isInteger(entry.remaining) || entry.remaining < 1)) {
     throw new Error("each queued action needs a whole count of at least 1");
   }
@@ -402,5 +426,7 @@ export function newTinker(inventory: Record<string, number>, crowns: number, now
     rationDebt: 0,
     pity: {},
     bossesBeaten: [],
+    boostUntil: 0,
+    headBoosted: false,
   };
 }

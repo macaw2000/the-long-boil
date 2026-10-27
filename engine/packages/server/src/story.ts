@@ -56,8 +56,8 @@ function sceneView(scene: Scene, kind: "storylet" | "letter", tinker: TinkerStat
 function storyView(tinker: TinkerState, story: StoryState, content: GameContent, now: number): StoryView {
   return {
     nerve: story.nerve,
-    nerveCap: rules.NERVE_CAP,
-    nextNerveAt: story.nerve >= rules.NERVE_CAP ? null : new Date(story.nerveAt + rules.NERVE_MS).toISOString(),
+    nerveCap: rules.nerveCapOf(story),
+    nextNerveAt: story.nerve >= rules.nerveCapOf(story) ? null : new Date(story.nerveAt + rules.NERVE_MS).toISOString(),
     needles: rules.visibleNeedles(story.qualities),
     qualities: Object.fromEntries(Object.entries(story.qualities).filter(([, value]) => value > 0)),
     letters: story.hand.flatMap((id) => {
@@ -219,7 +219,7 @@ export async function devSetStory(
       ...story,
       qualities: { ...story.qualities, ...qualities },
       needleAt,
-      ...(change.fillNerve ? { nerve: rules.NERVE_CAP, nerveAt: now } : {}),
+      ...(change.fillNerve ? { nerve: rules.nerveCapOf(story), nerveAt: now } : {}),
     };
     return {
       story: next,

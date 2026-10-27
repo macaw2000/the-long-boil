@@ -16,7 +16,6 @@ import { MonsterPicture } from "./SkillView";
 import { Term } from "./Term";
 import { colors, ui } from "./theme";
 
-const BOILER_MS = 12 * 3_600_000;
 
 export function ActionBar({
   content,
@@ -29,6 +28,7 @@ export function ActionBar({
   lit,
   onRemove,
   onAdd,
+  onShop,
   onLeave,
 }: {
   content: Content;
@@ -43,10 +43,12 @@ export function ActionBar({
   lit: Set<string>;
   onRemove: (slot: number) => void;
   onAdd: () => void;
+  onShop: () => void;
   onLeave: () => void;
 }) {
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
-  const [head, next] = tinker.queue;
+  const boostLeft = tinker.upgrades.boostUntil ? new Date(tinker.upgrades.boostUntil).getTime() - now : 0;
+  const [head, ...later] = tinker.queue;
   const working = Boolean(head) && steamLeft > 0;
 
   return (
@@ -92,9 +94,10 @@ export function ActionBar({
               <Text style={[ui.text, { color: colors.copper }]}>The bench is idle. Choose a job from a skill.</Text>
             )}
           </View>
-          <Glow active={lit.has("queue")}>
-            {next ? (
+          <Glow active={lit.has("queue")} style={{ gap: 4 }}>
+            {later.map((next, index) => (
               <View
+                key={index}
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
@@ -109,11 +112,12 @@ export function ActionBar({
                 <Text style={[ui.muted, { fontSize: 12 }]}>
                   then {jobTitle(content, next.actionId, name)} ×{next.remaining.toLocaleString()}
                 </Text>
-                <Pressable onPress={() => onRemove(1)} accessibilityRole="button" accessibilityLabel={`Remove ${name(next.actionId)}`}>
+                <Pressable onPress={() => onRemove(index + 1)} accessibilityRole="button" accessibilityLabel={`Remove ${name(next.actionId)}`}>
                   <Text style={[ui.muted, { color: colors.scald }]}>×</Text>
                 </Pressable>
               </View>
-            ) : (
+            ))}
+            {tinker.queue.length < tinker.upgrades.queueSlots && (
               <Pressable
                 onPress={onAdd}
                 accessibilityRole="button"
@@ -138,13 +142,20 @@ export function ActionBar({
         <Glow active={lit.has("boiler")}>
           <Term term="boiler">
             <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-              <Gauge fraction={Math.max(0, steamLeft) / BOILER_MS} size={36} />
+              <Gauge fraction={Math.max(0, steamLeft) / (tinker.upgrades.boilerHours * 3_600_000)} size={36} />
               <Text style={[ui.number, { color: steamLeft > 2 * 3_600_000 ? colors.ink : colors.scald }]}>
                 {steamLeft > 0 ? duration(steamLeft) : "dry"}
               </Text>
             </View>
           </Term>
         </Glow>
+        {boostLeft > 0 && (
+          <Pressable onPress={onShop} accessibilityRole="button" accessibilityLabel={`Boiler Boost, ${duration(boostLeft)} left`}>
+            <Stat label="Boost">
+              <Text style={[ui.number, { color: colors.copper }]}>{duration(boostLeft)}</Text>
+            </Stat>
+          </Pressable>
+        )}
         <Term term="nerve">
           <Stat label="Nerve" icon="nerve">
             <Text style={[ui.number, { color: colors.verdigris }]}>
@@ -157,6 +168,11 @@ export function ActionBar({
             <CountUp value={tinker.crowns} style={[ui.number, { color: colors.brass }]} />
           </Stat>
         </Term>
+        <Pressable onPress={onShop} accessibilityRole="button" accessibilityLabel={`${tinker.cogs} Gilded Cogs; open the Cog Shop`}>
+          <Stat label="Cogs">
+            <CountUp value={tinker.cogs} style={[ui.number, { color: colors.brass }]} />
+          </Stat>
+        </Pressable>
         {Object.entries(tinker.story.needles).map(([needle, value]) => (
           <Term key={needle} term={needle as GlossaryTerm}>
             <Stat label={titleCase(needle.split(".")[1] ?? needle)} icon={needle.split(".")[1]}>

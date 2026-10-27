@@ -1,7 +1,8 @@
 // Appending to a Tinker's ordered event log, and the direct projection
-// changes the Exchange makes outside the rules. An Exchange event's payload
-// always carries `items` and `crowns` deltas, so the log alone rebuilds
-// the inventory and the purse.
+// changes the Exchange and the Cog Shop make outside the rules. An Exchange
+// event's payload always carries `items` and `crowns` deltas, and a Cog
+// Shop event's `items` and `cogs`, so the log alone rebuilds the inventory
+// and the purse.
 
 import type { Tx } from "./db.js";
 
@@ -50,4 +51,11 @@ export async function adjustCrowns(tx: Tx, tinkerId: number, delta: number): Pro
 
 export async function setLastSeq(tx: Tx, tinkerId: number, seq: number): Promise<void> {
   await tx.query("UPDATE tinkers SET last_seq = $2 WHERE id = $1", [tinkerId, seq]);
+}
+
+/** Changes a Tinker's Gilded Cogs (GDD section 8), refusing to spend Cogs it does not have. */
+export async function adjustCogs(tx: Tx, tinkerId: number, delta: number): Promise<void> {
+  if (delta === 0) return;
+  const row = (await tx.query("UPDATE tinkers SET cogs = cogs + $2 WHERE id = $1 AND cogs + $2 >= 0 RETURNING cogs", [tinkerId, delta])).rows[0];
+  if (!row) throw new Shortfall(`not enough Cogs for ${-delta}`);
 }

@@ -5,7 +5,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
-import { buildContent, type Action, type Content, type CurveRow } from "@long-boil/rules";
+import { buildContent, readCogShop, type Action, type Content, type CurveRow } from "@long-boil/rules";
 
 export interface StartStack {
   item: string;
@@ -104,6 +104,10 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
   const workOrderDir = join(dir, "work_orders");
   const ledgerDir = join(dir, "ledger");
   const ledger: LedgerPage[] = existsSync(ledgerDir) ? listJson(ledgerDir).map(readJson) : [];
+  const items = new Map(all("items", "items").map((item: ItemInfo) => [item.id, { id: item.id, name: item.name, flavour: item.flavour }]));
+  const shopPath = join(dir, "tuning", "cog-shop.json");
+  const shop = existsSync(shopPath) ? readCogShop(readJson(shopPath)) : null;
+  if (shop && !items.has(shop.crate.item)) throw new Error(`the Cog Shop sells ${shop.crate.item}, which is not an item`);
   return {
     rules: buildContent({
       version,
@@ -117,11 +121,12 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
       letters: listJson(join(dir, "letters")).map(readJson),
       workOrders: existsSync(workOrderDir) ? listJson(workOrderDir).map(readJson) : [],
       grocer: [...economy].filter(([, terms]) => terms.grocerPrice !== null).map(([item]) => item),
+      shop,
     }),
     start: { inventory: start.inventory, crowns: start.crowns },
     guide: guideSteps(dir),
     ledger: new Map(ledger.map((page) => [page.item, { id: page.id, item: page.item, title: page.title, text: page.text }])),
     economy,
-    items: new Map(all("items", "items").map((item: ItemInfo) => [item.id, { id: item.id, name: item.name, flavour: item.flavour }])),
+    items,
   };
 }

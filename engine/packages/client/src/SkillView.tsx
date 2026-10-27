@@ -241,7 +241,7 @@ function JobDetail({
   const valid = Number.isInteger(parsed) && parsed >= 1;
   const warning = planner.startWarning(id);
   const each = planner.secondsEach(id);
-  const full = tinker.queue.length >= 2;
+  const full = tinker.queue.length >= tinker.upgrades.queueSlots;
 
   return (
     <View style={[ui.panel, { borderColor: colors.brass, gap: 10 }]}>

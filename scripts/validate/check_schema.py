@@ -38,6 +38,9 @@
   content/ledger/<id without its "ledger." prefix>.json, so
   ledger.rustmoor.page_1 is content/ledger/rustmoor.page_1.json (file-name),
   since the Hester's Ledger screen reads one file per page.
+- The Cog Shop's terms (tuning.cog_shop/*) are the one file
+  content/tuning/cog-shop.json, and that file declares tuning.cog_shop/*
+  (GDD section 8).
 
 The register's own shape is the provenance check's job, not this one's.
 
@@ -74,11 +77,12 @@ SCHEMA_ONLY_IN = (
     ("tuning.work_orders/", "content/tuning/"),
 )
 
-# Work orders 013 and 021: schema family -> the one file it may be, and that file must
+# Work orders 013 and 021, and the Cog Shop: schema family -> the one file it may be, and that file must
 # declare it.
 SCHEMA_AT_PATH = (
     ("start/", "content/start.json"),
     ("guide/", "content/guide/first_session.json"),
+    ("tuning.cog_shop/", "content/tuning/cog-shop.json"),
 )
 
 

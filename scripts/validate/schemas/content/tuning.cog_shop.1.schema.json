@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tuning.cog_shop/1",
+  "title": "Cog Shop tuning, version 1",
+  "description": "The one file content/tuning/cog-shop.json: the Cog Shop's terms (GDD section 8, Monetization and Fairness). 'crate' names the Cog Crate item, the Cogs inside it, its price in US cents, the hours a bought crate stays locked before it can be opened or sold, and its Exchange sales tax as a fraction (0.15 is 15%). 'queue_slot' costs 'cogs' for one more queue slot, up to 'slots' in all. 'boiler_upgrade' costs 'cogs' for 'hours' more of the Boiler, up to 'max_hours'. 'night_lamp' costs 'cogs' and raises the Nerve cap to 'nerve_cap'; it buys no Nerve. 'boiler_boost' costs 'cogs' for work 'speed_percent' faster for 'hours'. 'derivation' is optional free text for the prices' source, which no check reads. 'revision' is optional and exists only so a register row's revision can match the file.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "crate", "queue_slot", "boiler_upgrade", "night_lamp", "boiler_boost"],
+  "properties": {
+    "schema": {"const": "tuning.cog_shop/1"},
+    "id": {"const": "tuning.global.cog_shop"},
+    "revision": {"type": "integer", "minimum": 1},
+    "crate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["item", "cogs", "price_usd_cents", "lock_hours", "exchange_tax"],
+      "properties": {
+        "item": {"type": "string", "pattern": "^item\\.global\\.[a-z][a-z0-9_]*$"},
+        "cogs": {"type": "integer", "minimum": 1},
+        "price_usd_cents": {"type": "integer", "minimum": 50},
+        "lock_hours": {"type": "integer", "minimum": 0},
+        "exchange_tax": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "queue_slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cogs", "slots"],
+      "properties": {"cogs": {"type": "integer", "minimum": 1}, "slots": {"type": "integer", "minimum": 3, "maximum": 3}}
+    },
+    "boiler_upgrade": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cogs", "hours", "max_hours"],
+      "properties": {
+        "cogs": {"type": "integer", "minimum": 1},
+        "hours": {"type": "integer", "minimum": 1},
+        "max_hours": {"type": "integer", "minimum": 12, "maximum": 24}
+      }
+    },
+    "night_lamp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cogs", "nerve_cap"],
+      "properties": {"cogs": {"type": "integer", "minimum": 1}, "nerve_cap": {"type": "integer", "minimum": 11}}
+    },
+    "boiler_boost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cogs", "speed_percent", "hours"],
+      "properties": {
+        "cogs": {"type": "integer", "minimum": 1},
+        "speed_percent": {"type": "integer", "minimum": 1, "maximum": 100},
+        "hours": {"type": "integer", "minimum": 1}
+      }
+    },
+    "derivation": {"type": "string"}
+  }
+}

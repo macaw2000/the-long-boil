@@ -1,0 +1,15 @@
+{
+  "schema": "tuning.economy/2",
+  "id": "tuning.global.economy",
+  "zone": "global",
+  "items": {
+    "item.global.cog_crate": {
+      "bound": false,
+      "collector_price": null,
+      "collector_weekly_cap": null
+    }
+  },
+  "anchors": {
+    "cog_crate": "GDD section 8: a crate can be opened or sold on the Exchange, so free players can buy Cogs with Crowns. No collector buys one."
+  }
+}

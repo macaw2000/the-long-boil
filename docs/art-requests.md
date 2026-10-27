@@ -101,6 +101,14 @@ Every sheet above was drawn and is in the game. The originals are kept in `art/c
 - **Scavenging, redrawn 25 October** (`tinker-scavenge.jpeg`): the first sheet's pair were two different scenes. Gemini ignored the 2 by 2 grid and drew two large cells over eight small ones; the import uses row 3's columns 3 and 1, the only cells with the same stance and pile. Columns 2 and 4 of each row lose the pile, and row 4 stands about 13 pixels further right.
 - **Still needed: the Tinker holding each weapon.** The real Tinker is drawn bare-handed, so until then every weapon shows the bare-handed Tinker in fights and in the Loadout. One sheet: the Tinker with each of the 14 weapons (Sheet B), idle and attacking, two frames each, same format as Sheet 5.
 
+## 7. The Cog Shop (1 sheet, 2 by 2), 27 October 2026
+
+The Cog Shop shows a fallback box for the Cog Crate, and nothing for the shop's own icon or the Cogs on the top bar. One small sheet, 64 by 64 each, matching the interface icons (Crowns, Nerve, the Post).
+
+```
+[pixel-art block] A 2 by 2 sheet of four small icons, each centred in its cell: (1) a Cog Crate, a small sealed wooden crate banded in brass, stencilled with a gear, its lid nailed shut; (2) a single Gilded Cog, a gold gear wheel with a bright rim, for the Cogs count beside Crowns; (3) the Cog Shop, a brass shop bell over a gear, for the places list beside Story, Exchange and Guild; (4) the Boiler Boost, a pressure gauge with its needle pushed into the red and a small flame under it. [format block, but say "a 2 by 2 grid" and "1:1 aspect ratio"]
+```
+
 ## Order of work
 
 Backgrounds and skill icons change the look most for the least work, so start there. Then Sheets A and B (every tile and the stores grid use them), the Rust Rats and Scrapjaw, the Tinker, and the vignettes.

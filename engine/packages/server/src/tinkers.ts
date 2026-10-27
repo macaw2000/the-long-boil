@@ -9,6 +9,7 @@ import type { GameContent } from "./content-loader.js";
 import { withTransaction, type Db, type Tx } from "./db.js";
 import { appendEvents, type LogEntry } from "./events.js";
 import { NotFound, settle, type TradeNote } from "./settle.js";
+import { deliverCrates } from "./shop.js";
 
 export { NotFound };
 
@@ -24,6 +25,10 @@ export interface TinkerView {
   id: number;
   name: string;
   crowns: number;
+  /** Gilded Cogs, from opened Cog Crates (GDD section 8). */
+  cogs: number;
+  /** What Cogs have bought: queue slots, the Boiler's hours, and when the Boiler Boost burns out. */
+  upgrades: { queueSlots: number; boilerHours: number; boostUntil: string | null };
   inventory: StackView[];
   skills: { skill: string; xp: number; level: number }[];
   queue: QueueEntry[];
@@ -76,12 +81,16 @@ export interface Loaded {
   state: TinkerState;
   stacks: StackView[];
   lastSeq: number;
+  /** The Cog Shop's queue slots and Boiler hours. */
+  queueSlots: number;
+  boilerHours: number;
 }
 
 export async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
   const row = (
     await tx.query(
-      `SELECT progress_ms, resolved_to, steam_until, last_seq, crowns, weapon, rng, ration_debt, pity, bosses_beaten
+      `SELECT progress_ms, resolved_to, steam_until, last_seq, crowns, weapon, rng, ration_debt, pity, bosses_beaten,
+         boost_until, head_boosted, queue_slots, boiler_hours
        FROM tinkers WHERE id = $1 FOR UPDATE`,
       [tinkerId],
     )
@@ -116,9 +125,13 @@ export async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
       rationDebt: Number(row.ration_debt),
       pity: row.pity,
       bossesBeaten: row.bosses_beaten,
+      boostUntil: row.boost_until.getTime(),
+      headBoosted: row.head_boosted,
     },
     stacks,
     lastSeq: Number(row.last_seq),
+    queueSlots: row.queue_slots,
+    boilerHours: row.boiler_hours,
   };
 }
 
@@ -177,7 +190,7 @@ export async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state:
 
   await tx.query(
     `UPDATE tinkers SET progress_ms = $2, resolved_to = $3, steam_until = $4, last_seq = $5, content_version = $6,
-       crowns = $7, weapon = $8, rng = $9, ration_debt = $10, pity = $11, bosses_beaten = $12
+       crowns = $7, weapon = $8, rng = $9, ration_debt = $10, pity = $11, bosses_beaten = $12, head_boosted = $13
      WHERE id = $1`,
     [
       tinkerId,
@@ -192,12 +205,15 @@ export async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state:
       state.rationDebt,
       JSON.stringify(state.pity),
       JSON.stringify(state.bossesBeaten),
+      state.headBoosted,
     ],
   );
 }
 
 export async function loadStory(tx: Tx, tinkerId: number): Promise<StoryState> {
-  const row = (await tx.query("SELECT nerve, nerve_at, post_at, hand, needle_at, check_in_at, answered, played_at FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
+  const row = (
+    await tx.query("SELECT nerve, nerve_at, post_at, hand, needle_at, check_in_at, answered, played_at, nerve_cap FROM tinkers WHERE id = $1", [tinkerId])
+  ).rows[0];
   const qualities: Record<string, number> = {};
   for (const quality of (await tx.query("SELECT name, value FROM qualities WHERE tinker_id = $1", [tinkerId])).rows) {
     qualities[quality.name] = quality.value;
@@ -212,6 +228,7 @@ export async function loadStory(tx: Tx, tinkerId: number): Promise<StoryState> {
     checkInAt: row.check_in_at ? row.check_in_at.getTime() : null,
     answered: row.answered,
     playedAt: row.played_at,
+    nerveCap: row.nerve_cap,
   };
 }
 
@@ -239,10 +256,10 @@ export async function saveStory(tx: Tx, tinkerId: number, before: StoryState, af
 }
 
 function summarizeStory(story: StoryState, tinker: TinkerState, content: GameContent, now: number): StorySummary {
-  const full = story.nerve >= rules.NERVE_CAP;
+  const full = story.nerve >= rules.nerveCapOf(story);
   return {
     nerve: story.nerve,
-    nerveCap: rules.NERVE_CAP,
+    nerveCap: rules.nerveCapOf(story),
     nextNerveAt: full ? null : new Date(story.nerveAt + rules.NERVE_MS).toISOString(),
     needles: rules.visibleNeedles(story.qualities),
     letters: story.hand.length,
@@ -275,8 +292,9 @@ export interface Advanced {
  */
 export async function advance(tx: Tx, content: GameContent, tinkerId: number, now: number, refill: boolean, visit = false): Promise<Advanced> {
   const trades = await settle(tx, content, tinkerId, now);
+  await deliverCrates(tx, content, tinkerId, now);
   const loaded = await lockAndLoad(tx, tinkerId);
-  const resolved = refill ? rules.checkIn(loaded.state, content.rules, now) : rules.resolve(loaded.state, content.rules, now);
+  const resolved = refill ? rules.checkIn(loaded.state, content.rules, now, loaded.boilerHours) : rules.resolve(loaded.state, content.rules, now);
   const storyBefore = await loadStory(tx, tinkerId);
   // A workshop open may count as a visit first, so a scene gated on visits opens as the player arrives.
   const counted = visit ? rules.countCheckIn(storyBefore, now) : { story: storyBefore, event: null };
@@ -310,12 +328,19 @@ function waitingOrders(desk: rules.WorkOrderState, now: number): number {
 }
 
 export async function view(tx: Tx, tinkerId: number, content: GameContent, now = Date.now()): Promise<TinkerView> {
-  const row = (await tx.query("SELECT id, name, crowns, progress_ms, steam_until, resolved_to, work_orders FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
+  const row = (await tx.query("SELECT id, name, crowns, cogs, progress_ms, steam_until, resolved_to, work_orders FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
   const loaded = await lockAndLoad(tx, tinkerId);
+  const boostUntil = loaded.state.boostUntil;
   return {
     id: Number(row.id),
     name: row.name,
     crowns: Number(row.crowns),
+    cogs: Number(row.cogs),
+    upgrades: {
+      queueSlots: loaded.queueSlots,
+      boilerHours: loaded.boilerHours,
+      boostUntil: boostUntil > now ? new Date(boostUntil).toISOString() : null,
+    },
     inventory: loaded.stacks.sort((a, b) => a.item.localeCompare(b.item) || Number(a.bound) - Number(b.bound)),
     skills: Object.entries(loaded.state.skillXp)
       .map(([skill, xp]) => ({ skill, xp, level: rules.levelFor(xp, content.rules) }))
@@ -462,14 +487,14 @@ async function atCheckIn(
   content: GameContent,
   tinkerId: number,
   now: number,
-  change: (state: TinkerState) => TinkerState,
+  change: (state: TinkerState, loaded: Loaded) => TinkerState,
   entry: LogEntry,
 ): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
     const advanced = await advance(tx, content, tinkerId, now, true);
     let changed: TinkerState;
     try {
-      changed = change(advanced.state);
+      changed = change(advanced.state, advanced.loaded);
     } catch (error) {
       throw new BadRequest((error as Error).message);
     }
@@ -487,7 +512,7 @@ export async function setQueue(db: Db, content: GameContent, tinkerId: number, q
       throw new BadRequest(`unknown action or monster ${entry.actionId}`);
     }
   }
-  return atCheckIn(db, content, tinkerId, now, (state) => rules.setQueue(state, queue), { type: "queue_set", at: now, payload: { queue } });
+  return atCheckIn(db, content, tinkerId, now, (state, loaded) => rules.setQueue(state, queue, loaded.queueSlots), { type: "queue_set", at: now, payload: { queue } });
 }
 
 /** Equips a held weapon at a check-in: resolves first, so the fight under way finishes with the old one. */

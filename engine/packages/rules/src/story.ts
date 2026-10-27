@@ -121,6 +121,13 @@ export interface StoryState {
   answered: string[];
   /** When each storylet with a cooldown was last played. */
   playedAt: Record<string, number>;
+  /** The Nerve cap, raised by the Cog Shop's Night Lamp (GDD section 8); absent means NERVE_CAP. */
+  nerveCap?: number;
+}
+
+/** A Tinker's Nerve cap. */
+export function nerveCapOf(story: StoryState): number {
+  return story.nerveCap ?? NERVE_CAP;
 }
 
 export type StoryEvent =
@@ -209,14 +216,15 @@ export function odds(skill: number, difficulty: number): number {
 
 /** Nerve as of `now`, with the time the next point started accruing. */
 function regainNerve(story: StoryState, now: number) {
-  if (story.nerve >= NERVE_CAP) {
+  const cap = nerveCapOf(story);
+  if (story.nerve >= cap) {
     story.nerveAt = Math.max(story.nerveAt, now);
     return;
   }
   const gained = Math.floor((now - story.nerveAt) / NERVE_MS);
   if (gained <= 0) return;
-  story.nerve = Math.min(NERVE_CAP, story.nerve + gained);
-  story.nerveAt = story.nerve >= NERVE_CAP ? now : story.nerveAt + gained * NERVE_MS;
+  story.nerve = Math.min(cap, story.nerve + gained);
+  story.nerveAt = story.nerve >= cap ? now : story.nerveAt + gained * NERVE_MS;
 }
 
 function random(tinker: TinkerState): number {
@@ -382,7 +390,7 @@ export function playScene(
 
   const story = cloneStory(previous);
   const tinker = { ...previousTinker };
-  if (story.nerve >= NERVE_CAP) story.nerveAt = now;
+  if (story.nerve >= nerveCapOf(story)) story.nerveAt = now;
   story.nerve -= scene.nerve;
 
   let success = true;

@@ -82,6 +82,8 @@ export interface Content {
   weapons: Weapon[];
   items: Item[];
   totalXp: number[];
+  /** The Cog Shop's terms; the crate's own Exchange tax is the one the Exchange shows for it. */
+  shop: { crate: { item: string; exchangeTax: number } } | null;
 }
 
 export interface QueueEntry {
@@ -93,6 +95,10 @@ export interface Tinker {
   id: number;
   name: string;
   crowns: number;
+  /** Gilded Cogs, from opened Cog Crates. */
+  cogs: number;
+  /** What Cogs have bought; boostUntil is null when no Boiler Boost burns. */
+  upgrades: { queueSlots: number; boilerHours: number; boostUntil: string | null };
   inventory: { item: string; qty: number; bound: boolean }[];
   skills: { skill: string; xp: number; level: number }[];
   queue: QueueEntry[];
@@ -235,6 +241,27 @@ export interface WorkOrderDesk {
 
 export type DeskOutcome = Outcome & { desk: WorkOrderDesk };
 
+export type Purchase = "queue_slot" | "boiler_upgrade" | "night_lamp" | "boiler_boost";
+
+/** The Cog Shop as one Tinker sees it (packages/server/src/shop.ts). */
+export interface ShopView {
+  cogs: number;
+  crate: { item: string; cogs: number; priceCents: number; lockHours: number; exchangeTax: number };
+  crates: number;
+  arriving: { qty: number; unlocksAt: string }[];
+  /** Each upgrade's price in Cogs, or null once it is at its most. */
+  offers: { id: Purchase; cogs: number | null }[];
+  upgrades: { queueSlots: number; boilerHours: number; nerveCap: number; boostUntil: string | null };
+  terms: {
+    queueSlot: { cogs: number; slots: number };
+    boilerUpgrade: { cogs: number; hours: number; maxHours: number };
+    nightLamp: { cogs: number; nerveCap: number };
+    boost: { cogs: number; percent: number; hours: number };
+  };
+}
+
+export type ShopOutcome = Outcome & { shop: ShopView };
+
 export type GuildRank = "leader" | "officer" | "member";
 
 export interface GuildView {
@@ -334,6 +361,10 @@ export const api = {
   devSkip: (hours: number) => request<{ offsetMs: number; now: string }>("POST", "/dev/skip", { hours }),
   devStory: (id: number, change: { qualities?: Record<string, number>; fillNerve?: boolean }) =>
     request<StoryOutcome>("POST", `/dev/tinkers/${id}/story`, change),
+  shop: (id: number) => request<ShopOutcome>("GET", `/tinkers/${id}/shop`),
+  openCrates: (id: number, qty: number) => request<ShopOutcome>("POST", `/tinkers/${id}/shop/open`, { qty }),
+  buy: (id: number, purchase: Purchase) => request<ShopOutcome>("POST", `/tinkers/${id}/shop/buy`, { purchase }),
+  devCrates: (id: number, qty: number, locked = false) => request<ShopOutcome>("POST", `/dev/tinkers/${id}/crates`, { qty, locked }),
   fights: (id: number) => request<{ fights: FightOutlook[] }>("GET", `/tinkers/${id}/fights`),
   loadout: (id: number) => request<{ weapons: LoadoutWeapon[] }>("GET", `/tinkers/${id}/loadout`),
   story: (id: number) => request<StoryOutcome>("GET", `/tinkers/${id}/story`),
