@@ -219,6 +219,7 @@ export function buildApi({
     dev: clock ? { offsetMs: clock.offset() } : null,
     totalXp: content.rules.totalXp,
     shop: content.rules.shop,
+    ration: { item: content.rules.ration.item, bossCap: content.rules.combat.BOSS_RATION_CAP_PER_ATTEMPT ?? 0 },
   }));
 
   if (clock) {

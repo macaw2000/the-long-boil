@@ -1,11 +1,12 @@
 // The stores as a grid of icons with counts, after Milky Way Idle's
 // inventory: the name shows on hover or tap, and bound items carry a small
 // padlock, from the interface sheet. The padlock means "not for sale", not
-// "not for use", so the name line says so.
+// "not for use", so the name line says so. The chosen item's flavour shows
+// beneath, and for a Ration how it is used, since nothing is eaten by hand.
 
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import type { Tinker } from "./api";
+import type { Content, Tinker } from "./api";
 import { ItemIcon, UiIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
@@ -15,7 +16,7 @@ function short(qty: number): string {
   return qty.toLocaleString();
 }
 
-export function Stores({ tinker, name }: { tinker: Tinker; name: (id: string) => string }) {
+export function Stores({ content, tinker, name }: { content: Content; tinker: Tinker; name: (id: string) => string }) {
   const [shown, setShown] = useState<string | null>(null);
   const label = (stack: Tinker["inventory"][number]) =>
     `${name(stack.item)}: ${stack.qty.toLocaleString()}${stack.bound ? ". Bound: yours to use, but not to sell or trade" : ""}`;
@@ -58,6 +59,13 @@ export function Stores({ tinker, name }: { tinker: Tinker; name: (id: string) =>
         })}
       </View>
       <Text style={[ui.muted, { minHeight: 18 }]}>{current ? label(current) : tinker.inventory.length ? "Point at an item for its name." : ""}</Text>
+      {current && <Text style={[ui.muted, { fontStyle: "italic" }]}>{content.items.find((item) => item.id === current.item)?.flavour}</Text>}
+      {current?.item === content.ration.item && (
+        <Text style={[ui.muted, { color: colors.verdigris }]}>
+          Eaten on its own in a fight as you get hurt; you never eat one by hand. Keep some in the stores before you fight. A boss attempt takes at most{" "}
+          {content.ration.bossCap}.
+        </Text>
+      )}
     </View>
   );
 }

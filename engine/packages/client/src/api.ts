@@ -84,6 +84,8 @@ export interface Content {
   totalXp: number[];
   /** The Cog Shop's terms; the crate's own Exchange tax is the one the Exchange shows for it. */
   shop: { crate: { item: string; exchangeTax: number } } | null;
+  /** The food a fight eats, and how many a boss attempt may. */
+  ration: { item: string; bossCap: number };
 }
 
 export interface QueueEntry {

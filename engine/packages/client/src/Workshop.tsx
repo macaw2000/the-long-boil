@@ -371,7 +371,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       </View>
     ) : place === "stores" ? (
       <View style={{ gap: 12 }}>
-        <Stores tinker={tinker} name={name} />
+        <Stores content={content} tinker={tinker} name={name} />
         {loadout}
       </View>
     ) : (
@@ -499,7 +499,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         </ScrollView>
         {wide && (
           <ScrollView style={{ width: 330, flexGrow: 0 }} contentContainerStyle={{ padding: 16, paddingLeft: 0, gap: 12 }}>
-            <Stores tinker={tinker} name={name} />
+            <Stores content={content} tinker={tinker} name={name} />
             {loadout}
             <View style={{ height: 460 }}>{chatPanel}</View>
           </ScrollView>
