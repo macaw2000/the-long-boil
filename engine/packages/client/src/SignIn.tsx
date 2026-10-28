@@ -52,7 +52,32 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
   const scroller = useRef<ScrollView>(null);
   const showcaseTop = useRef(0);
 
-  const panel = (
+  // Before signing in, the panel is the solicitor's letter itself, which arrives sealed.
+  const letter = cognitoEnabled && !signedIn && (
+    <Letter still={still}>
+      <Text style={[ui.text, { fontSize: 14, fontStyle: "italic", textAlign: "center", color: PAPER.muted }]}>
+        The sea has boiled for 312 years. Nobody will say why.
+      </Text>
+      <Text style={[ui.heading, { fontSize: 22, textAlign: "center", color: PAPER.heading }]}>Sign in to play</Text>
+      <Text style={[ui.text, { textAlign: "center", color: PAPER.ink }]}>The tenancy of No. 9 Sprocket Row, "contents included", is yours.</Text>
+      <View style={{ gap: 10 }}>
+        {providers.length ? (
+          providers.map((provider) => <ProviderButton key={provider} provider={provider} onPress={() => signInWith(provider)} />)
+        ) : (
+          <Pressable style={[ui.button, { paddingVertical: 14 }]} onPress={() => signInWith()} accessibilityRole="button">
+            <Text style={[ui.buttonText, { fontSize: 17 }]}>Sign in</Text>
+          </Pressable>
+        )}
+      </View>
+      {error && <Text style={[ui.text, { color: colors.scald, textAlign: "center" }]}>{error}</Text>}
+      <View style={{ flexDirection: "row", justifyContent: "center", gap: 16 }}>
+        <LegalLink path="/privacy.html" label="Privacy" color={PAPER.muted} />
+        <LegalLink path="/terms.html" label="Terms" color={PAPER.muted} />
+      </View>
+    </Letter>
+  );
+
+  const panel = letter || (
     <View
       style={[
         ui.panel,
@@ -76,19 +101,9 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
           The sea has boiled for 312 years. Nobody will say why.
         </Text>
       )}
-      <Text style={[ui.heading, { fontSize: 22, textAlign: "center" }]}>{cognitoEnabled && !signedIn ? "Sign in to play" : "Your workshop"}</Text>
+      <Text style={[ui.heading, { fontSize: 22, textAlign: "center" }]}>Your workshop</Text>
       <Text style={[ui.muted, { textAlign: "center" }]}>A solicitor's letter: the tenancy of No. 9 Sprocket Row, "contents included", is yours.</Text>
-      {cognitoEnabled && !signedIn ? (
-        <View style={{ gap: 10 }}>
-          {providers.length ? (
-            providers.map((provider) => <ProviderButton key={provider} provider={provider} onPress={() => signInWith(provider)} />)
-          ) : (
-            <Pressable style={[ui.button, { paddingVertical: 14 }]} onPress={() => signInWith()} accessibilityRole="button">
-              <Text style={[ui.buttonText, { fontSize: 17 }]}>Sign in</Text>
-            </Pressable>
-          )}
-        </View>
-      ) : cognitoEnabled ? null : (
+      {cognitoEnabled ? null : (
         <TextInput
           style={ui.input}
           value={login}
@@ -103,7 +118,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
           accessibilityLabel="Login"
         />
       )}
-      {cognitoEnabled && (!signedIn || tinkers === null) ? null : tinkers === null ? (
+      {cognitoEnabled && tinkers === null ? null : tinkers === null ? (
         <Pressable
           style={[ui.button, !login.trim() && { opacity: 0.4 }]}
           disabled={!login.trim()}
@@ -139,7 +154,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
         </View>
       )}
       {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
-      {cognitoEnabled && signedIn && (
+      {cognitoEnabled && (
         <Pressable onPress={signOut} accessibilityRole="button">
           <Text style={ui.muted}>Sign out</Text>
         </Pressable>
@@ -170,9 +185,9 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
         // the middle of the picture where the eye lands, not down at the edge.
         <View style={{ width: "100%", height, alignItems: "center", padding: 16, backgroundColor: colors.soot, overflow: "hidden" }}>
           <LivingSplash still={still} />
-          <View style={{ flex: 1.3 }} />
+          <View style={{ flex: 2 }} />
           {panel}
-          <View style={{ flex: 0.6, justifyContent: "flex-end", paddingBottom: 8 }}>
+          <View style={{ flex: 0.4, justifyContent: "flex-end", paddingBottom: 8 }}>
             {showcase && <SeeInside still={still} onPress={seeInside} />}
           </View>
         </View>
@@ -498,11 +513,151 @@ function Showcase({ wide }: { wide: boolean }) {
   );
 }
 
+/** Ink on the letter's cream paper, where the theme's light-on-soot colours would not read. */
+const PAPER = { ink: "#3a2a18", heading: "#6b4a1c", muted: "#5e4c36" };
+
+/** Where the seal sits on the envelope's flap, and how wide, as shares of the envelope (art/letter/, 720 by 546). */
+const ENVELOPE_ASPECT = 720 / 546;
+const SEAL = { x: 0.5, y: 0.635, width: 0.2, aspect: 240 / 228 };
+const LETTER_OPENED = "longboil.letterOpened";
+
+function letterOpenedBefore() {
+  try {
+    return globalThis.localStorage?.getItem(LETTER_OPENED) === "1";
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * The sign-in as the solicitor's letter the game opens with (docs/gdd.md).
+ * It arrives sealed; a tap cracks the wax, the halves fall away, the flap
+ * opens and the letter rises out with the sign-in written on it. Someone
+ * who has opened it once finds it open, and with less motion asked for it
+ * simply opens.
+ */
+function Letter({ still, children }: { still: boolean; children: React.ReactNode }) {
+  const [opened, setOpened] = useState(letterOpenedBefore);
+  const [width, setWidth] = useState(0);
+  const crack = useRef(new Animated.Value(opened ? 1 : 0)).current;
+  const flap = useRef(new Animated.Value(opened ? 1 : 0)).current;
+  const rise = useRef(new Animated.Value(opened ? 1 : 0)).current;
+  const breathe = useLoop(2600, 0, still || opened);
+
+  const breakSeal = () => {
+    if (opened) return;
+    try {
+      globalThis.localStorage?.setItem(LETTER_OPENED, "1");
+    } catch {}
+    if (still) {
+      [crack, flap, rise].forEach((value) => value.setValue(1));
+      setOpened(true);
+      return;
+    }
+    Animated.parallel([
+      Animated.timing(crack, { toValue: 1, duration: 650, easing: Easing.out(Easing.quad), useNativeDriver: false }),
+      Animated.timing(flap, { toValue: 1, delay: 250, duration: 250, useNativeDriver: false }),
+      Animated.timing(rise, { toValue: 1, delay: 500, duration: 850, easing: Easing.out(Easing.back(1.4)), useNativeDriver: false }),
+    ]).start(() => setOpened(true));
+  };
+
+  // The envelope a little narrower than the letter, so it never stands taller than it.
+  const envelopeWidth = width * 0.92;
+  const envelopeHeight = envelopeWidth / ENVELOPE_ASPECT;
+  const sealWidth = envelopeWidth * SEAL.width;
+  const sealHeight = sealWidth / SEAL.aspect;
+  const sealAt = { position: "absolute" as const, left: envelopeWidth * SEAL.x - sealWidth / 2, top: envelopeHeight * SEAL.y - sealHeight / 2, width: sealWidth, height: sealHeight };
+  const half = (file: string, side: -1 | 1) => (
+    <Animated.Image
+      source={{ uri: art(`letter/${file}`) }}
+      style={{
+        ...sealAt,
+        opacity: crack.interpolate({ inputRange: [0, 0.01, 0.6, 1], outputRange: [0, 1, 1, 0] }),
+        transform: [
+          { translateX: crack.interpolate({ inputRange: [0, 1], outputRange: [0, side * sealWidth * 0.5] }) },
+          { translateY: crack.interpolate({ inputRange: [0, 0.3, 1], outputRange: [0, -sealHeight * 0.1, sealHeight * 1.4] }) },
+          { rotate: crack.interpolate({ inputRange: [0, 1], outputRange: ["0deg", `${side * 35}deg`] }) },
+        ],
+      }}
+    />
+  );
+
+  return (
+    <View style={{ width: "100%", maxWidth: 460 }} onLayout={(event) => setWidth(event.nativeEvent.layout.width)}>
+      {/* The letter, behind the envelope until it has risen out of it. */}
+      <Animated.View
+        pointerEvents={opened ? "auto" : "none"}
+        style={{
+          opacity: rise.interpolate({ inputRange: [0, 0.25, 1], outputRange: [0, 1, 1] }),
+          transform: [
+            { translateY: rise.interpolate({ inputRange: [0, 1], outputRange: [envelopeHeight * 0.3, 0] }) },
+            { scale: rise.interpolate({ inputRange: [0, 1], outputRange: [0.8, 1] }) },
+          ],
+          filter: "drop-shadow(0 12px 24px rgba(0, 0, 0, 0.6))",
+        }}
+      >
+        <Image source={{ uri: art("letter/paper.webp") }} resizeMode="stretch" style={{ position: "absolute", inset: 0 }} />
+        <View style={{ gap: 12, paddingHorizontal: "12%", paddingVertical: "9%" }}>{children}</View>
+      </Animated.View>
+      {!opened && width > 0 && (
+        <Animated.View
+          style={{
+            position: "absolute",
+            left: "4%",
+            right: "4%",
+            top: "50%",
+            marginTop: -envelopeHeight / 2,
+            height: envelopeHeight,
+            opacity: rise.interpolate({ inputRange: [0, 0.5], outputRange: [1, 0], extrapolate: "clamp" }),
+            transform: [
+              { translateY: Animated.add(breathe.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, -5, 0] }), rise.interpolate({ inputRange: [0, 1], outputRange: [0, envelopeHeight * 0.5] })) },
+            ],
+            filter: "drop-shadow(0 12px 24px rgba(0, 0, 0, 0.6))",
+          }}
+        >
+          <Pressable onPress={breakSeal} accessibilityRole="button" accessibilityLabel="Break the seal and open the letter" style={{ flex: 1 }}>
+            <Animated.Image source={{ uri: art("letter/closed.webp") }} style={{ position: "absolute", inset: 0, opacity: Animated.subtract(1, flap) }} />
+            <Animated.Image source={{ uri: art("letter/open.webp") }} style={{ position: "absolute", inset: 0, opacity: flap }} />
+            <Animated.Text
+              style={[
+                ui.text,
+                { position: "absolute", left: 0, right: 0, top: "16%", textAlign: "center", fontStyle: "italic", fontSize: Math.max(14, envelopeWidth * 0.04), color: PAPER.ink },
+                { opacity: Animated.subtract(1, flap) },
+              ]}
+            >
+              To the new tenant,{"\n"}No. 9 Sprocket Row
+            </Animated.Text>
+            <Animated.Image
+              source={{ uri: art("letter/seal.webp") }}
+              style={{
+                ...sealAt,
+                opacity: crack.interpolate({ inputRange: [0, 0.01], outputRange: [1, 0], extrapolate: "clamp" }),
+                transform: [{ scale: breathe.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 1.07, 1] }) }],
+              }}
+            />
+            {half("seal-left.webp", -1)}
+            {half("seal-right.webp", 1)}
+            <Animated.Text
+              style={[
+                ui.heading,
+                { position: "absolute", left: 0, right: 0, bottom: "7%", textAlign: "center", fontSize: Math.max(15, envelopeWidth * 0.04), color: PAPER.heading },
+                { opacity: Animated.subtract(1, crack) },
+              ]}
+            >
+              Break the seal
+            </Animated.Text>
+          </Pressable>
+        </Animated.View>
+      )}
+    </View>
+  );
+}
+
 /** The privacy and terms pages are static files beside the bundle (public/). */
-function LegalLink({ path, label }: { path: string; label: string }) {
+function LegalLink({ path, label, color }: { path: string; label: string; color?: string }) {
   const open = () => Linking.openURL(globalThis.location ? `${globalThis.location.origin}${path}` : `https://thelongboil.com${path}`);
   return (
-    <Text onPress={open} accessibilityRole="link" style={[ui.muted, { fontSize: 13, textDecorationLine: "underline" }]}>
+    <Text onPress={open} accessibilityRole="link" style={[ui.muted, { fontSize: 13, textDecorationLine: "underline" }, color ? { color } : null]}>
       {label}
     </Text>
   );

@@ -394,6 +394,7 @@ def main() -> None:
 
     written += app_icons()
     written += splash_layers()
+    written += letter()
     print(f"wrote {written} files to {SPRITES.relative_to(ROOT)} and {PAINTINGS.relative_to(ROOT)}")
 
 
@@ -502,6 +503,79 @@ def splash_layers() -> int:
         ship = ship.crop(content_box(ship))
         ship.thumbnail((360, 360), Image.LANCZOS)
         ship.save(SPLASH / f"airship{index + 1}.webp", quality=85, method=6)
+    return 6
+
+
+
+LETTER = ROOT / "art" / "letter"
+
+
+def pieces(image: Image.Image) -> list[Image.Image]:
+    """Each separate shape in a keyed image, largest first, each on a clear canvas the image's size."""
+    width, height = image.size
+    solid = bytearray(1 if a else 0 for a in image.getchannel("A").tobytes())
+    label = [0] * (width * height)
+    sizes = []
+    for start in range(width * height):
+        if not solid[start] or label[start]:
+            continue
+        sizes.append(0)
+        mark = len(sizes)
+        stack = [start]
+        label[start] = mark
+        while stack:
+            index = stack.pop()
+            sizes[-1] += 1
+            x = index % width
+            for neighbour in (index - 1 if x else -1, index + 1 if x < width - 1 else -1, index - width, index + width):
+                if 0 <= neighbour < width * height and solid[neighbour] and not label[neighbour]:
+                    label[neighbour] = mark
+                    stack.append(neighbour)
+    found = []
+    for mark in sorted(range(1, len(sizes) + 1), key=lambda m: -sizes[m - 1]):
+        piece = Image.new("RGBA", image.size, (0, 0, 0, 0))
+        mask = Image.frombytes("L", image.size, bytes(255 if m == mark else 0 for m in label))
+        piece.paste(image, (0, 0), mask)
+        found.append(piece)
+    return found
+
+
+def letter() -> int:
+    """
+    The solicitor's letter the sign-in opens as (docs/art-requests.md, 10).
+    The two envelopes are cut to one box, so the open one lands exactly where
+    the closed one was. The seal sheet has the whole seal on the left and the
+    broken one on the right; the broken one's halves are saved apart, each on
+    the whole seal's canvas, so all three line up and the halves can fall away.
+    """
+    LETTER.mkdir(parents=True, exist_ok=True)
+    closed, opened = keyed_painting(sheet("letter-closed.jpeg")), keyed_painting(sheet("letter-open.jpeg"))
+    boxes = [content_box(closed), content_box(opened)]
+    box = (min(b[0] for b in boxes), min(b[1] for b in boxes), max(b[2] for b in boxes), max(b[3] for b in boxes))
+    for name, image in (("closed", closed), ("open", opened)):
+        image = image.crop(box)
+        image.thumbnail((720, 720), Image.LANCZOS)
+        image.save(LETTER / f"{name}.webp", quality=85, method=6)
+    paper = keyed_painting(sheet("letter-paper.jpeg"))
+    paper = paper.crop(content_box(paper))
+    paper.thumbnail((960, 960), Image.LANCZOS)
+    paper.save(LETTER / "paper.webp", quality=85, method=6)
+
+    seals = keyed_painting(sheet("letter-seal.jpeg"))
+    middle = seals.width // 2
+    whole, broken = seals.crop((0, 0, middle, seals.height)), seals.crop((middle, 0, seals.width, seals.height))
+    whole, broken = whole.crop(content_box(whole)), broken.crop(content_box(broken))
+    # One canvas for all three, as wide as the broken seal, each centred on it.
+    size = (max(whole.width, broken.width), max(whole.height, broken.height))
+    def centred(image: Image.Image) -> Image.Image:
+        canvas = Image.new("RGBA", size, (0, 0, 0, 0))
+        canvas.alpha_composite(image, ((size[0] - image.width) // 2, (size[1] - image.height) // 2))
+        canvas.thumbnail((240, 240), Image.LANCZOS)
+        return canvas
+    halves = pieces(broken)[:2]
+    left, right = sorted(halves, key=lambda half: content_box(half)[0])
+    for name, image in (("seal", whole), ("seal-left", left), ("seal-right", right)):
+        centred(image).save(LETTER / f"{name}.webp", quality=88, method=6)
     return 6
 
 

@@ -144,6 +144,8 @@ Save them as JPEGs in `~/Downloads` with those names. I'll check that the four f
 
 ## 10. The solicitor's letter, 27 October 2026
 
+Done: all four are in `art/letter/`, cut by `scripts/art/import_art.py`, and the sign-in opens as the letter. Gemini folded the open flap back as a band rather than standing it up; it lines up with the closed one, so the switch reads as the flap opening. The seal's broken halves came apart cleanly and are cut as separate pieces.
+
 The sign-in box becomes the letter the game opens with (`docs/gdd.md`: "You arrive with a solicitor's letter"). It arrives sealed in front of the painting. One tap cracks the wax seal, the flap lifts, and the letter rises out of the envelope with the sign-in buttons written on it. Four pictures, each a separate request so nothing has to line up across a grid. Painted, not pixel art: **attach `art/splash.jpg` to every request** so the style and light match.
 
 Animation needs the closed and open envelopes to line up exactly, so the open one is an edit of the closed one: attach the closed result (as well as `splash.jpg`) to request 2. The seal is drawn on its own, so the code can crack it and drop the halves, and the paper is blank, because the words on it are the game's own text, set over it.
