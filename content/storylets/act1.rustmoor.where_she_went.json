@@ -1,0 +1,54 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.rustmoor.where_she_went",
+  "act": 1,
+  "location": "rustmoor",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": "==100",
+    "ambition.lantern": "==1"
+  },
+  "nerve": 1,
+  "description": "Scrapjaw's den is a crater of rubbish now, picked over by the Rats who are left. Somewhere in Kettleport is the last person to see Hester Vane, and somewhere in this heap is how her page got into a Rat king's chest. Neither is going to come to you. The third column above your bench is still empty, and you have a free afternoon, a stout pair of gloves and three people you could ask.",
+  "options": [
+    {
+      "label": "Go through the den yourself, layer by layer, for anything else of hers.",
+      "challenge": {
+        "quality": "scavenging",
+        "difficulty": 16
+      },
+      "success": {
+        "text": "Under three centuries of the city's leavings, wedged in a crate of Board paperwork, you find a coil of tarred line, every fathom marked, cut clean at the forty-first mark. It was not worn through. Someone with a sharp knife and a steady hand cut it, and then, being Hester, wound up the rest neatly before throwing it away. You write it in the third column: one line, cut. It is the first entry.",
+        "changes": {
+          "ambition.lantern": 5
+        }
+      },
+      "failure": {
+        "text": "You find a boot, a Gazette from before you were born and the nest of a Rust Rat who objects. Nothing of Hester's. You leave Rustmoor bitten and none the wiser, and the third column stays empty for another night.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Ask Pip, who runs every canister on Sprocket Row, where her last one went.",
+      "success": {
+        "text": "Pip thinks about it over a whole cup of tea. \"Her last canister went up the Gaugehill tube. Not the Board's tube, the other one. To a name I'm not supposed to say, and I won't, and it was Rook.\" Pip looks at the cup. \"She tipped me double that day. She never tipped.\" You write it in the third column: one letter, to Rook. It is the first entry.",
+        "changes": {
+          "favour.stokers": "+1",
+          "ambition.lantern": 5
+        }
+      }
+    },
+    {
+      "label": "Ask Professor Brassbuckle when she last saw Hester, and watch her answer.",
+      "success": {
+        "text": "Brassbuckle says it was a Tuesday, or possibly a Thursday, and that Hester was in excellent spirits, and that the Polytechnic boilers are due for inspection, and had you heard about the new lathe. She walks you to the gate herself. On the way she straightens your collar, which she has never done. You write it in the third column: Brassbuckle, does not remember. It is the first entry, and you underline it.",
+        "changes": {
+          "favour.polytechnic": "+1",
+          "ambition.lantern": 5
+        }
+      }
+    }
+  ]
+}

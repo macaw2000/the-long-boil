@@ -1,0 +1,57 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.polytechnic.how_deep",
+  "act": 1,
+  "location": "polytechnic",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": "==100",
+    "ambition.fathom": "==1"
+  },
+  "nerve": 1,
+  "description": "The card is propped against your drawing on the Polytechnic bench, where you left it: a diver's helmet, and \"Yes. But how deep?\" in pencil. Your instrument needs a casing that will not fail in the Scald, and the Polytechnic has the only boiler in Kettleport you are allowed to drown things in. It also has Professor Brassbuckle, who is standing in the doorway, looking at the card.",
+  "options": [
+    {
+      "label": "Build a test casing and sink it in the demonstration boiler until something gives.",
+      "challenge": {
+        "quality": "tinkering",
+        "difficulty": 16
+      },
+      "success": {
+        "text": "Your first casing weeps at the seams in a minute. The second lasts four. The third you braze inside and out, and it comes up from the boiler's bottom after an hour hot enough to brand your glove, but dry. Inside, your little gauge has written one steady line across the card. It is not the Scald. It is a start. You put the casing on the shelf where you can see it from the bench.",
+        "changes": {
+          "favour.polytechnic": "+1",
+          "ambition.fathom": 5
+        }
+      },
+      "failure": {
+        "text": "The casing lets go with a noise like a cough in church, and the demonstration boiler spends the afternoon full of your instrument. Brassbuckle helps you fish out the pieces and does not say anything, very loudly.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Answer the card. Write \"Deeper than a line can reach\" beneath the question, and leave it on your doorstep.",
+      "success": {
+        "text": "In the morning the card is gone and a second one has come in its place: the same helmet, and in the same pencil, \"Then you'll want better than a line.\" Nothing else. No name, no place, no time. You keep both cards in the drawer with the casing drawings. That afternoon you notice a Gauger reading a notice on Sprocket Row for longer than any notice needs.",
+        "changes": {
+          "favour.vapourists": "+1",
+          "needle.notice": "+1",
+          "ambition.fathom": 5
+        }
+      }
+    },
+    {
+      "label": "Hand Brassbuckle the card, and ask her who leaves them.",
+      "success": {
+        "text": "Brassbuckle takes the card, turns it over, and puts it in her pocket. \"People who should know better,\" she says, and then, before you can ask what better is, \"Your casing wants brazing on the inside as well. Hester always forgot that.\" She leaves you the boiler key, which she has never done. You find you have not been told anything, and also that you have been told a great deal.",
+        "changes": {
+          "favour.polytechnic": "+1",
+          "needle.notice": "-1",
+          "ambition.fathom": 5
+        }
+      }
+    }
+  ]
+}

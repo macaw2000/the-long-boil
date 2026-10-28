@@ -1,0 +1,49 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.brass_exchange.gauntletts_question",
+  "act": 1,
+  "location": "brass_exchange",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": "==100",
+    "ambition.gauge": "==1"
+  },
+  "nerve": 1,
+  "description": "Your letter to Gaugehill is answered in person, which you had not expected, by Lord Gauntlett, which you had expected even less. He is on the Exchange gallery, watching the floor the way other men watch a fire. He does not turn round. \"You write a clear hand,\" he says. \"Clever Tinkers are common. Useful ones are not. Tell me, what will coal fetch on Friday?\" Below you, the price board clacks over. Everyone on the floor is pretending not to look up.",
+  "options": [
+    {
+      "label": "Tell him the truth: coal will rise, because the Lowvents are buying ahead of a Ballast Day nobody has announced.",
+      "success": {
+        "text": "Lord Gauntlett is quiet long enough for the board to clack twice. \"Yes,\" he says at last. \"It will.\" He does not ask how you know, which is worse than asking. On Friday coal rises by the figure you named, and on Saturday a card arrives with the Board's seal and one word in his own hand: \"Useful.\" Somebody on the floor saw you up there with him. By Monday, everybody has.",
+        "changes": {
+          "favour.board": "+1",
+          "needle.notice": "+1",
+          "ambition.gauge": 5
+        }
+      }
+    },
+    {
+      "label": "Tell him what the Gazette would: coal will hold steady. Reassuring.",
+      "success": {
+        "text": "\"Reassuring,\" Lord Gauntlett repeats, in exactly your tone, and for a moment you think he is amused. \"I have clerks for that.\" He leaves the gallery without hurrying. Nobody on the floor looks at you twice, which was the point, and nobody from Gaugehill writes, which was not. On Friday coal rises. You find you knew it would, and that he knew you knew.",
+        "changes": {
+          "needle.notice": "-1",
+          "ambition.gauge": 5
+        }
+      }
+    },
+    {
+      "label": "Ask whether he enjoyed the fair copy of Hester's columns you sent him.",
+      "requires": {
+        "flag.page_to_gauntlett": "==1"
+      },
+      "success": {
+        "text": "Lord Gauntlett turns round for the first time. \"I read everything sent to me,\" he says, \"and I keep most of it.\" He studies you the way a Tinker studies a part that has come back from somebody else's bench. \"Coal will rise on Friday. You knew that. Come and see me when you know something I don't.\" He does not raise his voice. He never needs to.",
+        "changes": {
+          "favour.board": "+1",
+          "ambition.gauge": 5
+        }
+      }
+    }
+  ]
+}

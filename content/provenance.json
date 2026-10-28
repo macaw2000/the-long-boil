@@ -9159,6 +9159,198 @@
         }
       ],
       "retirement": null
+    },
+    {
+      "id": "act1.brass_exchange.gauntletts_question",
+      "type": "storylet",
+      "path": "content/storylets/act1.brass_exchange.gauntletts_question.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+      "status": "validated",
+      "drafted_by": "claude",
+      "model": "claude-opus-5-5",
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-28T00:03:52Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-28T00:03:52Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:03:52Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "act1.rustmoor.where_she_went",
+      "type": "storylet",
+      "path": "content/storylets/act1.rustmoor.where_she_went.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+      "status": "validated",
+      "drafted_by": "claude",
+      "model": "claude-opus-5-5",
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-28T00:03:52Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-28T00:03:52Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:03:52Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "act1.lowvents.who_feeds_it",
+      "type": "storylet",
+      "path": "content/storylets/act1.lowvents.who_feeds_it.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+      "status": "validated",
+      "drafted_by": "claude",
+      "model": "claude-opus-5-5",
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-28T00:03:52Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-28T00:03:52Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:03:52Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "act1.polytechnic.how_deep",
+      "type": "storylet",
+      "path": "content/storylets/act1.polytechnic.how_deep.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+      "status": "validated",
+      "drafted_by": "claude",
+      "model": "claude-opus-5-5",
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-28T00:03:52Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-28T00:03:52Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:03:52Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
     }
   ]
 }
