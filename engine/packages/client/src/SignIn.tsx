@@ -143,30 +143,105 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
     </View>
   );
 
-  return tall ? (
-    // A phone held upright: the whole painting across the top, so its title is not cropped, and the panel below.
-    <ScrollView style={{ flex: 1, backgroundColor: colors.soot }} contentContainerStyle={{ alignItems: "center", paddingBottom: 24 }}>
-      <Image
-        source={{ uri: art("splash.jpg") }}
-        resizeMode="cover"
-        style={{ width: "100%", aspectRatio: SPLASH_ASPECT }}
-        accessibilityLabel="The Long Boil: a young Tinker on a brass rooftop among airships"
-      />
-      <View style={{ width: "100%", paddingHorizontal: 16, marginTop: -28 }}>{panel}</View>
+  // Before signing in, the page goes on below the painting to show what the game is.
+  const showcase = cognitoEnabled ? !signedIn : tinkers === null;
+
+  return (
+    <ScrollView style={{ flex: 1, backgroundColor: colors.soot }} contentContainerStyle={{ alignItems: "center", paddingBottom: 32 }}>
+      {tall ? (
+        // A phone held upright: the whole painting across the top, so its title is not cropped, and the panel below.
+        <>
+          <Image
+            source={{ uri: art("splash.jpg") }}
+            resizeMode="cover"
+            style={{ width: "100%", aspectRatio: SPLASH_ASPECT }}
+            accessibilityLabel="The Long Boil: a young Tinker on a brass rooftop among airships"
+          />
+          <View style={{ width: "100%", paddingHorizontal: 16, marginTop: -28 }}>{panel}</View>
+        </>
+      ) : (
+        // The art's title fills the top half, so the panel sits just below it, in
+        // the middle of the picture where the eye lands, not down at the edge.
+        <ImageBackground
+          source={{ uri: art("splash.jpg") }}
+          resizeMode="cover"
+          style={{ width: "100%", height, alignItems: "center", padding: 16, backgroundColor: colors.soot }}
+          accessibilityLabel="The Long Boil: a young Tinker on a brass rooftop among airships"
+        >
+          <View style={{ flex: 1.15 }} />
+          {panel}
+          <View style={{ flex: 0.6, justifyContent: "flex-end" }}>
+            {showcase && <Text style={[ui.text, { color: colors.ink, textShadowColor: "#000", textShadowRadius: 6 }]}>See inside the workshop ↓</Text>}
+          </View>
+        </ImageBackground>
+      )}
+      {showcase && <Showcase wide={!tall && width >= 900} />}
     </ScrollView>
-  ) : (
-    // The art's title fills the top half, so the panel sits just below it, in
-    // the middle of the picture where the eye lands, not down at the edge.
-    <ImageBackground
-      source={{ uri: art("splash.jpg") }}
-      resizeMode="cover"
-      style={{ flex: 1, alignItems: "center", padding: 16, backgroundColor: colors.soot }}
-      accessibilityLabel="The Long Boil: a young Tinker on a brass rooftop among airships"
-    >
-      <View style={{ flex: 1.15 }} />
-      {panel}
-      <View style={{ flex: 0.6 }} />
-    </ImageBackground>
+  );
+}
+
+/** What the game is, in three real screenshots, and what signing in is for. */
+const SHOWCASE: { image: string; aspect: number; title: string; line: string }[] = [
+  {
+    image: "showcase/bench.jpg",
+    aspect: 1200 / 456,
+    title: "Your workshop never sleeps",
+    line: "Queue twelve hours of work, close the tab, and come back to finished spanners, full stores and Crowns in the till.",
+  },
+  {
+    image: "showcase/fight.jpg",
+    aspect: 1200 / 480,
+    title: "Clear the scrapyards",
+    line: "Arm yourself at the bench and fight through Rustmoor's Rust Rats to Scrapjaw, the king they built from the city's rubbish.",
+  },
+  {
+    image: "showcase/story.jpg",
+    aspect: 1200 / 541,
+    title: "The city writes back",
+    line: "Letters by Pneumatic Post bring choices, not chores, and every skill you train is another way to answer them.",
+  },
+];
+
+function Showcase({ wide }: { wide: boolean }) {
+  return (
+    <View style={{ width: "100%", maxWidth: 1160, paddingHorizontal: 16, paddingTop: 40, gap: 28 }}>
+      <View style={{ alignItems: "center", gap: 10, maxWidth: 760, alignSelf: "center" }}>
+        <Text style={[ui.heading, { fontSize: 26, textAlign: "center" }]}>A city above a boiling sea</Text>
+        <Text style={[ui.text, { fontSize: 17, lineHeight: 26, textAlign: "center" }]}>
+          Kettleport has ridden a column of steam for 312 years, and nobody in charge will say why the sea is still boiling. You inherit a
+          cold workshop on Sprocket Row from a Tinker who vanished with a notebook full of questions.
+        </Text>
+      </View>
+      <View style={{ flexDirection: wide ? "row" : "column", gap: 18 }}>
+        {SHOWCASE.map((tile) => (
+          <View key={tile.image} style={[ui.panel, { flex: wide ? 1 : undefined, padding: 0, overflow: "hidden", borderColor: colors.brassDim }]}>
+            <Image
+              source={{ uri: art(tile.image) }}
+              // Side by side, one shape for all three, each whole: the Tinker stands at the left edge.
+              resizeMode={wide ? "contain" : "cover"}
+              style={{ width: "100%", aspectRatio: wide ? 2.2 : tile.aspect, backgroundColor: colors.soot }}
+              accessibilityLabel={`A screenshot: ${tile.title}`}
+            />
+            <View style={{ padding: 16, gap: 6 }}>
+              <Text style={[ui.heading, { fontSize: 18 }]}>{tile.title}</Text>
+              <Text style={[ui.text, { fontSize: 15, lineHeight: 22, color: colors.steam }]}>{tile.line}</Text>
+            </View>
+          </View>
+        ))}
+      </View>
+      <View style={[ui.panel, { alignItems: "center", gap: 6, paddingVertical: 18, borderColor: colors.panelEdge }]}>
+        <Text style={[ui.text, { fontSize: 15, textAlign: "center", color: colors.steam }]}>
+          Free to play in your browser. No story is ever sold, and nothing in the shop can't also be bought with Crowns earned in the game.
+        </Text>
+        <Text style={[ui.muted, { fontSize: 14, textAlign: "center" }]}>
+          Signing in only keeps your workshop yours: we never see your password, never post anything, and show no ads.
+        </Text>
+        <View style={{ flexDirection: "row", gap: 16, marginTop: 4 }}>
+          <LegalLink path="/privacy.html" label="Privacy" />
+          <LegalLink path="/terms.html" label="Terms" />
+        </View>
+      </View>
+    </View>
   );
 }
 
