@@ -9,7 +9,7 @@
     "ambition.ember": "==1"
   },
   "nerve": 1,
-  "description": "Mother Ash meets you at the bottom of the Lowvents stair with a shovel, which she hands you, and a slate, which she does not. On the slate are the Stokers' shifts for the Foundry fires: names, hours, and a column of Counting-House scrip paid against each. The names run down the slate. The scrip does not run very far at all. \"You asked who it belongs to,\" she says. \"Start by finding out who does it.\"",
+  "description": "Mother Ash meets you at the bottom of the Lowvents stair with a shovel, which she hands you, and a slate, which she does not. On the slate are the Stokers' shifts for the Foundry fires: names, hours, and a column of Crowns paid against each. The names run down the slate. The Crowns do not run very far at all. \"You asked who it belongs to,\" she says. \"Start by finding out who does it.\"",
   "options": [
     {
       "label": "Take a shift on the Lowvents' own furnace, and feed it till the shift bell.",
@@ -18,7 +18,7 @@
         "difficulty": 16
       },
       "success": {
-        "text": "Eight hours. By the third your arms belong to somebody else; by the sixth the furnace has a temper you can read. At the bell, Mother Ash chalks your name on the slate below the others and writes nothing against it in the scrip column. \"Fellowship doesn't pay,\" she says. \"It counts.\" Walking home, you smell of coal and do not mind, which is new.",
+        "text": "Eight hours. By the third your arms belong to somebody else; by the sixth the furnace has a temper you can read. At the bell, Mother Ash chalks your name on the slate below the others and writes nothing against it in the Crowns column. \"Fellowship doesn't pay,\" she says. \"It counts.\" Walking home, you smell of coal and do not mind, which is new.",
         "changes": {
           "favour.stokers": "+1",
           "ambition.ember": 5
@@ -34,7 +34,7 @@
     {
       "label": "Take the slate to Silas Tallow and ask what the House pays a Stoker.",
       "success": {
-        "text": "\"Two Crowns a shift, paid in House scrip,\" says Silas Tallow, \"which is a very fair rate for work nobody else will do.\" He tells you the price of coal, of bread and of a Lowvents lease, all without being asked. By the time he finishes, you have worked out that a Stoker's week buys a Stoker's week, and not an hour more. He sees you do the sum, and smiles.",
+        "text": "\"Two Crowns a shift, less the House's commission,\" says Silas Tallow, \"which is a very fair rate for work nobody else will do.\" He tells you the price of coal, of bread and of a Lowvents lease, all without being asked. By the time he finishes, you have worked out that a Stoker's week buys a Stoker's week, and not an hour more. He sees you do the sum, and smiles.",
         "changes": {
           "favour.counting_house": "+1",
           "ambition.ember": 5

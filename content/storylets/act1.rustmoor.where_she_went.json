@@ -18,7 +18,7 @@
         "difficulty": 16
       },
       "success": {
-        "text": "Under three centuries of the city's leavings, wedged in a crate of Board paperwork, you find a coil of tarred line, every fathom marked, cut clean at the forty-first mark. It was not worn through. Someone with a sharp knife and a steady hand cut it, and then, being Hester, wound up the rest neatly before throwing it away. You write it in the third column: one line, cut. It is the first entry.",
+        "text": "Under three centuries of the city's leavings, wedged in a crate of Board paperwork, you find a chronometer with a Polytechnic stores number stamped on its case. It has stopped. Nothing else of hers is in the den, but nobody on the tip owns a chronometer, and nobody throws a good one away. You write it in the third column: one chronometer, Polytechnic stores. It is the first entry.",
         "changes": {
           "ambition.lantern": 5
         }
@@ -33,10 +33,11 @@
     {
       "label": "Ask Pip, who runs every canister on Sprocket Row, where her last one went.",
       "success": {
-        "text": "Pip thinks about it over a whole cup of tea. \"Her last canister went up the Gaugehill tube. Not the Board's tube, the other one. To a name I'm not supposed to say, and I won't, and it was Rook.\" Pip looks at the cup. \"She tipped me double that day. She never tipped.\" You write it in the third column: one letter, to Rook. It is the first entry.",
+        "text": "Pip thinks about it over a whole cup of tea. \"She posted every day for eleven years. Bills, readings, letters to the Gazette it never printed. Her last week,\" Pip says, \"not one canister. Not one.\" Pip looks at the cup a while. Somebody on the Row will have heard you asking. You write it in the third column: last week, silent. It is the first entry.",
         "changes": {
           "favour.stokers": "+1",
-          "ambition.lantern": 5
+          "ambition.lantern": 5,
+          "needle.notice": "+1"
         }
       }
     },
@@ -45,7 +46,6 @@
       "success": {
         "text": "Brassbuckle says it was a Tuesday, or possibly a Thursday, and that Hester was in excellent spirits, and that the Polytechnic boilers are due for inspection, and had you heard about the new lathe. She walks you to the gate herself. On the way she straightens your collar, which she has never done. You write it in the third column: Brassbuckle, does not remember. It is the first entry, and you underline it.",
         "changes": {
-          "favour.polytechnic": "+1",
           "ambition.lantern": 5
         }
       }

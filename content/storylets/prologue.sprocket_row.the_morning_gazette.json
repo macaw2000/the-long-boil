@@ -22,7 +22,7 @@
     {
       "label": "Tap the barometer on the pie shop's wall for luck, like the Row does.",
       "success": {
-        "text": "The barometer's needle does not move, because it has been rusted at Fair since before the twins were born, and that is the joke, and the Row laughs at it every morning. The twins give you yesterday's Gazette, which is the same as today's. You take it home, leave it on the bench by the workbench drawer, and get on.",
+        "text": "The barometer's needle does not move. It has been rusted at Fair since before the twins were born. The Row laughs anyway, every morning. The twins give you yesterday's Gazette, which is the same as today's. You take it home, leave it on the bench by the workbench drawer, and get on.",
         "changes": {
           "item.rustmoor.rustmoor_ration": "+1",
           "prologue.progress": 90

@@ -8,7 +8,7 @@
     "prologue.progress": "==20"
   },
   "nerve": 1,
-  "description": "Professor Brassbuckle walks you across to the Polytechnic to sign the Tinkers' register, because No. 9 is a registered workshop and the Polytechnic is particular. The register is a ledger the size of a door. She opens it at the last page with writing on it and turns it round for you. The line above the empty one is in a small upright hand. Brassbuckle puts her thumb over the name before you can read it, and hands you the pen.",
+  "description": "Professor Brassbuckle walks you across to the Polytechnic to sign the Tinkers' register, because No. 9 is a registered workshop and the Polytechnic is particular. The register is a ledger the size of a door. She opens it at No. 9's page and turns it round for you. The line above the empty one is in a small upright hand. Brassbuckle puts her thumb over the name before you can read it, and hands you the pen.",
   "options": [
     {
       "label": "Sign your name, and ask whose line her thumb is on.",

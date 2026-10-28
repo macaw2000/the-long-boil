@@ -5,7 +5,7 @@
   "location": "sprocket_row",
   "reveal_layer": 0,
   "requires": {
-    "prologue.progress": ">=10",
+    "prologue.progress": ">=100",
     "act1.progress": "==0",
     "item.rustmoor.bent_nails": ">=10"
   },

@@ -7053,7 +7053,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass. Reviewed files as of the 2026-10-23T01:15:32Z validator run."
+        "notes": "Pass (renumbered for work order 024). Reviewed files as of the 2026-10-28T00:22:11Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -7080,6 +7080,11 @@
         },
         {
           "at": "2026-10-23T01:18:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
           "status": "reviewed",
           "by": "inspector"
         }
@@ -7114,7 +7119,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass. Reviewed files as of the 2026-10-23T01:15:32Z validator run."
+        "notes": "Pass (renumbered for work order 024). Reviewed files as of the 2026-10-28T00:22:11Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -7141,6 +7146,11 @@
         },
         {
           "at": "2026-10-23T01:18:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
           "status": "reviewed",
           "by": "inspector"
         }
@@ -7181,7 +7191,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass with notes: the come_back line no longer reads as an in-game task (the old 'Go and eat something' collided with the real Ration trigger, GDD 'eat a Ration below 40% HP'); it meets work order 021: Boiler and queue keep working, the city will have written, names the Queue work button and Leave it running, 39 words, Layer 0. Note for Jeremy: the character half is thinner than the other eight cards; 'Nothing here needs watching' is practical and echoes first_spanner, but has none of her protective dryness. Taste call left to him. Reviewed as of the 2026-10-27T17:24:10Z validator run."
+        "notes": "Pass (brass_plate line changed for work order 024). Reviewed files as of the 2026-10-28T00:22:11Z validator run."
       },
       "approved_by": null,
       "approved_at": null,
@@ -7225,6 +7235,11 @@
           "at": "2026-10-27T17:25:06Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -7236,13 +7251,13 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/018-act1-spine-and-post.md",
-      "status": "reviewed",
+      "status": "validated",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-23T14:57:30Z",
+        "run": "2026-10-28T00:22:11Z",
         "checks": [
           "schema",
           "provenance",
@@ -7255,15 +7270,12 @@
           "qualities",
           "story_graph",
           "reveal",
-          "style"
+          "style",
+          "work_orders"
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": "Pass. Reviewed files as of the 2026-10-23T14:57:30Z validator run."
-      },
+      "review": null,
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -7291,6 +7303,16 @@
           "at": "2026-10-23T14:59:33Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -8879,7 +8901,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
       "patch": null,
@@ -8903,7 +8925,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: the Year column makes three columns where two_columns says two; accepted. Reviewed files as of the 2026-10-28T00:22:11Z validator run."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -8916,6 +8942,11 @@
           "at": "2026-10-27T23:30:40Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -8927,7 +8958,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
       "patch": null,
@@ -8951,7 +8982,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-28T00:22:11Z validator run."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -8964,6 +8999,11 @@
           "at": "2026-10-27T23:30:40Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -8981,7 +9021,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-27T23:30:40Z",
+        "run": "2026-10-28T00:22:11Z",
         "checks": [
           "schema",
           "provenance",
@@ -9010,6 +9050,16 @@
         },
         {
           "at": "2026-10-27T23:30:40Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
           "status": "validated",
           "by": "validators"
         }
@@ -9023,7 +9073,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
       "patch": null,
@@ -9047,7 +9097,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: Crown prices in prose are a taste call for Jeremy. Reviewed files as of the 2026-10-28T00:22:11Z validator run."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -9060,6 +9114,11 @@
           "at": "2026-10-27T23:30:40Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -9071,7 +9130,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
       "patch": null,
@@ -9095,7 +9154,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: not a leak; how fast Brassbuckle's guilt shows is Jeremy's call. Reviewed files as of the 2026-10-28T00:22:11Z validator run."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -9108,6 +9171,11 @@
           "at": "2026-10-27T23:30:40Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -9125,7 +9193,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-28T00:00:22Z",
+        "run": "2026-10-28T00:22:11Z",
         "checks": [
           "schema",
           "provenance",
@@ -9154,6 +9222,16 @@
         },
         {
           "at": "2026-10-28T00:00:22Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
           "status": "validated",
           "by": "validators"
         }
@@ -9173,7 +9251,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-28T00:03:52Z",
+        "run": "2026-10-28T00:22:11Z",
         "checks": [
           "schema",
           "provenance",
@@ -9202,6 +9280,16 @@
         },
         {
           "at": "2026-10-28T00:03:52Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
           "status": "validated",
           "by": "validators"
         }
@@ -9221,7 +9309,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-28T00:03:52Z",
+        "run": "2026-10-28T00:22:11Z",
         "checks": [
           "schema",
           "provenance",
@@ -9250,6 +9338,16 @@
         },
         {
           "at": "2026-10-28T00:03:52Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
           "status": "validated",
           "by": "validators"
         }
@@ -9269,7 +9367,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-28T00:03:52Z",
+        "run": "2026-10-28T00:22:11Z",
         "checks": [
           "schema",
           "provenance",
@@ -9298,6 +9396,16 @@
         },
         {
           "at": "2026-10-28T00:03:52Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
           "status": "validated",
           "by": "validators"
         }
@@ -9317,7 +9425,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-28T00:03:52Z",
+        "run": "2026-10-28T00:22:11Z",
         "checks": [
           "schema",
           "provenance",
@@ -9348,6 +9456,16 @@
           "at": "2026-10-28T00:03:52Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -9359,7 +9477,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
       "patch": null,
@@ -9383,7 +9501,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: the options differ mostly in flavour. Reviewed files as of the 2026-10-28T00:22:11Z validator run."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -9396,6 +9518,11 @@
           "at": "2026-10-28T00:10:02Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -9413,7 +9540,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-28T00:10:02Z",
+        "run": "2026-10-28T00:22:11Z",
         "checks": [
           "schema",
           "provenance",
@@ -9442,6 +9569,16 @@
         },
         {
           "at": "2026-10-28T00:10:02Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
           "status": "validated",
           "by": "validators"
         }
@@ -9461,7 +9598,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-28T00:10:02Z",
+        "run": "2026-10-28T00:22:11Z",
         "checks": [
           "schema",
           "provenance",
@@ -9492,6 +9629,16 @@
           "at": "2026-10-28T00:10:02Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -9503,7 +9650,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
       "patch": null,
@@ -9527,7 +9674,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-28T00:22:11Z validator run."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -9540,6 +9691,11 @@
           "at": "2026-10-28T00:10:02Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -9557,7 +9713,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-28T00:10:02Z",
+        "run": "2026-10-28T00:22:11Z",
         "checks": [
           "schema",
           "provenance",
@@ -9588,6 +9744,16 @@
           "at": "2026-10-28T00:10:02Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -9599,7 +9765,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
       "patch": null,
@@ -9623,7 +9789,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass. Reviewed files as of the 2026-10-28T00:22:11Z validator run."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -9636,6 +9806,11 @@
           "at": "2026-10-28T00:10:02Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -9653,7 +9828,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-28T00:10:02Z",
+        "run": "2026-10-28T00:22:11Z",
         "checks": [
           "schema",
           "provenance",
@@ -9682,6 +9857,16 @@
         },
         {
           "at": "2026-10-28T00:10:02Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
           "status": "validated",
           "by": "validators"
         }
@@ -9701,7 +9886,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-28T00:10:02Z",
+        "run": "2026-10-28T00:22:11Z",
         "checks": [
           "schema",
           "provenance",
@@ -9730,6 +9915,16 @@
         },
         {
           "at": "2026-10-28T00:10:02Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
           "status": "validated",
           "by": "validators"
         }
