@@ -1,7 +1,7 @@
 # Work order 023: Act I repeatable scenes for the long middle
 
 **Agent:** `scrivener`, with numbers reviewed by the `draftsman`, then the `assayer` re-walks the act
-**Status:** draft, for Jeremy
+**Status:** ready to run (Jeremy, 27 October 2026: approved as written; the two open questions are settled after the drafts)
 **Act:** Act I. **Locations:** Sprocket Row, Rustmoor, the Lowvents, the Polytechnic, the Brass Exchange. **Clearance:** Layer 1.
 **Blocks:** story pace, and with it the phase 1 gate "Act I playable end to end" (GDD section 11).
 
