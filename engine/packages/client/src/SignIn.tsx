@@ -4,8 +4,8 @@
 // that provider, and the login is the signed-in account's; without Cognito,
 // the dev login takes any name typed here.
 
-import { useEffect, useState } from "react";
-import { Image, ImageBackground, Linking, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { AccessibilityInfo, Animated, Easing, Image, Linking, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { api } from "./api";
 import { art } from "./art";
 import { cognitoEnabled, providers, signOut, startSignIn, type Provider } from "./auth";
@@ -48,6 +48,9 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
   const signInWith = (provider?: Provider) => startSignIn(provider).catch((reason: Error) => setError(reason.message));
   const { width, height } = useWindowDimensions();
   const tall = height > width * 1.1;
+  const still = useReducedMotion();
+  const scroller = useRef<ScrollView>(null);
+  const showcaseTop = useRef(0);
 
   const panel = (
     <View
@@ -68,6 +71,11 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
         },
       ]}
     >
+      {showcaseBeforeSignIn(signedIn, tinkers) && (
+        <Text style={[ui.text, { fontSize: 15, fontStyle: "italic", textAlign: "center", color: colors.steam }]}>
+          The sea has boiled for 312 years. Nobody will say why.
+        </Text>
+      )}
       <Text style={[ui.heading, { fontSize: 22, textAlign: "center" }]}>{cognitoEnabled && !signedIn ? "Sign in to play" : "Your workshop"}</Text>
       <Text style={[ui.muted, { textAlign: "center" }]}>A solicitor's letter: the tenancy of No. 9 Sprocket Row, "contents included", is yours.</Text>
       {cognitoEnabled && !signedIn ? (
@@ -144,39 +152,184 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
   );
 
   // Before signing in, the page goes on below the painting to show what the game is.
-  const showcase = cognitoEnabled ? !signedIn : tinkers === null;
+  const showcase = showcaseBeforeSignIn(signedIn, tinkers);
+  const seeInside = () => scroller.current?.scrollTo({ y: showcaseTop.current, animated: true });
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.soot }} contentContainerStyle={{ alignItems: "center", paddingBottom: 32 }}>
+    <ScrollView ref={scroller} style={{ flex: 1, backgroundColor: colors.soot }} contentContainerStyle={{ alignItems: "center", paddingBottom: 32 }}>
       {tall ? (
         // A phone held upright: the whole painting across the top, so its title is not cropped, and the panel below.
         <>
-          <Image
-            source={{ uri: art("splash.jpg") }}
-            resizeMode="cover"
-            style={{ width: "100%", aspectRatio: SPLASH_ASPECT }}
-            accessibilityLabel="The Long Boil: a young Tinker on a brass rooftop among airships"
-          />
+          <View style={{ width: "100%", aspectRatio: SPLASH_ASPECT, overflow: "hidden" }}>
+            <LivingSplash still={still} />
+          </View>
           <View style={{ width: "100%", paddingHorizontal: 16, marginTop: -28 }}>{panel}</View>
         </>
       ) : (
         // The art's title fills the top half, so the panel sits just below it, in
         // the middle of the picture where the eye lands, not down at the edge.
-        <ImageBackground
-          source={{ uri: art("splash.jpg") }}
-          resizeMode="cover"
-          style={{ width: "100%", height, alignItems: "center", padding: 16, backgroundColor: colors.soot }}
-          accessibilityLabel="The Long Boil: a young Tinker on a brass rooftop among airships"
-        >
-          <View style={{ flex: 1.15 }} />
+        <View style={{ width: "100%", height, alignItems: "center", padding: 16, backgroundColor: colors.soot, overflow: "hidden" }}>
+          <LivingSplash still={still} />
+          <View style={{ flex: 1.3 }} />
           {panel}
-          <View style={{ flex: 0.6, justifyContent: "flex-end" }}>
-            {showcase && <Text style={[ui.text, { color: colors.ink, textShadowColor: "#000", textShadowRadius: 6 }]}>See inside the workshop ↓</Text>}
+          <View style={{ flex: 0.6, justifyContent: "flex-end", paddingBottom: 8 }}>
+            {showcase && <SeeInside still={still} onPress={seeInside} />}
           </View>
-        </ImageBackground>
+        </View>
       )}
-      {showcase && <Showcase wide={!tall && width >= 900} />}
+      {showcase && (
+        <View style={{ width: "100%", alignItems: "center" }} onLayout={(event) => (showcaseTop.current = event.nativeEvent.layout.y)}>
+          <Showcase wide={!tall && width >= 900} />
+        </View>
+      )}
     </ScrollView>
+  );
+}
+
+/** Before signing in, the page goes on below the painting to show what the game is. */
+const showcaseBeforeSignIn = (signedIn: boolean, tinkers: unknown[] | null) => (cognitoEnabled ? !signedIn : tinkers === null);
+
+function useReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    AccessibilityInfo.isReduceMotionEnabled().then(setReduced);
+    const listener = AccessibilityInfo.addEventListener("reduceMotionChanged", setReduced);
+    return () => listener.remove();
+  }, []);
+  return reduced;
+}
+
+/** A value that runs 0 to 1 over `duration` forever, starting `delay` in. */
+function useLoop(duration: number, delay = 0, still = false) {
+  const value = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (still) return;
+    const loop = Animated.loop(Animated.timing(value, { toValue: 1, duration, easing: Easing.linear, useNativeDriver: false }));
+    const timer = setTimeout(() => loop.start(), delay);
+    return () => {
+      clearTimeout(timer);
+      loop.stop();
+    };
+  }, [still]);
+  return value;
+}
+
+/**
+ * The painting, alive: a slow push in, steam rolling up off the boiling sea
+ * below the rooftops, and sparks drifting up past the Tinker. All of it is
+ * drawn over the one picture, so it needs no new art, and it all holds still
+ * for anyone who asks their device for less motion.
+ */
+function LivingSplash({ still }: { still: boolean }) {
+  const drift = useLoop(36000, 0, still);
+  const scale = drift.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 1.07, 1] });
+  return (
+    <View pointerEvents="none" style={{ position: "absolute", inset: 0 }}>
+      <Animated.Image
+        source={{ uri: art("splash.jpg") }}
+        resizeMode="cover"
+        style={{ position: "absolute", inset: 0, transform: [{ scale }] }}
+        accessibilityLabel="The Long Boil: a young Tinker on a brass rooftop among airships"
+      />
+      {!still && STEAM.map((puff, index) => <SteamPuff key={index} {...puff} />)}
+      {!still && SPARKS.map((spark, index) => <Spark key={index} {...spark} />)}
+      {/* A dark foot, so the button below the panel reads against the planks. */}
+      <View
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: "22%",
+          experimental_backgroundImage: "linear-gradient(to bottom, rgba(27,23,18,0), rgba(27,23,18,0.75))",
+        }}
+      />
+    </View>
+  );
+}
+
+/** Puffs rise from below the frame, where the sea is: x and size in percent of the width. */
+const STEAM = [
+  { x: 2, size: 34, duration: 14000, delay: 0 },
+  { x: 18, size: 26, duration: 17000, delay: 5000 },
+  { x: 62, size: 30, duration: 15000, delay: 2500 },
+  { x: 80, size: 38, duration: 19000, delay: 8000 },
+  { x: 40, size: 24, duration: 16000, delay: 11000 },
+  { x: 92, size: 28, duration: 13000, delay: 6500 },
+];
+
+function SteamPuff({ x, size, duration, delay }: (typeof STEAM)[number]) {
+  const rise = useLoop(duration, delay);
+  return (
+    <Animated.View
+      style={{
+        position: "absolute",
+        left: `${x - size / 2}%`,
+        width: `${size}%`,
+        aspectRatio: 1,
+        borderRadius: 9999,
+        backgroundColor: "rgba(239, 231, 214, 0.55)",
+        filter: "blur(40px)",
+        top: rise.interpolate({ inputRange: [0, 1], outputRange: ["100%", "-40%"] }),
+        opacity: rise.interpolate({ inputRange: [0, 0.15, 0.6, 1], outputRange: [0, 0.7, 0.35, 0] }),
+        transform: [{ scale: rise.interpolate({ inputRange: [0, 1], outputRange: [0.6, 1.5] }) }],
+      }}
+    />
+  );
+}
+
+const SPARKS = Array.from({ length: 14 }, (_, index) => ({
+  x: (index * 37 + 11) % 100,
+  sway: index % 2 ? 18 : -18,
+  size: 3 + (index % 3),
+  duration: 7000 + ((index * 1300) % 6000),
+  delay: (index * 900) % 9000,
+}));
+
+function Spark({ x, sway, size, duration, delay }: (typeof SPARKS)[number]) {
+  const rise = useLoop(duration, delay);
+  return (
+    <Animated.View
+      style={{
+        position: "absolute",
+        left: `${x}%`,
+        width: size,
+        height: size,
+        borderRadius: size,
+        backgroundColor: "#ffc56b",
+        boxShadow: "0 0 8px 2px rgba(255, 170, 70, 0.8)",
+        top: rise.interpolate({ inputRange: [0, 1], outputRange: ["105%", "35%"] }),
+        opacity: rise.interpolate({ inputRange: [0, 0.1, 0.7, 1], outputRange: [0, 1, 0.8, 0] }),
+        transform: [{ translateX: rise.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, sway, 0] }) }],
+      }}
+    />
+  );
+}
+
+/** The way down to the showcase: a brass button that bobs, not a line of small print. */
+function SeeInside({ still, onPress }: { still: boolean; onPress: () => void }) {
+  const bob = useLoop(1800, 0, still);
+  const translateY = bob.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, 7, 0] });
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      // hovered is react-native-web's, missing from the native types.
+      style={({ pressed, ...state }) => ({
+        alignItems: "center",
+        gap: 2,
+        paddingVertical: 10,
+        paddingHorizontal: 26,
+        borderRadius: 999,
+        borderWidth: 2,
+        borderColor: colors.brass,
+        backgroundColor: (state as { hovered?: boolean }).hovered || pressed ? "rgba(201, 162, 90, 0.3)" : "rgba(27, 23, 18, 0.82)",
+        boxShadow: "0 0 18px rgba(201, 162, 90, 0.45)",
+      })}
+    >
+      <Text style={[ui.heading, { fontSize: 18 }]}>See inside the workshop</Text>
+      <Animated.Text style={{ color: colors.brass, fontSize: 22, lineHeight: 22, transform: [{ translateY }] }}>⌄</Animated.Text>
+    </Pressable>
   );
 }
 
