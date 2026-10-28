@@ -53,7 +53,7 @@ const STEPS: Step[] = [
     id: "pips_bill",
     target: "story",
     fallback: "A letter has come down the tube. Open the Story tab and answer it.",
-    done: (tinker) => prologue(tinker) >= 50,
+    done: (tinker) => prologue(tinker) >= 10,
   },
   {
     id: "equip",
@@ -65,18 +65,18 @@ const STEPS: Step[] = [
     id: "rats",
     target: "queue",
     fallback: "Queue a fight with the Rust Rat Runt. Each kill pays Crowns and rat scrap.",
-    done: (tinker) => tinker.crowns > 0 || (prologue(tinker) >= 50 && tinker.story.backRent === 0),
+    done: (tinker) => tinker.crowns > 0 || (prologue(tinker) >= 10 && tinker.story.backRent === 0),
   },
   {
     id: "pay_bill",
     target: "exchange",
     fallback: "On the Exchange tab, press Pay on Pip's bill. Short of Crowns? Sell rat scrap at the window first.",
-    done: (tinker) => prologue(tinker) >= 50 && tinker.story.backRent === 0,
+    done: (tinker) => prologue(tinker) >= 10 && tinker.story.backRent === 0,
   },
   {
     id: "brass_plate",
     target: "story",
-    fallback: "There is something in the workbench. The Story tab.",
+    fallback: "The Row has more to say before the day is out, and there is something in the workbench. The Story tab.",
     done: (tinker) => prologue(tinker) >= 100,
   },
   {

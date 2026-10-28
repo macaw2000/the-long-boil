@@ -1,0 +1,33 @@
+{
+  "schema": "storylet/1",
+  "id": "prologue.sprocket_row.the_morning_gazette",
+  "act": 0,
+  "location": "sprocket_row",
+  "reveal_layer": 0,
+  "requires": {
+    "prologue.progress": "==80"
+  },
+  "nerve": 1,
+  "description": "Every morning the Gazette boy comes up Sprocket Row calling the day's Gauge Reading, and every morning the Row stops to hear it. \"Gauge steady! City rising!\" Doors open. People tap their barometers for luck. The pie shop chalks the figure on its board, as it has every day for longer than the twins have been alive. It is the most reassuring sound in Kettleport, and it is meant to be.",
+  "options": [
+    {
+      "label": "Buy a Gazette like everyone else, and take it in to read at the bench.",
+      "success": {
+        "text": "The Gazette is four pages: the Reading on the front, the Board's notices inside, and on the back a recipe and the shipping news from the rim. You read it all, which nobody does, then fold it and leave it on the bench beside the workbench drawer, which still wants clearing out.",
+        "changes": {
+          "prologue.progress": 90
+        }
+      }
+    },
+    {
+      "label": "Tap the barometer on the pie shop's wall for luck, like the Row does.",
+      "success": {
+        "text": "The barometer's needle does not move, because it has been rusted at Fair since before the twins were born, and that is the joke, and the Row laughs at it every morning. The twins give you yesterday's Gazette, which is the same as today's. You take it home, leave it on the bench by the workbench drawer, and get on.",
+        "changes": {
+          "item.rustmoor.rustmoor_ration": "+1",
+          "prologue.progress": 90
+        }
+      }
+    }
+  ]
+}

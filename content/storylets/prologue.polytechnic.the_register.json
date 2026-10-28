@@ -1,0 +1,33 @@
+{
+  "schema": "storylet/1",
+  "id": "prologue.polytechnic.the_register",
+  "act": 0,
+  "location": "polytechnic",
+  "reveal_layer": 0,
+  "requires": {
+    "prologue.progress": "==20"
+  },
+  "nerve": 1,
+  "description": "Professor Brassbuckle walks you across to the Polytechnic to sign the Tinkers' register, because No. 9 is a registered workshop and the Polytechnic is particular. The register is a ledger the size of a door. She opens it at the last page with writing on it and turns it round for you. The line above the empty one is in a small upright hand. Brassbuckle puts her thumb over the name before you can read it, and hands you the pen.",
+  "options": [
+    {
+      "label": "Sign your name, and ask whose line her thumb is on.",
+      "success": {
+        "text": "\"A Tinker who held No. 9 before you,\" says Brassbuckle, \"and who would have wanted you to blot that.\" You blot it. By the time the blotter comes up she is telling you which lecture halls leak, which porters can be bribed with toffee, and where the good tea is kept, and her thumb is in her pocket, and the register is shut.",
+        "changes": {
+          "prologue.progress": 30
+        }
+      }
+    },
+    {
+      "label": "Sign your name in your best hand, and ask nothing at all.",
+      "success": {
+        "text": "You sign, blot and hand back the pen. Brassbuckle looks at you for a moment as if you had passed a test she had not meant to set. She takes your arm on the way out and shows you the good tea, which is kept behind the bound copies of the Gazette, where no student has ever looked.",
+        "changes": {
+          "favour.polytechnic": "+1",
+          "prologue.progress": 30
+        }
+      }
+    }
+  ]
+}

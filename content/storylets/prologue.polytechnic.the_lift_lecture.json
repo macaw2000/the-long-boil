@@ -1,0 +1,33 @@
+{
+  "schema": "storylet/1",
+  "id": "prologue.polytechnic.the_lift_lecture",
+  "act": 0,
+  "location": "polytechnic",
+  "reveal_layer": 0,
+  "requires": {
+    "prologue.progress": "==70"
+  },
+  "nerve": 1,
+  "description": "Brassbuckle's first-year lecture is the one every child in Kettleport could give: three hundred and twelve years ago, the Seven Gauges lifted the town off a boiling sea on a column of steam, and the Board has kept it rising since. She gives it well, with slides. The Great Kettle in section. The Lift, in a painting that hangs in every schoolroom. At the end she asks for questions, in the voice of a woman who would prefer there were none.",
+  "options": [
+    {
+      "label": "Take careful notes, and ask a good question about the Great Kettle's valves.",
+      "success": {
+        "text": "It is a very good question, and Brassbuckle answers it for twenty minutes, with diagrams, in a way that makes the whole room late for dinner. Afterwards she lends you her own notes on the Kettle's valve gear. They are in three colours of ink and better than any book in the library.",
+        "changes": {
+          "favour.polytechnic": "+1",
+          "prologue.progress": 80
+        }
+      }
+    },
+    {
+      "label": "Ask why the sea is still boiling, three hundred and twelve years on.",
+      "success": {
+        "text": "The lecture hall goes quiet, the way a room does when someone says a thing out loud that everyone has thought. Brassbuckle smiles. \"An excellent question,\" she says, \"for your second year.\" Then she takes the next question, which is about valves. Several students look at you on the way out. One of them nods.",
+        "changes": {
+          "prologue.progress": 80
+        }
+      }
+    }
+  ]
+}

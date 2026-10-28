@@ -4,7 +4,7 @@
   "act": 0,
   "location": "sprocket_row",
   "reveal_layer": 0,
-  "requires": { "prologue.progress": "==50" },
+  "requires": { "prologue.progress": "==90" },
   "nerve": 1,
   "description": "Clearing out the workbench, you lift a drawer lining stiff with old oil and find a brass plate the size of a playing card. Someone has scratched a gauge reading into it with a scriber, neatly, the way people write things they mean to keep. Today's Gazette lies folded on the bench beside it, Gauge Reading on the front page. The two figures are not the same. Professor Brassbuckle, who was watching you work, is suddenly very interested in the Boiler.",
   "options": [

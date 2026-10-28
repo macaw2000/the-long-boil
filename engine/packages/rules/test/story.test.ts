@@ -225,6 +225,13 @@ describe("the first storylets, end to end", () => {
     expect(visible()).toEqual([]);
     play("letter", LETTER, 0);
     expect(backRentOwed(story)).toBe(15);
+    // The Prologue's ten scenes: the bill, eight in order, then the plate. The receipt waits for the rent to be paid.
+    expect(visible()).toEqual(["prologue.sprocket_row.the_neighbours"]);
+    for (const id of ["sprocket_row.the_neighbours", "polytechnic.the_register", "sprocket_row.the_missing_tins", "rustmoor.the_tip_book", "rustmoor.the_first_nest"])
+      play("storylet", `prologue.${id}`, 1);
+    expect(visible()).toEqual([]);
+    story = payDebt(story, "back_rent").story;
+    for (const id of ["sprocket_row.the_receipt", "polytechnic.the_lift_lecture", "sprocket_row.the_morning_gazette"]) play("storylet", `prologue.${id}`, 1);
     expect(visible()).toEqual(["prologue.sprocket_row.brass_plate"]);
     play("storylet", "prologue.sprocket_row.brass_plate", 0);
     expect(visible()).toEqual(["act1.sprocket_row.altitude_review"]);

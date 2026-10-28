@@ -72,15 +72,15 @@ describe("the first session's story", () => {
     expect(body.view.storylets).toEqual([]);
   });
 
-  it("spikes the bill: a Nerve spent, 15 Crowns owed, and the brass plate opens", async () => {
+  it("spikes the bill: a Nerve spent, 15 Crowns owed, and the neighbours call", async () => {
     const played = await call("POST", `/tinkers/${id}/story`, { kind: "letter", scene: LETTER, option: 0 });
     expect(played.status).toBe(200);
     expect(played.body.played).toMatchObject({ scene: LETTER, success: true, odds: null });
     expect(played.body.played.text).toMatch(/spike above the vice/);
     expect(played.body.view).toMatchObject({ nerve: 9, backRent: 15, letters: [] });
     expect(new Date(played.body.view.nextNerveAt).getTime()).toBe(clock + 36 * MINUTE);
-    expect(ids(played.body.view.storylets)).toEqual(["prologue.sprocket_row.brass_plate"]);
-    expect(played.body.view.qualities).toEqual({ "record.check_ins": 1, "flag.owes_back_rent": 1, "prologue.progress": 50 });
+    expect(ids(played.body.view.storylets)).toEqual(["prologue.sprocket_row.the_neighbours"]);
+    expect(played.body.view.qualities).toEqual({ "record.check_ins": 1, "flag.owes_back_rent": 1, "prologue.progress": 10 });
   });
 
   it("refuses a letter not in hand, a scene not open, and a missing option", async () => {
@@ -117,6 +117,10 @@ describe("the first session's story", () => {
       expect(status).toBe(200);
       return body;
     };
+    // The Prologue: eight scenes after the bill (the rent is paid above), then the plate.
+    for (const scene of ["sprocket_row.the_neighbours", "polytechnic.the_register", "sprocket_row.the_missing_tins", "rustmoor.the_tip_book",
+      "rustmoor.the_first_nest", "sprocket_row.the_receipt", "polytechnic.the_lift_lecture", "sprocket_row.the_morning_gazette"])
+      await play(`prologue.${scene}`, 1);
     await play("prologue.sprocket_row.brass_plate", 0);
     await play("act1.sprocket_row.altitude_review", 0);
     await play("act1.lowvents.the_list", 0);

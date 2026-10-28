@@ -1,0 +1,34 @@
+{
+  "schema": "storylet/1",
+  "id": "prologue.rustmoor.the_first_nest",
+  "act": 0,
+  "location": "rustmoor",
+  "reveal_layer": 0,
+  "requires": {
+    "prologue.progress": "==50"
+  },
+  "nerve": 1,
+  "description": "Behind a slope of broken bedsteads you find a Rust Rat nest, and in it, folded into the walls with real care, most of Sprocket Row: the pram wheel, the bicycle bells, a run of brass door numbers that spell nothing, and a great many spoons. The Rats have arranged it all by size. The nest is empty. Its builders, by the sound of the heaps, are not far.",
+  "options": [
+    {
+      "label": "Pack up every last thing that belongs to the Row, and carry it home.",
+      "success": {
+        "text": "It takes two trips and the whole of the evening. The Row receives its property back in a silence that turns, by the pie shop, into something like applause. The pram wheel goes back on the pram. The door numbers go back on the wrong doors, and stay there, because by now everyone has got used to them.",
+        "changes": {
+          "item.rustmoor.rustmoor_ration": "+2",
+          "prologue.progress": 60
+        }
+      }
+    },
+    {
+      "label": "Take back what the Row will miss, and keep the spoons. Spoons sell.",
+      "success": {
+        "text": "The Row gets its wheel, its bells and its numbers. The spoons you keep, on the principle that nobody on Sprocket Row ever owned a crested spoon and so nobody on Sprocket Row will miss one. The spoons were thrown off Gaugehill, and the Rats kept them better than Gaugehill did.",
+        "changes": {
+          "item.rustmoor.odd_spoons": "+3",
+          "prologue.progress": 60
+        }
+      }
+    }
+  ]
+}

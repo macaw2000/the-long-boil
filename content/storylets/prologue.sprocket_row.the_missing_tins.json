@@ -1,0 +1,44 @@
+{
+  "schema": "storylet/1",
+  "id": "prologue.sprocket_row.the_missing_tins",
+  "act": 0,
+  "location": "sprocket_row",
+  "reveal_layer": 0,
+  "requires": {
+    "prologue.progress": "==30"
+  },
+  "nerve": 1,
+  "description": "The pie shop is short of tins again. So is everyone. Since the summer the Rust Rats have come up from Rustmoor along the rim chains at night and taken whatever is metal and not nailed down, and lately whatever is nailed down as well. The Row has lost spoons, a pram wheel, two bicycle bells and the brass numbers off four doors. No. 9 still has its numbers. The Row has noticed, and would like to know what you mean to do about it.",
+  "options": [
+    {
+      "label": "Rig a rat-trap from a spring and a biscuit tin, and set it on the step.",
+      "challenge": {
+        "quality": "tinkering",
+        "difficulty": 3
+      },
+      "success": {
+        "text": "By morning the trap has caught a Rust Rat the size of a terrier, which has eaten the biscuit tin, reset the spring and gone. The Row comes to look at the wreckage and agrees it is the best attempt yet. The pie shop lends you a stouter tin. The real answer, everyone agrees, is in Rustmoor.",
+        "changes": {
+          "prologue.progress": 40
+        }
+      },
+      "failure": {
+        "text": "The spring goes off while you are setting it, and takes the end of your finger along with your dignity. The pie-shop twins see the whole thing. The Rats, you are told, will hear about it. The real answer, everyone agrees, is in Rustmoor.",
+        "changes": {
+          "needle.scald": "+1",
+          "prologue.progress": 40
+        }
+      }
+    },
+    {
+      "label": "Promise the Row you will go down to Rustmoor and settle it at the source.",
+      "success": {
+        "text": "The promise goes down the Row the way the news of No. 9 did, gaining detail as it travels. By the pie shop you are going down to Rustmoor tomorrow. By the corner you are going down tonight, with a spanner, alone. The woman from No. 7 brings round a pie for the journey and says she hopes it is not the last she bakes you.",
+        "changes": {
+          "item.rustmoor.rustmoor_ration": "+1",
+          "prologue.progress": 40
+        }
+      }
+    }
+  ]
+}

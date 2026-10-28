@@ -1,0 +1,33 @@
+{
+  "schema": "storylet/1",
+  "id": "prologue.rustmoor.the_tip_book",
+  "act": 0,
+  "location": "rustmoor",
+  "reveal_layer": 0,
+  "requires": {
+    "prologue.progress": "==40"
+  },
+  "nerve": 1,
+  "description": "Rustmoor hangs off the city's outer rim on chains as thick as a man, and at the gate a tip-keeper in three coats keeps a book. Everyone who goes onto the heaps signs it, and everyone who comes back signs it again, and the book is very thick at the front and thinner than you would like at the back. \"Name,\" says the tip-keeper. \"Business. And next of kin, for the Gazette.\"",
+  "options": [
+    {
+      "label": "Give Professor Brassbuckle as your next of kin.",
+      "success": {
+        "text": "The tip-keeper writes it down without comment, which is somehow worse than comment. Word of it reaches the Polytechnic by evening. Brassbuckle does not mention it, but your next delivery of Polytechnic stores comes with a note in her hand, \"Come back in one piece,\" underlined twice, and an extra tin of Rations.",
+        "changes": {
+          "item.rustmoor.rustmoor_ration": "+1",
+          "prologue.progress": 50
+        }
+      }
+    },
+    {
+      "label": "Write \"No. 9 Sprocket Row\" for your next of kin.",
+      "success": {
+        "text": "\"A workshop,\" says the tip-keeper. \"Can't say I've had that one.\" He considers it and writes it in anyway, in capitals, under the heading. \"If it comes to it,\" he says, \"we'll send your spanner home.\" He means it kindly. Rustmoor is like that: you can be kind there, as long as you are practical about it.",
+        "changes": {
+          "prologue.progress": 50
+        }
+      }
+    }
+  ]
+}

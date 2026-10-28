@@ -1,0 +1,34 @@
+{
+  "schema": "storylet/1",
+  "id": "prologue.sprocket_row.the_receipt",
+  "act": 0,
+  "location": "sprocket_row",
+  "reveal_layer": 0,
+  "requires": {
+    "prologue.progress": "==60",
+    "flag.owes_back_rent": "==0"
+  },
+  "nerve": 1,
+  "description": "The bill is paid, and the receipt comes not down the tube but up the Row, on foot, carried by Pip Tumbler in person. Pip is of no particular age and every particular opinion, and has clearly come to look at you. The receipt is handed over with ceremony. Pip does not leave. The kettle on your Boiler is beginning to sing.",
+  "options": [
+    {
+      "label": "Make a pot of tea, and let Pip tell you about the Row.",
+      "success": {
+        "text": "Pip takes three sugars and gives you the Row in return: who owes the pie shop, who owes the pawnbroker, and who on the Row is no better than they ought to be, which is everybody. By the second cup you know more about Sprocket Row than the Row does. At the door Pip says, \"The last one never made me tea,\" and then, \"Well. Once,\" and goes.",
+        "changes": {
+          "favour.stokers": "+1",
+          "prologue.progress": 70
+        }
+      }
+    },
+    {
+      "label": "Ask Pip what the last tenant of No. 9 was like.",
+      "success": {
+        "text": "Pip thinks about it. \"Quiet. Paid late. Wrote everything down. Everything. What the Boiler said, what the tube said, what I said.\" Pip looks round the workshop. \"You've moved the bench.\" You have not moved the bench. Pip looks at it a while longer anyway, then remembers another canister, somewhere else, and goes.",
+        "changes": {
+          "prologue.progress": 70
+        }
+      }
+    }
+  ]
+}
