@@ -1,0 +1,40 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.sprocket_row.the_night_before",
+  "act": 1,
+  "location": "sprocket_row",
+  "reveal_layer": 1,
+  "requires": { "act1.progress": "==80" },
+  "nerve": 1,
+  "description": "The Foundry Pass lies on the bench beside Hester's two columns, and between them they take up most of it. Tomorrow, the Cinderworks. Tonight the Boiler ticks over, the Post tube is quiet, and the city outside the window is exactly as high as the Gazette says, which is to say you no longer know how high it is. Hester left you a workshop, a debt and eleven years of numbers, and no instructions. Somebody has to decide what they were for. Looking at the bench, you find it is going to be you.",
+  "options": [
+    {
+      "label": "Write to Gaugehill and offer the Board your services. Whoever keeps the gauges can change them, from a chair at their table.",
+      "success": {
+        "text": "You write four drafts and burn three. The fourth says nothing about columns. It offers a clever Tinker's services to the Board of Gauges, in a hand you have made as steady as you can. Whatever the Board is, it is the only thing in Kettleport with a hand on every gauge, and hands can be persuaded. You seal it with candle wax and the feeling of having put on somebody else's good coat. It fits better than you would like.",
+        "changes": { "ambition.gauge": 1, "act1.progress": 100 }
+      }
+    },
+    {
+      "label": "Rule a third column beside Board and Mine, head it with her name, and start finding out where Hester Vane went.",
+      "success": {
+        "text": "You rule the third column in the same small upright hand, as near as you can manage it, and head it Vane. It stays empty. But somebody in this city locked her laboratory, somebody wrote her rent into a bill, and somebody saw her last. The Rats had one of her pages. They may have others. You pin all three columns above the vice, beside the bill spike, and turn the lamp down. One reading is not a reading, Hester would say. You have to start somewhere.",
+        "changes": { "ambition.lantern": 1, "act1.progress": 100 }
+      }
+    },
+    {
+      "label": "Take the pass down to the Lowvents tonight, and ask Mother Ash who the Foundry's fires really belong to.",
+      "success": {
+        "text": "Mother Ash looks at the pass, then at the furnace door behind her. \"The Board owns the gauges,\" she says. \"The House owns the debt. The Chapel says it owns the flame.\" She shuts the door with her boot. \"We feed it.\" She says nothing else, and does not need to. You walk home the long way, under four hundred Lowvents chimneys, and for the first time you count the people living under each one.",
+        "changes": { "ambition.ember": 1, "act1.progress": 100 }
+      }
+    },
+    {
+      "label": "Take a clean sheet and start an instrument that reads the Scald from inside it, instead of from the rim.",
+      "success": {
+        "text": "Every reading in Kettleport, Hester's included, is taken from above, looking down through the steam. Nobody has read the Scald from the inside in three hundred and twelve years, and you begin to see why. Your instrument would last a minute down there, perhaps less. It is still the most interesting drawing in the workshop. In the morning there is a card under your door: no name, a printed diver's helmet, and in pencil on the back, \"Yes. But how deep?\"",
+        "changes": { "ambition.fathom": 1, "act1.progress": 100 }
+      }
+    }
+  ]
+}
