@@ -4,8 +4,8 @@
 // that provider, and the login is the signed-in account's; without Cognito,
 // the dev login takes any name typed here.
 
-import { useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Animated, Easing, Image, Linking, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { createElement, useEffect, useRef, useState } from "react";
+import { AccessibilityInfo, Animated, Easing, Image, Linking, Platform, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { api } from "./api";
 import { art } from "./art";
 import { cognitoEnabled, providers, signOut, startSignIn, type Provider } from "./auth";
@@ -194,7 +194,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
       )}
       {showcase && (
         <View style={{ width: "100%", alignItems: "center" }} onLayout={(event) => (showcaseTop.current = event.nativeEvent.layout.y)}>
-          <Showcase wide={!tall && width >= 900} />
+          <Showcase wide={!tall && width >= 900} still={still} />
         </View>
       )}
     </ScrollView>
@@ -448,17 +448,25 @@ function SeeInside({ still, onPress }: { still: boolean; onPress: () => void }) 
   );
 }
 
-/** What the game is, in three real screenshots, and what signing in is for. */
-const SHOWCASE: { image: string; aspect: number; title: string; line: string }[] = [
+/**
+ * What the game is, in real recordings and a screenshot, and what signing in
+ * is for. The bench and the fight are clips of the real game, sped up through
+ * the wait and back to real time for the moment it pays off; each still is
+ * that moment, shown before the clip loads and to anyone who asks for less
+ * motion.
+ */
+const SHOWCASE: { image: string; clip?: string; aspect: number; title: string; line: string }[] = [
   {
     image: "showcase/bench.jpg",
-    aspect: 1200 / 456,
+    clip: "showcase/bench.mp4",
+    aspect: 1100 / 600,
     title: "Your workshop never sleeps",
     line: "Queue twelve hours of work, close the tab, and come back to finished spanners, full stores and Crowns in the till.",
   },
   {
     image: "showcase/fight.jpg",
-    aspect: 1200 / 480,
+    clip: "showcase/fight.mp4",
+    aspect: 1100 / 600,
     title: "Clear the scrapyards",
     line: "Arm yourself at the bench and fight through Rustmoor's Rust Rats to Scrapjaw, the king they built from the city's rubbish.",
   },
@@ -470,7 +478,7 @@ const SHOWCASE: { image: string; aspect: number; title: string; line: string }[]
   },
 ];
 
-function Showcase({ wide }: { wide: boolean }) {
+function Showcase({ wide, still }: { wide: boolean; still: boolean }) {
   return (
     <View style={{ width: "100%", maxWidth: 1160, paddingHorizontal: 16, paddingTop: 40, gap: 28 }}>
       <View style={{ alignItems: "center", gap: 10, maxWidth: 760, alignSelf: "center" }}>
@@ -483,13 +491,8 @@ function Showcase({ wide }: { wide: boolean }) {
       <View style={{ flexDirection: wide ? "row" : "column", gap: 18 }}>
         {SHOWCASE.map((tile) => (
           <View key={tile.image} style={[ui.panel, { flex: wide ? 1 : undefined, padding: 0, overflow: "hidden", borderColor: colors.brassDim }]}>
-            <Image
-              source={{ uri: art(tile.image) }}
-              // Side by side, one shape for all three, each whole: the Tinker stands at the left edge.
-              resizeMode={wide ? "contain" : "cover"}
-              style={{ width: "100%", aspectRatio: wide ? 2.2 : tile.aspect, backgroundColor: colors.soot }}
-              accessibilityLabel={`A screenshot: ${tile.title}`}
-            />
+            {/* Side by side, one shape for all three, each whole. */}
+            <ShowcaseMedia tile={tile} aspect={wide ? SHOWCASE[0].aspect : tile.aspect} still={still} />
             <View style={{ padding: 16, gap: 6 }}>
               <Text style={[ui.heading, { fontSize: 18 }]}>{tile.title}</Text>
               <Text style={[ui.text, { fontSize: 15, lineHeight: 22, color: colors.steam }]}>{tile.line}</Text>
@@ -640,6 +643,40 @@ function Letter({ still, children }: { still: boolean; children: React.ReactNode
           </Pressable>
         </Animated.View>
       )}
+    </View>
+  );
+}
+
+/**
+ * A tile's clip, playing on a loop without sound, or its still where there is
+ * no clip, no browser video, or less motion asked for. A small mark says the
+ * clip is sped up, since the real bench takes most of a minute a spanner.
+ */
+function ShowcaseMedia({ tile, aspect, still }: { tile: (typeof SHOWCASE)[number]; aspect: number; still: boolean }) {
+  const box = { width: "100%", aspectRatio: aspect, backgroundColor: colors.soot } as const;
+  if (!tile.clip || still || Platform.OS !== "web") {
+    return <Image source={{ uri: art(tile.image) }} resizeMode="contain" style={box} accessibilityLabel={`A screenshot: ${tile.title}`} />;
+  }
+  return (
+    <View style={box}>
+      {createElement("video", {
+        src: art(tile.clip),
+        poster: art(tile.image),
+        autoPlay: true,
+        muted: true,
+        loop: true,
+        playsInline: true,
+        "aria-label": `A recording: ${tile.title}`,
+        style: { width: "100%", height: "100%", objectFit: "contain", display: "block" },
+      })}
+      <Text
+        style={[
+          ui.number,
+          { position: "absolute", right: 8, bottom: 8, fontSize: 11, color: colors.steam, backgroundColor: "rgba(27, 23, 18, 0.8)", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
+        ]}
+      >
+        ▸▸ sped up
+      </Text>
     </View>
   );
 }
