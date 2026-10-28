@@ -215,23 +215,100 @@ function useLoop(duration: number, delay = 0, still = false) {
 }
 
 /**
- * The painting, alive: a slow push in, steam rolling up off the boiling sea
- * below the rooftops, and sparks drifting up past the Tinker. All of it is
- * drawn over the one picture, so it needs no new art, and it all holds still
- * for anyone who asks their device for less motion.
+ * The splash painting in layers (art/splash/, cut by scripts/art/import_art.py),
+ * back to front, each with how far it shifts, in pixels at 1440 wide, when the
+ * view swings all the way: the nearer, the further. Every full-frame layer is
+ * the painting's size, so drawn the same way they line up.
+ */
+const LAYERS = { sky: 6, roofs: 18, front: 30 };
+const AIRSHIPS = [
+  { file: "airship1.webp", aspect: 360 / 290, top: 2, width: 13, duration: 110000, phase: 0.05 },
+  { file: "airship2.webp", aspect: 236 / 360, top: 46, width: 5, duration: 150000, phase: 0.3 },
+  { file: "airship3.webp", aspect: 360 / 306, top: 30, width: 9, duration: 130000, phase: 0.85 },
+];
+const LAYER_FILES = ["sky.jpg", "roofs.webp", "front.webp", ...AIRSHIPS.map((ship) => ship.file)];
+
+/**
+ * Where the view is looking, from -1 to 1 each way: after the mouse where
+ * there is one, and a slow sway of its own on a phone, where there is not.
+ */
+function useLook(still: boolean) {
+  const look = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const sway = useLoop(24000, 0, still);
+  const hover = typeof globalThis.matchMedia === "function" && globalThis.matchMedia("(hover: hover)").matches;
+  useEffect(() => {
+    if (still || !hover || typeof globalThis.addEventListener !== "function") return;
+    const follow = (event: PointerEvent) => {
+      const toValue = { x: (event.clientX / globalThis.innerWidth) * 2 - 1, y: (event.clientY / globalThis.innerHeight) * 2 - 1 };
+      Animated.spring(look, { toValue, friction: 20, tension: 12, useNativeDriver: false }).start();
+    };
+    globalThis.addEventListener("pointermove", follow);
+    return () => globalThis.removeEventListener("pointermove", follow);
+  }, [still, hover]);
+  if (hover) return look;
+  return {
+    x: sway.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [0, 1, 0, -1, 0] }),
+    y: sway.interpolate({ inputRange: [0, 0.5, 1], outputRange: [-0.4, 0.4, -0.4] }),
+  };
+}
+
+/**
+ * The painting, alive: a slow push in, the layers shifting against each other
+ * as the view swings, airships crossing the sky, steam rolling up off the
+ * boiling sea behind the rooftops, and sparks drifting up past the Tinker.
+ * The whole painting shows until every layer has loaded, and it all holds
+ * still for anyone who asks their device for less motion.
  */
 function LivingSplash({ still }: { still: boolean }) {
+  const { width } = useWindowDimensions();
   const drift = useLoop(36000, 0, still);
-  const scale = drift.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1, 1.07, 1] });
+  const look = useLook(still);
+  const [loaded, setLoaded] = useState(0);
+  const shown = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (loaded === LAYER_FILES.length) Animated.timing(shown, { toValue: 1, duration: 600, useNativeDriver: false }).start();
+  }, [loaded]);
+  const onLoad = () => setLoaded((count) => count + 1);
+
+  // A little larger than the frame, so no layer's edge shows when it shifts.
+  const scale = drift.interpolate({ inputRange: [0, 0.5, 1], outputRange: [1.03, 1.08, 1.03] });
+  const shift = (depth: number) => {
+    const reach = (depth * width) / 1440;
+    return [
+      { translateX: look.x.interpolate({ inputRange: [-1, 1], outputRange: [reach, -reach] }) },
+      { translateY: look.y.interpolate({ inputRange: [-1, 1], outputRange: [reach / 2, -reach / 2] }) },
+      { scale },
+    ];
+  };
+  const layer = (file: string, depth: number) => (
+    <Animated.Image
+      source={{ uri: art(`splash/${file}`) }}
+      onLoad={onLoad}
+      resizeMode="cover"
+      style={{ position: "absolute", inset: 0, transformOrigin: "50% 30%", transform: shift(depth) }}
+    />
+  );
+
   return (
-    <View pointerEvents="none" style={{ position: "absolute", inset: 0 }}>
-      <Animated.Image
-        source={{ uri: art("splash.jpg") }}
-        resizeMode="cover"
-        style={{ position: "absolute", inset: 0, transform: [{ scale }] }}
-        accessibilityLabel="The Long Boil: a young Tinker on a brass rooftop among airships"
-      />
-      {!still && STEAM.map((puff, index) => <SteamPuff key={index} {...puff} />)}
+    <View
+      pointerEvents="none"
+      style={{ position: "absolute", inset: 0 }}
+      accessible
+      accessibilityRole="image"
+      accessibilityLabel="The Long Boil: a young Tinker on a brass rooftop among airships"
+    >
+      <Animated.Image source={{ uri: art("splash.jpg") }} resizeMode="cover" style={{ position: "absolute", inset: 0, transformOrigin: "50% 30%", transform: [{ scale }] }} />
+      <Animated.View style={{ position: "absolute", inset: 0, opacity: shown }}>
+        {layer("sky.jpg", LAYERS.sky)}
+        <Animated.View style={{ position: "absolute", inset: 0, transformOrigin: "50% 30%", transform: shift(LAYERS.sky + 4) }}>
+          {AIRSHIPS.map((ship) => (
+            <Airship key={ship.file} {...ship} still={still} onLoad={onLoad} />
+          ))}
+        </Animated.View>
+        {!still && STEAM.map((puff, index) => <SteamPuff key={index} {...puff} />)}
+        {layer("roofs.webp", LAYERS.roofs)}
+        {layer("front.webp", LAYERS.front)}
+      </Animated.View>
       {!still && SPARKS.map((spark, index) => <Spark key={index} {...spark} />)}
       {/* A dark foot, so the button below the panel reads against the planks. */}
       <View
@@ -245,6 +322,29 @@ function LivingSplash({ still }: { still: boolean }) {
         }}
       />
     </View>
+  );
+}
+
+/** An airship sailing left to right across the sky, bobbing as it goes; top and width in percent of the frame. */
+function Airship({ file, aspect, top, width, duration, phase, still, onLoad }: (typeof AIRSHIPS)[number] & { still: boolean; onLoad: () => void }) {
+  const sail = useLoop(duration, 0, still);
+  const bob = useLoop(7000 + duration / 40, 0, still);
+  // Start part way across, so the sky is not empty on arrival.
+  const along = Animated.modulo(Animated.add(sail, phase), 1);
+  return (
+    <Animated.Image
+      source={{ uri: art(`splash/${file}`) }}
+      onLoad={onLoad}
+      resizeMode="contain"
+      style={{
+        position: "absolute",
+        top: `${top}%`,
+        width: `${width}%`,
+        aspectRatio: aspect,
+        left: along.interpolate({ inputRange: [0, 1], outputRange: [`${-width - 2}%`, "102%"] }),
+        transform: [{ translateY: bob.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, 6, 0] }) }],
+      }}
+    />
   );
 }
 

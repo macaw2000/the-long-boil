@@ -128,6 +128,8 @@ The Tinker is drawn bare-handed, so every weapon in `content/gear/rustmoor.json`
 
 ## 9. The splash in layers, for parallax, 27 October 2026
 
+Done: the sky, the rooftops, the front (Gemini drew the title and the Tinker as one layer, which is kept) and the airships are in `art/splash/`, cut by `scripts/art/import_art.py`. The rooftops took two redraws: the first kept the Tinker's body and the empty plaques, the second the title plaque. The first prompt asked for `splash.jpg` to be attached; the fix for a plaque left in was to attach the bad result and ask for only that removed.
+
 The splash now drifts, steams and sparks, but it is one flat picture, so nothing in it moves against anything else. Cut into layers, the airships can sail across, and the sky, rooftops and Tinker can shift by different amounts as the mouse moves.
 
 Every layer has to line up with the others, so **each prompt is an edit of `art/splash.jpg`, not a new painting**: attach it to every request, and if a result moves anything, say "keep everything exactly where it is in the attached image" in a follow-up. Painted edges key out of magenta worse than pixel art, so every cutout asks for crisp edges with no glow or haze on the magenta. Ask for the same 16:9 shape as the original every time (it is 1376 by 768).

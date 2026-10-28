@@ -21,7 +21,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[2]
 SHEETS = ROOT / "art" / "concepts" / "sheets"
@@ -393,6 +393,7 @@ def main() -> None:
             written += 1
 
     written += app_icons()
+    written += splash_layers()
     print(f"wrote {written} files to {SPRITES.relative_to(ROOT)} and {PAINTINGS.relative_to(ROOT)}")
 
 
@@ -447,6 +448,60 @@ def app_icons() -> int:
             if r + g + b > 3 * 70:
                 silhouette_px[x, y] = (255, 255, 255, 255)
     silhouette.save(CLIENT_ASSETS / "android-icon-monochrome.png", optimize=True)
+    return 6
+
+
+SPLASH = ROOT / "art" / "splash"
+
+
+def keyed_painting(image: Image.Image) -> Image.Image:
+    """
+    A painted layer with its magenta made transparent. Unlike pixel art its
+    edges are soft, so an edge pixel becomes partly clear, with the magenta
+    taken back out of its colour, instead of a dark outline. Pink that JPEG
+    bled into thin parts (railings, rigging) comes out too, and the edge is
+    pulled in by a pixel so no pink halo is left against the sky.
+    """
+    image = image.convert("RGBA")
+    pixels = image.load()
+    width, height = image.size
+    for y in range(height):
+        for x in range(width):
+            r, g, b, _ = pixels[x, y]
+            strength = min(r, b) - g
+            alpha = max(0.0, min(1.0, (150 - strength) / 100))
+            if alpha < 0.25:
+                pixels[x, y] = (0, 0, 0, 0)
+                continue
+            if alpha < 1:
+                # The pixel is alpha parts paint and the rest magenta (255, 0, 255): keep the paint.
+                unmix = lambda channel, key: max(0, min(255, round((channel - (1 - alpha) * key) / alpha)))
+                r, g, b = unmix(r, 255), unmix(g, 0), unmix(b, 255)
+            # Despill: no paint here is redder and bluer than it is green, so any such excess is magenta bled in by JPEG.
+            spill = max(0, min(r, b) - g)
+            pixels[x, y] = (r - spill, g, b - spill, round(alpha * 255))
+    image.putalpha(image.getchannel("A").filter(ImageFilter.MinFilter(3)))
+    return image
+
+
+def splash_layers() -> int:
+    """
+    The splash painting in layers, for parallax (docs/art-requests.md, 9):
+    each one an edit of art/splash.jpg, so they line up drawn over each other
+    at the same size. The sky is whole; the roofs and the front (the title
+    with the Tinker) are keyed; the airships are cut from their 2 by 2 sheet.
+    WebP keeps the clear parts at a tenth of a PNG's size.
+    """
+    SPLASH.mkdir(parents=True, exist_ok=True)
+    sheet("splash-sky.jpeg").save(SPLASH / "sky.jpg", quality=82, optimize=True, progressive=True)
+    for layer in ("roofs", "front"):
+        keyed_painting(sheet(f"splash-{layer}.jpeg")).save(SPLASH / f"{layer}.webp", quality=85, method=6)
+    airships = without_gridlines(sheet("splash-airships.jpeg").convert("RGBA"))
+    for index, cell in enumerate(cells(airships.convert("RGB"), 2, 2)[:3]):
+        ship = keyed_painting(cell)
+        ship = ship.crop(content_box(ship))
+        ship.thumbnail((360, 360), Image.LANCZOS)
+        ship.save(SPLASH / f"airship{index + 1}.webp", quality=85, method=6)
     return 6
 
 
