@@ -43,6 +43,17 @@ Money is the Crown, a heavy brass coin stamped with a gauge needle. Gilded Cogs 
 | Cinderworks Foundry | Zone, 20 to 45 | II | The furnaces around the Kettle-heart |
 | Thunderhead Reach | Zone, 45 to 70 | III | The storm layer above the city |
 
+## District detail
+
+Canonised by Jeremy on 28 October 2026, from work order 023's scenes.
+
+- **Sprocket Row** brings its broken kettles and clocks to a Tinker's step, and pays in what it has, wrapped in the Gazette.
+- **Pip Tumbler** carries messages along the Row for Rations.
+- **Rustmoor:** Gaugehill's dust carts empty at the tip gate at dusk, and the pickers call the new pile the fresh heap. Gaugehill throws out its coal half-burnt in the ash sacks. The pickers keep a common supper pot in the lee of the crane.
+- **The Lowvents:** the Fellowship hall's stove bench is won by arm-wrestling. Somebody reads the Gazette's Gauge Reading aloud every evening, and nobody looks up. Mother Ash keeps a slate of split pipes by the hall door, which anyone may chalk; she reads all of it, including who wrote it. The stair pays a Tinker in coal.
+- **The Polytechnic:** Brassbuckle's first-years build boilers on a practical bench in the basement, and a qualified hand must test each before it is lit.
+- **The Brass Exchange** closes at a bell. Paid runners carry the day's trade slips to the Counting-House vault, and the House sets their running against what they owe it; a chief clerk runs them, and red ink in his book is good news. The price board is a board of brass flaps. A public gallery with a padded bench is open to anyone.
+
 ## Open questions
 
 Not stated in the GDD, and therefore not canon until Jeremy says so:

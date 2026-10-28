@@ -1,0 +1,57 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.polytechnic.practical_bench",
+  "act": 1,
+  "location": "polytechnic",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=30",
+    "tinkering": ">=5"
+  },
+  "nerve": 1,
+  "cooldown_hours": 24,
+  "description": "Every afternoon Brassbuckle's first-years build boilers on the long bench in the Polytechnic basement, and none may be lit until a qualified hand has tested it. Lately the qualified hand is you, because Brassbuckle said so in front of the first-years, in a voice that settled the matter. Twelve small boilers stand on the bench in a row. Twelve first-years stand behind them, each certain theirs is the good one.",
+  "options": [
+    {
+      "label": "Test every boiler properly, valve, seam and gauge, before the bell.",
+      "challenge": {
+        "quality": "tinkering",
+        "difficulty": 7
+      },
+      "success": {
+        "text": "Nine pass. Two have their safety valves fitted upside down, and you show their builders why that matters with a candle and a great deal of patience. One is perfect, and its builder, a pale boy who has not said a word all afternoon, goes pink to the ears. Brassbuckle has the three best builders pay you a lump each out of their own scuttles, and tells you while they do it about the price of brass when she was a girl.",
+        "changes": {
+          "item.rustmoor.coal": "+3"
+        }
+      },
+      "failure": {
+        "text": "Number seven has a safety valve made, as far as anybody can tell afterwards, from a teaspoon. It lets go while you are bent over it. Brassbuckle carries on with the lesson, which is not about steam, and without breaking her sentence hands you her handkerchief.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Test them from behind the blast screen, with a long pole and no hurry.",
+      "success": {
+        "text": "It takes until the lamps are lit and teaches the first-years mainly about patience. Two boilers fail, harmlessly, at the far end of a pole. Brassbuckle has the first-years find you one lump of coal between their scuttles, on the grounds that you were paid by the hour and most of the hour was pole.",
+        "changes": {
+          "item.rustmoor.coal": "+1"
+        }
+      }
+    },
+    {
+      "label": "Let the first-years test their own, and stand where you can catch what goes wrong.",
+      "requires": {
+        "favour.polytechnic": "<=1"
+      },
+      "success": {
+        "text": "You teach from the end of the bench. The first-years test their own boilers, nervously at first and then with enthusiasm, and one of them learns what a seam is by having it open in your direction. You take most of it on your apron. Brassbuckle, passing, looks at twelve first-years who can test a boiler and one Tinker with a red hand, and puts your name down for tomorrow as well.",
+        "changes": {
+          "favour.polytechnic": "+1",
+          "needle.scald": "+1"
+        }
+      }
+    }
+  ]
+}

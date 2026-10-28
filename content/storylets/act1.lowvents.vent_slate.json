@@ -6,6 +6,7 @@
   "reveal_layer": 1,
   "requires": { "act1.progress": ">=20", "smithing": ">=8", "favour.stokers": "<=1" },
   "nerve": 1,
+  "cooldown_hours": 24,
   "description": "By the door of the Fellowship hall hangs Mother Ash's slate: every vent in the Lowvents that hisses, in the order it began. Mended vents are rubbed out with a thumb. The slate is never shorter in the morning than it was the night before. Under it, on the bench, lie sheet brass, a riveting hammer and a box of rivets that the Fellowship counts every evening, out loud.",
   "options": [
     {

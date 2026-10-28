@@ -1,0 +1,53 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.rustmoor.tipping_hour",
+  "act": 1,
+  "location": "rustmoor",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=20",
+    "scavenging": ">=3"
+  },
+  "nerve": 1,
+  "cooldown_hours": 24,
+  "description": "At dusk the carts from Gaugehill back up to the tip gate and empty the day over the edge: hatboxes, bedsteads, a piano with no opinions left, sacks of ash still warm from good grates. The fresh heap shifts and settles for an hour afterwards, and the pickers who know the tip wait for it to finish. The pickers who need the money do not. Most nights there are more of the second kind.",
+  "options": [
+    {
+      "label": "Go up the fresh heap with the first rush, before it has finished settling.",
+      "challenge": {
+        "quality": "scavenging",
+        "difficulty": 6
+      },
+      "success": {
+        "text": "You reach the ash sacks while the heap is still deciding which way is down. Gaugehill burns its coal half through and throws the rest away, so the sacks hold clinker, cinders and, for anyone quick, whole lumps nobody upstairs could be bothered to poke. You are quick. You come down black to the elbows with three good lumps in your pockets, and the heap settles behind you as if it had not noticed.",
+        "changes": {
+          "item.rustmoor.coal": "+3"
+        }
+      },
+      "failure": {
+        "text": "The heap finishes settling with you on it. You ride a bedstead some yards downhill, which is faster than walking and harder on the shins, and arrive at the bottom with ash down your collar and nothing in your pockets. The pickers who waited step round you on their way up.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Wait at the foot of the heap with the old hands, and pick its skirts once it is quiet.",
+      "success": {
+        "text": "Nobody at the foot of the heap talks much. When it is quiet the old hands go up in no particular hurry, and so do you, and the skirts give up one lump of coal the rush missed and a great many cinders the rush was right about. One lump is one lump. Nobody bruised a shin for it.",
+        "changes": {
+          "item.rustmoor.coal": "+1"
+        }
+      }
+    },
+    {
+      "label": "Sit the evening out on the crane's counterweight, and let the heap go to whoever wants it.",
+      "success": {
+        "text": "The counterweight holds the day's warmth long after the light has gone off the tip, and you sit on it with your back to the city and your hands in your armpits. Below you the rush goes up the fresh heap, and the heap shrugs a few of them off again. You are not one of them. It is the best rest Rustmoor has to offer.",
+        "changes": {
+          "needle.scald": "-1"
+        }
+      }
+    }
+  ]
+}

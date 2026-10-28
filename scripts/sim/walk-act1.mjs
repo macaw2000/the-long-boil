@@ -49,7 +49,9 @@
 //   label; the sim reads it from the content file.
 // - District rule: score an outcome +1 per Favour point gained, -1 per Favour
 //   point spent, +1 per Needle point actually lowered (not below 0), -1 per
-//   Needle point raised. An item cost is allowed only if it leaves the
+//   Needle point raised, +1 for any item gained (Jeremy, 28 October 2026, work
+//   order 023: a player with spare Nerve plays a scene for coal or Rations;
+//   repeatable scenes give no item a collector buys). An item cost is allowed only if it leaves the
 //   reserve: 100 Rations, 1 Brass Spanner; ingots, coal and rat scrap have
 //   none. Take a challenge at shown odds 0.5 or better whose success scores
 //   above 0; else the certain option with the best score above 0; else skip
@@ -240,6 +242,7 @@ async function runCadence(perDay) {
       const d = typeof change === "number" ? null : Number(change);
       if (name.startsWith("item.")) {
         if (d < 0 && held(t, name) + d < (RESERVE[name] ?? 0)) return null;
+        if (d > 0) v += 1;
         continue;
       }
       const cur = view.qualities[name] ?? 0;

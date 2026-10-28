@@ -6,6 +6,7 @@
   "reveal_layer": 1,
   "requires": { "act1.progress": ">=70" },
   "nerve": 1,
+  "cooldown_hours": 24,
   "description": "The public urn at the end of Sprocket Row is where the Row does its thinking, out loud. Lately it has been thinking about you: the lamp at No. 9 burning late, the Inspector seen on the Row, the Gazette paper in your bin. The urn's tap drips into a bucket, and the bucket is emptied by whoever is losing the argument. This evening the bucket is nearly full.",
   "options": [
     {

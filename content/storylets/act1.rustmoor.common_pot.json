@@ -1,0 +1,49 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.rustmoor.common_pot",
+  "act": 1,
+  "location": "rustmoor",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=30",
+    "cooking": ">=3"
+  },
+  "nerve": 1,
+  "cooldown_hours": 24,
+  "description": "In the lee of the crane, out of the wind, the pickers keep a pot. Everybody puts in what the day gave them, a turnip or a pigeon or an onion with a history, and somebody who can cook is supposed to make it into supper. Nobody who can cook is ever there. Tonight the pot is full, the fire is lit, and a dozen pickers are looking at you, because you are holding the spoon and they are not.",
+  "options": [
+    {
+      "label": "Take the spoon and make the pot into something a picker would queue for.",
+      "challenge": {
+        "quality": "cooking",
+        "difficulty": 6
+      },
+      "success": {
+        "text": "Salt, patience, and the onion sliced thin enough to forget its history. By the time the light has gone off the tip the pot smells the way the pickers imagine Gaugehill kitchens smell, and they eat it in silence, which on the tip is applause. Afterwards they wrap two portions in wax paper and push them into your hands for tomorrow, and nobody will let you scrub the pot.",
+        "changes": {
+          "item.rustmoor.rustmoor_ration": "+2",
+          "needle.scald": "-2"
+        }
+      },
+      "failure": {
+        "text": "The pigeon was older than anybody guessed and the fire was hotter. You burn the bottom of the pot, your wrist and very nearly the nearest picker. The pickers eat it anyway, because it is supper, and they are kind about it, which is worse. You scrub the pot. It takes an hour.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Put five of your own Rations in the pot, and eat with the pickers.",
+      "requires": {
+        "item.rustmoor.rustmoor_ration": ">=5"
+      },
+      "success": {
+        "text": "Five wax-paper bricks go into the pot and come out, an hour later, as something with body. The pickers make room on the bench. You eat with your back against the crane's counterweight and the fire on your shins, and for the length of a bowl nobody on the tip wants anything from you. Somebody's pigeon turns out to have been a very good idea.",
+        "changes": {
+          "item.rustmoor.rustmoor_ration": "-5",
+          "needle.scald": "-1"
+        }
+      }
+    }
+  ]
+}

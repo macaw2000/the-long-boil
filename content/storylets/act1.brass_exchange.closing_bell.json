@@ -1,0 +1,73 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.brass_exchange.closing_bell",
+  "act": 1,
+  "location": "brass_exchange",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=35"
+  },
+  "nerve": 1,
+  "cooldown_hours": 12,
+  "description": "When the closing bell rings on the Exchange floor, every trade of the day must reach the Counting-House vault before the doors are barred, written on a paper slip and carried by hand. The House does not pay its runners in Crowns. It sets their running against whatever they owe it, which most of them do. Thirty runners wait at the clerks' rail, and the chief clerk counts them like spoons.",
+  "options": [
+    {
+      "label": "Take a bundle of slips and race the bell across the floor to the vault.",
+      "requires": {
+        "needle.arrears": ">=1"
+      },
+      "challenge": {
+        "quality": "vitality",
+        "difficulty": 5
+      },
+      "success": {
+        "text": "You run the floor the way the old runners do, along the backs of the brokers' benches where nobody stands, and reach the vault grille with the bell still ringing. The vault clerk counts your bundle and enters two lines against your name in red ink, which at the Counting-House is the colour of good news.",
+        "changes": {
+          "needle.arrears": "-2"
+        }
+      },
+      "failure": {
+        "text": "A broker steps back from his bench to make a point with his whole arm, and you and the slips part company in a white burst over the floor. You gather them on your knees while the bell finishes. The vault clerk takes them late, enters them late, and enters you as well: one line, in black ink, for lateness.",
+        "changes": {
+          "needle.arrears": "+1"
+        }
+      }
+    },
+    {
+      "label": "Stay after the bell and sweep the trading floor for the House, by the hour.",
+      "requires": {
+        "needle.arrears": ">=1"
+      },
+      "success": {
+        "text": "The floor after close is a field of torn slips, orange peel and the odd broker's glove. You sweep it in long rows under the price board while the flaps clatter down one by one, and by the last row your back has set like a hinge and the brass dust off the floor is in your eyes and the back of your throat. The chief clerk inspects your work, finds a slip under a bench, holds it up without comment, and enters one line against your name all the same.",
+        "changes": {
+          "needle.arrears": "-1",
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Hand twenty Rations down the runners' line while they wait at the rail.",
+      "requires": {
+        "item.rustmoor.rustmoor_ration": ">=20",
+        "favour.counting_house": "<=1"
+      },
+      "success": {
+        "text": "Twenty Rations go down a line of thirty runners, and the arithmetic is settled with a pocket-knife. The runners eat on their feet. The chief clerk, who has eaten nothing since noon, accepts a piece with the air of a man taking a bribe he has already priced, and writes your name on the inside of his cuff.",
+        "changes": {
+          "item.rustmoor.rustmoor_ration": "-20",
+          "favour.counting_house": "+1"
+        }
+      }
+    },
+    {
+      "label": "Climb to the public gallery and watch the floor empty from the padded bench.",
+      "success": {
+        "text": "The gallery is warm, the bench is padded, and up here you are nobody's business. Below, the runners go off like a starting gun and the brokers go home like a funeral, and the price board clatters down to nothing, flap by flap. You stay until the lamps are turned low and a porter asks you, politely, whether you live here.",
+        "changes": {
+          "needle.scald": "-1"
+        }
+      }
+    }
+  ]
+}

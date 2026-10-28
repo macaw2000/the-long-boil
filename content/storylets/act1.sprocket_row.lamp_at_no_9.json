@@ -1,0 +1,60 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.sprocket_row.lamp_at_no_9",
+  "act": 1,
+  "location": "sprocket_row",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=35"
+  },
+  "nerve": 1,
+  "cooldown_hours": 12,
+  "description": "Since Inspector Rook took an interest in you, a pair of good boots has strolled past No. 9 most evenings after dark, on the far side of the Row, at the pace of somebody counting windows. Yours is the only lamp on the Row still lit at that hour. Your bench is covered in the kind of work that wants a lamp, and your neighbours, who notice everything, have begun to notice the boots.",
+  "options": [
+    {
+      "label": "Put the lamp out, draw the blind, and finish the job by the light of the stove.",
+      "challenge": {
+        "quality": "precision",
+        "difficulty": 9
+      },
+      "success": {
+        "text": "You work by the red glow from the stove door, by feel and by memory, and the last screw goes home without a lamp to see it by. Out on the Row the good boots pass, slow at your dark window, and walk on to look at somebody else's. In the morning the job on your bench is done, and nobody wrote down when.",
+        "changes": {
+          "needle.notice": "-2"
+        }
+      },
+      "failure": {
+        "text": "Stove-light is kind to faces and cruel to small screws. You lose one, then another, and then the skin off a fingertip to a file you were certain was on the other side of the bench. In the end you light the lamp to find the screws, long after the good boots have gone by, and finish the job with a fingertip in your mouth.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Pay Pip two Rations to tell the Row that you have gone down the stair, visiting.",
+      "requires": {
+        "item.rustmoor.rustmoor_ration": ">=2"
+      },
+      "success": {
+        "text": "Pip takes the Rations, weighs them, and takes the job. By noon the whole Row knows you have gone down the stair, visiting, and has an opinion on whom. By evening the boots have stopped at No. 9 only once, briefly, and gone on towards the stair.",
+        "changes": {
+          "item.rustmoor.rustmoor_ration": "-2",
+          "needle.notice": "-1"
+        }
+      }
+    },
+    {
+      "label": "Leave a cup of tea on your step at the hour the boots go by.",
+      "requires": {
+        "favour.gaugers": "<=1"
+      },
+      "success": {
+        "text": "The first evening the tea goes cold on the step. The second, the cup has gone by morning and is back by noon, washed. The third, the boots stop at your step for the length of a cup. Their owner says it is a good cup, and asks, pleasantly, which nights you work late. You find you have answered.",
+        "changes": {
+          "favour.gaugers": "+1",
+          "needle.notice": "+1"
+        }
+      }
+    }
+  ]
+}

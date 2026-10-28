@@ -29,6 +29,8 @@ The act ends with the player choosing an Ambition, and holding a Foundry Pass by
 
 Brassbuckle, Pip Tumbler, Mother Ash, Inspector Rook, Silas Tallow, Mrs. Inkwell, Lord Gauntlett. Hester only through Ledger Pages.
 
+Once Rook takes an interest in you (beat 5), a pair of good Gauger boots walks past No. 9 after dark, and the Row notices the late lamp (Jeremy, 28 October 2026, work order 023).
+
 ## Needles in play
 
 Scald and Arrears from the Prologue. Notice from beat 5. **Haze does not exist yet**: it enters in Act II with the Whistle. Do not reference it.

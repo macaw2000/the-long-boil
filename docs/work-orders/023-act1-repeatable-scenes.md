@@ -1,7 +1,7 @@
 # Work order 023: Act I repeatable scenes for the long middle
 
 **Agent:** `scrivener`, with numbers reviewed by the `draftsman`, then the `assayer` re-walks the act
-**Status:** ready to run (Jeremy, 27 October 2026: approved as written; the two open questions are settled after the drafts)
+**Status:** done (28 October 2026). Eight repeatable scenes, two inspector rounds, all reviewed; approval waits on Jeremy playing the build. Jeremy decided the same day that the walk counts an item gained as worth playing (`scripts/sim/walk-act1.mjs`), that coal_count, vent_slate and public_urn take a 24-hour cooldown, and canonised the scenes' invented details (`docs/canon/world.md`, District detail; one line in `slices/act1.md`). The draftsman set the five item-giving scenes to 24 hours and the other three to 12, and priced Favour at the settled 14 coal or 20 Rations. Story actions a day over days 3 to 15: 7.46, 7.85 and 7.46 at 2, 3 and 4 check-ins (1.2 to 1.5 before); every walk reaches the Foundry Pass; Scald peaks at 4, Notice at 2. Still open: Arrears cannot yet be paid in Crowns (GDD section 5's sink), and closing_bell's slip run takes Arrears -2 on a win.
 **Act:** Act I. **Locations:** Sprocket Row, Rustmoor, the Lowvents, the Polytechnic, the Brass Exchange. **Clearance:** Layer 1.
 **Blocks:** story pace, and with it the phase 1 gate "Act I playable end to end" (GDD section 11).
 

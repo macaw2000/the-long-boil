@@ -1,0 +1,49 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.lowvents.split_seam",
+  "act": 1,
+  "location": "lowvents",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=30",
+    "smithing": ">=5"
+  },
+  "nerve": 1,
+  "cooldown_hours": 24,
+  "description": "Most nights some pipe on the Lowvents stair splits a seam. Tonight it is in a tenement kitchen, throwing a white plume across a table where a family is trying to eat its supper. They have hung a wet blanket over it, which helps the way a wet blanket usually helps. The father offers you a riveting hammer, handle first, as if it were the most ordinary thing in the world. On the stair, it is.",
+  "options": [
+    {
+      "label": "Cut a sleeve from scrap brass and rivet it over the split, with the family watching.",
+      "challenge": {
+        "quality": "smithing",
+        "difficulty": 8
+      },
+      "success": {
+        "text": "The split is clean, the brass sits flat, and the last rivet closes with a sound like a full stop. The plume dies. The kitchen, which has been shouting over the hiss for a week, goes quiet in a way that embarrasses everybody. The father pays you in the only coin the stair keeps: three lumps of coal out of the family's scuttle, pressed on you until refusing would be rude.",
+        "changes": {
+          "item.rustmoor.coal": "+3"
+        }
+      },
+      "failure": {
+        "text": "The seam is worse under the blanket than over it, and your first rivet opens it the rest of the way. The plume finds your forearm before you find the stopcock. The father takes the hammer back without a word and rehangs the blanket.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Leave the family a scuttle of your own coal, fourteen lumps, and chalk the pipe on Mother Ash's slate.",
+      "requires": {
+        "item.rustmoor.coal": ">=14",
+        "favour.stokers": "<=1"
+      },
+      "success": {
+        "text": "You stack the fourteen lumps by their grate and climb to the Fellowship hall, where the slate hangs by the door, and chalk the kitchen at the bottom of the list. When you pass the kitchen again the blanket is still up and the hiss is still there, but the grate is lit. Mother Ash will have read the slate by morning. She reads all of it, including who wrote it.",
+        "changes": {
+          "item.rustmoor.coal": "-14",
+          "favour.stokers": "+1"
+        }
+      }
+    }
+  ]
+}

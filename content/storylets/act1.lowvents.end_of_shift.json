@@ -1,0 +1,61 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.lowvents.end_of_shift",
+  "act": 1,
+  "location": "lowvents",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=20"
+  },
+  "nerve": 1,
+  "cooldown_hours": 12,
+  "description": "When the Stokers come off shift, the Fellowship hall fills with men and women the colour of their work, and the urn on the end table gets no rest at all. The bench nearest the stove belongs to whoever can hold it, and by custom it is held by the arm, elbows on the table, with the hall watching. Somebody reads the Gazette's Gauge Reading aloud every evening. Nobody in the hall looks up from their tea.",
+  "options": [
+    {
+      "label": "Put your elbow on the table and wrestle the shift's champion for the stove bench.",
+      "challenge": {
+        "quality": "fortitude",
+        "difficulty": 5
+      },
+      "success": {
+        "text": "She is a coal-heaver with forearms like hawsers, and she has held the bench all week. She has also been shovelling since six. It takes a long minute, and the table creaks, and the hall shouts for both of you impartially, and then her knuckles touch the wood. She gives up the bench without a word and fetches your tea herself, which the hall notices. You sit with your feet on the fender until your coat steams dry.",
+        "changes": {
+          "needle.scald": "-1"
+        }
+      },
+      "failure": {
+        "text": "Her forearm does not move. It does not appear to know there is a contest. After a while she lays your hand down on the table, quite gently, like something borrowed, and the hall cheers her for the hundredth time. Your shoulder will mention it for a day. You take your tea standing by the door, where the draught is.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Feed three lumps of your own coal into the hall's stove, and take your tea on the back bench.",
+      "requires": {
+        "item.rustmoor.coal": ">=3"
+      },
+      "success": {
+        "text": "Three lumps go into the stove by the urn. Nobody comments, which is how a Stoker says it was enough. The back bench is a long way from the stove and the tea would stand a spoon up. You drink two cups and feel the stair go out of your legs.",
+        "changes": {
+          "item.rustmoor.coal": "-3",
+          "needle.scald": "-1"
+        }
+      }
+    },
+    {
+      "label": "Read tonight's Gauge Reading aloud yourself, in the Gazette's own voice.",
+      "requires": {
+        "act1.progress": ">=35",
+        "favour.stokers": "<=1"
+      },
+      "success": {
+        "text": "You do the voice: Gaugehill vowels, a pause before the figure as if it were a gift, and the figure itself, reassuring. The hall, which does not look up for the Gazette, looks up for you, and laughs in several places the Gazette never intended. A Stoker you have never met stands you a second cup. By morning somebody on the stair has told somebody who tells the Gaugers things, and a notebook on Gaugehill has a line about you doing the voice.",
+        "changes": {
+          "favour.stokers": "+1",
+          "needle.notice": "+1"
+        }
+      }
+    }
+  ]
+}

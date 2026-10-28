@@ -1,0 +1,45 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.sprocket_row.the_step",
+  "act": 1,
+  "location": "sprocket_row",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=20",
+    "tinkering": ">=4"
+  },
+  "nerve": 1,
+  "cooldown_hours": 24,
+  "description": "Since you moved into No. 9, Sprocket Row has decided that you mend things, and it brings them to your step before you are up: a kettle with a weeping spout, a mangle that bites, a carriage clock stopped at twenty past four. The owners wait in a polite line with their arms folded. They will be back tomorrow whether you open the door or not.",
+  "options": [
+    {
+      "label": "Open up and mend whatever is first in the line, with its owner watching every turn.",
+      "challenge": {
+        "quality": "tinkering",
+        "difficulty": 7
+      },
+      "success": {
+        "text": "It is the kettle, as it is usually the kettle. A new washer, a bead of solder on the spout, and its owner pours you the first cup out of it to prove the point. She pays in the Row's coin: two lumps of coal wrapped in yesterday's Gazette, and a good word for you to everyone further down the line. You drink the tea on your step while the line shuffles up, one kettle shorter.",
+        "changes": {
+          "item.rustmoor.coal": "+2",
+          "needle.scald": "-1"
+        }
+      },
+      "failure": {
+        "text": "It is the mangle, and the mangle has been biting people for a generation and sees no reason to stop for you. You get the roller back on its spindle at the cost of two knuckles' worth of skin. Its owner thanks you warmly and wheels it away, still squeaking. The rest of the line, having watched, decides to come back tomorrow.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Hang the shut card on the door, draw the blind, and sleep until the line goes home.",
+      "success": {
+        "text": "The line considers the card for some time and then, in ones and twos, goes home with its kettles. You sleep until the afternoon light comes round the edge of the blind and lies across your feet. When you get up, the carriage clock is sitting on your step on its own, with a note tied to it: Whenever You Like.",
+        "changes": {
+          "needle.scald": "-1"
+        }
+      }
+    }
+  ]
+}
