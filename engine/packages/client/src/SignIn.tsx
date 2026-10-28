@@ -5,10 +5,11 @@
 // the dev login takes any name typed here.
 
 import { createElement, useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Animated, Easing, Image, Linking, Platform, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { AccessibilityInfo, Animated, Easing, Image, Linking, Platform, Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { api } from "./api";
 import { art } from "./art";
 import { cognitoEnabled, providers, signOut, startSignIn, type Provider } from "./auth";
+import { TapInput } from "./TapInput";
 import { colors, ui } from "./theme";
 
 export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (login: string, tinkerId: number) => void }) {
@@ -104,7 +105,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
       <Text style={[ui.heading, { fontSize: 22, textAlign: "center" }]}>Your workshop</Text>
       <Text style={[ui.muted, { textAlign: "center" }]}>A solicitor's letter: the tenancy of No. 9 Sprocket Row, "contents included", is yours.</Text>
       {cognitoEnabled ? null : (
-        <TextInput
+        <TapInput
           style={ui.input}
           value={login}
           onChangeText={(text) => {
@@ -136,7 +137,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
           ))}
           {tinkers.length < 3 && (
             <View style={{ flexDirection: "row", gap: 8 }}>
-              <TextInput
+              <TapInput
                 style={[ui.input, { flex: 1 }]}
                 value={name}
                 onChangeText={setName}
