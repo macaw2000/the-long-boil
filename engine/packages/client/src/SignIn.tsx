@@ -519,36 +519,27 @@ const PAPER = { ink: "#3a2a18", heading: "#6b4a1c", muted: "#5e4c36" };
 /** Where the seal sits on the envelope's flap, and how wide, as shares of the envelope (art/letter/, 720 by 546). */
 const ENVELOPE_ASPECT = 720 / 546;
 const SEAL = { x: 0.5, y: 0.635, width: 0.2, aspect: 240 / 228 };
-const LETTER_OPENED = "longboil.letterOpened";
-
-function letterOpenedBefore() {
-  try {
-    return globalThis.localStorage?.getItem(LETTER_OPENED) === "1";
-  } catch {
-    return false;
-  }
-}
 
 /**
  * The sign-in as the solicitor's letter the game opens with (docs/gdd.md).
  * It arrives sealed; a tap cracks the wax, the halves fall away, the flap
- * opens and the letter rises out with the sign-in written on it. Someone
- * who has opened it once finds it open, and with less motion asked for it
- * simply opens.
+ * opens and the letter rises out with the sign-in written on it. It comes
+ * sealed every time: a player who stays signed in never sees it, so only
+ * a new device or a signed-out player opens it. With less motion asked
+ * for, it simply opens.
  */
 function Letter({ still, children }: { still: boolean; children: React.ReactNode }) {
-  const [opened, setOpened] = useState(letterOpenedBefore);
+  const [opened, setOpened] = useState(false);
+  const opening = useRef(false);
   const [width, setWidth] = useState(0);
-  const crack = useRef(new Animated.Value(opened ? 1 : 0)).current;
-  const flap = useRef(new Animated.Value(opened ? 1 : 0)).current;
-  const rise = useRef(new Animated.Value(opened ? 1 : 0)).current;
+  const crack = useRef(new Animated.Value(0)).current;
+  const flap = useRef(new Animated.Value(0)).current;
+  const rise = useRef(new Animated.Value(0)).current;
   const breathe = useLoop(2600, 0, still || opened);
 
   const breakSeal = () => {
-    if (opened) return;
-    try {
-      globalThis.localStorage?.setItem(LETTER_OPENED, "1");
-    } catch {}
+    if (opening.current) return;
+    opening.current = true;
     if (still) {
       [crack, flap, rise].forEach((value) => value.setValue(1));
       setOpened(true);
