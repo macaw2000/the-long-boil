@@ -402,7 +402,10 @@ export class AppStack extends Stack {
       removalPolicy,
     });
 
-    pool.addDomain("HostedDomain", { cognitoDomain: { domainPrefix: settings.cognitoDomainPrefix } });
+    // The prefix domain until sign-in moves to auth.<domain>; after that nothing uses it.
+    if (!(settings.useAuthDomain && settings.authDomain)) {
+      pool.addDomain("HostedDomain", { cognitoDomain: { domainPrefix: settings.cognitoDomainPrefix } });
+    }
 
     if (settings.googleClientId) {
       // The secret never appears in the template: CloudFormation resolves it
