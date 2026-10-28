@@ -5,7 +5,7 @@
 // the dev login takes any name typed here.
 
 import { useEffect, useState } from "react";
-import { Image, ImageBackground, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
+import { Image, ImageBackground, Linking, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { api } from "./api";
 import { art } from "./art";
 import { cognitoEnabled, providers, signOut, startSignIn, type Provider } from "./auth";
@@ -136,6 +136,10 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
           <Text style={ui.muted}>Sign out</Text>
         </Pressable>
       )}
+      <View style={{ flexDirection: "row", justifyContent: "center", gap: 16 }}>
+        <LegalLink path="/privacy.html" label="Privacy" />
+        <LegalLink path="/terms.html" label="Terms" />
+      </View>
     </View>
   );
 
@@ -163,6 +167,16 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
       {panel}
       <View style={{ flex: 0.6 }} />
     </ImageBackground>
+  );
+}
+
+/** The privacy and terms pages are static files beside the bundle (public/). */
+function LegalLink({ path, label }: { path: string; label: string }) {
+  const open = () => Linking.openURL(globalThis.location ? `${globalThis.location.origin}${path}` : `https://thelongboil.com${path}`);
+  return (
+    <Text onPress={open} accessibilityRole="link" style={[ui.muted, { fontSize: 13, textDecorationLine: "underline" }]}>
+      {label}
+    </Text>
   );
 }
 

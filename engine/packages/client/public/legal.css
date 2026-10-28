@@ -1,0 +1,37 @@
+/* The privacy and terms pages: brass on soot, like the game (src/theme.ts). */
+:root {
+  --soot: #1b1712;
+  --panel: #26201a;
+  --edge: #3d3226;
+  --brass: #c9a25a;
+  --ink: #efe7d6;
+  --muted: #9c907c;
+}
+* { box-sizing: border-box; }
+html { background: var(--soot); }
+body {
+  margin: 0;
+  padding: 32px 16px 64px;
+  background: var(--soot);
+  color: var(--ink);
+  font: 16px/1.6 Georgia, "Times New Roman", serif;
+}
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px 28px 36px;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+}
+h1 { color: var(--brass); font-size: 28px; margin: 0 0 4px; }
+h2 { color: var(--brass); font-size: 19px; margin: 32px 0 8px; }
+p, li { margin: 0 0 12px; }
+ul { padding-left: 22px; }
+a { color: var(--brass); }
+.updated, .back { color: var(--muted); font-size: 14px; }
+.back { display: inline-block; margin-bottom: 18px; }
+@media (max-width: 480px) {
+  body { padding: 16px 0 40px; }
+  main { border-radius: 0; border-left: 0; border-right: 0; padding: 22px 16px 28px; }
+}
