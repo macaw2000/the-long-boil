@@ -1,7 +1,7 @@
 # Work order 025: Scrapjaw on day 14
 
 **Agents:** `assayer` (part 1), then `draftsman` (part 2), then `assayer` (part 3)
-**Status:** open (Jeremy asked for it on 28 October 2026; not yet approved to run)
+**Status:** done (28 October 2026). Part 1 found the gear path, not Scrapjaw, made the fight late: the walk reaches melee 20 on time but never holds the Steel Blade the fight was tuned for (Smithing 15). Jeremy decided a launch-day player cannot be assumed to buy one, the walk keeps attacking at 40%, and the XP curve stays. Scrapjaw is now tuned to the riveting hammer (hp 15,004 to 12,860; combat.json revision 8, `boss.reference_weapon`), and the combat check honours the listed weapon. First win: d16.05, d14.54 and d13.17 at 2, 3 and 4 check-ins (d14.54 in 4 of 5 seeds at 3; one a sitting later). Story pace over days 3 to 15: 7.46, 7.69 and 6.46. The Steel Blade now wins 73%, the best wrong-style weapon 38%. Both rows are validated; approval waits on Jeremy.
 **Act:** Act I. **Zone:** Rustmoor, band 1 to 20. **Clearance:** Layer 1.
 **Blocks:** Act I's pacing against GDD section 7 ("Around day 14 she beats Scrapjaw on her second attempt"). It does not block the phase 1 gate, which work order 024 closed.
 
@@ -45,6 +45,7 @@ Recommend one. Do not move the XP curve.
 ## Settled before you start
 
 - **Target:** first win over Scrapjaw on day 14 ± 0.5 at 3 check-ins, on the first or second attempt (GDD section 7).
+  Restated by Jeremy on 28 October 2026, after part 2: **by the first sitting of day 15** (day 14.54 at 3 check-ins). The walk's sittings fall at fixed hours, and the riveting hammer cannot be in hand before that sitting without changing the walk.
 - `BOSS_TARGET_WIN_CHANCE` stays 0.5 for whichever reference player is settled.
 - Offline resolution must still equal step-by-step replay.
 - No new Crown faucet: a weapon drop has no collector price, or a capped one.

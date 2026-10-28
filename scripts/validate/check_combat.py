@@ -37,6 +37,18 @@ player at the monster's level L (combat.json reference_player):
   monster (ties to the lower item id). Only weakness-style weapons count for
   the reference player. None is a FAIL (no-weakness-gear): the target cannot
   be reached;
+- the one exception (combat.json boss.reference_weapon, revision 8, work
+  order 025): a boss listed there, {monster id: {"item": item id, ...}}, keys
+  starting with "_" being prose, is fought with that item at +0 instead of
+  the best weapon. The listed item must be a gear/1 weapon entry that keeps
+  the gear rules (reference-weapon-missing), of the boss's weakness style
+  (reference-weapon-style), with level_required <= the boss's level
+  (reference-weapon-level), and not one of the boss's own drops
+  (reference-weapon-own-drop). Each broken rule is a FAIL and the boss's win
+  chance is not computed. A listed id that is not a monster/2 boss is a FAIL
+  (reference-weapon-not-boss), as is an entry without an "item" id
+  (reference-weapon-shape). The zone rule above is not applied to the listed
+  item;
 - armour: of that gear, the +0 armour piece with the most armour whose
   level_required is at or below the player's Fortitude, S (combat.json
   gear.armour.fields: armour level_required is a Fortitude level). None is a
@@ -64,8 +76,11 @@ check_xp_curve does with BAND_DAYS_TOLERANCE. Within tolerance is a NOTE.
 
 NOTE lines, per monster: the kill time (bosses: the win chance) with each
 unmatched style's best weapon from the same reference gear, Rations stocked.
-These are for information only and never feed the reference player; and the matched kill time
-(win chance) without Rations. Each kill time is shown computed and floored.
+These are for information only and never feed the reference player; for a
+boss with a listed reference weapon, the win chance with the best weapon
+(the one gear.reference_gear would pick), Rations stocked; and the matched
+kill time (win chance) without Rations. Each kill time is shown computed and
+floored.
 
 With no monster/2 monsters there is nothing to check, and neither the model
 nor the curve is needed.
@@ -261,6 +276,52 @@ def load_monsters(report, root, schemas):
 def load_model(report, root, schemas):
     """Returns (path, constants) where constants maps NAME -> value, or
     (None, None) after reporting why."""
+    path, data = load_model_file(report, root, schemas)
+    if data is None:
+        return None, None
+    return path, dict((k, v["value"]) for k, v in data["constants"].items())
+
+
+def load_reference_weapons(report, path, data, monsters):
+    """{boss id: item id} from the model's boss.reference_weapon (revision 8,
+    work order 025). Keys starting with "_" are prose. An entry that is not
+    {"item": "<id>", ...}, or that names no monster/2 boss, is a FAIL and is
+    left out."""
+    boss = data.get("boss")
+    listed = boss.get("reference_weapon") if isinstance(boss, dict) else None
+    if listed is None:
+        return {}
+    if not isinstance(listed, dict):
+        report.fail("reference-weapon-shape", path,
+                    "boss.reference_weapon must be an object of {monster id: {\"item\": "
+                    "item id}}", data.get("id"))
+        return {}
+    bosses = set(m["id"] for _p, m in monsters if m["boss"])
+    others = set(m["id"] for _p, m in monsters if not m["boss"])
+    out = {}
+    for ident in sorted(listed):
+        if ident.startswith("_"):
+            continue
+        entry = listed[ident]
+        if not isinstance(entry, dict) or not isinstance(entry.get("item"), str):
+            report.fail("reference-weapon-shape", path,
+                        "boss.reference_weapon[%r] must be an object with an \"item\" id"
+                        % ident, ident)
+            continue
+        if ident not in bosses:
+            report.fail("reference-weapon-not-boss", path,
+                        "boss.reference_weapon lists %s, which is %s; only a boss's "
+                        "reference weapon can be set"
+                        % (ident, "not a boss" if ident in others
+                           else "no monster on %s" % COMBAT_MONSTER_SCHEMA), ident)
+            continue
+        out[ident] = entry["item"]
+    return out
+
+
+def load_model_file(report, root, schemas):
+    """Returns (path, data) for the one valid model file, or (None, None)
+    after reporting why."""
     found, bad = [], []
     for path, data, declared in _files(root, MODEL_PREFIX):
         if declared == MODEL_SCHEMA and not lib.validate(data, schemas[MODEL_SCHEMA]):
@@ -268,8 +329,7 @@ def load_model(report, root, schemas):
         else:
             bad.append(path)
     if len(found) == 1:
-        path, data = found[0]
-        return path, dict((k, v["value"]) for k, v in data["constants"].items())
+        return found[0]
     if not found:
         report.fail("no-model", ", ".join(bad) or "-",
                     "monster/2 monsters exist but no file is a valid %s model%s"
@@ -412,9 +472,15 @@ class Reference:
     module's docstring), shared with the drops check's grocer sink report
     (work order 013) so both read the same player. level_ok is False when the
     monster's level is not in the curve table; weapon is None when no
-    weakness-style weapon qualifies; armour is None when no armour does."""
+    weakness-style weapon qualifies, or when the boss's listed reference
+    weapon breaks a rule (listed_problems, [(rule, text)]); armour is None
+    when no armour does. best_weapon is the gear.reference_gear weapon,
+    which is the weapon unless the boss is in reference_weapons
+    ({boss id: item id}, combat.json boss.reference_weapon); listed is that
+    item, or None."""
 
-    def __init__(self, c, sec_of, all_weapons, all_armours, boss_drops, m):
+    def __init__(self, c, sec_of, all_weapons, all_armours, boss_drops, m,
+                 reference_weapons=None):
         ident, level = m["id"], m["level"]
         self.zone = zone_of(ident)
         self.banned = boss_drops.get(ident, set()) if m["boss"] else set()
@@ -423,7 +489,9 @@ class Reference:
         armours = [a for a in all_armours
                    if zone_of(a[0]) == self.zone and a[0] not in self.banned]
         self.level_ok = level in sec_of
-        self.armour = self.weapon = self.player = None
+        self.armour = self.weapon = self.player = self.best_weapon = None
+        self.listed = (reference_weapons or {}).get(ident) if m["boss"] else None
+        self.listed_problems = []
         if not self.level_ok:
             return
         self.sec = sec_of[level]
@@ -433,14 +501,50 @@ class Reference:
                 self.armour = (item, points)
         self.armour_points = self.armour[1] if self.armour else 0
         self.args = (level, self.sec, self.armour_points)
-        self.weapon = _best_weapon(c, self.weapons, m["weakness"], self.args, m)
+        self.best_weapon = _best_weapon(c, self.weapons, m["weakness"], self.args, m)
+        if self.listed is None:
+            self.weapon = self.best_weapon
+        else:
+            self.weapon = self._listed_weapon(all_weapons, m)
         if self.weapon is not None:
             self.player = Player(c, level, self.sec, self.weapon, self.armour_points)
 
+    def _listed_weapon(self, all_weapons, m):
+        """The listed weapon as (item, style, power, accuracy), or None after
+        recording each rule it breaks in listed_problems."""
+        item = self.listed
+        found = [w for w in all_weapons if w[0] == item]
+        if not found:
+            self.listed_problems.append((
+                "reference-weapon-missing",
+                "boss.reference_weapon is %s, which has no gear/1 weapon entry that "
+                "keeps the gear rules" % item))
+            return None
+        _item, style, required, power, accuracy = found[0]
+        if style != m["weakness"]:
+            self.listed_problems.append((
+                "reference-weapon-style",
+                "boss.reference_weapon %s has style %s; the boss is weak to %s"
+                % (item, style, m["weakness"])))
+        if required > m["level"]:
+            self.listed_problems.append((
+                "reference-weapon-level",
+                "boss.reference_weapon %s needs level %d; the boss is level %d"
+                % (item, required, m["level"])))
+        if item in self.banned:
+            self.listed_problems.append((
+                "reference-weapon-own-drop",
+                "boss.reference_weapon %s is in this boss's own drop table; a boss's "
+                "own drops never count for it" % item))
+        if self.listed_problems:
+            return None
+        return (item, style, power, accuracy)
 
-def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path, m):
+
+def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path, m,
+                  reference_weapons=None):
     ident, level, style = m["id"], m["level"], m["weakness"]
-    ref = Reference(c, sec_of, all_weapons, all_armours, boss_drops, m)
+    ref = Reference(c, sec_of, all_weapons, all_armours, boss_drops, m, reference_weapons)
     zone, banned, weapons = ref.zone, ref.banned, ref.weapons
     target = m["seconds_per_kill"]
     heal = c[RATION_KEY]
@@ -456,6 +560,10 @@ def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path,
                     % (zone, sec, level, ", leaving out the boss's own drops" if banned else ""),
                     ident)
     armour_points, args, weapon = ref.armour_points, ref.args, ref.weapon
+    if ref.listed_problems:
+        for rule, text in ref.listed_problems:
+            report.fail(rule, path, "%s; its win chance is not computed" % text, ident)
+        return
     if weapon is None:
         report.fail("no-weakness-gear", path,
                     "no +0 %s %s weapon with level_required <= %d%s, so the reference "
@@ -470,8 +578,9 @@ def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path,
                     "the reference player's mean swing with %s is 0 (or max_hp is 0); "
                     "nothing can be computed" % weapon[0], ident)
         return
-    who = ("reference player main %s %d, other six %d, max_hp %s, %s, armour %s"
+    who = ("reference player main %s %d, other six %d, max_hp %s, %s%s, armour %s"
            % (style, level, sec, _num(player.max_hp), weapon[0],
+              " (boss.reference_weapon)" if ref.listed else "",
               armour[0] if armour else "none"))
     heal_open = ("%s is %s in the combat model (Cooking work order)"
                  % (RATION_KEY, "null" if heal is None else heal))
@@ -502,6 +611,23 @@ def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path,
             s = uf.stocked()
             report.note("%s with %s: %s" % (
                 label, w[0], "never ends (f >= 1)" if s is None else _times(s, target)))
+    if ref.listed:
+        best = ref.best_weapon
+        label = ("%s: matched with the best weapon (gear.reference_gear), Rations stocked"
+                 % ident)
+        if best is None:
+            report.note("%s: no +0 %s %s weapon with level_required <= %d%s"
+                        % (label, zone, style, level,
+                           ", leaving out the boss's own drops" if banned else ""))
+        else:
+            bf = Fight(c, Player(c, level, sec, best, armour_points), m, heal)
+            if not bf.damaging():
+                report.note("%s with %s: mean swing is 0" % (label, best[0]))
+            elif heal is None and c["BOSS_RATION_CAP_PER_ATTEMPT"] > 0:
+                report.note("%s with %s: not computed, %s" % (label, best[0], heal_open))
+            else:
+                p, t = bf.win_chance(c["BOSS_RATION_CAP_PER_ATTEMPT"])
+                report.note("%s with %s: win chance %.3f" % (label, best[0], p))
     if m["boss"]:
         p, t = fight.win_chance(0)
         report.note("%s: matched, without Rations: win chance %.3f" % (ident, p))
@@ -588,10 +714,12 @@ def run(root):
                     "nothing to check" % (old_files, COMBAT_MONSTER_SCHEMA))
         return report
 
-    model_path, c = load_model(report, root, schemas)
+    model_path, model = load_model_file(report, root, schemas)
     curve_path, curve = check_pacing.load_curve(report, root, schemas)
-    if c is None or curve is None:
+    if model is None or curve is None:
         return report
+    c = dict((k, v["value"]) for k, v in model["constants"].items())
+    reference_weapons = load_reference_weapons(report, model_path, model, monsters)
     sec_of = secondary_levels(curve, c)
     report.note("%d monster(s) on %s, %d monster/1 file(s) skipped; model %s, curve %s, "
                 "%s %s" % (len(monsters), COMBAT_MONSTER_SCHEMA, old_files, model_path,
@@ -599,7 +727,8 @@ def run(root):
                            "null (open)" if c[RATION_KEY] is None else _num(c[RATION_KEY])))
     boss_drops = load_boss_drops(root)
     for path, m in monsters:
-        check_monster(report, c, sec_of, weapons, armours, boss_drops, path, m)
+        check_monster(report, c, sec_of, weapons, armours, boss_drops, path, m,
+                      reference_weapons)
     return report
 
 

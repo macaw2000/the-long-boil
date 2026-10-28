@@ -634,11 +634,21 @@ JAW_RIFLE = "item.global.fixture_jaw_rifle"
 PASS_GEAR = dict(GOOD_GEAR, gear=GOOD_GEAR["gear"] + [
     weapon("item.thunderhead.fixture_far_coil", "aetherics", 1, 999, 50),
     weapon(JAW_RIFLE, "marksmanship", 1, 999, 50)])
+# The hammer king (work order 025) is the jaw king under another id, listed in
+# boss.reference_weapon with the plain rifle. Unlisted, its best weapon would
+# be the jaw rifle (power 999; the jaw king's drop, not the hammer king's) and
+# its win chance far off target, so passing shows the listed weapon is used.
+HAMMER_KING = dict(BOSS, id="monster.global.fixture_hammer_king")
+def ref_model(listed, **override):
+    m = model(**override)
+    m["boss"] = {"_note": "Fixture; the formulas are the ones tuning.combat/1 fixes.",
+                 "reference_weapon": dict({"_note": "Fixture."}, **listed)}
+    return m
 put("combat/pass/" + CP, PC)
-put("combat/pass/" + CMP, CM)
+put("combat/pass/" + CMP, ref_model({HAMMER_KING["id"]: {"item": WPN["marksmanship"][0], "basis": "proposal"}}))
 put("combat/pass/" + GP, PASS_GEAR)
 put("combat/pass/" + DP, drops("drops.global.fixture", table(BOSS["id"], 1, 1, first_kill=[JAW_RIFLE])))
-put("combat/pass/" + MP, monsters2(TEN, BOSS))
+put("combat/pass/" + MP, monsters2(TEN, BOSS, HAMMER_KING))
 put("combat/pass/content/monsters/old.json", monsters(mon("monster.global.fixture_old_rat", 1, 6, 36)))
 if not os.path.exists(os.path.join(F, "combat/pass/expected-notes.txt")):
     put("combat/pass/expected-notes.txt", "")
@@ -718,6 +728,35 @@ put(FR + CP, PC)
 put(FR + CMP, model(RATION_HEAL_HP=None))
 put(FR + GP, GOOD_GEAR)
 put(FR + MP, monsters2(TEN, BOSS, dict(TEN, id="monster.global.fixture_rifle_shy", level=4, weakness="marksmanship")))
+
+# combat fail-reference-weapon (work order 025): boss.reference_weapon lists
+# a weapon breaking each rule, one breaking two at once, a non-boss, a
+# monster that does not exist and an entry with no item. Every king is the
+# level-15 marksmanship jaw king under another id.
+FW = "combat/fail-reference-weapon/"
+OWN_RIFLE = "item.global.fixture_own_rifle"
+kings = dict((k, dict(BOSS, id="monster.global.fixture_%s_king" % k))
+             for k in ("ghost", "wrong", "early", "own", "twice"))
+put(FW + CP, PC)
+put(FW + CMP, ref_model({
+    kings["ghost"]["id"]: {"item": "item.global.fixture_ghost_rifle"},   # no gear entry
+    kings["wrong"]["id"]: {"item": WPN["melee"][0]},                    # melee, not marksmanship
+    kings["early"]["id"]: {"item": "item.global.fixture_late_rifle"},   # needs level 16
+    kings["own"]["id"]: {"item": OWN_RIFLE},                            # its own drop
+    kings["twice"]["id"]: {"item": "item.global.fixture_late_coil"},    # aetherics and level 16
+    TEN["id"]: {"item": WPN["aetherics"][0]},                           # not a boss
+    "monster.global.fixture_absent_king": {"item": WPN["marksmanship"][0]},  # no such monster
+    "monster.global.fixture_shapeless_king": WPN["marksmanship"][0]}))  # no "item"
+put(FW + GP, gearfile("gear.global.fixture",
+    weapon(WPN["melee"][0], "melee", 1, *WPN["melee"][1:]),
+    weapon(WPN["marksmanship"][0], "marksmanship", 5, *WPN["marksmanship"][1:]),
+    weapon(WPN["aetherics"][0], "aetherics", 10, *WPN["aetherics"][1:]),
+    weapon("item.global.fixture_late_rifle", "marksmanship", 16, 20, 6),
+    weapon("item.global.fixture_late_coil", "aetherics", 16, 40, 0),
+    weapon(OWN_RIFLE, "marksmanship", 1, 20, 6),
+    armour(COAT, 1, 10)))
+put(FW + DP, drops("drops.global.fixture", table(kings["own"]["id"], 1, 1, first_kill=[OWN_RIFLE])))
+put(FW + MP, monsters2(TEN, *[kings[k] for k in sorted(kings)]))
 
 # references: every gear entry's item is an item under content/items/
 # (Jeremy, answer to work order 010).

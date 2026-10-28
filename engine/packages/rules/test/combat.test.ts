@@ -68,15 +68,18 @@ describe("Scrapjaw", () => {
     return planBoss(c, fighterFor(state.skillXp, content.weapons.get(weapon)!, content), scrapjaw, content.ration.heal, rations).win;
   }
 
-  it("is won half the time at level 20 with 3 Rations and the right style", () => {
-    expect(win(20, "item.rustmoor.steel_blade", "melee", 3)).toBeCloseTo(0.5, 2);
-    expect(win(19, "item.rustmoor.steel_blade", "melee", 3)).toBeCloseTo(0.405, 2);
-    expect(win(21, "item.rustmoor.steel_blade", "melee", 3)).toBeCloseTo(0.589, 2);
+  // Tuned to the riveting hammer, the weapon a player holds near day 14 (work order 025).
+  it("is won half the time at level 20 with 3 Rations, the riveting hammer and the right style", () => {
+    expect(win(20, "item.rustmoor.riveting_hammer", "melee", 3)).toBeCloseTo(0.5, 2);
+    expect(win(19, "item.rustmoor.riveting_hammer", "melee", 3)).toBeCloseTo(0.397, 2);
+    expect(win(21, "item.rustmoor.riveting_hammer", "melee", 3)).toBeCloseTo(0.596, 2);
+    expect(win(20, "item.rustmoor.steel_blade", "melee", 3)).toBeCloseTo(0.728, 2);
   });
 
   it("punishes the wrong style and a fight without Rations", () => {
-    expect(win(20, "item.rustmoor.garnet_rifle", "marksmanship", 3)).toBeCloseTo(0.152, 2);
-    expect(win(20, "item.rustmoor.steel_blade", "melee", 0)).toBeLessThan(0.01);
+    expect(win(20, "item.rustmoor.steel_carbine", "marksmanship", 3)).toBeCloseTo(0.152, 2);
+    expect(win(20, "item.rustmoor.garnet_rifle", "marksmanship", 3)).toBeCloseTo(0.383, 2);
+    expect(win(20, "item.rustmoor.riveting_hammer", "melee", 0)).toBeLessThan(0.01);
   });
 
   it("gives Ledger Page 1 and the Cleaver on the first win, and spends 3 Rations an attempt", () => {

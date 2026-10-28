@@ -8038,14 +8038,14 @@
       "path": "content/monsters/rustmoor.json",
       "pointer": "/monsters/4",
       "revision": null,
-      "work_order": "docs/work-orders/011-rustmoor-combat-stats.md",
-      "status": "approved",
+      "work_order": "docs/work-orders/025-scrapjaw-on-day-14.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-22T15:57:13Z",
+        "run": "2026-10-28T23:15:54Z",
         "checks": [
           "schema",
           "provenance",
@@ -8053,17 +8053,19 @@
           "references",
           "pacing",
           "drops",
-          "combat"
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": "Pass with notes: 15% for non-melee styles; untestable without Rations."
-      },
-      "approved_by": "jeremy",
-      "approved_at": "2026-10-22T16:03:01Z",
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
       "history": [
         {
           "at": "2026-10-22T00:27:01Z",
@@ -8104,6 +8106,16 @@
           "at": "2026-10-22T16:03:01Z",
           "status": "approved",
           "by": "jeremy"
+        },
+        {
+          "at": "2026-10-28T23:15:43Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-28T23:15:54Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -8971,15 +8983,15 @@
       "type": "tuning",
       "path": "content/tuning/combat.json",
       "pointer": null,
-      "revision": 7,
-      "work_order": "docs/work-orders/012-rustmoor-cooking.md",
-      "status": "approved",
+      "revision": 8,
+      "work_order": "docs/work-orders/025-scrapjaw-on-day-14.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-22T22:51:40Z",
+        "run": "2026-10-28T23:15:54Z",
         "checks": [
           "schema",
           "provenance",
@@ -8988,17 +9000,18 @@
           "pacing",
           "drops",
           "combat",
-          "start"
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": ""
-      },
-      "approved_by": "jeremy",
-      "approved_at": "2026-10-22T22:55:46Z",
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
       "history": [
         {
           "at": "2026-10-22T15:05:04Z",
@@ -9059,6 +9072,16 @@
           "at": "2026-10-22T22:55:46Z",
           "status": "approved",
           "by": "jeremy"
+        },
+        {
+          "at": "2026-10-28T23:15:43Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-28T23:15:54Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null

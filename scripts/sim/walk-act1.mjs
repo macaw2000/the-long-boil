@@ -14,6 +14,10 @@
 //   SIM_FIRST_PAY=spare keeps the old first-session rule (pay only with 100 Crowns to spare);
 //     the default now pays Pip's bill in the first session as soon as the purse covers it,
 //     as the policy below and the guide's pay_bill step say.
+//   SIM_GIVE_BLADE=1 hands the player one item.rustmoor.steel_blade at the first sitting where melee is 15 or
+//     more (work order 025, part 1: the gear-path test). The grocer does not stock it and the walk has no other
+//     players to buy from, so the sim writes the stack straight into its own database's inventory projection,
+//     with no event and no Crowns paid; engine code and content are untouched. Default off.
 // A forced option that is locked leaves the scene unplayed that sitting, and the walk says so.
 // Scenes that move an ambition.* quality are played as spine beats (first certain open option).
 //
@@ -111,6 +115,7 @@ const FORCE = {
 };
 for (const k of Object.keys(FORCE)) if (FORCE[k] === undefined || FORCE[k] === "") delete FORCE[k]; else FORCE[k] = Number(FORCE[k]);
 const FIRST_PAY = process.env.SIM_FIRST_PAY ?? "now";
+const GIVE_BLADE = process.env.SIM_GIVE_BLADE === "1";
 const AMBITIONS = ["ambition.gauge", "ambition.lantern", "ambition.ember", "ambition.fathom"];
 const PROLOGUE = ["prologue.sprocket_row.back_rent", "prologue.sprocket_row.the_neighbours", "prologue.polytechnic.the_register", "prologue.sprocket_row.the_missing_tins", "prologue.rustmoor.the_tip_book", "prologue.rustmoor.the_first_nest", "prologue.sprocket_row.the_receipt", "prologue.polytechnic.the_lift_lecture", "prologue.sprocket_row.the_morning_gazette", "prologue.sprocket_row.brass_plate"];
 // The first-session guide's step rules, copied from engine/packages/client/src/Guide.tsx (the client imports
@@ -538,6 +543,7 @@ async function runCadence(perDay) {
   let alt = 0;
   let rot = 0;
   let foundryAt = null;
+  let bladeGiven = null;
   for (const [k, at] of times.entries()) {
     clock = at;
     const out = await ok("POST", `/tinkers/${main}/check-in`);
@@ -546,6 +552,16 @@ async function runCadence(perDay) {
     const won = out.events.filter((e) => e.type === "boss_attempted");
     if (won.length) note(`Scrapjaw: ${won.map((e) => `${e.won ? "WON" : "lost"} at ${Math.round(e.winChance * 100)}%`).join(", ")}${won.some((e) => e.produced?.[PAGE]) ? "; Ledger Page dropped" : ""}`);
     let { t } = await sellAndPay(main);
+    if (GIVE_BLADE && !bladeGiven && lvl(t, "melee") >= 15) {
+      await db.query(
+        `INSERT INTO inventory (tinker_id, item, bound, qty) VALUES ($1, $2, false, 1)
+         ON CONFLICT (tinker_id, item, bound) DO UPDATE SET qty = inventory.qty + 1`,
+        [main, I("steel_blade")],
+      );
+      bladeGiven = clock;
+      note(`SIM_GIVE_BLADE: handed one steel_blade (melee ${lvl(t, "melee")})`);
+      t = (await ok("GET", `/tinkers/${main}`)).tinker;
+    }
     t = await equipBest(main, t);
     const view = await playStory(main);
     {

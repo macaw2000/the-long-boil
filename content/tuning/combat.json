@@ -1,8 +1,8 @@
 {
  "schema": "tuning.combat/1",
  "id": "tuning.global.combat",
- "revision": 7,
- "source": "docs/work-orders/009-combat-model.md (including 'Settled after the first draft'); docs/work-orders/011-rustmoor-combat-stats.md ('Settled after the first draft' and 'Settled after the inspector's review'); docs/gdd.md sections 1, 6 (Combat paragraph), 7; content/monsters/rustmoor.json; content/tuning/xp-curve.json; docs/work-orders/001-xp-curve.md and 008-rustmoor-drops.md (carried-forward notes); docs/work-orders/012-rustmoor-cooking.md (the Rustmoor Ration, revision 5; 'Settled after review', revision 6); docs/work-orders/013-grocer-and-starting-inventory.md (the Ration consumption correction, revision 7)",
+ "revision": 8,
+ "source": "docs/work-orders/009-combat-model.md (including 'Settled after the first draft'); docs/work-orders/011-rustmoor-combat-stats.md ('Settled after the first draft' and 'Settled after the inspector's review'); docs/gdd.md sections 1, 6 (Combat paragraph), 7; content/monsters/rustmoor.json; content/tuning/xp-curve.json; docs/work-orders/001-xp-curve.md and 008-rustmoor-drops.md (carried-forward notes); docs/work-orders/012-rustmoor-cooking.md (the Rustmoor Ration, revision 5; 'Settled after review', revision 6); docs/work-orders/013-grocer-and-starting-inventory.md (the Ration consumption correction, revision 7); docs/work-orders/025-scrapjaw-on-day-14.md (Scrapjaw's reference weapon, revision 8)",
  "applies_to": "every fight: the seven combat skills, weapons and armour, monsters and bosses in all zones",
  "basis_key": {
   "settled": "Jeremy has decided it (work order 009, 'Settled after the first draft', 22 October 2026); where the GDD records it, the line is quoted",
@@ -99,7 +99,7 @@
    "slot": "None. There is one armour slot (gear.loadout, settled), so coats, goggles and plate (section 6 Skills table: Tailoring, Smithing) all fill it and one is worn at a time.",
    "basis": "proposal for the fields; the single slot is settled"
   },
-  "reference_gear": "For the target, 'the gear the zone offers' is the best +0 weapon of the matched style, and the best +0 armour piece, that the zone offers with level_required at or below the player's level. Calibration is headroom above the target, not part of it (proposal; section 7 month three treats calibrating toward +10 as a long sink)."
+  "reference_gear": "For the target, 'the gear the zone offers' is the best +0 weapon of the matched style, and the best +0 armour piece, that the zone offers with level_required at or below the player's level. Calibration is headroom above the target, not part of it (proposal; section 7 month three treats calibrating toward +10 as a long sink). A boss listed in boss.reference_weapon is the one exception: its reference player holds that weapon instead of the best one (revision 8, work order 025)."
  },
 
  "monster_stats_shape": {
@@ -194,11 +194,21 @@
   "boss_time_variance": "v_b = boss.attack_interval_s^2 * pool * boss_var_swing / boss_mean_swing^3",
   "win_chance": "P = Phi((m_b - m_p) / sqrt(v_p + v_b)), Phi the standard normal CDF. Every term in the ratio is a time, so the x10 scale leaves P unchanged.",
   "target": "For the reference player at boss.level with a matched loadout and n Rations, m_b == m_p (so P == BOSS_TARGET_WIN_CHANCE) and BETWEEN_KILLS_S + m_p == boss.seconds_per_kill.",
+  "reference_weapon": {
+   "_note": "Work order 025, Jeremy's decision after part 1 (28 October 2026): a launch-day player cannot be assumed to buy a Steel Blade on the Exchange by day 13, so Scrapjaw is tuned to the weapon a player actually holds. A boss listed here is solved for a reference player who holds this weapon at +0 in place of gear.reference_gear's best weakness-style weapon; level, the other six skills (reference_player), armour and Rations are unchanged. A boss not listed keeps gear.reference_gear.",
+   "monster.rustmoor.scrapjaw": {
+    "item": "item.rustmoor.riveting_hammer",
+    "basis": "settled",
+    "why": "Work order 025 option (c): 'The reference player holds the power-100 hammer, and Scrapjaw's stats come down so that player wins half the time at melee 20.' The Riveting Hammer (melee, level_required 10, power 100) is the best melee weapon the Act I walk ever holds before the fight: work order 025 part 1 measured it made on day 15.54, 14.54 and 12.96 at 2, 3 and 4 check-ins, and the Steel Blade never, since forge_steel_blade needs Smithing 15 and the walk ends Act I at Smithing 10.",
+    "hp_derivation": "derived: boss.target with the hammer. At level 20 with the other skills at 6, accuracy 26 equals Scrapjaw's evasion 26, so hit chance 0.75; max_hit (100 + 10 x 20) x 1.06 x 1.25 = 397.5; crit 0.03; mean swing 0.75 x 198.75 x 1.015 = 151.30. BETWEEN_KILLS_S + m_p = 270 gives hp = (270 - 6 - 3 x 3) x 151.30 / 3 = 12,860.4, so 12,860. Revision 7's 15,004 is the same solve with the Steel Blade (mean 176.51, 15,003.8). Every other Scrapjaw stat is unchanged, so m_b is unchanged and m_b == m_p still holds: win chance 0.500, won attempt 270.0 s."
+   }
+  },
   "expected_attempt_seconds": "BETWEEN_KILLS_S + m_p + (1 - P) * KNOCKOUT_RESPAWN_S (approximation: a lost fight is counted at full length, then a knockout). At any player level, a won attempt takes no less than boss.seconds_per_kill (kill_time.floor).",
   "steepness": {
    "basis": "settled",
    "settled": "Work order 011, 'Settled after the inspector's review' (22 October 2026), replacing work order 009's 15 points and 4%: 'The settled steepness is now about 9 points of win chance per level and about 15% with the wrong style.'",
-   "figures": "Scrapjaw (weak to melee), reference player with the Steel Blade (+0, power 150; the Cleaver is Scrapjaw's own drop and never counts), 3 Rations, RATION_HEAL_HP 600: win chance 0.405 at level 19, 0.500 at 20, 0.589 at 21 (-9.5 and +8.9 points); 0.152 with the wrong style at level 20 (marksmanship, Garnet Rifle, power 150; aetherics, Garnet Rod, power 150); 0.001 without Rations. The reference player's other six skills are 6 at levels 19 to 21, so only the main style moves."
+   "figures": "Revision 8 (work order 025): Scrapjaw (weak to melee, hp 12,860), reference player with the Riveting Hammer (+0, power 100; boss.reference_weapon), 3 Rations, RATION_HEAL_HP 600: win chance 0.397 at level 19, 0.500 at 20, 0.596 at 21 (-10.3 and +9.6 points); 0.152 with the wrong style at level 20 and the same power (Steel Carbine or Spark Rod, power 100), 0.383 with the best wrong-style weapon (Garnet Rifle or Garnet Rod, power 150); 0.001 without Rations. Other melee weapons at level 20: Iron Crowbar 0.204, Steel Blade 0.728, Scrapjaw's Cleaver 0.816. The reference player's other six skills are 6 at levels 19 to 21, so only the main style moves. Revision 7, with the Steel Blade and hp 15,004: 0.405, 0.500, 0.589; 0.152 wrong style (power 150); 0.001 without Rations.",
+   "revision_8_settled": "Jeremy accepted the revision 8 curve on 28 October 2026 (work order 025): -10.3 and +9.6 points per level around 20, 0.152 with the wrong style at equal power, 0.383 with the best wrong-style weapon in Rustmoor (power 150), and 0.728 with the Steel Blade."
   },
   "basis": "proposal, except BOSS_TARGET_WIN_CHANCE (derived), the Ration cap and the accepted steepness (settled)"
  },
@@ -210,7 +220,7 @@
   "why": "The curve's base, its day-2 check (total level passes 50 only at 70/5 with three crafting skills) and the Ledger Page counter (work order 008) all rest on 70/5.",
   "consequences": [
    "Vitality and Fortitude sit at 6, 10 and 18 when the main skill reaches 20, 45 and 70 (reference_player table): max HP 1,500, 1,900, 2,700; damage taken cut by 5.7%, 9.1%, 15.3%.",
-   "Vitality and Fortitude do not change at-level kill time. They change Ration use, knockouts without Rations, and boss odds: at Scrapjaw (melee reference player, Steel Blade, 3 Rations, RATION_HEAL_HP 600), +5 Vitality (max HP 1,500 to 2,000) takes the win chance from 50% to 73%, +5 Fortitude (armour 6 to 11) to 58%.",
+   "Vitality and Fortitude do not change at-level kill time. They change Ration use, knockouts without Rations, and boss odds: at Scrapjaw (melee reference player, Riveting Hammer since revision 8, 3 Rations, RATION_HEAL_HP 600; the same figures as revision 7's Steel Blade), +5 Vitality (max HP 1,500 to 2,000) takes the win chance from 50% to 73%, +5 Fortitude (armour 6 to 11) to 58%.",
    "A player who switches styles to match every weakness splits the 70% across up to three styles and levels each more slowly than the curve assumes.",
    "Story checks on Vitality, Fortitude, Pressure or Precision cannot assume more than about 6 in Act I, 10 in Act II, 18 in Act III."
   ]

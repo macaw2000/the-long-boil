@@ -158,7 +158,14 @@
   "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
  },
  "boss": {
-  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes.",
+  "reference_weapon": {
+   "_note": "Fixture.",
+   "monster.global.fixture_hammer_king": {
+    "item": "item.global.fixture_rifle",
+    "basis": "proposal"
+   }
+  }
  },
  "combat_xp_split": {
   "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
