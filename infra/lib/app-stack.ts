@@ -26,6 +26,8 @@ export interface AppStackProps extends StackProps {
   repository: ecr.IRepository;
   /** From the us-east-1 certificate stack, only when a custom domain is given. */
   certificate?: acm.ICertificate;
+  /** From the same stack: the certificate for Cognito's custom sign-in domain. */
+  authCertificate?: acm.ICertificate;
 }
 
 const SERVER_PORT = 3000;
@@ -247,18 +249,35 @@ export class AppStack extends Stack {
         zoneName: settings.hostedZoneName ?? settings.domainName,
       });
       const target = route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution));
-      new route53.ARecord(this, "SiteA", { zone, recordName: settings.domainName, target });
+      const siteA = new route53.ARecord(this, "SiteA", { zone, recordName: settings.domainName, target });
       new route53.AaaaRecord(this, "SiteAaaa", { zone, recordName: settings.domainName, target });
       settings.redirectDomains.forEach((name, index) => {
         new route53.ARecord(this, `RedirectA${index}`, { zone, recordName: name, target });
         new route53.AaaaRecord(this, `RedirectAaaa${index}`, { zone, recordName: name, target });
       });
+
+      // Sign-in at auth.<domain>. Cognito refuses a custom domain whose parent
+      // has no A record yet, so it waits for the site's.
+      if (settings.authDomain && props.authCertificate) {
+        const authDomain = userPool.addDomain("AuthDomain", {
+          customDomain: { domainName: settings.authDomain, certificate: props.authCertificate },
+        });
+        authDomain.node.addDependency(siteA);
+        new route53.ARecord(this, "AuthA", {
+          zone,
+          recordName: settings.authDomain,
+          target: route53.RecordTarget.fromAlias(new targets.UserPoolDomainTarget(authDomain)),
+        });
+      }
     }
 
     this.grantDeployRole(settings, siteBucket, distribution);
 
     // --- Outputs the client build and the deploy workflow read ---------------
-    const cognitoDomain = `${settings.cognitoDomainPrefix}.auth.${this.region}.amazoncognito.com`;
+    const cognitoDomain =
+      settings.useAuthDomain && settings.authDomain && props.authCertificate
+        ? settings.authDomain
+        : `${settings.cognitoDomainPrefix}.auth.${this.region}.amazoncognito.com`;
     const outputs: Record<string, [string, string]> = {
       SiteUrl: [siteUrl, "The game's address"],
       ExpoPublicApiUrl: [`${siteUrl}${API_PREFIX}`, "EXPO_PUBLIC_API_URL"],

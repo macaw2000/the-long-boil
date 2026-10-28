@@ -14,10 +14,13 @@ export interface CertificateStackProps extends StackProps {
   alternateNames: string[];
   hostedZoneId: string;
   hostedZoneName: string;
+  /** Cognito's custom sign-in domain, on a certificate of its own so the site's is never replaced. */
+  authDomainName?: string;
 }
 
 export class CertificateStack extends Stack {
   readonly certificate: acm.ICertificate;
+  readonly authCertificate: acm.ICertificate | undefined;
 
   constructor(scope: Construct, id: string, props: CertificateStackProps) {
     super(scope, id, props);
@@ -30,5 +33,12 @@ export class CertificateStack extends Stack {
       subjectAlternativeNames: props.alternateNames,
       validation: acm.CertificateValidation.fromDns(zone),
     });
+    // Cognito, like CloudFront, takes custom-domain certificates only from us-east-1.
+    this.authCertificate = props.authDomainName
+      ? new acm.Certificate(this, "AuthCertificate", {
+          domainName: props.authDomainName,
+          validation: acm.CertificateValidation.fromDns(zone),
+        })
+      : undefined;
   }
 }

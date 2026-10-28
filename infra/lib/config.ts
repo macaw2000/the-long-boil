@@ -41,6 +41,14 @@ export interface Settings extends EnvironmentShape {
    */
   redirectDomains: string[];
   cognitoDomainPrefix: string;
+  /**
+   * Cognito's custom sign-in domain, auth.<domain>, made alongside the prefix
+   * domain so Google and Discord show the game's own address. The client uses
+   * it only with useAuthDomain, once both providers list its
+   * /oauth2/idpresponse redirect (infra/README.md).
+   */
+  authDomain: string | undefined;
+  useAuthDomain: boolean;
   googleClientId: string | undefined;
   /** Discord application id; its secret is in Secrets Manager, like Google's. */
   discordClientId: string | undefined;
@@ -93,6 +101,8 @@ export function readSettings(app: App): Settings {
     hostedZoneName: text("hostedZoneName") ?? domainName,
     redirectDomains: domainName && (text("hostedZoneName") ?? domainName) === domainName ? [`www.${domainName}`] : [],
     cognitoDomainPrefix: text("cognitoDomainPrefix") ?? `long-boil-${envName}`,
+    authDomain: domainName ? `auth.${domainName}` : undefined,
+    useAuthDomain: text("useAuthDomain") === "1",
     googleClientId: text("googleClientId"),
     discordClientId: text("discordClientId"),
     stripe: text("stripe") === "1",

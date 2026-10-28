@@ -81,7 +81,8 @@ jobs:
             -c discordClientId=${{ vars.DISCORD_CLIENT_ID }} \
             -c stripe=${{ vars.STRIPE }} \
             -c adminEmails=${{ vars.ADMIN_EMAILS }} \
-            -c cognitoDomainPrefix=${{ vars.COGNITO_DOMAIN_PREFIX || 'long-boil-dev' }}
+            -c cognitoDomainPrefix=${{ vars.COGNITO_DOMAIN_PREFIX || 'long-boil-dev' }} \
+            -c useAuthDomain=${{ vars.USE_AUTH_DOMAIN }}
 
       - name: Read stack outputs
         id: out

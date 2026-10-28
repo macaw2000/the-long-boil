@@ -27,6 +27,7 @@ if (settings.domainName && settings.hostedZoneId) {
     alternateNames: settings.redirectDomains,
     hostedZoneId: settings.hostedZoneId,
     hostedZoneName: settings.hostedZoneName ?? settings.domainName,
+    ...(settings.authDomain ? { authDomainName: settings.authDomain } : {}),
   });
 }
 
@@ -34,7 +35,9 @@ const game = new AppStack(app, `${prefix}-App`, {
   env,
   settings,
   repository: foundation.repository,
-  ...(certificate ? { certificate: certificate.certificate, crossRegionReferences: true } : {}),
+  ...(certificate
+    ? { certificate: certificate.certificate, authCertificate: certificate.authCertificate, crossRegionReferences: true }
+    : {}),
 });
 game.addStackDependency(foundation);
 
