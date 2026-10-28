@@ -450,10 +450,10 @@ function SeeInside({ still, onPress }: { still: boolean; onPress: () => void }) 
 
 /**
  * What the game is, in real recordings and a screenshot, and what signing in
- * is for. The bench and the fight are clips of the real game, sped up through
- * the wait and back to real time for the moment it pays off; each still is
- * that moment, shown before the clip loads and to anyone who asks for less
- * motion.
+ * is for. The bench and the fight are clips of the real game at its real
+ * speed: a few seconds of work, a fade over the wait, and the moment it pays
+ * off. Each still is that moment, shown before the clip loads and to anyone
+ * who asks for less motion.
  */
 const SHOWCASE: { image: string; clip?: string; aspect: number; title: string; line: string }[] = [
   {
@@ -659,11 +659,7 @@ function ShowcaseTile({ tile, still, style }: { tile: (typeof SHOWCASE)[number];
   );
 }
 
-/**
- * A tile's clip, playing on a loop without sound, or its still where there is
- * no clip, no browser video, or less motion asked for. A small mark says the
- * clip is sped up, since the real bench takes most of a minute a spanner.
- */
+/** A tile's clip, playing on a loop without sound, or its still where there is no clip, no browser video, or less motion asked for. */
 function ShowcaseMedia({ tile, aspect, still }: { tile: (typeof SHOWCASE)[number]; aspect: number; still: boolean }) {
   const box = { width: "100%", aspectRatio: aspect, backgroundColor: colors.soot } as const;
   if (!tile.clip || still || Platform.OS !== "web") {
@@ -681,14 +677,6 @@ function ShowcaseMedia({ tile, aspect, still }: { tile: (typeof SHOWCASE)[number
         "aria-label": `A recording: ${tile.title}`,
         style: { width: "100%", height: "100%", objectFit: "contain", display: "block" },
       })}
-      <Text
-        style={[
-          ui.number,
-          { position: "absolute", right: 8, bottom: 8, fontSize: 11, color: colors.steam, backgroundColor: "rgba(27, 23, 18, 0.8)", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
-        ]}
-      >
-        ▸▸ sped up
-      </Text>
     </View>
   );
 }
