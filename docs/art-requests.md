@@ -142,6 +142,19 @@ Every layer has to line up with the others, so **each prompt is an edit of `art/
 
 Save them as JPEGs in `~/Downloads` with those names. I'll check that the four full-frame layers line up with the original by overlaying each one on it, key out the magenta, and wire the layers into the splash. The current animated splash stays as the fallback until they're in.
 
+## 10. The solicitor's letter, 27 October 2026
+
+The sign-in box becomes the letter the game opens with (`docs/gdd.md`: "You arrive with a solicitor's letter"). It arrives sealed in front of the painting. One tap cracks the wax seal, the flap lifts, and the letter rises out of the envelope with the sign-in buttons written on it. Four pictures, each a separate request so nothing has to line up across a grid. Painted, not pixel art: **attach `art/splash.jpg` to every request** so the style and light match.
+
+Animation needs the closed and open envelopes to line up exactly, so the open one is an edit of the closed one: attach the closed result (as well as `splash.jpg`) to request 2. The seal is drawn on its own, so the code can crack it and drop the halves, and the paper is blank, because the words on it are the game's own text, set over it.
+
+1. **`letter-closed`**: "Painted in the same style, palette and warm light as the attached image. One sealed envelope, seen from the back, flat and square to the viewer: thick cream laid paper, a little worn and soot-smudged at the corners, its triangular flap folded down and closed. No wax seal and no writing on it: leave the point of the flap plain. The envelope is centred and fills about four fifths of the width. Background: one flat solid pure magenta #FF00FF, edge to edge. Crisp edges, no shadow on the background, no text. 4:3 aspect ratio."
+2. **`letter-open`** (attach the result of 1 too): "Edit the second attached image. The same envelope, at exactly the same size and position, with its flap now opened upward and standing above the envelope, showing the darker inside of the envelope and the top edge of a folded cream letter tucked in it. Change nothing else. The background stays flat solid pure magenta #FF00FF, edge to edge. Crisp edges, no shadow, no text. 4:3 aspect ratio."
+3. **`letter-seal`**: "Painted in the same style and light as the attached image. Two wax seals side by side, well apart, on one image. Left: one round blob of deep red sealing wax, pressed with a brass seal showing a gear wheel with a key laid across it, glossy, with soft melted edges. Right: the same seal broken, cracked into two halves that have just begun to come apart, with a jagged crack between them. The two seals are the same size. Background: one flat solid pure magenta #FF00FF, edge to edge. Crisp edges, no shadow, no letters, no text. 16:9 aspect ratio."
+4. **`letter-paper`**: "Painted in the same style and light as the attached image. One unfolded sheet of thick cream letter paper, flat and square to the viewer, wider than it is tall, with two faint fold creases across it, slightly foxed and soot-smudged at the edges, and a fine engraved brass-ink border with small gears in the corners. The middle of the sheet is blank and calm, with no writing, no letterhead text and no stamps, because words will be set over it. The sheet is centred and fills about nine tenths of the width. Background: one flat solid pure magenta #FF00FF, edge to edge. Crisp edges, no shadow on the background, no text. 4:3 aspect ratio."
+
+Save them as JPEGs in `~/Downloads` (any names; say which is which). I'll check that 1 and 2 line up, key out the magenta, and build the opening into the sign-in.
+
 ## Order of work
 
 Backgrounds and skill icons change the look most for the least work, so start there. Then Sheets A and B (every tile and the stores grid use them), the Rust Rats and Scrapjaw, the Tinker, and the vignettes.
