@@ -488,18 +488,14 @@ function Showcase({ wide, still }: { wide: boolean; still: boolean }) {
           cold workshop on Sprocket Row from a Tinker who vanished with a notebook full of questions.
         </Text>
       </View>
+      {/* Wide, the clips have a row to themselves, big enough to read the game in; each still below lies on its side, picture beside words. */}
       <View style={{ flexDirection: wide ? "row" : "column", gap: 18 }}>
-        {SHOWCASE.map((tile) => (
-          <View key={tile.image} style={[ui.panel, { flex: wide ? 1 : undefined, padding: 0, overflow: "hidden", borderColor: colors.brassDim }]}>
-            {/* Side by side, one shape for all three, each whole. */}
-            <ShowcaseMedia tile={tile} aspect={wide ? SHOWCASE[0].aspect : tile.aspect} still={still} />
-            <View style={{ padding: 16, gap: 6 }}>
-              <Text style={[ui.heading, { fontSize: 18 }]}>{tile.title}</Text>
-              <Text style={[ui.text, { fontSize: 15, lineHeight: 22, color: colors.steam }]}>{tile.line}</Text>
-            </View>
-          </View>
+        {SHOWCASE.filter((tile) => !wide || tile.clip).map((tile) => (
+          <ShowcaseTile key={tile.image} tile={tile} still={still} style={{ flex: wide ? 1 : undefined }} />
         ))}
       </View>
+      {wide &&
+        SHOWCASE.filter((tile) => !tile.clip).map((tile) => <ShowcaseTile key={tile.image} tile={tile} still={still} style={{ flexDirection: "row" }} />)}
       <View style={[ui.panel, { alignItems: "center", gap: 6, paddingVertical: 18, borderColor: colors.panelEdge }]}>
         <Text style={[ui.text, { fontSize: 15, textAlign: "center", color: colors.steam }]}>
           Free to play in your browser. No story is ever sold, and nothing in the shop can't also be bought with Crowns earned in the game.
@@ -643,6 +639,22 @@ function Letter({ still, children }: { still: boolean; children: React.ReactNode
           </Pressable>
         </Animated.View>
       )}
+    </View>
+  );
+}
+
+/** One showcase card: the picture over its words, or beside them when laid in a row. */
+function ShowcaseTile({ tile, still, style }: { tile: (typeof SHOWCASE)[number]; still: boolean; style: { flex?: number; flexDirection?: "row" } }) {
+  const across = style.flexDirection === "row";
+  return (
+    <View style={[ui.panel, { padding: 0, overflow: "hidden", borderColor: colors.brassDim }, style]}>
+      <View style={{ width: across ? "55%" : "100%" }}>
+        <ShowcaseMedia tile={tile} aspect={tile.aspect} still={still} />
+      </View>
+      <View style={{ flex: across ? 1 : undefined, padding: across ? 24 : 16, gap: 6, justifyContent: "center" }}>
+        <Text style={[ui.heading, { fontSize: across ? 22 : 18 }]}>{tile.title}</Text>
+        <Text style={[ui.text, { fontSize: across ? 17 : 15, lineHeight: across ? 26 : 22, color: colors.steam }]}>{tile.line}</Text>
+      </View>
     </View>
   );
 }
