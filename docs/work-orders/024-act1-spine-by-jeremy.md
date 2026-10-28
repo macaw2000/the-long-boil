@@ -1,7 +1,7 @@
 # Work order 024: the Prologue, Act I's close, the Ambition openers and the Ledger Pages
 
 **Writer:** Jeremy (GDD section 9: "The Prologue and every act climax", "The first storylet of each Ambition"; decided again on 24 October 2026, Ledger Pages included)
-**Status:** open
+**Status:** done (Jeremy, 28 October 2026). The assayer's walk (`scripts/sim/walk-act1.mjs`, 35 days, every road and Ambition forced in turn) plays all ten Prologue scenes in order in the first session on exactly one Nerve bar, reaches the Ambition choice on all four Foundry Pass roads, plays each Ambition's opener, and holds all five Ledger Pages with their text, with no refusals or stalls. Not settled here: Scrapjaw falls on day 15.5 to 16.5 rather than section 7's day 14, so the 14-day walk ends before Act I does; the register's 18 rows are still at validated or reviewed.
 **Blocks:** the phase 1 gate "Act I playable end to end" (GDD section 11). Jeremy set what it needs on 24 October 2026: all ten Prologue scenes, Act I's close with the Ambition choice right after the Foundry Pass, the Ambition openers, and readable Ledger Pages. The Arrears and Notice redlines are not needed for the gate.
 
 This is a brief, not a commission: the slots the engine already gives each piece, so what you write plays without code changes. Write in the same files and schemas as the agents (`storylet/1`, `letter/1`), run `python3 scripts/validate/run.py`, and the registrar records them as yours.

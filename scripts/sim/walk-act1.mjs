@@ -3,6 +3,20 @@
 // through the same HTTP routes the client calls, with an injected clock and
 // its own database. It changes no engine code, content or tuning.
 //
+// Work order 024 extension (the assayer, 27 October 2026): the walk now runs past
+// the Foundry Pass to the Ambition choice and that Ambition's opener, and records
+// the first-session guide, every letter dealt, and every Ledger Page held.
+//   SIM_PAGE=n     forces the option taken at what_you_do_with_it (2 = Gaugehill, for the Board road)
+//   SIM_ROAD=n     forces the Foundry Pass option (0 smithing token, 1 Stokers' Favour, 2 Board card, 3 Tallow)
+//   SIM_AMBITION=n forces the night_before option (0 gauge, 1 lantern, 2 ember, 3 fathom)
+//   SIM_TINKER_ID=n walks Tinker id n (each id seeds its own luck; default 1)
+//   SIM_FIRST_NIGHT=runts queues only Runts for the first night (default: an hour of bent nails, then Runts)
+//   SIM_FIRST_PAY=spare keeps the old first-session rule (pay only with 100 Crowns to spare);
+//     the default now pays Pip's bill in the first session as soon as the purse covers it,
+//     as the policy below and the guide's pay_bill step say.
+// A forced option that is locked leaves the scene unplayed that sitting, and the walk says so.
+// Scenes that move an ambition.* quality are played as spine beats (first certain open option).
+//
 // Run from the repo root, after `cd engine && npm run build`:
 //   createdb long_boil_sim              # once
 //   node scripts/sim/walk-act1.mjs      # all three cadences
@@ -88,6 +102,29 @@ const SHOP = [...new Set((process.env.SIM_SHOP ?? "").split(",").filter(Boolean)
 const SHOP_DAY = Number(process.env.SIM_SHOP_DAY ?? 0);
 // SIM_HOURS overrides the hours of the day for the later sittings, e.g. "8,22" for a long-shift two-a-day player.
 const HOURS = process.env.SIM_HOURS ? process.env.SIM_HOURS.split(",").map(Number) : null;
+const FORCE = {
+  "act1.sprocket_row.what_you_do_with_it": process.env.SIM_PAGE,
+  "act1.brass_exchange.foundry_pass": process.env.SIM_ROAD,
+  "act1.sprocket_row.the_night_before": process.env.SIM_AMBITION,
+};
+for (const k of Object.keys(FORCE)) if (FORCE[k] === undefined || FORCE[k] === "") delete FORCE[k]; else FORCE[k] = Number(FORCE[k]);
+const FIRST_PAY = process.env.SIM_FIRST_PAY ?? "now";
+const AMBITIONS = ["ambition.gauge", "ambition.lantern", "ambition.ember", "ambition.fathom"];
+const PROLOGUE = ["prologue.sprocket_row.back_rent", "prologue.sprocket_row.the_neighbours", "prologue.polytechnic.the_register", "prologue.sprocket_row.the_missing_tins", "prologue.rustmoor.the_tip_book", "prologue.rustmoor.the_first_nest", "prologue.sprocket_row.the_receipt", "prologue.polytechnic.the_lift_lecture", "prologue.sprocket_row.the_morning_gazette", "prologue.sprocket_row.brass_plate"];
+// The first-session guide's step rules, copied from engine/packages/client/src/Guide.tsx (the client imports
+// react-native, so the sim cannot import it). "boiler" and "come_back" are taken as pressed when the player does them.
+const GUIDE = [
+  ["boiler", (t, ack) => ack],
+  ["queue_spanners", (t) => t.queue.some((e) => e.actionId === "action.rustmoor.tinker_brass_spanner") || t.inventory.some((x) => x.item === "item.rustmoor.brass_spanner" && x.qty > 0) || t.weapon !== null],
+  ["first_spanner", (t) => t.inventory.some((x) => x.item === "item.rustmoor.brass_spanner" && x.qty > 0) || t.weapon !== null],
+  ["pips_bill", (t) => (t.story.qualities["prologue.progress"] ?? 0) >= 10],
+  ["equip", (t) => t.weapon !== null],
+  ["rats", (t) => t.crowns > 0 || ((t.story.qualities["prologue.progress"] ?? 0) >= 10 && t.story.backRent === 0)],
+  ["pay_bill", (t) => (t.story.qualities["prologue.progress"] ?? 0) >= 10 && t.story.backRent === 0],
+  ["brass_plate", (t) => (t.story.qualities["prologue.progress"] ?? 0) >= 100],
+  ["come_back", (t, ack) => ack && t.queue.length > 0],
+];
+const guideStep = (t, acked) => GUIDE.find(([id, done]) => !done(t, acked.includes(id)))?.[0] ?? "(done)";
 
 const MIN = 60_000;
 const HOUR = 60 * MIN;
@@ -135,7 +172,7 @@ const GROCER = { [I("barley_meal")]: 2, [I("salt_pork")]: 4 };
 
 // Spine scenes move a progress quality; every other storylet is a repeatable district scene.
 const SPINE = new Set(
-  [...R.storylets.values()].filter((s) => s.options.some((o) => [o.success, o.failure].some((x) => x && ("act1.progress" in x.changes || "prologue.progress" in x.changes)))).map((s) => s.id),
+  [...R.storylets.values()].filter((s) => s.options.some((o) => [o.success, o.failure].some((x) => x && Object.keys(x.changes).some((k) => k === "act1.progress" || k === "prologue.progress" || k.startsWith("ambition."))))).map((s) => s.id),
 );
 const DISTRICT = [...R.storylets.values()].filter((s) => !SPINE.has(s.id)).map((s) => s.id);
 const RESERVE = { [I("rustmoor_ration")]: 100, [I("brass_spanner")]: 1 };
@@ -180,6 +217,11 @@ async function runCadence(perDay) {
   const stalls = [];
   const refusals = [];
   const districtSeen = {}; // id -> { open: sittings seen open, worth: sittings it scored above 0, played, options }
+  const forcedLocked = [];
+  const guideTrail = []; // { at, after, step }
+  const pagesHeld = {}; // item -> first sitting it was held
+  let ledgerEnd = null;
+  let firstSession = null;
 
   const held = (t, item) => t.inventory.filter((s) => s.item === item).reduce((n, s) => n + s.qty, 0);
   const heldUnbound = (t, item) => t.inventory.filter((s) => s.item === item && !s.bound).reduce((n, s) => n + s.qty, 0);
@@ -245,7 +287,16 @@ async function runCadence(perDay) {
       const storylet = view.storylets.find((s) => SPINE.has(s.id) && s.nerve <= view.nerve && !refused.has(s.id));
       let scene = letter ? { ...letter, kind: "letter" } : storylet ? { ...storylet, kind: "storylet" } : null;
       let choice = -1;
-      if (scene) {
+      if (scene && scene.id in FORCE) {
+        const f = FORCE[scene.id];
+        if (!scene.options[f]?.available) {
+          note(`forced option ${f} of ${scene.id} is locked (${JSON.stringify(scene.options[f]?.locked)}); scene left unplayed`);
+          forcedLocked.push({ at: clock, id: scene.id, option: f, locked: scene.options[f]?.locked });
+          refused.add(scene.id);
+          continue;
+        }
+        choice = f;
+      } else if (scene) {
         choice = scene.options.findIndex((o) => o.available && o.challenge && o.challenge.odds >= 0.5);
         if (choice < 0) choice = scene.options.findIndex((o) => o.available && !o.challenge);
         if (choice < 0) choice = scene.options.findIndex((o) => o.available);
@@ -269,7 +320,8 @@ async function runCadence(perDay) {
         continue;
       }
       const p = r.body.played;
-      scenes.push({ at: clock, id: scene.id, kind: scene.district ? "district" : scene.kind, option: choice, success: p.success, odds: p.odds, nerve: scene.nerve, changes: r.body.events?.find?.((e) => e.type === "scene_played") ?? null });
+      const qBefore = view.qualities;
+      scenes.push({ qBefore, qAfter: r.body.view.qualities, at: clock, id: scene.id, kind: scene.district ? "district" : scene.kind, option: choice, success: p.success, odds: p.odds, nerve: scene.nerve, changes: r.body.events?.find?.((e) => e.type === "scene_played") ?? null });
       if (scene.district) {
         const d = districtSeen[scene.id];
         d.played += 1;
@@ -284,7 +336,7 @@ async function runCadence(perDay) {
     return view;
   }
 
-  async function sellAndPay(id) {
+  async function sellAndPay(id, spare = 100) {
     const market = await ok("GET", `/tinkers/${id}/market`);
     let t = (await ok("GET", `/tinkers/${id}`)).tinker;
     let earned = 0;
@@ -296,7 +348,7 @@ async function runCadence(perDay) {
       earned += qty * economy[item].collectorPrice;
     }
     for (const debt of t.story.debts) {
-      if (t.crowns >= debt.crowns + 100) {
+      if (t.crowns >= debt.crowns + spare) {
         await ok("POST", `/tinkers/${id}/debts/${debt.id}`);
         note(`paid ${debt.label}: ${debt.crowns} Crowns`);
         t = (await ok("GET", `/tinkers/${id}`)).tinker;
@@ -436,22 +488,46 @@ async function runCadence(perDay) {
   }
 
   // ---------- the first session ----------
+  // SIM_TINKER_ID=n: n-1 throwaway Tinkers are made first, so the walked Tinker gets id n and that id's seed.
+  for (let i = 1; i < Number(process.env.SIM_TINKER_ID ?? 1); i++) await ok("POST", "/tinkers", { login: `spare${i}@example.com`, name: `Spare ${i}` });
   const main = (await ok("POST", "/tinkers", { login: "ada@example.com", name: "Ada" })).tinker.id;
+  const acked = [];
+  const g = async (after) => {
+    const t = (await ok("GET", `/tinkers/${main}`)).tinker;
+    guideTrail.push({ at: clock, after, step: guideStep(t, acked) });
+    if (VERBOSE) console.log(`  guide after ${after}: ${guideTrail.at(-1).step}`);
+  };
+  await g("sign-up");
+  acked.push("boiler");
   await ok("POST", `/tinkers/${main}/check-in`);
+  await g("boiler pressed, check-in");
   if (SHOP.length && SHOP_DAY === 0) await shopUp(main);
   await ok("PUT", `/tinkers/${main}/queue`, { queue: [{ actionId: A("prospect_copper"), remaining: 1 }, { actionId: A("smelt_brass_ingot"), remaining: 1 }] });
   clock += 2 * MIN;
   await ok("GET", `/tinkers/${main}`);
   await ok("PUT", `/tinkers/${main}/queue`, { queue: [{ actionId: A("tinker_brass_spanner"), remaining: 5 }, { actionId: M("rust_rat_runt"), remaining: 10 }] });
+  await g("queued 5 spanners then 10 Runts");
   clock += 1 * MIN;
   await ok("GET", `/tinkers/${main}`);
+  await g("a minute later");
   await ok("PUT", `/tinkers/${main}/weapon`, { item: SPANNER });
+  await g("equipped spanner");
   await playStory(main);
+  await g("first story pass");
   clock += 14 * MIN;
-  await sellAndPay(main);
+  await sellAndPay(main, FIRST_PAY === "spare" ? 100 : 0);
+  await g("sold and paid");
   await playStory(main);
+  await g("second story pass");
   clock += 3 * MIN;
-  await ok("PUT", `/tinkers/${main}/queue`, { queue: [{ actionId: A("scavenge_bent_nails"), remaining: 67 }, { actionId: M("rust_rat_runt"), remaining: 10_000 }] });
+  // SIM_FIRST_NIGHT=runts: the night is all Runts, as a player who follows the guide's "fill twelve hours" might queue it.
+  await ok("PUT", `/tinkers/${main}/queue`, { queue: process.env.SIM_FIRST_NIGHT === "runts" ? [{ actionId: M("rust_rat_runt"), remaining: 10_000 }] : [{ actionId: A("scavenge_bent_nails"), remaining: 67 }, { actionId: M("rust_rat_runt"), remaining: 10_000 }] });
+  acked.push("come_back");
+  await g("queued the night, Leave it running");
+  {
+    const v = (await ok("GET", `/tinkers/${main}/story`)).view;
+    firstSession = { end: clock, prologue: v.qualities["prologue.progress"] ?? 0, nerve: v.nerve, played: scenes.map((x) => x.id), nails: held((await ok("GET", `/tinkers/${main}`)).tinker, I("bent_nails")) };
+  }
   note("first session done: Prologue played, an hour of nails then Runts queued");
 
   // ---------- the sittings ----------
@@ -469,9 +545,16 @@ async function runCadence(perDay) {
     let { t } = await sellAndPay(main);
     t = await equipBest(main, t);
     const view = await playStory(main);
-    if (scenes.some((s) => s.id === "act1.brass_exchange.foundry_pass")) {
+    {
+      const tt = (await ok("GET", `/tinkers/${main}`)).tinker;
+      for (const st of tt.inventory) if (st.item.includes("ledger_page") && st.qty > 0) pagesHeld[st.item] ??= clock;
+    }
+    if (!foundryAt && scenes.some((s) => s.id === "act1.brass_exchange.foundry_pass")) {
       foundryAt = clock;
-      note("Foundry Pass played: walk ends");
+      note("Foundry Pass played");
+    }
+    if (AMBITIONS.some((a) => (view.qualities[a] ?? 0) >= 5)) {
+      note("Ambition opener played: walk ends");
       break;
     }
     if (k === times.length - 1) break;
@@ -555,9 +638,14 @@ async function runCadence(perDay) {
     if (c) crownFlow[e.type] = (crownFlow[e.type] ?? 0) + c;
   }
 
+  ledgerEnd = await ok("GET", `/tinkers/${main}/pages`);
+  const lettersArrived = ev.filter((e) => e.type === "letter_arrived").map((e) => ({ at: new Date(e.at).getTime(), id: e.payload.letter }));
+  const pageDrops = [];
+  for (const e of ev) for (const [item, q] of Object.entries(e.payload?.produced ?? {})) if (item.includes("ledger_page")) pageDrops.push({ at: new Date(e.at).getTime(), item, type: e.type, q });
+  const killsBefore = (t) => ev.filter((e) => e.type === "monster_killed" && new Date(e.at).getTime() <= t).length;
   await app.close();
   await db.end();
-  return { perDay, meleeAt, totalXp, crownFlow, shopBought, notes, refusals, districtSeen, needleTrack, scenes, seenOpen, gateMet, bossChecks, bossEv, sittings, horizon, foundryAt, end, kills, stalls };
+  return { killsBefore, firstSession, guideTrail, forcedLocked, pagesHeld, ledgerEnd, lettersArrived, pageDrops, perDay, meleeAt, totalXp, crownFlow, shopBought, notes, refusals, districtSeen, needleTrack, scenes, seenOpen, gateMet, bossChecks, bossEv, sittings, horizon, foundryAt, end, kills, stalls };
 }
 
 const wanted = process.argv.slice(2).length ? process.argv.slice(2).map(Number) : [2, 3, 4];
@@ -607,5 +695,24 @@ for (const r of results) {
   console.log(`-- pacing (measured): melee level reached by day ${JSON.stringify(Object.fromEntries([5, 10, 15, 18, 20, 21, 22].filter((l) => r.meleeAt[l]).map((l) => [l, Number(dayOf(r.meleeAt[l]))])))}; all skills ${Math.round(r.totalXp)} XP at d${days.toFixed(2)}`);
   console.log(`-- Crowns (measured, by event type, + in / - out): ${JSON.stringify(Object.fromEntries(Object.entries(r.crownFlow).map(([k, v]) => [k, Math.round(v)])))}`);
   console.log(`   Foundry Pass ${r.foundryAt ? `played d${dayOf(r.foundryAt)}` : "not reached"}; stalls ${JSON.stringify(r.stalls.map((s) => ({ d: dayOf(s.at), ...s, at: undefined })))}`);
+  console.log(`-- 024: forced ${JSON.stringify(FORCE)}, first-session pay ${FIRST_PAY}`);
+  const fs1 = r.firstSession;
+  console.log(`   first session (ends d${dayOf(fs1.end)}): prologue.progress ${fs1.prologue}, Nerve left ${fs1.nerve}, bent nails held ${fs1.nails}, scenes ${fs1.played.map((x) => x.split(".").pop()).join(" > ")}`);
+  console.log(`   guide: ${r.guideTrail.map((x) => `${x.after} -> ${x.step}`).join(" | ")}`);
+  const order = PROLOGUE.map((id) => r.scenes.find((s) => s.id === id));
+  const inOrder = order.every((s, i) => s && r.scenes.indexOf(s) > (i ? r.scenes.indexOf(order[i - 1]) : -1));
+  console.log(`   Prologue: ${PROLOGUE.map((id, i) => `${id.split(".").pop()}@${order[i] ? `d${dayOf(order[i].at)}` : "never"}`).join(", ")}; in order ${inOrder}`);
+  console.log(`   letters dealt: ${r.lettersArrived.map((l) => `${l.id.split(".").pop()}@d${dayOf(l.at)}`).join(", ")}`);
+  const spine = ["act1.sprocket_row.altitude_review", "act1.sprocket_row.what_you_do_with_it", "act1.brass_exchange.foundry_pass", "act1.sprocket_row.the_night_before"];
+  for (const id of [...spine, "act1.brass_exchange.gauntletts_question", "act1.rustmoor.where_she_went", "act1.lowvents.who_feeds_it", "act1.polytechnic.how_deep"]) {
+    const s = r.scenes.find((x) => x.id === id);
+    if (!s) { console.log(`   ${id.split(".").pop().padEnd(22)} never played`); continue; }
+    const diff = Object.fromEntries(Object.entries(s.qAfter).filter(([k, v]) => (s.qBefore[k] ?? 0) !== v && (k.startsWith("ambition.") || k.endsWith(".progress") || k.startsWith("favour.board") || k.startsWith("favour.stokers") || k.startsWith("flag."))));
+    console.log(`   ${id.split(".").pop().padEnd(22)} d${dayOf(s.at)} option ${s.option}${s.odds !== null ? ` at ${Math.round(s.odds * 100)}% ${s.success ? "won" : "lost"}` : ""}: ${JSON.stringify(diff)}`);
+  }
+  console.log(`   ambitions at end: ${JSON.stringify(Object.fromEntries(AMBITIONS.map((a) => [a, r.end.story.qualities[a] ?? 0])))}, act1.progress ${r.end.story.qualities["act1.progress"]}`);
+  console.log(`   forced options locked: ${JSON.stringify(r.forcedLocked.map((x) => `${x.id.split(".").pop()}#${x.option}@d${dayOf(x.at)}`))}`);
+  console.log(`   page drops: ${r.pageDrops.map((p) => `${p.item.split(".").pop()} d${dayOf(p.at)} (${p.type}, ${r.killsBefore(p.at)} ordinary kills by then)`).join("; ") || "none"}`);
+  console.log(`   ledger view at end: ${r.ledgerEnd.pages.map((p) => `${p.item.split(".").pop()} held=${p.held} title=${JSON.stringify(p.title)} text=${p.text ? `${p.text.length} chars` : "null"}`).join("; ")}`);
   void lvlOf;
 }
