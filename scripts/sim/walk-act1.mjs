@@ -78,6 +78,16 @@ const POLICY = process.env.SIM_POLICY ?? "balanced";
 // "wanted" (default): district scenes only when an option scores above 0. "all": spend every spare Nerve on
 // district scenes, taking the best-scoring affordable option even at 0 or below (a challenge still needs 0.5).
 const DISTRICT_MODE = process.env.SIM_DISTRICT ?? "wanted";
+// The Cog Shop (build plan milestone 12: "the assayer models them before launch"). SIM_SHOP is a comma list of
+// slot, boiler, lamp, boost, or "all"; empty (default) buys nothing. Crates come from the dev grant, unlocked, and
+// are bought at the first sitting at or after SIM_SHOP_DAY (default 0, the first session; 3 models a crate bought
+// on day 0 that waits out the 72-hour lock). The Boiler is bought to its most; the Boost is bought once a day for
+// every day left, so it never lapses. Under the Boost the player sizes the production slot by the boosted time, so
+// the balanced 50/50 split of time is unchanged.
+const SHOP = [...new Set((process.env.SIM_SHOP ?? "").split(",").filter(Boolean).flatMap((s) => (s === "all" ? ["slot", "boiler", "lamp", "boost"] : [s])))];
+const SHOP_DAY = Number(process.env.SIM_SHOP_DAY ?? 0);
+// SIM_HOURS overrides the hours of the day for the later sittings, e.g. "8,22" for a long-shift two-a-day player.
+const HOURS = process.env.SIM_HOURS ? process.env.SIM_HOURS.split(",").map(Number) : null;
 
 const MIN = 60_000;
 const HOUR = 60 * MIN;
@@ -135,7 +145,7 @@ const dayOf = (t) => ((t - T0) / DAY).toFixed(2);
 
 function schedule(perDay) {
   const out = [];
-  for (let d = 1; d <= DAYS; d++) for (const h of DAILY[perDay]) out.push(MIDNIGHT0 + d * DAY + h * HOUR);
+  for (let d = 1; d <= DAYS; d++) for (const h of HOURS ?? DAILY[perDay]) out.push(MIDNIGHT0 + d * DAY + h * HOUR);
   return out.filter((t) => t <= T0 + DAYS * DAY);
 }
 
@@ -144,7 +154,9 @@ async function runCadence(perDay) {
   await db.query("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
   await migrate(db);
   let clock = T0;
-  const app = buildApi({ db, content, now: () => clock });
+  // With SIM_SHOP, a stub dev clock opens the /dev routes for the crate grant; the sim's own clock stays the API's now.
+  const devClock = SHOP.length ? { offset: () => 0, skip: async () => 0 } : undefined;
+  const app = buildApi({ db, content, now: () => clock, devClock });
   const call = async (method, url, payload) => {
     const r = await app.inject({ method, url, ...(payload ? { payload } : {}) });
     return { status: r.statusCode, body: r.json() };
@@ -396,9 +408,37 @@ async function runCadence(perDay) {
     return gather("prospecting", t, secs, `${why} (copper)`);
   }
 
+  // ---------- the Cog Shop ----------
+  let boilerHours = 12;
+  let boosted = false;
+  const shopBought = { at: null, cogs: 0, crates: 0, buys: {} };
+  async function shopUp(id) {
+    const s = R.shop;
+    const daysLeft = Math.ceil((T0 + DAYS * DAY - clock) / DAY);
+    const want = {
+      slot: [s.queueSlot.slots - 2, s.queueSlot.cogs],
+      boiler: [(s.boilerUpgrade.maxHours - 12) / s.boilerUpgrade.hours, s.boilerUpgrade.cogs],
+      lamp: [1, s.nightLamp.cogs],
+      boost: [daysLeft, s.boost.cogs],
+    };
+    const cogs = SHOP.reduce((n, k) => n + want[k][0] * want[k][1], 0);
+    const crates = Math.ceil(cogs / s.crate.cogs);
+    await ok("POST", `/dev/tinkers/${id}/crates`, { qty: crates });
+    await ok("GET", `/tinkers/${id}`);
+    await ok("POST", `/tinkers/${id}/shop/open`, { qty: crates });
+    const purchase = { slot: "queue_slot", boiler: "boiler_upgrade", lamp: "night_lamp", boost: "boiler_boost" };
+    for (const k of SHOP) for (let i = 0; i < want[k][0]; i++) await ok("POST", `/tinkers/${id}/shop/buy`, { purchase: purchase[k] });
+    const { shop } = await ok("GET", `/tinkers/${id}/shop`);
+    boilerHours = shop.upgrades.boilerHours;
+    boosted = SHOP.includes("boost");
+    Object.assign(shopBought, { at: clock, cogs, crates, buys: Object.fromEntries(SHOP.map((k) => [k, want[k][0]])), upgrades: shop.upgrades });
+    note(`Cog Shop: ${crates} crates, ${cogs} Cogs: ${JSON.stringify(shopBought.buys)}; upgrades ${JSON.stringify(shop.upgrades)}`);
+  }
+
   // ---------- the first session ----------
   const main = (await ok("POST", "/tinkers", { login: "ada@example.com", name: "Ada" })).tinker.id;
   await ok("POST", `/tinkers/${main}/check-in`);
+  if (SHOP.length && SHOP_DAY === 0) await shopUp(main);
   await ok("PUT", `/tinkers/${main}/queue`, { queue: [{ actionId: A("prospect_copper"), remaining: 1 }, { actionId: A("smelt_brass_ingot"), remaining: 1 }] });
   clock += 2 * MIN;
   await ok("GET", `/tinkers/${main}`);
@@ -423,6 +463,7 @@ async function runCadence(perDay) {
     clock = at;
     const out = await ok("POST", `/tinkers/${main}/check-in`);
     for (const s of out.ledger.stalls ?? []) stalls.push({ at: clock, ...s });
+    if (SHOP.length && shopBought.at === null && clock >= T0 + SHOP_DAY * DAY) await shopUp(main);
     const won = out.events.filter((e) => e.type === "boss_attempted");
     if (won.length) note(`Scrapjaw: ${won.map((e) => `${e.won ? "WON" : "lost"} at ${Math.round(e.winChance * 100)}%`).join(", ")}${won.some((e) => e.produced?.[PAGE]) ? "; Ledger Page dropped" : ""}`);
     let { t } = await sellAndPay(main);
@@ -436,8 +477,8 @@ async function runCadence(perDay) {
     if (k === times.length - 1) break;
 
     t = (await ok("GET", `/tinkers/${main}`)).tinker;
-    const interval = Math.min(times[k + 1] - at, 12 * HOUR);
-    const half = interval / 2 / 1000;
+    const interval = Math.min(times[k + 1] - at, boilerHours * HOUR);
+    const half = (interval / 2 / 1000) * (boosted ? 1 + R.shop.boost.percent / 100 : 1);
     const progress = view.qualities["act1.progress"] ?? 0;
 
     let slot = null;
@@ -504,10 +545,19 @@ async function runCadence(perDay) {
   gateMet["ledger_page_1 (Scrapjaw's first kill)"] = firstWin ? new Date(firstWin.at).getTime() : null;
   const kills = ev.filter((e) => e.type === "monster_killed").length;
   const horizon = foundryAt ?? clock;
+  // Pacing and Crowns, for the Cog Shop model: the day melee reached each level, every skill's XP, and Crowns in and out.
+  const meleeAt = {};
+  for (const e of ev) if (e.type === "level_up" && e.payload.skill === "melee") meleeAt[e.payload.level] ??= new Date(e.at).getTime();
+  const totalXp = end.skills.reduce((n, s) => n + s.xp, 0);
+  const crownFlow = {};
+  for (const e of ev) {
+    const c = Number(e.payload?.crowns ?? 0);
+    if (c) crownFlow[e.type] = (crownFlow[e.type] ?? 0) + c;
+  }
 
   await app.close();
   await db.end();
-  return { perDay, notes, refusals, districtSeen, needleTrack, scenes, seenOpen, gateMet, bossChecks, bossEv, sittings, horizon, foundryAt, end, kills, stalls };
+  return { perDay, meleeAt, totalXp, crownFlow, shopBought, notes, refusals, districtSeen, needleTrack, scenes, seenOpen, gateMet, bossChecks, bossEv, sittings, horizon, foundryAt, end, kills, stalls };
 }
 
 const wanted = process.argv.slice(2).length ? process.argv.slice(2).map(Number) : [2, 3, 4];
@@ -553,6 +603,9 @@ for (const r of results) {
   if (peak) console.log(`   best pre-win chance ${(peak.win * 100).toFixed(1)}% at d${dayOf(peak.at)}`);
   console.log(`-- end (d${days.toFixed(2)}): skills ${JSON.stringify(Object.fromEntries(r.end.skills.map((s) => [s.skill, s.level])))}; weapon ${r.end.weapon}; ${r.end.crowns} Crowns; ${r.kills} ordinary kills; debts ${JSON.stringify(r.end.story.debts)}`);
   console.log(`   story refusals: ${JSON.stringify(r.refusals.map((x) => `${x.id.split(".").pop()}@d${dayOf(x.at)}`))}`);
+  console.log(`-- Cog Shop: ${SHOP.length ? `bought d${dayOf(r.shopBought.at)}: ${r.shopBought.crates} crates, ${r.shopBought.cogs} Cogs, ${JSON.stringify(r.shopBought.buys)}` : "nothing bought"}${HOURS ? `; sittings at ${HOURS.join(",")}h` : ""}`);
+  console.log(`-- pacing (measured): melee level reached by day ${JSON.stringify(Object.fromEntries([5, 10, 15, 18, 20, 21, 22].filter((l) => r.meleeAt[l]).map((l) => [l, Number(dayOf(r.meleeAt[l]))])))}; all skills ${Math.round(r.totalXp)} XP at d${days.toFixed(2)}`);
+  console.log(`-- Crowns (measured, by event type, + in / - out): ${JSON.stringify(Object.fromEntries(Object.entries(r.crownFlow).map(([k, v]) => [k, Math.round(v)])))}`);
   console.log(`   Foundry Pass ${r.foundryAt ? `played d${dayOf(r.foundryAt)}` : "not reached"}; stalls ${JSON.stringify(r.stalls.map((s) => ({ d: dayOf(s.at), ...s, at: undefined })))}`);
   void lvlOf;
 }
