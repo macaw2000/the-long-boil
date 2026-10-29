@@ -28,7 +28,7 @@ OUT = ROOT / "engine" / "packages" / "client" / "assets" / "sprites"
 REAL = ROOT / "engine" / "packages" / "client" / "assets" / "art"
 INDEX = ROOT / "engine" / "packages" / "client" / "src" / "sprites.ts"
 ITEMS = ROOT / "content" / "items" / "rustmoor.json"
-GLOBAL_ITEMS = ROOT / "content" / "items" / "global.json"
+OTHER_ITEMS = [path for path in sorted((ROOT / "content" / "items").glob("*.json")) if path != ITEMS]
 
 # The art brief's palette, plus shades derived from it.
 BRASS = "#B5893B"
@@ -734,8 +734,8 @@ def main() -> None:
     items = [item["id"] for item in json.loads(ITEMS.read_text())["items"]]
     for item in items + ["fallback"]:
         index["icons"][item] = save(f"icon_{item.split('.')[-1]}", icon(item), 2)
-    # Items outside a zone (the Cog Crate) have no placeholder: real art, or the fallback crate.
-    for item in json.loads(GLOBAL_ITEMS.read_text())["items"]:
+    # Items outside Rustmoor (the Cog Crate, the Cinderworks) have no placeholder: real art, or the fallback crate.
+    for item in [item for path in OTHER_ITEMS for item in json.loads(path.read_text())["items"]]:
         name = f"icon_{item['id'].split('.')[-1]}"
         if (REAL / f"{name}.png").exists():
             index["icons"][item["id"]] = name

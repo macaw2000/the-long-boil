@@ -272,6 +272,14 @@ SHEET_B = ["steel_blade", "brass_spanner", "iron_crowbar", "riveting_hammer", "s
 # Sheet C: the first five are items, the rest the interface's own icons. One Ledger Page icon serves all five pages.
 SHEET_C_ITEMS = ["ledger_page", "foundry_pass", "board_memo", "ballast_day_ribbon", "misstruck_crown"]
 SHEET_C_UI = ["crowns", "nerve", "scald", "arrears", "notice", "boiler", "post", "exchange", "guild", "chat", "locked"]
+# Work orders 027 and 028 (docs/art-requests.md, 13): the Cinderworks' materials, then its goods, armour and
+# Tailoring; Sheet E's last three cells are Tailoring's skill icon and the Loadout's two empty slots.
+SHEET_D = ["tin_ore", "nickel_ore", "steam_coal", "manganese_ore", "fire_opal", "cinders", "slag_iron", "slag_glass",
+           "burnt_tuyere", "spoiled_casting", "bronze_ingot", "nickel_steel_ingot", "boiler_plate", "manganese_steel_ingot",
+           "clinker_bar", "slag_wool"]
+SHEET_E = ["bronze_valve", "valve_key", "pressure_gauge", "steam_injector", "opal_pyrometer", "gauze_goggles", "slag_wool_coat",
+           "smoked_lens", "furnace_goggles", "slag_felt", "studded_felt_coat", "bronze_eyecups", "founders_goggles"]
+SHEET_E_REST = ["skill_tailoring", "ui_empty_armour", "ui_empty_weapon"]
 LEDGER_PAGES = ["ledger_page_1", "ledger_page_drop_1", "ledger_page_drop_2", "ledger_page_drop_3", "ledger_page_drop_4"]
 
 RATS = ["rust_rat_runt", "rust_rat_scrounger", "rust_rat_tinplate", "rust_rat_gaffer"]
@@ -314,6 +322,13 @@ def main() -> None:
         for item, cell in zip(names, cells(sheet(file), 4, 4)):
             save(fit_icon(keyed(cell)), f"icon_{item}")
             written += 1
+
+    # Gemini drew gridlines on both Cinderworks sheets, so they are cleared before the cells are cut.
+    cinderworks = [fit_icon(cell) for cell in cells(without_gridlines(keyed(sheet("cinderworks-d.jpeg"))), 4, 4)]
+    cinderworks += [fit_icon(cell) for cell in cells(without_gridlines(keyed(sheet("cinderworks-e.jpeg"))), 4, 4)]
+    for name, icon in zip([f"icon_{item}" for item in SHEET_D + SHEET_E] + SHEET_E_REST, cinderworks):
+        save(icon, name)
+        written += 1
 
     # Icons redrawn alone replace their sheet's cell: Sheet B's Brass Catapult came out a siege engine,
     # not the slingshot the Tinker holds (docs/art-requests.md, 12).

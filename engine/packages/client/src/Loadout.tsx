@@ -11,7 +11,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Easing, Image, Pressable, Text, View } from "react-native";
 import { api, type Content, type FightOutlook, type LoadoutWeapon, type Tinker } from "./api";
 import { Sparks, useReducedMotion } from "./Juice";
-import { ItemIcon } from "./Sprite";
+import { ItemIcon, UiIcon } from "./Sprite";
 import { characters } from "./sprites";
 import { seconds, titleCase } from "./format";
 import { colors, fonts, ui } from "./theme";
@@ -63,7 +63,7 @@ function Portrait({ weapon, flash, size }: { weapon: string | null; flash: Anima
   );
 }
 
-function Slot({ label, item, tierLevel, pop }: { label: string; item: string | null; tierLevel?: number; pop?: Animated.Value }) {
+function Slot({ label, item, empty, tierLevel, pop }: { label: string; item: string | null; empty: string; tierLevel?: number; pop?: Animated.Value }) {
   const tier = tierLevel === undefined ? null : gearTier(tierLevel);
   return (
     <View style={{ alignItems: "center", gap: 4, width: 64 }}>
@@ -83,7 +83,14 @@ function Slot({ label, item, tierLevel, pop }: { label: string; item: string | n
           shadowRadius: 10,
         }}
       >
-        {item ? <ItemIcon item={item} size={48} /> : <Text style={[ui.muted, { fontSize: 22 }]}>—</Text>}
+        {item ? (
+          <ItemIcon item={item} size={48} />
+        ) : (
+          // An empty slot shows a faint hook or rack peg where the piece would hang.
+          <View style={{ opacity: 0.35 }}>
+            <UiIcon name={empty} size={44} />
+          </View>
+        )}
       </Animated.View>
       <Text style={[ui.muted, { fontSize: 11, textAlign: "center" }]}>{label}</Text>
     </View>
@@ -215,9 +222,9 @@ export function Loadout({
             paddingVertical: 6,
           }}
         >
-          <Slot label="Weapon" item={tinker.weapon} tierLevel={equippedWeapon?.level_required} pop={pop} />
+          <Slot label="Weapon" item={tinker.weapon} empty="empty_weapon" tierLevel={equippedWeapon?.level_required} pop={pop} />
           <Portrait weapon={tinker.weapon} flash={flash} size={portrait} />
-          {armours.length > 0 || worn ? <Slot label="Armour" item={tinker.armour} /> : <View style={{ width: 64 }} />}
+          {armours.length > 0 || worn ? <Slot label="Armour" item={tinker.armour} empty="empty_armour" /> : <View style={{ width: 64 }} />}
           {banner && (
             <Animated.Text
               pointerEvents="none"
