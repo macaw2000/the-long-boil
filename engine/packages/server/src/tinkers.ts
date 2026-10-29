@@ -525,3 +525,23 @@ export async function equip(db: Db, content: GameContent, tinkerId: number, item
 }
 
 export class BadRequest extends Error {}
+
+/** The first-session guide's progress, as the client keeps it (client/src/Guide.tsx); null before its first save. */
+export interface GuideProgress {
+  acknowledged: string[];
+  skipped: boolean;
+  seen?: string[];
+  opened?: boolean;
+}
+
+export async function readGuide(db: Db, tinkerId: number): Promise<{ guide: GuideProgress | null }> {
+  const row = (await db.query<{ guide: GuideProgress | null }>("SELECT guide FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
+  if (!row) throw new NotFound(`no Tinker ${tinkerId}`);
+  return { guide: row.guide };
+}
+
+export async function saveGuide(db: Db, tinkerId: number, guide: GuideProgress): Promise<{ guide: GuideProgress }> {
+  const saved = await db.query("UPDATE tinkers SET guide = $2 WHERE id = $1", [tinkerId, JSON.stringify(guide)]);
+  if (saved.rowCount === 0) throw new NotFound(`no Tinker ${tinkerId}`);
+  return { guide };
+}

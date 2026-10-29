@@ -26,6 +26,8 @@ export function ActionBar({
   elapsedMs,
   headSeconds,
   lit,
+  guided,
+  shown,
   onRemove,
   onAdd,
   onShop,
@@ -39,8 +41,12 @@ export function ActionBar({
   /** How far into the current repetition, in ms. */
   elapsedMs: number;
   headSeconds: number;
-  /** What the guide points at: "bench", "queue" and "boiler" light parts of the bar. */
+  /** What the guide or the nudges point at: "bench", "queue" and "boiler" light parts of the bar. */
   lit: Set<string>;
+  /** The lit part is the guide's one pointer, drawn stronger. */
+  guided: boolean;
+  /** Whether the guide has opened a reading yet: "nerve", "crowns", "cogs", or a needle's name. */
+  shown: (feature: string) => boolean;
   onRemove: (slot: number) => void;
   onAdd: () => void;
   onShop: () => void;
@@ -67,7 +73,7 @@ export function ActionBar({
         zIndex: 20,
       }}
     >
-      <Glow active={lit.has("bench")} style={{ flex: 1, minWidth: wide ? 380 : "100%" }}>
+      <Glow active={lit.has("bench")} guide={guided} style={{ flex: 1, minWidth: wide ? 380 : "100%" }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
           {head ? <JobPicture content={content} id={head.actionId} size={40} /> : <View style={{ width: 40 }} />}
           <View style={{ flex: 1, gap: 4 }}>
@@ -94,7 +100,7 @@ export function ActionBar({
               <Text style={[ui.text, { color: colors.copper }]}>The bench is idle. Choose a job from a skill.</Text>
             )}
           </View>
-          <Glow active={lit.has("queue")} style={{ gap: 4 }}>
+          <Glow active={lit.has("queue")} guide={guided} style={{ gap: 4 }}>
             {later.map((next, index) => (
               <View
                 key={index}
@@ -139,7 +145,7 @@ export function ActionBar({
       </Glow>
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: wide ? 18 : 12, flexWrap: "wrap", ...(wide ? {} : { width: "100%" }) }}>
-        <Glow active={lit.has("boiler")}>
+        <Glow active={lit.has("boiler")} guide={guided}>
           <Term term="boiler">
             <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
               <Gauge fraction={Math.max(0, steamLeft) / (tinker.upgrades.boilerHours * 3_600_000)} size={36} />
@@ -156,24 +162,30 @@ export function ActionBar({
             </Stat>
           </Pressable>
         )}
-        <Term term="nerve">
-          <Stat label="Nerve" icon="nerve">
-            <Text style={[ui.number, { color: colors.verdigris }]}>
-              {tinker.story.nerve}/{tinker.story.nerveCap}
-            </Text>
-          </Stat>
-        </Term>
-        <Term term="crowns">
-          <Stat label="Crowns" icon="crowns">
-            <CountUp value={tinker.crowns} style={[ui.number, { color: colors.brass }]} />
-          </Stat>
-        </Term>
-        <Pressable onPress={onShop} accessibilityRole="button" accessibilityLabel={`${tinker.cogs} Gilded Cogs; open the Cog Shop`}>
-          <Stat label="Cogs" icon="cogs">
-            <CountUp value={tinker.cogs} style={[ui.number, { color: colors.brass }]} />
-          </Stat>
-        </Pressable>
-        {Object.entries(tinker.story.needles).map(([needle, value]) => (
+        {shown("nerve") && (
+          <Term term="nerve">
+            <Stat label="Nerve" icon="nerve">
+              <Text style={[ui.number, { color: colors.verdigris }]}>
+                {tinker.story.nerve}/{tinker.story.nerveCap}
+              </Text>
+            </Stat>
+          </Term>
+        )}
+        {shown("crowns") && (
+          <Term term="crowns">
+            <Stat label="Crowns" icon="crowns">
+              <CountUp value={tinker.crowns} style={[ui.number, { color: colors.brass }]} />
+            </Stat>
+          </Term>
+        )}
+        {shown("cogs") && (
+          <Pressable onPress={onShop} accessibilityRole="button" accessibilityLabel={`${tinker.cogs} Gilded Cogs; open the Cog Shop`}>
+            <Stat label="Cogs" icon="cogs">
+              <CountUp value={tinker.cogs} style={[ui.number, { color: colors.brass }]} />
+            </Stat>
+          </Pressable>
+        )}
+        {Object.entries(tinker.story.needles).filter(([needle]) => shown(needle)).map(([needle, value]) => (
           <Term key={needle} term={needle as GlossaryTerm}>
             <Stat label={titleCase(needle.split(".")[1] ?? needle)} icon={needle.split(".")[1]}>
               <Text style={[ui.number, { color: value >= 8 ? colors.scald : value > 0 ? colors.copper : colors.muted }]}>{value}</Text>

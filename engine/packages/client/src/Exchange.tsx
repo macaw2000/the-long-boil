@@ -5,6 +5,7 @@ import { ladderFloor, onLadder, stepDown, stepUp } from "@long-boil/rules";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { api, type BookLevel, type Content, type MarketView, type Outcome, type Side, type Tinker } from "./api";
+import { Glow } from "./Glow";
 import { ItemIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
@@ -69,7 +70,7 @@ type Act = (call: Promise<Outcome>) => Promise<unknown>;
  * bill is never mistaken for something to sell. It heads the Exchange. Short of Crowns, it says how
  * many more, and where they come from.
  */
-export function Bills({ tinker, act }: { tinker: Tinker; act: Act }) {
+export function Bills({ tinker, act, payGuided = false }: { tinker: Tinker; act: Act; payGuided?: boolean }) {
   return (
     <View style={[ui.panel, { borderColor: colors.copper }]}>
       <Text style={ui.heading}>Bills</Text>
@@ -80,14 +81,16 @@ export function Bills({ tinker, act }: { tinker: Tinker; act: Act }) {
             <Text style={ui.text}>
               {debt.label}: {debt.crowns} Crowns. You have {tinker.crowns}.
             </Text>
-            <Pressable
-              style={[ui.button, { alignSelf: "flex-start" }, short > 0 && { opacity: 0.4 }]}
-              disabled={short > 0}
-              onPress={() => act(api.payDebt(tinker.id, debt.id))}
-              accessibilityRole="button"
-            >
-              <Text style={ui.buttonText}>Pay {debt.crowns} Crowns</Text>
-            </Pressable>
+            <Glow active={payGuided && short <= 0} guide style={{ alignSelf: "flex-start" }}>
+              <Pressable
+                style={[ui.button, { alignSelf: "flex-start" }, short > 0 && { opacity: 0.4 }]}
+                disabled={short > 0}
+                onPress={() => act(api.payDebt(tinker.id, debt.id))}
+                accessibilityRole="button"
+              >
+                <Text style={ui.buttonText}>Pay {debt.crowns} Crowns</Text>
+              </Pressable>
+            </Glow>
             {short > 0 && (
               <Text style={ui.muted}>{short} more Crowns needed. Sell something at the window below, or fight a few more rats.</Text>
             )}

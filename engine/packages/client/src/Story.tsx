@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { api, type LedgerPage, type Outcome, type SceneView, type StoryOutcome, type StoryView } from "./api";
 import { titleCase } from "./format";
+import { Glow } from "./Glow";
 import { OddsDial } from "./Juice";
 import { vignetteSource } from "./Sprite";
 import type { GlossaryTerm } from "./glossary";
@@ -30,7 +31,16 @@ function needText(name: string, condition: string, value: number): string {
   return `${titleCase(name.replace(/_/g, " "))} ${target} (you have ${value})`;
 }
 
-export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (outcome: Outcome) => void }) {
+export function Story({
+  tinkerId,
+  onOutcome,
+  guideAt = null,
+}: {
+  tinkerId: number;
+  onOutcome: (outcome: Outcome) => void;
+  /** The guide points at the letters or the open scenes. */
+  guideAt?: "letters" | "scenes" | null;
+}) {
   const [view, setView] = useState<StoryView | null>(null);
   const [pages, setPages] = useState<LedgerPage[]>([]);
   const [played, setPlayed] = useState<StoryOutcome["played"]>(null);
@@ -130,25 +140,32 @@ export function Story({ tinkerId, onOutcome }: { tinkerId: number; onOutcome: (o
         </Text>
       ))}
 
-      {view.letters.length > 0 && <Text style={ui.heading}>The Pneumatic Post</Text>}
-      {view.letters.map((letter) => (
-        <Card
-          key={letter.id}
-          scene={letter}
-          nerve={view.nerve}
-          busy={busy}
-          onPlay={(option) => act(api.play(tinkerId, "letter", letter.id, option))}
-          onDiscard={() => act(api.discard(tinkerId, letter.id))}
-        />
-      ))}
-
-      <Text style={ui.heading}>Open to you</Text>
-      {view.storylets.length === 0 && (
-        <Text style={ui.muted}>Nothing waits for you just now. Work the bench, and come back when the city has moved.</Text>
+      {view.letters.length > 0 && (
+        <Glow active={guideAt === "letters"} guide style={{ gap: 12 }}>
+          <Text style={ui.heading}>The Pneumatic Post</Text>
+          {view.letters.map((letter) => (
+            <Card
+              key={letter.id}
+              scene={letter}
+              nerve={view.nerve}
+              busy={busy}
+              onPlay={(option) => act(api.play(tinkerId, "letter", letter.id, option))}
+              // A first letter thrown away cannot be answered, so the guide's letter keeps its Discard hidden.
+              onDiscard={guideAt === "letters" ? undefined : () => act(api.discard(tinkerId, letter.id))}
+            />
+          ))}
+        </Glow>
       )}
-      {view.storylets.map((scene) => (
-        <Card key={scene.id} scene={scene} nerve={view.nerve} busy={busy} onPlay={(option) => act(api.play(tinkerId, "storylet", scene.id, option))} />
-      ))}
+
+      <Glow active={guideAt === "scenes"} guide style={{ gap: 12 }}>
+        <Text style={ui.heading}>Open to you</Text>
+        {view.storylets.length === 0 && (
+          <Text style={ui.muted}>Nothing waits for you just now. Work the bench, and come back when the city has moved.</Text>
+        )}
+        {view.storylets.map((scene) => (
+          <Card key={scene.id} scene={scene} nerve={view.nerve} busy={busy} onPlay={(option) => act(api.play(tinkerId, "storylet", scene.id, option))} />
+        ))}
+      </Glow>
 
       <HestersLedger pages={pages} />
 

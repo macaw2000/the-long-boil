@@ -88,6 +88,14 @@ describe("a Tinker's first session", () => {
     expect(body.tinker.skills.find((skill: { skill: string }) => skill.skill === "melee").level).toBeGreaterThan(1);
   });
 
+  it("keeps the first-session guide's progress with the Tinker", async () => {
+    expect((await call("GET", `/tinkers/${id}/guide`)).body).toEqual({ guide: null });
+    const guide = { acknowledged: ["boiler"], skipped: false, seen: ["story"], opened: true };
+    expect((await call("PUT", `/tinkers/${id}/guide`, guide)).status).toBe(200);
+    expect((await call("GET", `/tinkers/${id}/guide`)).body).toEqual({ guide });
+    expect((await call("PUT", `/tinkers/${id}/guide`, { acknowledged: [], skipped: "maybe" })).status).toBe(400);
+  });
+
   it("refuses a weapon the Tinker does not hold", async () => {
     expect((await call("PUT", `/tinkers/${id}/weapon`, { item: "item.rustmoor.steel_blade" })).status).toBe(400);
   });

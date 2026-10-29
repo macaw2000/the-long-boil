@@ -14,7 +14,7 @@ import { Chat, channelOf, useChat, useWhispers } from "./Chat";
 import { Bills, Exchange } from "./Exchange";
 import { duration, namer, titleCase, tradeLine } from "./format";
 import { Glow } from "./Glow";
-import { currentStep, GuideCard, nudges, type GuideState, type Target } from "./Guide";
+import { coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, revealed, type GuideAction, type GuideState, type Target } from "./Guide";
 import { Guild } from "./Guild";
 import { skillOf } from "./jobs";
 import { CanisterDrop, Floaters, ScaldVignette, useFloaters } from "./Juice";
@@ -39,7 +39,32 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const [away, setAway] = useState<{ ledger: LedgerData; trades: TradeNote[] } | null>(null);
   // Back from Stripe's checkout: open at the shop, which says how it went.
   const [checkoutReturn] = useState(takeCheckoutReturn);
-  const [place, setPlace] = useState<Place>(checkoutReturn ? "shop" : "skill:prospecting");
+  const [guide, setGuideState] = useState<GuideState>(() => loadGuide(tinkerId));
+  const guideTouched = useRef(false);
+  const setGuide = (next: GuideState) => {
+    guideTouched.current = true;
+    setGuideState(next);
+    saveGuide(tinkerId, next);
+  };
+  // The server keeps the guide with the Tinker, so another device picks up where this one left off.
+  useEffect(() => {
+    api
+      .guide(tinkerId)
+      .then(({ guide: kept }) => {
+        if (guideTouched.current) return;
+        if (kept) {
+          setGuideState(kept);
+          saveGuide(tinkerId, kept, false);
+        } else if (hasSavedGuide(tinkerId)) {
+          saveGuide(tinkerId, loadGuide(tinkerId));
+        }
+      })
+      .catch(() => undefined);
+  }, [tinkerId]);
+  // A new Tinker opens at the bench Brassbuckle points at; after the guide, at the first skill.
+  const [place, setPlace] = useState<Place>(checkoutReturn ? "shop" : guide.skipped || guide.opened ? "skill:prospecting" : GUIDE_START);
+  // The job tile picked on a skill page, held here so the guide can point past it to Start.
+  const [chosen, setChosen] = useState<string | null>(null);
   const [recent, setRecent] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(gameNow());
@@ -49,11 +74,6 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const [storyKey, setStoryKey] = useState(0);
   const name = useMemo(() => namer(content), [content]);
   const wide = useWindowDimensions().width >= 900;
-  const [guide, setGuideState] = useState<GuideState>(() => loadGuide(tinkerId));
-  const setGuide = (next: GuideState) => {
-    setGuideState(next);
-    saveGuide(tinkerId, next);
-  };
 
   const [floaters, addFloater, removeFloater] = useFloaters();
   const [skillBursts, setSkillBursts] = useState<Record<string, number>>({});
@@ -259,6 +279,28 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       .catch((reason: Error) => setError(reason.message));
   const setQueue = (queue: QueueEntry[]) => run(api.setQueue(tinkerId, queue));
 
+  // A new place: no tile is picked there yet, and a place the guide just opened has now been seen.
+  useEffect(() => {
+    setChosen(null);
+    setGuideState((state) => {
+      if (!state.seen || state.seen.includes(place)) return state;
+      const next = { ...state, seen: [...state.seen, place] };
+      saveGuide(tinkerId, next);
+      return next;
+    });
+  }, [place, tinkerId]);
+
+  // Once the guide is over, finished or skipped, the whole screen stays open, even if it is replayed.
+  // A Tinker past the Prologue from before the guide was kept on the server skips it.
+  useEffect(() => {
+    if (!tinker || guide.opened) return;
+    const veteran = !guide.skipped && guide.acknowledged.length === 0 && (tinker.story.qualities["prologue.progress"] ?? 0) >= 100;
+    if (veteran) setGuide({ ...guide, skipped: true, opened: true });
+    else if (currentStep(tinker, guide) === null) setGuide({ ...guide, opened: true });
+    // setGuide only writes state and storage.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tinker, guide]);
+
   if (!tinker) {
     return (
       <View style={{ padding: 24, gap: 12 }}>
@@ -273,17 +315,10 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   }
 
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
-  // The guide points at one thing at a time; after it, the nudges point at whatever is ready.
   const step = currentStep(tinker, guide);
-  const lit: Set<Target> = step ? new Set([step.target]) : nudges(tinker, content, now);
-  // Each guide target lights the place that holds it.
-  const placeOf = (target: Target): Place | null =>
-    target === "story" ? "story" : target === "exchange" ? "exchange" : null;
-  const litPlaces = new Set<Place>([...lit].map(placeOf).filter((value): value is Place => value !== null && value !== place));
-
-  // Where the guide's queueing steps want the player: spanners at Tinkering, rats at the fights.
-  const guidedPlace: Place | null = step?.id === "queue_spanners" ? "skill:tinkering" : step?.id === "rats" ? "skill:fight" : null;
-  if (guidedPlace && lit.has("queue") && place !== guidedPlace) litPlaces.add(guidedPlace);
+  // While the guide runs, the screen shows only what it has reached; the place the player is on always shows.
+  const opened = revealed(step, guide);
+  const shown = (feature: string) => feature === place || opened(feature as Place);
 
   const head = tinker.queue[0];
   const headSeconds = head
@@ -293,16 +328,40 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     : 0;
   const working = head && steamLeft > 0;
   // Where Work leads: the skill the Tinker is busy at, or the first skill when idle.
-  const workPlace: Place = head ? `skill:${skillOf(content, head.actionId)}` : "skill:prospecting";
+  const workPlace: Place = head ? `skill:${skillOf(content, head.actionId)}` : opened("skill:prospecting") ? "skill:prospecting" : GUIDE_START;
   const elapsed = working ? tinker.progressMs + Math.max(0, now - new Date(tinker.resolvedTo).getTime()) : tinker.progressMs;
   // The server's time for one go, since a kill takes as long as the Tinker's fighting does.
   const goMs = tinker.headMs ?? headSeconds * 1000;
   // Between looks, goes still to come carry on from the start, so each kill shows as one.
   const headProgress = goMs <= 0 ? 0 : head && head.remaining > 1 ? (elapsed % goMs) / goMs : Math.min(1, elapsed / goMs);
 
+  // The guide points at one thing at a time; after it, the nudges point at whatever is ready.
+  const coaching = step
+    ? coach(step, tinker, {
+        place,
+        chosen,
+        nextInMs: goMs * (1 - headProgress),
+        wide,
+        button: content.guide.find((entry) => entry.id === step.id)?.button,
+      })
+    : null;
+  const at = coaching?.at ?? null;
+  const guidedPlace: Place | null = at?.startsWith("place:") ? (at.slice("place:".length) as Place) : null;
+  const lit: Set<string> = coaching ? new Set(at === "bench" || at === "boiler" ? [at] : []) : nudges(tinker, content, now);
+  const placeOf = (target: Target): Place | null => (target === "story" ? "story" : target === "exchange" ? "exchange" : null);
+  const litPlaces = coaching
+    ? new Set<Place>()
+    : new Set<Place>([...(lit as Set<Target>)].map(placeOf).filter((value): value is Place => value !== null && value !== place));
+  const goal = coaching ? null : nextGoal(tinker, content, now, name);
+
   const equipWeapon = (item: string) => {
     setNewGear(null);
     return run(api.equip(tinkerId, item));
+  };
+
+  const guideAction = (action: GuideAction) => {
+    if (action.kind === "equip") equipWeapon(action.item);
+    else if (step) setGuide({ ...guide, acknowledged: [...guide.acknowledged, step.id] });
   };
 
   const badges: Partial<Record<Place, PlaceBadge>> = {
@@ -319,6 +378,15 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     },
     chat: place === "chat" ? undefined : { count: chat.unread + trade.unread + help.unread + guildChat.unread + whispers.unread, tone: colors.verdigris },
   };
+  // A place the guide has opened and the player has not yet visited says so.
+  if (guide.seen) {
+    const places: Place[] = ["story", "exchange", "guild", "shop", "chat", ...content.actions.map((action): Place => `skill:${action.skill}`), "skill:fight"];
+    for (const candidate of new Set(places)) {
+      if (candidate === place || candidate === GUIDE_START || guide.seen.includes(candidate) || !shown(candidate)) continue;
+      if ((badges[candidate]?.count ?? 0) > 0) continue;
+      badges[candidate] = { count: 1, label: "new", tone: colors.verdigris };
+    }
+  }
 
   const scene = (
     <View>
@@ -327,11 +395,11 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     </View>
   );
 
-  const loadout = (
+  const loadout = shown("loadout") ? (
     <Glow active={lit.has("loadout")}>
       <Loadout content={content} tinker={tinker} name={name} onEquip={equipWeapon} portrait={wide ? 128 : 192} />
     </Glow>
-  );
+  ) : null;
 
   const chatPanel = (
     <Chat
@@ -355,6 +423,9 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         name={name}
         scene={scene}
         queueLit={lit.has("queue")}
+        guideAt={at === "start" || at?.startsWith("job:") ? at : null}
+        chosen={chosen}
+        onChoose={setChosen}
         onStart={(entry) => setQueue([entry, ...tinker.queue.slice(1)])}
         onQueue={(entry) => setQueue([...tinker.queue, entry].slice(0, tinker.upgrades.queueSlots))}
         onGrocer={() => setPlace("exchange")}
@@ -362,12 +433,12 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     ) : place === "shop" ? (
       <Shop content={content} tinker={tinker} now={now} returned={checkoutReturn} onOutcome={apply} />
     ) : place === "story" ? (
-      <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} />
+      <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} guideAt={at === "letters" || at === "scenes" ? at : null} />
     ) : place === "guild" ? (
       <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} crownsHeld={tinker.crowns} />
     ) : place === "exchange" ? (
       <View style={{ gap: 12 }}>
-        {tinker.story.debts.length > 0 && <Bills tinker={tinker} act={run} />}
+        {tinker.story.debts.length > 0 && <Bills tinker={tinker} act={run} payGuided={at === "pay"} />}
         <WorkOrders content={content} tinker={tinker} name={name} onOutcome={apply} />
         <Exchange content={content} tinker={tinker} name={name} run={run} />
       </View>
@@ -393,6 +464,8 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         elapsedMs={headProgress * goMs}
         headSeconds={goMs / 1000}
         lit={lit}
+        guided={coaching !== null}
+        shown={shown}
         onRemove={(slot) => setQueue(tinker.queue.filter((_, index) => index !== slot))}
         onAdd={() => setPlace(guidedPlace ?? (place.startsWith("skill:") ? place : workPlace))}
         onShop={() => setPlace("shop")}
@@ -468,23 +541,26 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           </Pressable>
         </View>
       )}
-      {!wide && skillPlace !== null && <SkillStrip content={content} tinker={tinker} place={place} onPlace={setPlace} />}
+      {!wide && skillPlace !== null && (
+        <SkillStrip content={content} tinker={tinker} place={place} onPlace={setPlace} guided={guidedPlace} shown={shown} />
+      )}
       <View style={{ flex: 1, flexDirection: "row" }}>
         {wide && (
           <View style={{ borderRightWidth: 1, borderRightColor: colors.panelEdge, backgroundColor: "rgba(20, 16, 12, 0.6)" }}>
-            <SideNav content={content} tinker={tinker} place={place} onPlace={setPlace} badges={badges} lit={litPlaces} />
+            <SideNav content={content} tinker={tinker} place={place} onPlace={setPlace} badges={badges} lit={litPlaces} guided={guidedPlace} shown={shown} />
             <CanisterDrop drops={canisters} />
           </View>
         )}
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, gap: 12, maxWidth: 900, width: "100%", alignSelf: "center" }}>
-          {step && (
-            <GuideCard
-              step={step}
-              content={content}
-              onAcknowledge={() => setGuide({ ...guide, acknowledged: [...guide.acknowledged, step.id] })}
-              onSkip={() => setGuide({ ...guide, skipped: true })}
-            />
+        <View style={{ flex: 1 }}>
+        {/* The guide, or after it the next goal, is pinned above the page so it never scrolls away. */}
+        <View style={{ paddingHorizontal: 16, paddingTop: wide ? 16 : 8, maxWidth: 900, width: "100%", alignSelf: "center" }}>
+          {step && coaching ? (
+            <GuideCard step={step} content={content} coaching={coaching} onAction={guideAction} onSkip={() => setGuide({ ...guide, skipped: true })} />
+          ) : (
+            <GoalBar goal={goal} onGo={setPlace} onReplay={() => setGuide({ acknowledged: [], skipped: false, opened: true, seen: guide.seen })} />
           )}
+        </View>
+        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, gap: 12, maxWidth: 900, width: "100%", alignSelf: "center" }}>
           {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
           {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} onClose={() => setAway(null)} />}
           {page}
@@ -499,15 +575,18 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
             </View>
           )}
         </ScrollView>
+        </View>
         {wide && (
           <ScrollView style={{ width: 330, flexGrow: 0 }} contentContainerStyle={{ padding: 16, paddingLeft: 0, gap: 12 }}>
             <Stores content={content} tinker={tinker} name={name} />
             {loadout}
-            <View style={{ height: 460 }}>{chatPanel}</View>
+            {shown("chat") && <View style={{ height: 460 }}>{chatPanel}</View>}
           </ScrollView>
         )}
       </View>
-      {!wide && <BottomBar place={place} workPlace={workPlace} onPlace={setPlace} badges={badges} lit={litPlaces} />}
+      {!wide && (
+        <BottomBar place={place} workPlace={workPlace} onPlace={setPlace} badges={badges} lit={litPlaces} guided={guidedPlace} shown={shown} />
+      )}
       {newGear && (
         <NewGear item={newGear} content={content} tinker={tinker} name={name} onEquip={equipWeapon} onClose={() => setNewGear(null)} />
       )}
@@ -517,9 +596,18 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
 
 const devButton = { borderWidth: 1, borderColor: colors.copper, borderRadius: 4, paddingHorizontal: 8, paddingVertical: 2 };
 
-// The guide's progress is a per-browser convenience; without storage it simply starts again.
+// The guide's progress lives with the Tinker on the server; this browser keeps a
+// copy so the workshop opens right before the server answers.
 function guideKey(tinkerId: number) {
   return `long-boil.guide.${tinkerId}`;
+}
+
+function hasSavedGuide(tinkerId: number): boolean {
+  try {
+    return Boolean(globalThis.localStorage?.getItem(guideKey(tinkerId)));
+  } catch {
+    return false;
+  }
 }
 
 function loadGuide(tinkerId: number): GuideState {
@@ -529,22 +617,14 @@ function loadGuide(tinkerId: number): GuideState {
   } catch {
     // Fall through to a fresh guide.
   }
-  return { acknowledged: [], skipped: false };
+  return { acknowledged: [], skipped: false, seen: [] };
 }
 
-function saveGuide(tinkerId: number, state: GuideState) {
+function saveGuide(tinkerId: number, state: GuideState, toServer = true) {
   try {
     globalThis.localStorage?.setItem(guideKey(tinkerId), JSON.stringify(state));
   } catch {
-    // Storage is a convenience only.
+    // Without storage the server's copy is enough.
   }
+  if (toServer) api.saveGuide(tinkerId, state).catch(() => undefined);
 }
-
-function Bar({ fraction, color }: { fraction: number; color: string }) {
-  return (
-    <View style={{ height: 6, borderRadius: 3, backgroundColor: colors.soot, overflow: "hidden" }}>
-      <View style={{ width: `${Math.round(Math.max(0, Math.min(1, fraction)) * 1000) / 10}%`, height: "100%", backgroundColor: color }} />
-    </View>
-  );
-}
-

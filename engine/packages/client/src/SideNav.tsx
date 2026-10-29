@@ -39,6 +39,8 @@ export function SideNav({
   onPlace,
   badges,
   lit,
+  guided,
+  shown,
 }: {
   content: Content;
   tinker: Tinker;
@@ -46,12 +48,17 @@ export function SideNav({
   onPlace: (place: Place) => void;
   badges: Partial<Record<Place, PlaceBadge>>;
   lit: Set<Place>;
+  /** The place the guide points at, if it points at one. */
+  guided: Place | null;
+  /** Whether the guide has opened a place yet. */
+  shown: (place: Place) => boolean;
 }) {
   const working = tinker.queue[0]?.actionId;
+  const skills = skillsOf(content).filter((skill) => shown(`skill:${skill}`));
   return (
     <ScrollView style={{ width: 210 }} contentContainerStyle={{ paddingVertical: 12, gap: 2 }}>
-      {(["story", "exchange", "guild", "shop"] as const).map((choice) => (
-        <NavRow key={choice} active={place === choice} lit={lit.has(choice)} onPress={() => onPlace(choice)} badge={badges[choice]}>
+      {(["story", "exchange", "guild", "shop"] as const).filter(shown).map((choice) => (
+        <NavRow key={choice} active={place === choice} lit={lit.has(choice)} guided={guided === choice} onPress={() => onPlace(choice)} badge={badges[choice]}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <View style={{ width: 26, height: 26 }}>{PLACE_ICONS[choice] && <UiIcon name={PLACE_ICONS[choice]!} size={26} />}</View>
             <Text style={[ui.text, { fontSize: 15, color: place === choice ? colors.brass : colors.ink }]}>{choice === "shop" ? "Cog Shop" : titleCase(choice)}</Text>
@@ -59,14 +66,14 @@ export function SideNav({
         </NavRow>
       ))}
       <Text style={[ui.muted, { fontSize: 10, letterSpacing: 1, paddingHorizontal: 14, paddingTop: 14, paddingBottom: 4 }]}>SKILLS</Text>
-      {skillsOf(content).map((skill) => {
+      {skills.map((skill) => {
         const key: Place = `skill:${skill}`;
         const entry = tinker.skills.find((candidate) => candidate.skill === skill);
         const level = entry?.level ?? 1;
         const progress = skill === FIGHT ? null : levelProgress(content, entry?.xp ?? 0, level);
         const busy = working !== undefined && (content.actions.find((action) => action.id === working)?.skill ?? FIGHT) === skill;
         return (
-          <NavRow key={skill} active={place === key} lit={lit.has(key)} onPress={() => onPlace(key)}>
+          <NavRow key={skill} active={place === key} lit={lit.has(key)} guided={guided === key} onPress={() => onPlace(key)} badge={badges[key]}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 10, flex: 1 }}>
               <SkillIcon skill={skill} size={26} />
               <View style={{ flex: 1, gap: 3 }}>
@@ -94,18 +101,20 @@ export function SideNav({
 function NavRow({
   active,
   lit,
+  guided,
   onPress,
   badge,
   children,
 }: {
   active: boolean;
   lit: boolean;
+  guided: boolean;
   onPress: () => void;
   badge?: PlaceBadge;
   children: ReactNode;
 }) {
   return (
-    <Glow active={lit}>
+    <Glow active={lit || guided} guide={guided}>
       <Pressable
         onPress={onPress}
         accessibilityRole="tab"
@@ -139,6 +148,8 @@ export function BottomBar({
   onPlace,
   badges,
   lit,
+  guided,
+  shown,
 }: {
   place: Place;
   /** Where Work leads from elsewhere: the skill the Tinker is busy at. */
@@ -146,9 +157,13 @@ export function BottomBar({
   onPlace: (place: Place) => void;
   badges: Partial<Record<Place, PlaceBadge>>;
   lit: Set<Place>;
+  guided: Place | null;
+  shown: (place: Place) => boolean;
 }) {
   const working = place.startsWith("skill:");
-  const items: { key: Place | "work"; label: string }[] = [
+  // The guide wants a skill while the player is elsewhere: Work is the way there.
+  const workGuided = guided !== null && guided.startsWith("skill:") && !working;
+  const all: { key: Place | "work"; label: string }[] = [
     { key: "work", label: "Work" },
     { key: "story", label: "Story" },
     { key: "exchange", label: "Exchange" },
@@ -156,15 +171,17 @@ export function BottomBar({
     { key: "stores", label: "Stores" },
     { key: "chat", label: "Chat" },
   ];
+  const items = all.filter(({ key }) => key === "work" || shown(key));
   return (
     <View style={{ flexDirection: "row", borderTopWidth: 1, borderTopColor: colors.brassDim, backgroundColor: "rgba(20, 16, 12, 0.96)" }}>
       {items.map(({ key, label }) => {
         const active = key === "work" ? working : place === key;
         const badge = key === "work" ? undefined : badges[key];
+        const guide = key === "work" ? workGuided : guided === key;
         return (
-          <Glow key={key} active={key !== "work" && lit.has(key)} style={{ flex: 1 }}>
+          <Glow key={key} active={guide || (key !== "work" && lit.has(key))} guide={guide} style={{ flex: 1 }}>
             <Pressable
-              onPress={() => onPlace(key === "work" ? (working ? place : workPlace) : key)}
+              onPress={() => onPlace(key === "work" ? (workGuided ? guided! : working ? place : workPlace) : key)}
               accessibilityRole="tab"
               accessibilityState={{ selected: active }}
               style={{ alignItems: "center", paddingVertical: 10, borderTopWidth: 2, borderTopColor: active ? colors.brass : "transparent" }}
@@ -185,16 +202,30 @@ export function BottomBar({
 }
 
 /** A phone's skills, as a strip of icons above the page. */
-export function SkillStrip({ content, tinker, place, onPlace }: { content: Content; tinker: Tinker; place: Place; onPlace: (place: Place) => void }) {
+export function SkillStrip({
+  content,
+  tinker,
+  place,
+  onPlace,
+  guided,
+  shown,
+}: {
+  content: Content;
+  tinker: Tinker;
+  place: Place;
+  onPlace: (place: Place) => void;
+  guided: Place | null;
+  shown: (place: Place) => boolean;
+}) {
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0 }} contentContainerStyle={{ gap: 6, paddingHorizontal: 12, paddingVertical: 8 }}>
-      {skillsOf(content).map((skill) => {
+      {skillsOf(content).filter((skill) => shown(`skill:${skill}`)).map((skill) => {
         const key: Place = `skill:${skill}`;
         const level = tinker.skills.find((candidate) => candidate.skill === skill)?.level ?? 1;
         const active = place === key;
         return (
+          <Glow key={skill} active={guided === key} guide>
           <Pressable
-            key={skill}
             onPress={() => onPlace(key)}
             accessibilityRole="tab"
             accessibilityLabel={skill === FIGHT ? "Fight" : `${titleCase(skill)}, level ${level}`}
@@ -211,8 +242,12 @@ export function SkillStrip({ content, tinker, place, onPlace }: { content: Conte
             }}
           >
             <SkillIcon skill={skill} size={24} />
-            <Text style={[ui.muted, { fontSize: 11, color: active ? colors.brass : colors.muted }]}>{skill === FIGHT ? "Fight" : String(level)}</Text>
+            {/* A phone shows icons only, so the guide's skill carries its name. */}
+            <Text style={[ui.muted, { fontSize: 11, color: active ? colors.brass : colors.muted }]}>
+              {skill === FIGHT ? "Fight" : guided === key ? titleCase(skill) : String(level)}
+            </Text>
           </Pressable>
+          </Glow>
         );
       })}
     </ScrollView>

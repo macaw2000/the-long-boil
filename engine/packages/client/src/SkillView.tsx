@@ -4,7 +4,7 @@
 // hour by default, with quick spans), and Start or Add to queue. The fights
 // are a page of their own, one tile per Rustmoor monster.
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Image, Pressable, Text, TextInput, View } from "react-native";
 import type { Content, QueueEntry, Tinker } from "./api";
 import { duration, levelProgress, seconds, titleCase } from "./format";
@@ -43,6 +43,9 @@ export function SkillView({
   name,
   scene,
   queueLit,
+  guideAt,
+  chosen,
+  onChoose,
   onStart,
   onQueue,
   onGrocer,
@@ -53,15 +56,20 @@ export function SkillView({
   name: (id: string) => string;
   /** The Tinker at work, drawn by the workshop. */
   scene: ReactNode;
-  /** The guide points at the jobs. */
+  /** The nudges point at the jobs. */
   queueLit: boolean;
+  /** The guide's pointer: one job's tile ("job:<id>") or the Start button ("start"). */
+  guideAt: string | null;
+  /** The tile picked, held by the workshop so the guide can see it. */
+  chosen: string | null;
+  onChoose: (id: string | null) => void;
   onStart: (entry: QueueEntry) => void;
   onQueue: (entry: QueueEntry) => void;
   /** Goes to the grocer's counter, for an ingredient no skill makes. */
   onGrocer: () => void;
 }) {
   const planner = usePlanner(content, tinker, name);
-  const [chosen, setChosen] = useState<string | null>(null);
+  const setChosen = onChoose;
   const [count, setCount] = useState("");
   const fight = skill === FIGHT;
   const level = planner.levels.get(skill) ?? 1;
@@ -75,6 +83,7 @@ export function SkillView({
     setChosen(id);
     setCount(String(planner.countFor(id, DEFAULT_SECONDS)));
   };
+  const guided = (id: string) => guideAt === `job:${id}`;
 
   return (
     <View style={{ gap: 12 }}>
@@ -101,7 +110,7 @@ export function SkillView({
 
       {scene}
 
-      <Glow active={queueLit}>
+      <Glow active={queueLit && guideAt === null}>
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
           {fight
             ? monsters.map((monster) => {
@@ -116,6 +125,7 @@ export function SkillView({
                 return (
                   <Tile
                     key={monster.id}
+                    guided={guided(monster.id)}
                     selected={chosen === monster.id}
                     locked={false}
                     onPress={() => choose(monster.id)}
@@ -131,6 +141,7 @@ export function SkillView({
                 return (
                   <Tile
                     key={action.id}
+                    guided={guided(action.id)}
                     selected={chosen === action.id}
                     locked={locked}
                     onPress={() => choose(action.id)}
@@ -152,6 +163,7 @@ export function SkillView({
           name={name}
           count={count}
           setCount={setCount}
+          startGuided={guideAt === "start"}
           onStart={(entry) => {
             setChosen(null);
             onStart(entry);
@@ -173,6 +185,7 @@ function Tile({
   line,
   selected,
   locked,
+  guided,
   accent,
   onPress,
 }: {
@@ -181,10 +194,12 @@ function Tile({
   line: string;
   selected: boolean;
   locked: boolean;
+  guided: boolean;
   accent?: string;
   onPress: () => void;
 }) {
   return (
+    <Glow active={guided} guide>
     <Pressable
       onPress={onPress}
       disabled={locked}
@@ -215,8 +230,10 @@ function Tile({
       </Text>
       <Text style={[ui.muted, { fontSize: 11, textAlign: "center" }]}>{line}</Text>
     </Pressable>
+    </Glow>
   );
 }
+
 
 function JobDetail({
   id,
@@ -226,6 +243,7 @@ function JobDetail({
   name,
   count,
   setCount,
+  startGuided,
   onStart,
   onQueue,
   onGrocer,
@@ -237,11 +255,20 @@ function JobDetail({
   name: (id: string) => string;
   count: string;
   setCount: (count: string) => void;
+  /** The guide points at Start. */
+  startGuided: boolean;
   onStart: (entry: QueueEntry) => void;
   onQueue: (entry: QueueEntry) => void;
   /** Goes to the grocer's counter, for an ingredient no skill makes. */
   onGrocer: () => void;
 }) {
+  // Picking a tile opens this below the tiles, often below the fold: bring it, and its Start, into view.
+  const panel = useRef<View>(null);
+  useEffect(() => {
+    const element = panel.current as unknown as { scrollIntoView?: (options: object) => void } | null;
+    const timer = setTimeout(() => element?.scrollIntoView?.({ block: "nearest", behavior: "smooth" }), 50);
+    return () => clearTimeout(timer);
+  }, [id]);
   const action = content.actions.find((candidate) => candidate.id === id);
   const monster = content.monsters.find((candidate) => candidate.id === id);
   const parsed = Number(count);
@@ -251,7 +278,7 @@ function JobDetail({
   const full = tinker.queue.length >= tinker.upgrades.queueSlots;
 
   return (
-    <View style={[ui.panel, { borderColor: colors.brass, gap: 10 }]}>
+    <View ref={panel} style={[ui.panel, { borderColor: colors.brass, gap: 10 }]}>
       <Text style={ui.heading}>{jobTitle(content, id, name)}</Text>
       {action && (
         <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
@@ -332,14 +359,16 @@ function JobDetail({
       {warning && <Text style={[ui.muted, { color: colors.copper }]}>Careful: {warning}.</Text>}
 
       <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
-        <Pressable
-          style={[ui.button, { paddingHorizontal: 18 }, !valid && { opacity: 0.4 }]}
-          disabled={!valid}
-          onPress={() => onStart({ actionId: id, remaining: parsed })}
-          accessibilityRole="button"
-        >
-          <Text style={ui.buttonText}>{tinker.queue.length ? "Start now" : "Start"}</Text>
-        </Pressable>
+        <Glow active={startGuided} guide>
+          <Pressable
+            style={[ui.button, { paddingHorizontal: 18 }, !valid && { opacity: 0.4 }]}
+            disabled={!valid}
+            onPress={() => onStart({ actionId: id, remaining: parsed })}
+            accessibilityRole="button"
+          >
+            <Text style={ui.buttonText}>{tinker.queue.length ? "Start now" : "Start"}</Text>
+          </Pressable>
+        </Glow>
         {tinker.queue.length > 0 && (
           <Pressable
             style={[

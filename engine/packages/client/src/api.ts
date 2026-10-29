@@ -139,6 +139,14 @@ export interface LedgerLine {
   produced: Record<string, number>;
 }
 
+/** The first-session guide's progress, kept with the Tinker (client/src/Guide.tsx). */
+export interface GuideProgress {
+  acknowledged: string[];
+  skipped: boolean;
+  seen?: string[];
+  opened?: boolean;
+}
+
 export interface Ledger {
   from: number | null;
   to: number | null;
@@ -355,6 +363,8 @@ export const api = {
   look: (id: number) => request<Outcome>("GET", `/tinkers/${id}`),
   setQueue: (id: number, queue: QueueEntry[]) => request<Outcome>("PUT", `/tinkers/${id}/queue`, { queue }),
   equip: (id: number, item: string) => request<Outcome>("PUT", `/tinkers/${id}/weapon`, { item }),
+  guide: (id: number) => request<{ guide: GuideProgress | null }>("GET", `/tinkers/${id}/guide`),
+  saveGuide: (id: number, guide: GuideProgress) => request<{ guide: GuideProgress }>("PUT", `/tinkers/${id}/guide`, guide),
   market: (id: number) => request<MarketView>("GET", `/tinkers/${id}/market`),
   book: (item: string) => request<{ item: string; bids: BookLevel[]; asks: BookLevel[] }>("GET", `/exchange/${encodeURIComponent(item)}`),
   sellToCollector: (id: number, item: string, qty: number) => request<Outcome>("POST", `/tinkers/${id}/collector`, { item, qty }),
