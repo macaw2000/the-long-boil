@@ -100,6 +100,51 @@
       "id": "item.cinderworks.opal_pyrometer",
       "name": "Opal Pyrometer",
       "flavour": "A fire opal set in a cast housing, which reads a furnace's heat by its colour."
+    },
+    {
+      "id": "item.cinderworks.gauze_goggles",
+      "name": "Gauze Goggles",
+      "flavour": "Two cups of brass wire gauze on a strap, which stop the sparks and most of the view."
+    },
+    {
+      "id": "item.cinderworks.slag_wool",
+      "name": "Slag Wool",
+      "flavour": "Ash-pit clinker from the cinders, blown into grey fibre by a jet of steam, fireproof and fiercely itchy."
+    },
+    {
+      "id": "item.cinderworks.slag_wool_coat",
+      "name": "Slag Wool Coat",
+      "flavour": "A coat quilted thick with slag wool, which will not burn and will not let you forget it."
+    },
+    {
+      "id": "item.cinderworks.smoked_lens",
+      "name": "Smoked Lens",
+      "flavour": "A disc of slag glass blacked over the cinders, for looking a furnace in the eye."
+    },
+    {
+      "id": "item.cinderworks.furnace_goggles",
+      "name": "Furnace Goggles",
+      "flavour": "Bronze-rimmed goggles with smoked lenses, which show a white-hot pour as a polite orange."
+    },
+    {
+      "id": "item.cinderworks.slag_felt",
+      "name": "Slag Felt",
+      "flavour": "Slag wool steamed and pressed into a grey felt that turns a spark and most opinions."
+    },
+    {
+      "id": "item.cinderworks.studded_felt_coat",
+      "name": "Studded Felt Coat",
+      "flavour": "A long coat of slag felt, studded with slag-iron beads where the splashes land."
+    },
+    {
+      "id": "item.cinderworks.bronze_eyecups",
+      "name": "Bronze Eyecups",
+      "flavour": "Two eyecups cut from the cone of a burnt tuyere, still faintly smelling of the blast."
+    },
+    {
+      "id": "item.cinderworks.founders_goggles",
+      "name": "Founder's Goggles",
+      "flavour": "Smoked lenses in tuyere-bronze eyecups, the kind the Foundry gives its casters and seldom anyone else."
     }
   ]
 }

@@ -1,0 +1,161 @@
+{
+  "schema": "gear/1",
+  "id": "gear.cinderworks.armour",
+  "gear": [
+    {
+      "item": "item.cinderworks.gauze_goggles",
+      "slot": "armour",
+      "level_required": 6,
+      "stats_by_calibration": [
+        {
+          "calibration": 0,
+          "armour": 18
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "item": "item.cinderworks.slag_wool_coat",
+      "slot": "armour",
+      "level_required": 7,
+      "stats_by_calibration": [
+        {
+          "calibration": 0,
+          "armour": 21
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "item": "item.cinderworks.studded_felt_coat",
+      "slot": "armour",
+      "level_required": 8,
+      "stats_by_calibration": [
+        {
+          "calibration": 0,
+          "armour": 24
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "item": "item.cinderworks.furnace_goggles",
+      "slot": "armour",
+      "level_required": 9,
+      "stats_by_calibration": [
+        {
+          "calibration": 0,
+          "armour": 27
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "item": "item.cinderworks.founders_goggles",
+      "slot": "armour",
+      "level_required": 10,
+      "stats_by_calibration": [
+        {
+          "calibration": 0,
+          "armour": 30
+        },
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  ]
+}

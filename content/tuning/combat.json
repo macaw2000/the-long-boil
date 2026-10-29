@@ -1,8 +1,8 @@
 {
  "schema": "tuning.combat/1",
  "id": "tuning.global.combat",
- "revision": 8,
- "source": "docs/work-orders/009-combat-model.md (including 'Settled after the first draft'); docs/work-orders/011-rustmoor-combat-stats.md ('Settled after the first draft' and 'Settled after the inspector's review'); docs/gdd.md sections 1, 6 (Combat paragraph), 7; content/monsters/rustmoor.json; content/tuning/xp-curve.json; docs/work-orders/001-xp-curve.md and 008-rustmoor-drops.md (carried-forward notes); docs/work-orders/012-rustmoor-cooking.md (the Rustmoor Ration, revision 5; 'Settled after review', revision 6); docs/work-orders/013-grocer-and-starting-inventory.md (the Ration consumption correction, revision 7); docs/work-orders/025-scrapjaw-on-day-14.md (Scrapjaw's reference weapon, revision 8)",
+ "revision": 9,
+ "source": "docs/work-orders/009-combat-model.md (including 'Settled after the first draft'); docs/work-orders/011-rustmoor-combat-stats.md ('Settled after the first draft' and 'Settled after the inspector's review'); docs/gdd.md sections 1, 6 (Combat paragraph), 7; content/monsters/rustmoor.json; content/tuning/xp-curve.json; docs/work-orders/001-xp-curve.md and 008-rustmoor-drops.md (carried-forward notes); docs/work-orders/012-rustmoor-cooking.md (the Rustmoor Ration, revision 5; 'Settled after review', revision 6); docs/work-orders/013-grocer-and-starting-inventory.md (the Ration consumption correction, revision 7); docs/work-orders/025-scrapjaw-on-day-14.md (Scrapjaw's reference weapon, revision 8); docs/work-orders/028-tailoring-and-first-armour.md (armour points at +0, revision 9)",
  "applies_to": "every fight: the seven combat skills, weapons and armour, monsters and bosses in all zones",
  "basis_key": {
   "settled": "Jeremy has decided it (work order 009, 'Settled after the first draft', 22 October 2026); where the GDD records it, the line is quoted",
@@ -97,7 +97,8 @@
     "stats_by_calibration": "21 rows, +0 to +20, each {calibration, armour}"
    },
    "slot": "None. There is one armour slot (gear.loadout, settled), so coats, goggles and plate (section 6 Skills table: Tailoring, Smithing) all fill it and one is worn at a time.",
-   "basis": "proposal for the fields; the single slot is settled"
+   "armour_at_plus_0": {"rule": "armour(0) = 3 * level_required", "basis": "settled", "settled": "Work order 028 (29 October 2026): Jeremy settled armour points at +0 as 3 x the Fortitude level required to wear the piece."},
+   "basis": "proposal for the fields, except armour_at_plus_0 (settled); the single slot is settled"
   },
   "reference_gear": "For the target, 'the gear the zone offers' is the best +0 weapon of the matched style, and the best +0 armour piece, that the zone offers with level_required at or below the player's level. Calibration is headroom above the target, not part of it (proposal; section 7 month three treats calibrating toward +10 as a long sink). A boss listed in boss.reference_weapon is the one exception: its reference player holds that weapon instead of the best one (revision 8, work order 025)."
  },
@@ -241,7 +242,8 @@
   "Focus is one of the three attack styles (combat_xp_split)",
   "Loadout is one weapon and one armour piece (gear.loadout)",
   "Hit points and damage scaled x10 (units)",
-  "Calibration step left to the calibration work order (constants.CALIBRATION_STEP)"
+  "Calibration step left to the calibration work order (constants.CALIBRATION_STEP)",
+  "Armour points at +0 are 3 x the Fortitude level required to wear the piece (gear.armour.armour_at_plus_0; work order 028, 29 October 2026)"
  ],
 
  "open_questions": [

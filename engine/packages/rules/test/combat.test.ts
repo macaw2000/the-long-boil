@@ -207,6 +207,12 @@ describe("armour", () => {
     expect(wear(state, dressed, COAT).armour).toBe(COAT);
   });
 
+  it("loads the Cinderworks pieces at 3 x their Fortitude level (work order 028)", () => {
+    const goggles = content.armours.get("item.cinderworks.gauze_goggles")!;
+    expect(goggles.armour).toBe(3 * goggles.level_required);
+    for (const piece of content.armours.values()) expect(piece.armour).toBe(3 * piece.level_required);
+  });
+
   it("cannot be put on without holding it", () => {
     const state = reference("melee", 15, 5, "item.rustmoor.steel_blade", 0);
     expect(() => wear(state, dressed, COAT)).toThrow(/do not have/);

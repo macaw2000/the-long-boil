@@ -1,7 +1,15 @@
 # Work order 028: Tailoring and the first armour
 
 **Agent:** `draftsman` for the content; the orchestrator for the engine change in part 3
-**Status:** ready to run
+**Status:** done (29 October 2026). Nine Tailoring actions (1 to 20 in 13.96 days at 1.00x, 20 to 45 in 13.80 days at 3.43x) and five armour pieces, worn at Fortitude 6 to 10 with 18 to 30 armour; the engine, server and Loadout now wear armour (part 3). The inspector passed all 20 ids, 12 with notes, and found no reveal risk. All rows reviewed; approval waits on Jeremy. Carried forward: for the economy work order, Tailoring 5 to 19 eats about 2,650 Cinders per Tailor (about 12 Scavengers' worth at Scavenging 20 to 24), and a levelling Tailor makes about 1,700 armour pieces against one slot per player, so armour needs a capped buyer or salvage; for the Soot Wraiths work order, a Tinker who starts Tailoring on arrival makes only the first two pieces inside the band, so tune against armour players can actually hold, and `ARMOUR_HALF_POINT` is still a proposal. Taste calls for Jeremy: Slag Wool's ash-pit undertone, worn against the skin; "Founder's Goggles" leaning toward the city's founding (the inspector suggests "Caster's Goggles"); goggles outranking coats at the top; and each step up the ladder being worth only about 2%.
+
+## Settled after the first draft
+
+Jeremy, 29 October 2026:
+
+- **Armour points at +0 are 3 x the Fortitude level required to wear the piece** (`combat.json` revision 9, `gear.armour.armour_at_plus_0`). The draft's 1x cut damage only 5 to 8% beyond Fortitude alone; 3x cuts about 15% at Fortitude 6 and 21% at 10.
+- **Tailoring 1 to 15 use only materials a Tinker has on arrival:** a Rustmoor Brass Ingot and Cinders (Scavenging 20). Slag Glass feeds only the later tiers.
+- **Slag wool, blown from Cinders, is the cloth.** No new vendor, skill or drop.
 **Blocks:** the Soot Wraiths work order, whose monsters are solved against a reference player who wears armour; and the Tailoring skill's band pacing, which today has no actions at all.
 
 ## Why this one

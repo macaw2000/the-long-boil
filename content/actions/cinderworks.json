@@ -362,6 +362,193 @@
           "qty": 1
         }
       ]
+    },
+    {
+      "id": "action.cinderworks.tailor_gauze_goggles",
+      "skill": "tailoring",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 9,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.gauze_goggles",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_slag_wool",
+      "skill": "tailoring",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 19,
+      "inputs": [
+        {
+          "item": "item.cinderworks.cinders",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.slag_wool",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_slag_wool_coat",
+      "skill": "tailoring",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 30,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_wool",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.slag_wool_coat",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_slag_felt",
+      "skill": "tailoring",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 42,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_wool",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_studded_felt_coat",
+      "skill": "tailoring",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 160,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.slag_iron",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.studded_felt_coat",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_smoked_lens",
+      "skill": "tailoring",
+      "level_required": 25,
+      "seconds": 324,
+      "xp": 198,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_glass",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.cinders",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.smoked_lens",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_furnace_goggles",
+      "skill": "tailoring",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 238,
+      "inputs": [
+        {
+          "item": "item.cinderworks.smoked_lens",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.furnace_goggles",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_bronze_eyecups",
+      "skill": "tailoring",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 280,
+      "inputs": [
+        {
+          "item": "item.cinderworks.burnt_tuyere",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_eyecups",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_founders_goggles",
+      "skill": "tailoring",
+      "level_required": 40,
+      "seconds": 486,
+      "xp": 324,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_eyecups",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.smoked_lens",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.founders_goggles",
+          "qty": 1
+        }
+      ]
     }
   ]
 }
