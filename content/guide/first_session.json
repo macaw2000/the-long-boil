@@ -5,48 +5,48 @@
     {
       "id": "boiler",
       "speaker": "Professor Brassbuckle",
-      "line": "Twelve hours of steam on that gauge, which is how long your Tinker works without you, so you will sleep tonight whether you like it or not. Press Open the valve on this card.",
+      "line": "Twelve hours of steam on that gauge: that is how long your Tinker works without you, so you will sleep tonight, like it or not.",
       "button": "Open the valve"
     },
     {
       "id": "queue_spanners",
       "speaker": "Professor Brassbuckle",
-      "line": "Fifty Brass Ingots from the old stock, and I would rather they became spanners than doorstops. Press the Queue work button and set fifty Brass Spanners going."
+      "line": "Fifty Brass Ingots from the old stock, and I would rather they became spanners than doorstops."
     },
     {
       "id": "first_spanner",
       "speaker": "Professor Brassbuckle",
-      "line": "A watched Tinker works no faster, I am told, but nobody has ever managed not to watch the first one. Keep your eye on the bench until a Brass Spanner lands."
+      "line": "A watched Tinker works no faster, I am told, but nobody has ever managed not to watch the first one."
     },
     {
       "id": "pips_bill",
       "speaker": "Professor Brassbuckle",
-      "line": "That canister rattling into the tray is Pip, and Pip's canisters are seldom good news. Open the Story tab and answer the letter waiting there."
+      "line": "That canister rattling into the tray is Pip, and Pip's canisters are seldom good news; better answered now than in person."
     },
     {
       "id": "equip",
       "speaker": "Professor Brassbuckle",
-      "line": "Rats have been at the Row again, and a Brass Spanner is a perfectly respectable thing to hit one with. In the Loadout, press Equip beside a Brass Spanner."
+      "line": "Rats have been at the Row again, and a Brass Spanner is a perfectly respectable thing to hit one with."
     },
     {
       "id": "rats",
       "speaker": "Professor Brassbuckle",
-      "line": "Mind your Rations and come back in one piece; I have only just got this workshop aired. Press the Queue work button and choose the Rust Rat Runt."
+      "line": "Mind your Rations and come back in one piece; I have only just got this workshop aired."
     },
     {
       "id": "pay_bill",
       "speaker": "Professor Brassbuckle",
-      "line": "The rats have paid you in Crowns, and Pip would like some. Open the Exchange tab and press Pay on Pip's bill at the top. Short? Sell rat scrap at the window below; it is worth more than it smells."
+      "line": "The rats have paid you in Crowns, and Pip would like some. Short? Rat scrap is worth more than it smells."
     },
     {
       "id": "brass_plate",
       "speaker": "Professor Brassbuckle",
-      "line": "The Row will want a word with you before the day is out, and that workbench drawer still wants clearing out; my knees are older than the Boiler. Open the Story tab and see it all through."
+      "line": "That workbench drawer wants clearing before the day is out, and my knees are older than the Boiler."
     },
     {
       "id": "come_back",
       "speaker": "Professor Brassbuckle",
-      "line": "Nothing here needs watching; the Boiler and the queue keep working while you are away, and the city will have written by the time you return. Fill twelve hours with the Queue work button, then press Leave it running.",
+      "line": "Nothing needs watching: the Boiler and the queue keep working while you are away, and the city will have written by the time you return.",
       "button": "Leave it running"
     }
   ]
