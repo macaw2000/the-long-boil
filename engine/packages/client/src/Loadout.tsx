@@ -3,7 +3,8 @@
 // equipped; the weapon rack below shows every weapon owned, framed by its
 // tier, and picking one compares it with the weapon in hand on real kill
 // times from the server. Equipping lands with a flash and a burst of sparks.
-// Rustmoor has no armour, so that slot stays locked until the Cinderworks.
+// Rustmoor has no armour, so the armour slot is not drawn until Act II brings
+// the Cinderworks and Tailoring; an empty slot read to playtesters as a bug.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Easing, Image, Pressable, Text, View } from "react-native";
@@ -61,7 +62,7 @@ function Portrait({ weapon, flash, size }: { weapon: string | null; flash: Anima
   );
 }
 
-function Slot({ label, item, tierLevel, locked, pop }: { label: string; item: string | null; tierLevel?: number; locked?: string; pop?: Animated.Value }) {
+function Slot({ label, item, tierLevel, pop }: { label: string; item: string | null; tierLevel?: number; pop?: Animated.Value }) {
   const tier = tierLevel === undefined ? null : gearTier(tierLevel);
   return (
     <View style={{ alignItems: "center", gap: 4, width: 84 }}>
@@ -71,21 +72,19 @@ function Slot({ label, item, tierLevel, locked, pop }: { label: string; item: st
           height: 64,
           borderRadius: 8,
           borderWidth: 2,
-          borderColor: locked ? colors.panelEdge : (tier?.colour ?? colors.panelEdge),
+          borderColor: tier?.colour ?? colors.panelEdge,
           backgroundColor: colors.soot,
           alignItems: "center",
           justifyContent: "center",
-          borderStyle: locked ? "dashed" : "solid",
           transform: pop ? [{ scale: pop }] : [],
           shadowColor: tier?.colour ?? "transparent",
           shadowOpacity: item ? 0.6 : 0,
           shadowRadius: 10,
         }}
       >
-        {item ? <ItemIcon item={item} size={48} /> : <Text style={[ui.muted, { fontSize: 22 }]}>{locked ? "🔒" : "—"}</Text>}
+        {item ? <ItemIcon item={item} size={48} /> : <Text style={[ui.muted, { fontSize: 22 }]}>—</Text>}
       </Animated.View>
       <Text style={[ui.muted, { fontSize: 11, textAlign: "center" }]}>{label}</Text>
-      {locked && <Text style={[ui.muted, { fontSize: 10, textAlign: "center" }]}>{locked}</Text>}
     </View>
   );
 }
@@ -193,7 +192,7 @@ export function Loadout({
     <View style={[ui.panel, { gap: 10 }]}>
       <Text style={ui.heading}>Loadout</Text>
 
-      {/* The paperdoll: weapon slot, the Tinker, armour slot. */}
+      {/* The paperdoll: weapon slot and the Tinker, with a spacer where the armour slot will go in Act II. */}
       <Sparks bursts={bursts}>
         <View
           style={{
@@ -209,7 +208,7 @@ export function Loadout({
         >
           <Slot label="Weapon" item={tinker.weapon} tierLevel={equippedWeapon?.level_required} pop={pop} />
           <Portrait weapon={tinker.weapon} flash={flash} size={portrait} />
-          <Slot label="Armour" item={null} locked="With Tailoring, in the Cinderworks" />
+          <View style={{ width: 84 }} />
           {banner && (
             <Animated.Text
               pointerEvents="none"
