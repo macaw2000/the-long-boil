@@ -363,6 +363,72 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent, now =
 }
 
 
+/**
+ * Starts a Tinker over in its own slot: a fresh workshop under the same name,
+ * as on the day the keys were taken. Progress goes (skills, stores, Crowns,
+ * queue, story, Work Orders, open Exchange orders); what Cogs bought stays
+ * (Cogs, the Cog Shop's upgrades and crates still on their way). The event
+ * log is append-only, so the reset is logged, not erased. A Tinker in a guild,
+ * or with Crowns pledged to a charter, must leave or be refunded first, so no
+ * guild loses a member or a pledge without its own rules running.
+ */
+export async function resetTinker(db: Db, content: GameContent, tinkerId: number, confirmName: string, now: number): Promise<Outcome> {
+  return withTransaction(db, async (tx) => {
+    const row = (await tx.query("SELECT name, last_seq FROM tinkers WHERE id = $1 FOR UPDATE", [tinkerId])).rows[0];
+    if (!row) throw new NotFound(`no Tinker ${tinkerId}`);
+    if (confirmName.trim() !== row.name) throw new BadRequest(`type ${row.name} to start over`);
+    if ((await tx.query("SELECT 1 FROM guild_members WHERE tinker_id = $1", [tinkerId])).rowCount) {
+      throw new BadRequest("leave your guild before starting over");
+    }
+    const pledged = await tx.query(
+      `SELECT 1 FROM guild_pledges p JOIN guilds g ON g.id = p.guild_id
+       WHERE p.tinker_id = $1 AND p.refunded_at IS NULL AND g.status = 'charter'`,
+      [tinkerId],
+    );
+    if (pledged.rowCount) throw new BadRequest("your Crowns are pledged to a charter; withdraw them before starting over");
+
+    for (const table of ["inventory", "skills", "queue", "qualities", "guild_requests"]) {
+      await tx.query(`DELETE FROM ${table} WHERE tinker_id = $1`, [tinkerId]);
+    }
+    // The stock went with the stores, so open orders simply close.
+    await tx.query(
+      "UPDATE exchange_orders SET closed_at = $2, closed_reason = 'cancelled' WHERE tinker_id = $1 AND closed_at IS NULL",
+      [tinkerId, new Date(now)],
+    );
+    const version = content.rules.version;
+    const story = rules.newStory(now);
+    await tx.query(
+      `UPDATE tinkers SET crowns = $2, progress_ms = 0, resolved_to = $3, steam_until = $4, content_version = $5,
+         weapon = NULL, armour = NULL, ration_debt = 0, pity = '{}', bosses_beaten = '[]',
+         nerve = $6, nerve_at = $7, post_at = $8, hand = '[]', needle_at = '{}', check_in_at = NULL,
+         answered = '[]', played_at = '{}', work_orders = DEFAULT, guide = NULL, head_boosted = false
+       WHERE id = $1`,
+      [
+        tinkerId,
+        content.start.crowns,
+        new Date(now),
+        new Date(now + rules.BOILER_HOURS * HOUR_MS),
+        version,
+        story.nerve,
+        new Date(story.nerveAt),
+        new Date(story.postAt),
+      ],
+    );
+    for (const stack of content.start.inventory) {
+      await tx.query("INSERT INTO inventory (tinker_id, item, bound, qty) VALUES ($1, $2, $3, $4)", [tinkerId, stack.item, stack.bound, stack.qty]);
+    }
+    const seq = await appendEvents(
+      tx,
+      tinkerId,
+      Number(row.last_seq),
+      [{ type: "tinker_reset", at: now, payload: { inventory: content.start.inventory, crowns: content.start.crowns } }],
+      version,
+    );
+    await tx.query("UPDATE tinkers SET last_seq = $2 WHERE id = $1", [tinkerId, seq]);
+    return outcome(await view(tx, tinkerId, content, now), []);
+  });
+}
+
 export async function createTinker(db: Db, content: GameContent, login: string, name: string, now: number): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
     const account = (

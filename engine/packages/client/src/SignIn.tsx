@@ -10,6 +10,7 @@ import { api } from "./api";
 import { art } from "./art";
 import { cognitoEnabled, providers, signOut, startSignIn, type Provider } from "./auth";
 import { TapInput } from "./TapInput";
+import { forgetGuide } from "./Workshop";
 import { colors, ui } from "./theme";
 
 export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (login: string, tinkerId: number) => void }) {
@@ -17,6 +18,9 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
   const [tinkers, setTinkers] = useState<{ id: number; name: string }[] | null>(null);
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
+  // The Tinker being started over, and the name typed to confirm it.
+  const [restarting, setRestarting] = useState<number | null>(null);
+  const [confirm, setConfirm] = useState("");
 
   const lookUp = (account = login.trim()) =>
     api
@@ -44,6 +48,15 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
     api
       .createTinker(login.trim(), name.trim())
       .then((outcome) => onEnter(login.trim(), outcome.tinker.id))
+      .catch((reason: Error) => setError(reason.message));
+
+  const startOver = (tinker: { id: number; name: string }) =>
+    api
+      .resetTinker(tinker.id, confirm)
+      .then(() => {
+        forgetGuide(tinker.id);
+        onEnter(login.trim(), tinker.id);
+      })
       .catch((reason: Error) => setError(reason.message));
 
   const signInWith = (provider?: Provider) => startSignIn(provider).catch((reason: Error) => setError(reason.message));
@@ -131,9 +144,52 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
       ) : (
         <View style={{ gap: 8 }}>
           {tinkers.map((tinker) => (
-            <Pressable key={tinker.id} style={ui.button} onPress={() => onEnter(login.trim(), tinker.id)} accessibilityRole="button">
-              <Text style={ui.buttonText}>Open {tinker.name}'s workshop</Text>
-            </Pressable>
+            <View key={tinker.id} style={{ gap: 6 }}>
+              <Pressable style={ui.button} onPress={() => onEnter(login.trim(), tinker.id)} accessibilityRole="button">
+                <Text style={ui.buttonText}>Open {tinker.name}'s workshop</Text>
+              </Pressable>
+              {restarting === tinker.id ? (
+                <View style={{ gap: 6 }}>
+                  <Text style={[ui.muted, { color: colors.scald }]}>
+                    Starting over gives {tinker.name} a fresh workshop: skills, stores, Crowns and story all go. Cogs and what they bought stay. Type {tinker.name} to confirm.
+                  </Text>
+                  <View style={{ flexDirection: "row", gap: 8 }}>
+                    <TapInput
+                      style={[ui.input, { flex: 1 }]}
+                      value={confirm}
+                      onChangeText={setConfirm}
+                      placeholder={tinker.name}
+                      placeholderTextColor={colors.muted}
+                      autoCapitalize="none"
+                      accessibilityLabel={`Type ${tinker.name} to start over`}
+                    />
+                    <Pressable
+                      style={[ui.button, confirm.trim() !== tinker.name && { opacity: 0.4 }]}
+                      disabled={confirm.trim() !== tinker.name}
+                      onPress={() => startOver(tinker)}
+                      accessibilityRole="button"
+                    >
+                      <Text style={ui.buttonText}>Start over</Text>
+                    </Pressable>
+                  </View>
+                  <Pressable onPress={() => setRestarting(null)} accessibilityRole="button">
+                    <Text style={ui.muted}>Keep {tinker.name}</Text>
+                  </Pressable>
+                </View>
+              ) : (
+                <Pressable
+                  onPress={() => {
+                    setRestarting(tinker.id);
+                    setConfirm("");
+                    setError(null);
+                  }}
+                  accessibilityRole="button"
+                  style={{ alignSelf: "center" }}
+                >
+                  <Text style={[ui.muted, { fontSize: 12 }]}>Start {tinker.name} over</Text>
+                </Pressable>
+              )}
+            </View>
           ))}
           {tinkers.length < 3 && (
             <View style={{ flexDirection: "row", gap: 8 }}>

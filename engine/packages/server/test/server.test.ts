@@ -286,3 +286,44 @@ describe("the dev clock", () => {
     await local.close();
   });
 });
+
+describe("starting a Tinker over", () => {
+  let id: number;
+
+  it("is refused unless the Tinker's name is typed", async () => {
+    id = (await call("POST", "/tinkers", { login: "again@example.com", name: "Wren" })).body.tinker.id;
+    await call("PUT", `/tinkers/${id}/queue`, { queue: [{ actionId: "action.rustmoor.tinker_brass_spanner", remaining: 20 }] });
+    await call("PUT", `/tinkers/${id}/weapon`, { item: "item.rustmoor.brass_spanner" });
+    clock += 2 * HOUR;
+    await call("POST", `/tinkers/${id}/check-in`);
+    expect((await call("POST", `/tinkers/${id}/reset`, { name: "wren" })).status).toBe(400);
+  });
+
+  it("gives back the first session's workshop in the same slot", async () => {
+    const { status, body } = await call("POST", `/tinkers/${id}/reset`, { name: "Wren" });
+    expect(status).toBe(200);
+    expect(body.tinker.id).toBe(id);
+    expect(body.tinker.name).toBe("Wren");
+    expect(body.tinker.crowns).toBe(content.start.crowns);
+    expect(body.tinker.skills).toEqual([]);
+    expect(body.tinker.queue).toEqual([]);
+    expect(body.tinker.weapon).toBeNull();
+    expect(body.tinker.inventory).toEqual([
+      { item: "item.rustmoor.brass_ingot", qty: 50, bound: false },
+      { item: "item.rustmoor.rustmoor_ration", qty: 342, bound: true },
+    ]);
+    expect(new Date(body.tinker.steamUntil).getTime()).toBe(clock + 12 * HOUR);
+    const logged = (await db.query("SELECT type FROM events WHERE tinker_id = $1 ORDER BY seq DESC LIMIT 1", [id])).rows[0];
+    expect(logged.type).toBe("tinker_reset");
+    expect((await call("GET", "/accounts/again@example.com/tinkers")).body.tinkers).toHaveLength(1);
+  });
+
+  it("is refused while the Tinker is in a guild", async () => {
+    const guild = (await db.query("INSERT INTO guilds (name, status, created_at, charter_ends) VALUES ('Resetters', 'active', now(), now()) RETURNING id")).rows[0].id;
+    const account = (await db.query("SELECT account_id FROM tinkers WHERE id = $1", [id])).rows[0].account_id;
+    await db.query("INSERT INTO guild_members (guild_id, tinker_id, account_id, rank, joined_at) VALUES ($1, $2, $3, 'leader', now())", [guild, id, account]);
+    const { status, body } = await call("POST", `/tinkers/${id}/reset`, { name: "Wren" });
+    expect(status).toBe(400);
+    expect(body.error).toMatch(/leave your guild/);
+  });
+});

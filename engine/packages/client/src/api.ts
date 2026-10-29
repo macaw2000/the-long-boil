@@ -368,6 +368,7 @@ export const api = {
   listTinkers: (login: string) =>
     request<{ tinkers: { id: number; name: string }[] }>("GET", `/accounts/${encodeURIComponent(login)}/tinkers`),
   createTinker: (login: string, name: string) => request<Outcome>("POST", "/tinkers", { login, name }),
+  resetTinker: (id: number, name: string) => request<Outcome>("POST", `/tinkers/${id}/reset`, { name }),
   checkIn: (id: number) => request<Outcome>("POST", `/tinkers/${id}/check-in`),
   look: (id: number) => request<Outcome>("GET", `/tinkers/${id}`),
   setQueue: (id: number, queue: QueueEntry[]) => request<Outcome>("PUT", `/tinkers/${id}/queue`, { queue }),

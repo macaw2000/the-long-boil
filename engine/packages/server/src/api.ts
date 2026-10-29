@@ -48,7 +48,7 @@ import { readLedgerPages } from "./pages.js";
 import { BadSignature, MAX_CRATES, type Payments } from "./payments.js";
 import { buyUpgrade, grantCrates, openCrates, readShop, rememberStripeCustomer, revokeCrates, stripeCustomerOf } from "./shop.js";
 import { devSetStory, discardLetter, payDebt, playStory, readStory } from "./story.js";
-import { BadRequest, NotFound, checkIn, createTinker, equip, wear, fightOutlooks, listTinkers, loadout, look, readGuide, saveGuide, setQueue, type GuideProgress } from "./tinkers.js";
+import { BadRequest, NotFound, checkIn, createTinker, equip, resetTinker, wear, fightOutlooks, listTinkers, loadout, look, readGuide, saveGuide, setQueue, type GuideProgress } from "./tinkers.js";
 
 export interface ApiOptions {
   db: Db;
@@ -294,6 +294,13 @@ export function buildApi({
       const outcome = await createTinker(db, content, request.body.login, request.body.name, now());
       return reply.code(201).send(outcome);
     },
+  );
+
+  // Start over in the same slot, confirmed by typing the Tinker's name.
+  app.post<{ Params: { id: string }; Body: { name: string } }>(
+    "/tinkers/:id/reset",
+    { schema: { body: { type: "object", required: ["name"], properties: { name: { type: "string", maxLength: 64 } } } } },
+    async (request) => resetTinker(db, content, Number(request.params.id), request.body.name, now()),
   );
 
   app.post<{ Params: { id: string } }>("/tinkers/:id/check-in", async (request) =>

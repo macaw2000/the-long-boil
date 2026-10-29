@@ -618,6 +618,15 @@ function guideKey(tinkerId: number) {
   return `long-boil.guide.${tinkerId}`;
 }
 
+/** Drops this browser's copy of the guide, for a Tinker started over: the server's copy is gone too, so the guide runs again. */
+export function forgetGuide(tinkerId: number) {
+  try {
+    globalThis.localStorage?.removeItem(guideKey(tinkerId));
+  } catch {
+    // Storage may be blocked; the server's copy is already cleared.
+  }
+}
+
 function hasSavedGuide(tinkerId: number): boolean {
   try {
     return Boolean(globalThis.localStorage?.getItem(guideKey(tinkerId)));
