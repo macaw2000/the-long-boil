@@ -108,6 +108,8 @@ export function SkillView({
         </View>
       </View>
 
+      {fight && <CombatSkills content={content} tinker={tinker} />}
+
       {scene}
 
       <Glow active={queueLit && guideAt === null}>
@@ -404,6 +406,56 @@ function Stack({ item, qty, name, held }: { item: string; qty: number; name: (id
         {qty} {name(item)}
         {held !== undefined ? <Text style={ui.muted}> (have {held.toLocaleString()})</Text> : null}
       </Text>
+    </View>
+  );
+}
+
+/** What each combat skill does in a fight (GDD section 6, Skills). */
+const COMBAT_SKILLS: [string, string][] = [
+  ["melee", "close damage"],
+  ["marksmanship", "ranged damage"],
+  ["aetherics", "spark and coil damage"],
+  ["vitality", "hit points"],
+  ["fortitude", "defence; armour needs it to wear"],
+  ["pressure", "harder hits"],
+  ["precision", "accuracy and crits"],
+];
+
+/**
+ * The seven combat skills and how they rise. None has jobs of its own: every
+ * kill trains them (combat.json combat_xp_split), most of all the style of
+ * the weapon in hand, so they were invisible until a locked armour piece
+ * asked for Fortitude.
+ */
+function CombatSkills({ content, tinker }: { content: Content; tinker: Tinker }) {
+  const style = content.weapons.find((weapon) => weapon.item === tinker.weapon)?.style ?? null;
+  return (
+    <View style={[ui.panel, { gap: 8 }]}>
+      <Text style={ui.heading}>Combat skills</Text>
+      <Text style={[ui.muted, { fontSize: 12 }]}>
+        Every kill trains these. The style of the weapon in hand{style ? ` (${titleCase(style)})` : ""} takes most of the XP; the other six take a little each.
+      </Text>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+        {COMBAT_SKILLS.map(([skill, does]) => {
+          const entry = tinker.skills.find((candidate) => candidate.skill === skill);
+          const level = entry?.level ?? 1;
+          const progress = levelProgress(content, entry?.xp ?? 0, level);
+          const main = skill === style;
+          return (
+            <View key={skill} style={{ flexBasis: 150, flexGrow: 1, gap: 3 }} accessibilityLabel={`${titleCase(skill)} level ${level}`}>
+              <View style={{ flexDirection: "row", alignItems: "baseline", gap: 6 }}>
+                <Text style={[ui.text, { fontWeight: "700", color: main ? colors.brass : colors.ink }]}>{titleCase(skill)}</Text>
+                <Text style={[ui.number, { color: colors.brass }]}>{level}</Text>
+                {main && <Text style={[ui.muted, { fontSize: 10, color: colors.verdigris }]}>main</Text>}
+              </View>
+              <View style={{ height: 4, borderRadius: 2, backgroundColor: colors.soot, overflow: "hidden" }}>
+                <View style={{ width: `${progress ? (progress.into / progress.span) * 100 : 0}%`, height: "100%", backgroundColor: main ? colors.brass : colors.verdigris }} />
+              </View>
+              <Text style={[ui.muted, { fontSize: 10 }]}>{does}</Text>
+            </View>
+          );
+        })}
+      </View>
     </View>
   );
 }

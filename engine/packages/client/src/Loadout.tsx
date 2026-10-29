@@ -339,7 +339,7 @@ export function Loadout({
       {/* The armour held: tap one to put it on. Armour adds to Fortitude against every hit. */}
       {armours.length > 0 && (
         <View style={{ gap: 4 }}>
-          <Text style={[ui.muted, { fontSize: 11 }]}>Armour · tap to wear · Fortitude {fortitude}</Text>
+          <Text style={[ui.muted, { fontSize: 11 }]}>Armour · tap to wear · your Fortitude {fortitude}, raised by fighting</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
             {armours.map((armour) => {
               const on = armour.item === tinker.armour;
