@@ -329,6 +329,9 @@ def main() -> None:
     for name, icon in zip([f"icon_{item}" for item in SHEET_D + SHEET_E] + SHEET_E_REST, cinderworks):
         save(icon, name)
         written += 1
+    # Sheet E's Tailoring icon crossed two needles into an X that read as "no coats"; it was redrawn alone.
+    redrawn = keyed(sheet("skill-tailoring.jpeg"))
+    save(fit_icon(redrawn.crop(content_box(redrawn))), "skill_tailoring")
 
     # Icons redrawn alone replace their sheet's cell: Sheet B's Brass Catapult came out a siege engine,
     # not the slingshot the Tinker holds (docs/art-requests.md, 12).
