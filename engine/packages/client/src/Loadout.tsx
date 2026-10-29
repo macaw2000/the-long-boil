@@ -3,8 +3,9 @@
 // equipped; the weapon rack below shows every weapon owned, framed by its
 // tier, and picking one compares it with the weapon in hand on real kill
 // times from the server. Equipping lands with a flash and a burst of sparks.
-// Rustmoor has no armour, so the armour slot is not drawn until Act II brings
-// the Cinderworks and Tailoring; an empty slot read to playtesters as a bug.
+// Rustmoor has no armour, so the armour slot is not drawn until the Tinker
+// owns a piece (Tailoring, in the Cinderworks); an empty slot read to
+// playtesters as a bug.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Easing, Image, Pressable, Text, View } from "react-native";
@@ -127,12 +128,14 @@ export function Loadout({
   tinker,
   name,
   onEquip,
+  onWear,
   portrait = PORTRAIT,
 }: {
   content: Content;
   tinker: Tinker;
   name: (item: string) => string;
   onEquip: (item: string) => Promise<unknown>;
+  onWear: (item: string) => Promise<unknown>;
   /** The portrait's size: 192 (3x) where there is room, 128 (2x) in a narrow column. */
   portrait?: number;
 }) {
@@ -187,12 +190,18 @@ export function Loadout({
   const styleLevel = (style: string) => tinker.skills.find((skill) => skill.skill === style)?.level ?? 1;
   const shown = equipped && !choice ? equipped : choice;
   const equippedWeapon = content.weapons.find((weapon) => weapon.item === tinker.weapon);
+  // Armour pieces held, cheapest first; the slot appears with the first one.
+  const armours = content.armours
+    .filter((armour) => tinker.inventory.some((stack) => stack.item === armour.item && stack.qty > 0))
+    .sort((a, b) => a.level_required - b.level_required || a.armour - b.armour);
+  const worn = content.armours.find((armour) => armour.item === tinker.armour);
+  const fortitude = styleLevel("fortitude");
 
   return (
     <View style={[ui.panel, { gap: 10 }]}>
       <Text style={ui.heading}>Loadout</Text>
 
-      {/* The paperdoll: weapon slot and the Tinker, with a spacer where the armour slot will go in Act II. */}
+      {/* The paperdoll: weapon slot, the Tinker, and the armour slot once there is armour to wear. */}
       <Sparks bursts={bursts}>
         <View
           style={{
@@ -208,7 +217,7 @@ export function Loadout({
         >
           <Slot label="Weapon" item={tinker.weapon} tierLevel={equippedWeapon?.level_required} pop={pop} />
           <Portrait weapon={tinker.weapon} flash={flash} size={portrait} />
-          <View style={{ width: 84 }} />
+          {armours.length > 0 || worn ? <Slot label="Armour" item={tinker.armour} /> : <View style={{ width: 84 }} />}
           {banner && (
             <Animated.Text
               pointerEvents="none"
@@ -316,6 +325,44 @@ export function Loadout({
                   </Pressable>
                 );
               })}
+          </View>
+        </View>
+      )}
+
+      {/* The armour held: tap one to put it on. Armour adds to Fortitude against every hit. */}
+      {armours.length > 0 && (
+        <View style={{ gap: 4 }}>
+          <Text style={[ui.muted, { fontSize: 11 }]}>Armour · tap to wear · Fortitude {fortitude}</Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+            {armours.map((armour) => {
+              const on = armour.item === tinker.armour;
+              const usable = fortitude >= armour.level_required;
+              return (
+                <Pressable
+                  key={armour.item}
+                  disabled={on || !usable}
+                  onPress={() => onWear(armour.item)}
+                  accessibilityRole="button"
+                  accessibilityLabel={on ? `${name(armour.item)}, worn` : usable ? `Wear ${name(armour.item)}` : `${name(armour.item)}, needs Fortitude ${armour.level_required}`}
+                  style={{
+                    width: 58,
+                    height: 66,
+                    borderRadius: 6,
+                    borderWidth: on ? 2 : 1,
+                    borderColor: on ? colors.brass : colors.panelEdge,
+                    backgroundColor: on ? "#2f2619" : colors.soot,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    opacity: usable ? 1 : 0.5,
+                  }}
+                >
+                  <ItemIcon item={armour.item} size={36} />
+                  <Text style={[ui.number, { fontSize: 10, color: usable ? colors.muted : colors.scald }]}>
+                    {on ? "worn" : usable ? `+${armour.armour}` : `🔒 ${armour.level_required}`}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
         </View>
       )}

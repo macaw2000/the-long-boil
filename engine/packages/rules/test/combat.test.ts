@@ -14,6 +14,8 @@ import {
   setQueue,
   type GameEvent,
   type TinkerState,
+  damageTaken,
+  wear,
 } from "../src/index.js";
 import { loadRealContent } from "./load.js";
 
@@ -168,5 +170,45 @@ describe("fights resolve the same in one step or many", () => {
     expect(state).toEqual(once.state);
     expect(events).toEqual(once.events);
     expect(events.some((event) => event.type === "monster_killed")).toBe(true);
+  });
+});
+
+describe("armour", () => {
+  const COAT = "item.test.coat";
+  const coat = { item: COAT, level_required: 5, armour: 20 };
+  const dressed = { ...content, armours: new Map([[COAT, coat]]) };
+  const GAFFER = "monster.rustmoor.rust_rat_gaffer";
+
+  function fighter(fortitudeLevel: number, worn: typeof coat | undefined) {
+    const state = reference("melee", 15, 5, "item.rustmoor.steel_blade", 0);
+    state.skillXp.fortitude = xpFor(fortitudeLevel);
+    return fighterFor(state.skillXp, content.weapons.get(state.weapon!)!, content, worn);
+  }
+
+  it("adds its points to Fortitude, cutting damage taken by the expected share", () => {
+    const half = c.ARMOUR_HALF_POINT!;
+    expect(fighter(5, coat).armour).toBe(20);
+    expect(damageTaken(c, fighter(5, undefined))).toBeCloseTo(1 - 5 / (5 + half), 9);
+    expect(damageTaken(c, fighter(5, coat))).toBeCloseTo(1 - 25 / (25 + half), 9);
+    // Less damage means fewer Rations eaten a kill, and less time spent eating them.
+    const gaffer = content.monsters.get(GAFFER)!;
+    const bare = planKill(c, fighter(5, undefined), gaffer, content.ration.heal, true)!;
+    const clad = planKill(c, fighter(5, coat), gaffer, content.ration.heal, true)!;
+    expect(clad.rations).toBeLessThan(bare.rations);
+    expect(clad.seconds).toBeLessThanOrEqual(bare.seconds);
+  });
+
+  it("counts for nothing below its Fortitude level, and cannot be put on", () => {
+    expect(fighter(4, coat).armour).toBe(0);
+    const state = reference("melee", 15, 4, "item.rustmoor.steel_blade", 0);
+    state.inventory[COAT] = 1;
+    expect(() => wear(state, dressed, COAT)).toThrow(/fortitude 5/);
+    state.skillXp.fortitude = xpFor(5);
+    expect(wear(state, dressed, COAT).armour).toBe(COAT);
+  });
+
+  it("cannot be put on without holding it", () => {
+    const state = reference("melee", 15, 5, "item.rustmoor.steel_blade", 0);
+    expect(() => wear(state, dressed, COAT)).toThrow(/do not have/);
   });
 });

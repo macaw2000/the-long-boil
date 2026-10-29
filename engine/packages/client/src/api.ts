@@ -58,6 +58,13 @@ export interface Weapon {
   accuracy: number;
 }
 
+/** An armour piece: the Fortitude level to wear it, and its points at +0. */
+export interface Armour {
+  item: string;
+  level_required: number;
+  armour: number;
+}
+
 export interface Item {
   id: string;
   name: string;
@@ -80,6 +87,7 @@ export interface Content {
   actions: Action[];
   monsters: Monster[];
   weapons: Weapon[];
+  armours: Armour[];
   items: Item[];
   totalXp: number[];
   /** The Cog Shop's terms; the crate's own Exchange tax is the one the Exchange shows for it. */
@@ -112,6 +120,7 @@ export interface Tinker {
   steamUntil: string;
   resolvedTo: string;
   weapon: string | null;
+  armour: string | null;
   bossesBeaten: string[];
   story: {
     nerve: number;
@@ -363,6 +372,7 @@ export const api = {
   look: (id: number) => request<Outcome>("GET", `/tinkers/${id}`),
   setQueue: (id: number, queue: QueueEntry[]) => request<Outcome>("PUT", `/tinkers/${id}/queue`, { queue }),
   equip: (id: number, item: string) => request<Outcome>("PUT", `/tinkers/${id}/weapon`, { item }),
+  wear: (id: number, item: string) => request<Outcome>("PUT", `/tinkers/${id}/armour`, { item }),
   guide: (id: number) => request<{ guide: GuideProgress | null }>("GET", `/tinkers/${id}/guide`),
   saveGuide: (id: number, guide: GuideProgress) => request<{ guide: GuideProgress }>("PUT", `/tinkers/${id}/guide`, guide),
   market: (id: number) => request<MarketView>("GET", `/tinkers/${id}/market`),

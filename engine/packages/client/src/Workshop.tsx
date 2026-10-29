@@ -417,7 +417,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
 
   const loadout = shown("loadout") ? (
     <Glow active={lit.has("loadout")}>
-      <Loadout content={content} tinker={tinker} name={name} onEquip={equipWeapon} portrait={wide ? 128 : 192} />
+      <Loadout content={content} tinker={tinker} name={name} onEquip={equipWeapon} onWear={(item) => run(api.wear(tinkerId, item))} portrait={wide ? 128 : 192} />
     </Glow>
   ) : null;
 

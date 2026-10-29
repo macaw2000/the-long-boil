@@ -38,6 +38,7 @@ export interface TinkerView {
   steamUntil: string;
   resolvedTo: string;
   weapon: string | null;
+  armour: string | null;
   bossesBeaten: string[];
   story: StorySummary;
   /** Work Orders waiting on the desk, as last brought up to date; for the tab's badge. */
@@ -89,7 +90,7 @@ export interface Loaded {
 export async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
   const row = (
     await tx.query(
-      `SELECT progress_ms, resolved_to, steam_until, last_seq, crowns, weapon, rng, ration_debt, pity, bosses_beaten,
+      `SELECT progress_ms, resolved_to, steam_until, last_seq, crowns, weapon, armour, rng, ration_debt, pity, bosses_beaten,
          boost_until, head_boosted, queue_slots, boiler_hours
        FROM tinkers WHERE id = $1 FOR UPDATE`,
       [tinkerId],
@@ -121,6 +122,7 @@ export async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
       resolvedTo: row.resolved_to.getTime(),
       steamUntil: row.steam_until.getTime(),
       weapon: row.weapon,
+      armour: row.armour,
       rng: Number(row.rng),
       rationDebt: Number(row.ration_debt),
       pity: row.pity,
@@ -190,7 +192,8 @@ export async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state:
 
   await tx.query(
     `UPDATE tinkers SET progress_ms = $2, resolved_to = $3, steam_until = $4, last_seq = $5, content_version = $6,
-       crowns = $7, weapon = $8, rng = $9, ration_debt = $10, pity = $11, bosses_beaten = $12, head_boosted = $13
+       crowns = $7, weapon = $8, rng = $9, ration_debt = $10, pity = $11, bosses_beaten = $12, head_boosted = $13,
+       armour = $14
      WHERE id = $1`,
     [
       tinkerId,
@@ -206,6 +209,7 @@ export async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state:
       JSON.stringify(state.pity),
       JSON.stringify(state.bossesBeaten),
       state.headBoosted,
+      state.armour,
     ],
   );
 }
@@ -351,6 +355,7 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent, now =
     steamUntil: row.steam_until.toISOString(),
     resolvedTo: row.resolved_to.toISOString(),
     weapon: loaded.state.weapon,
+    armour: loaded.state.armour,
     bossesBeaten: loaded.state.bossesBeaten,
     story: summarizeStory(await loadStory(tx, tinkerId), loaded.state, content, now),
     workOrders: waitingOrders(row.work_orders as rules.WorkOrderState, now),
@@ -519,6 +524,15 @@ export async function setQueue(db: Db, content: GameContent, tinkerId: number, q
 export async function equip(db: Db, content: GameContent, tinkerId: number, item: string, now: number): Promise<Outcome> {
   return atCheckIn(db, content, tinkerId, now, (state) => rules.equip(state, content.rules, item), {
     type: "weapon_equipped",
+    at: now,
+    payload: { item },
+  });
+}
+
+/** Puts on a held armour piece at a check-in: resolves first, so the fight under way finishes in the old one. */
+export async function wear(db: Db, content: GameContent, tinkerId: number, item: string, now: number): Promise<Outcome> {
+  return atCheckIn(db, content, tinkerId, now, (state) => rules.wear(state, content.rules, item), {
+    type: "armour_worn",
     at: now,
     payload: { item },
   });

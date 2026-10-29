@@ -48,7 +48,7 @@ import { readLedgerPages } from "./pages.js";
 import { BadSignature, MAX_CRATES, type Payments } from "./payments.js";
 import { buyUpgrade, grantCrates, openCrates, readShop, rememberStripeCustomer, revokeCrates, stripeCustomerOf } from "./shop.js";
 import { devSetStory, discardLetter, payDebt, playStory, readStory } from "./story.js";
-import { BadRequest, NotFound, checkIn, createTinker, equip, fightOutlooks, listTinkers, loadout, look, readGuide, saveGuide, setQueue, type GuideProgress } from "./tinkers.js";
+import { BadRequest, NotFound, checkIn, createTinker, equip, wear, fightOutlooks, listTinkers, loadout, look, readGuide, saveGuide, setQueue, type GuideProgress } from "./tinkers.js";
 
 export interface ApiOptions {
   db: Db;
@@ -220,6 +220,7 @@ export function buildApi({
     actions: [...content.rules.actions.values()],
     monsters: [...content.rules.monsters.values()],
     weapons: [...content.rules.weapons.values()],
+    armours: [...content.rules.armours.values()],
     items: [...content.items.values()],
     economy: Object.fromEntries(content.economy),
     guide: content.guide,
@@ -327,6 +328,12 @@ export function buildApi({
     "/tinkers/:id/weapon",
     { schema: { body: { type: "object", required: ["item"], properties: { item: { type: "string" } } } } },
     async (request) => equip(db, content, Number(request.params.id), request.body.item, now()),
+  );
+
+  app.put<{ Params: { id: string }; Body: { item: string } }>(
+    "/tinkers/:id/armour",
+    { schema: { body: { type: "object", required: ["item"], properties: { item: { type: "string" } } } } },
+    async (request) => wear(db, content, Number(request.params.id), request.body.item, now()),
   );
 
   // The first-session guide's progress, so it follows the player between devices.

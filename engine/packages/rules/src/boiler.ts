@@ -19,6 +19,7 @@ import {
   planBoss,
   planKill,
   zoneOf,
+  type Armour,
   type DropTable,
   type Monster,
 } from "./combat.js";
@@ -47,6 +48,8 @@ export interface TinkerState {
   steamUntil: number;
   /** The equipped weapon's item id. */
   weapon: string | null;
+  /** The worn armour piece's item id. */
+  armour: string | null;
   /** The seeded generator's state. */
   rng: number;
   /** Rations eaten in part but not yet taken from the inventory. */
@@ -217,7 +220,7 @@ function actionStep(state: TinkerState, content: Content, action: Action): Step 
 function fightStep(state: TinkerState, content: Content, monster: Monster): Step {
   const weapon = state.weapon ? content.weapons.get(state.weapon) : undefined;
   if (!weapon || (state.inventory[weapon.item] ?? 0) < 1) return { kind: "stall", reason: "no_weapon" };
-  const fighter = fighterFor(state.skillXp, weapon, content);
+  const fighter = fighterFor(state.skillXp, weapon, content, worn(state, content));
   if (fighter.styleLevel < weapon.level_required) return { kind: "stall", reason: "level" };
   const c = content.combat;
   const heal = content.ration.heal;
@@ -316,7 +319,7 @@ export type FightOutlook =
 export function fightOutlook(state: TinkerState, content: Content, monster: Monster): FightOutlook {
   const weapon = state.weapon ? content.weapons.get(state.weapon) : undefined;
   if (!weapon || (state.inventory[weapon.item] ?? 0) < 1) return { monsterId: monster.id, ready: false, reason: "no_weapon" };
-  const fighter = fighterFor(state.skillXp, weapon, content);
+  const fighter = fighterFor(state.skillXp, weapon, content, worn(state, content));
   if (fighter.styleLevel < weapon.level_required) return { monsterId: monster.id, ready: false, reason: "level" };
   const c = content.combat;
   const held = state.inventory[content.ration.item] ?? 0;
@@ -397,6 +400,26 @@ export function setQueue(state: TinkerState, queue: QueueEntry[], slots = QUEUE_
   return next;
 }
 
+/** The armour piece the Tinker wears and still holds, if any. */
+function worn(state: TinkerState, content: Content): Armour | undefined {
+  const armour = state.armour ? content.armours.get(state.armour) : undefined;
+  return armour && (state.inventory[armour.item] ?? 0) > 0 ? armour : undefined;
+}
+
+/** Puts on an armour piece the Tinker holds and has the Fortitude to wear. Resolve first: it changes the fight under way. */
+export function wear(state: TinkerState, content: Content, item: string): TinkerState {
+  const armour = content.armours.get(item);
+  if (!armour) throw new Error(`${item} is not armour`);
+  if ((state.inventory[item] ?? 0) < 1) throw new Error(`you do not have ${item}`);
+  if (levelFor(state.skillXp.fortitude ?? 0, content) < armour.level_required) {
+    throw new Error(`${item} needs fortitude ${armour.level_required}`);
+  }
+  const next = cloneState(state);
+  next.armour = item;
+  if (next.queue[0] && content.monsters.has(next.queue[0].actionId)) next.progressMs = 0;
+  return next;
+}
+
 /** Equips a weapon the Tinker holds and can use. Resolve first: a different weapon changes the fight under way. */
 export function equip(state: TinkerState, content: Content, item: string): TinkerState {
   const weapon = content.weapons.get(item);
@@ -422,6 +445,7 @@ export function newTinker(inventory: Record<string, number>, crowns: number, now
     resolvedTo: now,
     steamUntil: now + BOILER_HOURS * HOUR_MS,
     weapon: null,
+    armour: null,
     rng: seed >>> 0,
     rationDebt: 0,
     pity: {},

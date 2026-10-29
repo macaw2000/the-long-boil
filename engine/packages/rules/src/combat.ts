@@ -34,6 +34,15 @@ export interface Weapon {
   accuracy: number;
 }
 
+/** An armour piece (GDD section 6: "a loadout is one weapon and one armour piece"). */
+export interface Armour {
+  item: string;
+  /** The Fortitude level needed to wear it. */
+  level_required: number;
+  /** Armour points at +0, added to Fortitude against a monster's hits. */
+  armour: number;
+}
+
 export interface DropEntry {
   item: string;
   chance: number;
@@ -58,17 +67,21 @@ export interface Fighter {
   pressure: number;
   precision: number;
   fortitude: number;
+  /** The worn armour piece's points; 0 with none, or one the Tinker's Fortitude is too low to wear. */
+  armour: number;
   weapon: Weapon;
 }
 
-export function fighterFor(skillXp: Record<string, number>, weapon: Weapon, content: Content): Fighter {
+export function fighterFor(skillXp: Record<string, number>, weapon: Weapon, content: Content, worn?: Armour): Fighter {
   const level = (skill: string) => levelFor(skillXp[skill] ?? 0, content);
+  const fortitude = level("fortitude");
   return {
     styleLevel: level(weapon.style),
     vitality: level("vitality"),
     pressure: level("pressure"),
     precision: level("precision"),
-    fortitude: level("fortitude"),
+    fortitude,
+    armour: worn && fortitude >= worn.level_required ? worn.armour : 0,
     weapon,
   };
 }
@@ -88,10 +101,14 @@ function playerSwing(c: CombatConstants, f: Fighter, m: Monster) {
   return { mean, second };
 }
 
+/** The share of a monster's hit that lands: armour is Fortitude level plus the armour piece's points (combat.json ARMOUR_HALF_POINT). */
+export function damageTaken(c: CombatConstants, f: Fighter): number {
+  const armour = f.fortitude + f.armour;
+  return 1 - armour / (armour + c.ARMOUR_HALF_POINT!);
+}
+
 function monsterSwing(c: CombatConstants, f: Fighter, m: Monster) {
-  // Rustmoor has no armour (GDD section 6), so armour is Fortitude alone.
-  const taken = 1 - f.fortitude / (f.fortitude + c.ARMOUR_HALF_POINT!);
-  const top = m.max_hit * taken;
+  const top = m.max_hit * damageTaken(c, f);
   return { mean: (m.hit_chance * top) / 2, second: (m.hit_chance * top * top) / 3 };
 }
 
