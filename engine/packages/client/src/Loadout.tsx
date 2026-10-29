@@ -66,7 +66,7 @@ function Portrait({ weapon, flash, size }: { weapon: string | null; flash: Anima
 function Slot({ label, item, tierLevel, pop }: { label: string; item: string | null; tierLevel?: number; pop?: Animated.Value }) {
   const tier = tierLevel === undefined ? null : gearTier(tierLevel);
   return (
-    <View style={{ alignItems: "center", gap: 4, width: 84 }}>
+    <View style={{ alignItems: "center", gap: 4, width: 64 }}>
       <Animated.View
         style={{
           width: 64,
@@ -217,7 +217,7 @@ export function Loadout({
         >
           <Slot label="Weapon" item={tinker.weapon} tierLevel={equippedWeapon?.level_required} pop={pop} />
           <Portrait weapon={tinker.weapon} flash={flash} size={portrait} />
-          {armours.length > 0 || worn ? <Slot label="Armour" item={tinker.armour} /> : <View style={{ width: 84 }} />}
+          {armours.length > 0 || worn ? <Slot label="Armour" item={tinker.armour} /> : <View style={{ width: 64 }} />}
           {banner && (
             <Animated.Text
               pointerEvents="none"
