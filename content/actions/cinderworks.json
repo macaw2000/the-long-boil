@@ -1,0 +1,367 @@
+{
+  "schema": "action/1",
+  "actions": [
+    {
+      "id": "action.cinderworks.prospect_tin_ore",
+      "skill": "prospecting",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 160,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.cinderworks.tin_ore",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.prospect_nickel_ore",
+      "skill": "prospecting",
+      "level_required": 25,
+      "seconds": 324,
+      "xp": 198,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.cinderworks.nickel_ore",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.prospect_steam_coal",
+      "skill": "prospecting",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 238,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.cinderworks.steam_coal",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.prospect_manganese_ore",
+      "skill": "prospecting",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 280,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.cinderworks.manganese_ore",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.prospect_fire_opal",
+      "skill": "prospecting",
+      "level_required": 40,
+      "seconds": 486,
+      "xp": 324,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.cinderworks.fire_opal",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.scavenge_cinders",
+      "skill": "scavenging",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 160,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.cinderworks.cinders",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.scavenge_slag_iron",
+      "skill": "scavenging",
+      "level_required": 25,
+      "seconds": 324,
+      "xp": 198,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.cinderworks.slag_iron",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.scavenge_slag_glass",
+      "skill": "scavenging",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 238,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.cinderworks.slag_glass",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.scavenge_burnt_tuyere",
+      "skill": "scavenging",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 280,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.cinderworks.burnt_tuyere",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.scavenge_spoiled_casting",
+      "skill": "scavenging",
+      "level_required": 40,
+      "seconds": 486,
+      "xp": 324,
+      "inputs": [],
+      "outputs": [
+        {
+          "item": "item.cinderworks.spoiled_casting",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.smelt_bronze_ingot",
+      "skill": "smithing",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 160,
+      "inputs": [
+        {
+          "item": "item.cinderworks.tin_ore",
+          "qty": 1
+        },
+        {
+          "item": "item.rustmoor.copper",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.smelt_nickel_steel_ingot",
+      "skill": "smithing",
+      "level_required": 25,
+      "seconds": 324,
+      "xp": 198,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_ore",
+          "qty": 1
+        },
+        {
+          "item": "item.rustmoor.coal",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_boiler_plate",
+      "skill": "smithing",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 238,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.cinders",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.boiler_plate",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.smelt_manganese_steel_ingot",
+      "skill": "smithing",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 280,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_ore",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.slag_iron",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_clinker_bar",
+      "skill": "smithing",
+      "level_required": 40,
+      "seconds": 486,
+      "xp": 324,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.steam_coal",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.clinker_bar",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_bronze_valve",
+      "skill": "tinkering",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 160,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_valve",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_valve_key",
+      "skill": "tinkering",
+      "level_required": 25,
+      "seconds": 324,
+      "xp": 198,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.valve_key",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_pressure_gauge",
+      "skill": "tinkering",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 238,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.slag_glass",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.pressure_gauge",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_steam_injector",
+      "skill": "tinkering",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 280,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_valve",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.burnt_tuyere",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.steam_injector",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_opal_pyrometer",
+      "skill": "tinkering",
+      "level_required": 40,
+      "seconds": 486,
+      "xp": 324,
+      "inputs": [
+        {
+          "item": "item.cinderworks.fire_opal",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.spoiled_casting",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.opal_pyrometer",
+          "qty": 1
+        }
+      ]
+    }
+  ]
+}

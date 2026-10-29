@@ -3233,6 +3233,1146 @@
       "retirement": null
     },
     {
+      "id": "action.cinderworks.forge_boiler_plate",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/12",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_clinker_bar",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/14",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.prospect_fire_opal",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/4",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.prospect_manganese_ore",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/3",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.prospect_nickel_ore",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/1",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.prospect_steam_coal",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/2",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.prospect_tin_ore",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/0",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.scavenge_burnt_tuyere",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/8",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.scavenge_cinders",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/5",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.scavenge_slag_glass",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/7",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.scavenge_slag_iron",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/6",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.scavenge_spoiled_casting",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/9",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.smelt_bronze_ingot",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/10",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Bronze sits above steel in the ladder; the weapons work order should not let that make bronze outclass steel."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.smelt_manganese_steel_ingot",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/13",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.smelt_nickel_steel_ingot",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/11",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Input changed from Rustmoor steel ingot to Rustmoor coal by Jeremy (28 October 2026), so the band does not depend on Act I steel."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_bronze_valve",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/15",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_opal_pyrometer",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/19",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Needs two top-tier gathered items, so expect a price spike at the band's start. The scrivener must not let the pyrometer hint at Act II beat 5 early. A possible Calibrating material."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_pressure_gauge",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/17",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_steam_injector",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/18",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_valve_key",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/16",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Was tied to Rustmoor steel through nickel steel; resolved by the coal swap."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "action.rustmoor.cook_barley_rations",
       "type": "action",
       "path": "content/actions/rustmoor.json",
@@ -4984,6 +6124,1146 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.boiler_plate",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/12",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Close to the boss drop Bellows Plate, and reads as armour, though armour is Tailoring's. Dead-end product, for the economy work order."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_ingot",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/10",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Bronze sits above steel in the ladder; the weapons work order should not let that make bronze outclass steel."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_valve",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/15",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.burnt_tuyere",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/8",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.cinders",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/5",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Ash-pit undertone, given canon that the dead go to the furnaces; Jeremy kept it (28 October 2026)."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.clinker_bar",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/14",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Reads as the band's top melee weapon; the weapons work order should make it one or rename it. Dead-end product."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.fire_opal",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/4",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "The inspector's first pass failed this flavour; it was patched before this review."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.manganese_ore",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/3",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.manganese_steel_ingot",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/13",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.nickel_ore",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/1",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "The inspector's first pass failed this flavour; it was patched before this review."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_ingot",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/11",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.opal_pyrometer",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/19",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Needs two top-tier gathered items, so expect a price spike at the band's start. The scrivener must not let the pyrometer hint at Act II beat 5 early. A possible Calibrating material."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.pressure_gauge",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/17",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Repeats the cracked-gauge joke (taste call for Jeremy); a possible Calibrating material."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.slag_glass",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/7",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.slag_iron",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/6",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.spoiled_casting",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/9",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.steam_coal",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/2",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.steam_injector",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/18",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.tin_ore",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/0",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Fixed after a first-review fail (seam placed under the Foundry, a reveal risk toward Act II beat 5). Where Cinderworks Prospecting digs is left open. The inspector's first pass failed this flavour; it was patched before this review."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.valve_key",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/16",
+      "revision": null,
+      "work_order": "docs/work-orders/027-cinderworks-actions.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-29T03:54:32Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": ""
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-29T03:46:16Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-29T03:47:54Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-29T03:54:32Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.global.cog_crate",
       "type": "item",
       "path": "content/items/global.json",
@@ -5674,7 +7954,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Re-review after rewrite: pass with notes. Forge-only line fixes the GDD \u00a72 contradiction."
+        "notes": "Re-review after rewrite: pass with notes. Forge-only line fixes the GDD §2 contradiction."
       },
       "approved_by": "jeremy",
       "approved_at": "2026-10-22T00:21:09Z",

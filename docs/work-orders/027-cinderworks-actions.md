@@ -1,7 +1,7 @@
 # Work order 027: the Cinderworks action table
 
 **Agent:** `draftsman`
-**Status:** ready to run
+**Status:** done (28 October 2026). 20 actions and 20 items; Prospecting, Scavenging, Smithing and Tinkering each cross 20 to 45 in 13.80 days at 3.43x (rates 3.2x to 3.6x in even 0.1 steps, kept by Jeremy over an uneven 3.377x schedule). The inspector failed three ore flavours that put seams under the Foundry, deeper and hotter, which leaned on Act II beat 5; they now say nothing of place or depth, and where Cinderworks Prospecting digs is left open. Jeremy had Nickel Steel Ingot take Rustmoor coal rather than Rustmoor steel ingot, so three of the band's best actions do not hang on Act I steel, and kept the ash-pit undertone in Cinders. All 40 rows reviewed; approval waits on Jeremy. For the economy work order: Boiler Plate, Clinker Bar, Valve Key, Pressure Gauge, Steam Injector and Opal Pyrometer have no use or capped buyer yet (the gauge and pyrometer may suit Calibrating's materials). For the weapons work order: Clinker Bar reads as a melee weapon, and bronze should not outclass steel for its place in the ladder.
 **Blocks:** every later Cinderworks work order (Tailoring and armour, Soot Wraiths, drops, gear, Cooking, economy), and the pacing check for band 20 to 45, which today reports "no actions unlocked inside the band; not checked" for every skill.
 
 ## Why this one

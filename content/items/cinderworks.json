@@ -1,0 +1,105 @@
+{
+  "schema": "item/1",
+  "items": [
+    {
+      "id": "item.cinderworks.tin_ore",
+      "name": "Tin Ore",
+      "flavour": "Grey tin ore, heavy for its size, which the Foundry buys for its bronze."
+    },
+    {
+      "id": "item.cinderworks.nickel_ore",
+      "name": "Nickel Ore",
+      "flavour": "Greenish nickel ore, which the Foundry wants for its harder steels."
+    },
+    {
+      "id": "item.cinderworks.steam_coal",
+      "name": "Steam Coal",
+      "flavour": "Hard, clean-burning coal that keeps a boiler at pressure where common coal sulks."
+    },
+    {
+      "id": "item.cinderworks.manganese_ore",
+      "name": "Manganese Ore",
+      "flavour": "Black manganese ore that marks the hands and toughens steel past the point of reason."
+    },
+    {
+      "id": "item.cinderworks.fire_opal",
+      "name": "Fire Opal",
+      "flavour": "An orange opal that holds a glow long after the light goes."
+    },
+    {
+      "id": "item.cinderworks.cinders",
+      "name": "Cinders",
+      "flavour": "Half-burnt coke riddled out of the ash pits, good for one more fire."
+    },
+    {
+      "id": "item.cinderworks.slag_iron",
+      "name": "Slag Iron",
+      "flavour": "Beads of iron picked out of the slag heaps, where the furnace let them go."
+    },
+    {
+      "id": "item.cinderworks.slag_glass",
+      "name": "Slag Glass",
+      "flavour": "A clear lump of glassy slag off the heaps, bottle-green and nearly flat on one face."
+    },
+    {
+      "id": "item.cinderworks.burnt_tuyere",
+      "name": "Burnt Tuyere",
+      "flavour": "A bronze blast nozzle thrown out of a furnace wall, scorched but still sound in the cone."
+    },
+    {
+      "id": "item.cinderworks.spoiled_casting",
+      "name": "Spoiled Casting",
+      "flavour": "An iron casting thrown on the heap for one cold shut that nobody else would notice."
+    },
+    {
+      "id": "item.cinderworks.bronze_ingot",
+      "name": "Bronze Ingot",
+      "flavour": "Copper and tin together, a darker bar than brass and a good deal less obliging."
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_ingot",
+      "name": "Nickel Steel Ingot",
+      "flavour": "Steel with nickel in it, which shrugs off heat that would sag a common bar."
+    },
+    {
+      "id": "item.cinderworks.boiler_plate",
+      "name": "Boiler Plate",
+      "flavour": "A rolled sheet of nickel steel, drilled for rivets and rated for more than anyone tests it at."
+    },
+    {
+      "id": "item.cinderworks.manganese_steel_ingot",
+      "name": "Manganese Steel Ingot",
+      "flavour": "Steel so tough the file skates off it, which is the point and also the problem."
+    },
+    {
+      "id": "item.cinderworks.clinker_bar",
+      "name": "Clinker Bar",
+      "flavour": "A long manganese steel bar for breaking the clinker that chokes a firebox grate."
+    },
+    {
+      "id": "item.cinderworks.bronze_valve",
+      "name": "Bronze Valve",
+      "flavour": "A bronze stop valve that seats tight and opens with a quarter turn and a grunt."
+    },
+    {
+      "id": "item.cinderworks.valve_key",
+      "name": "Valve Key",
+      "flavour": "A nickel steel key that fits the Foundry's square-headed valves and nobody else's."
+    },
+    {
+      "id": "item.cinderworks.pressure_gauge",
+      "name": "Pressure Gauge",
+      "flavour": "A bronze dial behind a slag-glass face, which reads what it reads whatever anyone would prefer."
+    },
+    {
+      "id": "item.cinderworks.steam_injector",
+      "name": "Steam Injector",
+      "flavour": "A bronze valve and a reworked tuyere cone that force water into a boiler against its own steam."
+    },
+    {
+      "id": "item.cinderworks.opal_pyrometer",
+      "name": "Opal Pyrometer",
+      "flavour": "A fire opal set in a cast housing, which reads a furnace's heat by its colour."
+    }
+  ]
+}
