@@ -220,8 +220,10 @@ export function coach(step: Step, tinker: Tinker, context: GuideContext): Coachi
       return { ...toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt"), goal: rentGoal };
     case "pay_bill":
       if (debt && tinker.crowns < debt.crowns) {
+        // Short: rat scrap sells at the Counting-House window (GDD section 7, step 6), or more rats pay.
+        if (context.place === "exchange") return { hint: "Sell rat scrap at the Counting-House window below, or fight a few more rats.", at: "pay", goal: rentGoal };
         return fighting
-          ? { hint: "Your Tinker is fighting rats. Each win pays Crowns; wait for enough to pay Pip.", at: "bench", goal: rentGoal }
+          ? { hint: "Your Tinker is fighting rats. Wait for enough Crowns, or sell rat scrap at the Counting-House window in the Exchange.", at: "bench", goal: rentGoal }
           : { ...toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt"), goal: rentGoal };
       }
       return context.place === "exchange"

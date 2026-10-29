@@ -1,7 +1,7 @@
 # Work order 026: Brassbuckle's guide lines, in character only
 
 **Agents:** `scrivener`, then `inspector`
-**Status:** done (28 October 2026). All nine lines are Brassbuckle only, 25 words or fewer, with no control names; both tips and button labels kept. The inspector failed `brass_plate` once (it repeated the client's "Open Story" hint); its replacement, and its tidier `come_back` ("Nothing needs watching", not "Off you go", since the queue may still be empty), passed on re-review. The row is reviewed; approval waits on Jeremy. Taste calls left to him: `pips_bill`'s "in person", `boiler`'s "sleep tonight", and whether the client's short-of-Crowns hint at `pay_bill` should mention the Counting-House window.
+**Status:** done (28 October 2026). All nine lines are Brassbuckle only, 25 words or fewer, with no control names; both tips and button labels kept. The inspector failed `brass_plate` once (it repeated the client's "Open Story" hint); its replacement, and its tidier `come_back` ("Nothing needs watching", not "Off you go", since the queue may still be empty), passed on re-review. The row is reviewed; approval waits on Jeremy. Taste calls left to him: `pips_bill`'s "in person" and `boiler`'s "sleep tonight". Jeremy had the client's short-of-Crowns hint at `pay_bill` mention the Counting-House window, to match her line.
 **Act:** Prologue. **Location:** No. 9 Sprocket Row. **Clearance:** Layer 0.
 **Blocks:** nothing; the guide works as it stands. Polish for onboarding after the playtest of 28 October 2026.
 
