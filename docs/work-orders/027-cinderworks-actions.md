@@ -51,7 +51,7 @@ The two files; every new id grouped by type for the registrar; each skill's band
 For planning only; each opens as its own work order once the one before is settled.
 
 1. This action table.
-2. Tailoring and the first armour (GDD section 6: "armour arrives with Tailoring in the Cinderworks"). Open question for Jeremy before it opens: a new skill starts at level 1 while the Tinker is near 20 elsewhere, so how Tailoring's first armour reaches a level-20 fighter in good time.
+2. Tailoring and the first armour (GDD section 6: "armour arrives with Tailoring in the Cinderworks"). Settled by Jeremy on 28 October 2026: Tailoring's first armour needs only Tailoring 1 to make, so a level-20 fighter can wear armour on arrival. Still for that work order: the rest of Tailoring's ladder, and what each armour piece asks of Fortitude to wear.
 3. Soot Wraiths: monsters, combat stats and the band's weapons for all three styles.
 4. Drops, the Ledger Page pity entries, collector prices and the Crown budget for the band.
 5. Cooking for the band, from the combat model's Ration figures.
