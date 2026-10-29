@@ -16,6 +16,7 @@ import { duration, namer, titleCase, tradeLine } from "./format";
 import { Glow } from "./Glow";
 import { coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, revealed, type GuideAction, type GuideState, type Target } from "./Guide";
 import { Guild } from "./Guild";
+import { skillOpen } from "@long-boil/rules";
 import { skillOf } from "./jobs";
 import { CanisterDrop, Floaters, ScaldVignette, useFloaters } from "./Juice";
 import { Ledger, STALL_REASONS } from "./Ledger";
@@ -330,7 +331,9 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const step = currentStep(tinker, guide);
   // While the guide runs, the screen shows only what it has reached; the place the player is on always shows.
   const opened = revealed(step, guide);
-  const shown = (feature: string) => feature === place || opened(feature as Place);
+  // A skill the story has not opened yet (Tailoring, with the Foundry Pass) stays hidden even after the guide.
+  const shown = (feature: string) =>
+    (!feature.startsWith("skill:") || skillOpen(feature.slice("skill:".length), tinker.story.qualities)) && (feature === place || opened(feature as Place));
 
   const head = tinker.queue[0];
   const headSeconds = head

@@ -327,3 +327,20 @@ describe("starting a Tinker over", () => {
     expect(body.error).toMatch(/leave your guild/);
   });
 });
+
+describe("Tailoring opens with the Foundry Pass", () => {
+  const goggles = { actionId: "action.cinderworks.tailor_gauze_goggles", remaining: 1 };
+
+  it("refuses Tailoring before Act I hands over the pass", async () => {
+    const id = (await call("POST", "/tinkers", { login: "tailor@example.com", name: "Moth" })).body.tinker.id;
+    const { status, body } = await call("PUT", `/tinkers/${id}/queue`, { queue: [goggles] });
+    expect(status).toBe(400);
+    expect(body.error).toMatch(/Foundry Pass/);
+  });
+
+  it("takes it once act1.progress reaches 80, as every road to the pass sets it", async () => {
+    const id = (await call("POST", "/tinkers", { login: "tailor2@example.com", name: "Ash" })).body.tinker.id;
+    await db.query("INSERT INTO qualities (tinker_id, name, value) VALUES ($1, 'act1.progress', 80)", [id]);
+    expect((await call("PUT", `/tinkers/${id}/queue`, { queue: [goggles] })).status).toBe(200);
+  });
+});

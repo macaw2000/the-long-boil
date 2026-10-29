@@ -583,7 +583,25 @@ export async function setQueue(db: Db, content: GameContent, tinkerId: number, q
       throw new BadRequest(`unknown action or monster ${entry.actionId}`);
     }
   }
-  return atCheckIn(db, content, tinkerId, now, (state, loaded) => rules.setQueue(state, queue, loaded.queueSlots), { type: "queue_set", at: now, payload: { queue } });
+  const qualities: Record<string, number> = {};
+  for (const row of (await db.query("SELECT name, value FROM qualities WHERE tinker_id = $1", [tinkerId])).rows) qualities[row.name] = Number(row.value);
+  return atCheckIn(
+    db,
+    content,
+    tinkerId,
+    now,
+    (state, loaded) => {
+      // Work already queued keeps running; only new work must be in an open skill.
+      for (const entry of queue) {
+        const skill = content.rules.actions.get(entry.actionId)?.skill;
+        if (skill && !rules.skillOpen(skill, qualities) && !state.queue.some((queued) => queued.actionId === entry.actionId)) {
+          throw new Error(rules.SKILL_GATES[skill]!.reason);
+        }
+      }
+      return rules.setQueue(state, queue, loaded.queueSlots);
+    },
+    { type: "queue_set", at: now, payload: { queue } },
+  );
 }
 
 /** Equips a held weapon at a check-in: resolves first, so the fight under way finishes with the old one. */

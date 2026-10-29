@@ -358,7 +358,7 @@ export function Loadout({
                 >
                   <ItemIcon item={armour.item} size={36} />
                   <Text style={[ui.number, { fontSize: 10, color: usable ? colors.muted : colors.scald }]}>
-                    {on ? "worn" : usable ? `+${armour.armour}` : `🔒 ${armour.level_required}`}
+                    {on ? "worn" : usable ? `+${armour.armour}` : `🔒 Fort ${armour.level_required}`}
                   </Text>
                 </Pressable>
               );
