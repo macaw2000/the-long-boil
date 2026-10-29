@@ -279,9 +279,11 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       .catch((reason: Error) => setError(reason.message));
   const setQueue = (queue: QueueEntry[]) => run(api.setQueue(tinkerId, queue));
 
-  // A new place: no tile is picked there yet, and a place the guide just opened has now been seen.
+  // A new place: no tile is picked there yet, it opens at its top, and a place the guide just opened has now been seen.
+  const pageScroll = useRef<ScrollView>(null);
   useEffect(() => {
     setChosen(null);
+    pageScroll.current?.scrollTo({ y: 0, animated: false });
     setGuideState((state) => {
       if (!state.seen || state.seen.includes(place)) return state;
       const next = { ...state, seen: [...state.seen, place] };
@@ -289,6 +291,16 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       return next;
     });
   }, [place, tinkerId]);
+
+  // On a phone the guide card heads the page, so a new step, or a new thing to press, scrolls back up to it.
+  // A glow further down scrolls itself into view just after.
+  const guideCue = useRef<string | null>(null);
+  const shownCue = useRef<string | null>(null);
+  useEffect(() => {
+    if (wide || guideCue.current === shownCue.current) return;
+    shownCue.current = guideCue.current;
+    if (guideCue.current) pageScroll.current?.scrollTo({ y: 0, animated: true });
+  });
 
   // Once the guide is over, finished or skipped, the whole screen stays open, even if it is replayed.
   // A Tinker past the Prologue from before the guide was kept on the server skips it.
@@ -346,6 +358,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       })
     : null;
   const at = coaching?.at ?? null;
+  guideCue.current = step ? `${step.id}:${at}` : null;
   const guidedPlace: Place | null = at?.startsWith("place:") ? (at.slice("place:".length) as Place) : null;
   const lit: Set<string> = coaching ? new Set(at === "bench" || at === "boiler" ? [at] : []) : nudges(tinker, content, now);
   const placeOf = (target: Target): Place | null => (target === "story" ? "story" : target === "exchange" ? "exchange" : null);
@@ -394,6 +407,13 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       <Floaters floaters={floaters} onDone={removeFloater} icon={(item) => <ItemIcon item={item} size={22} />} />
     </View>
   );
+
+  const guidance =
+    step && coaching ? (
+      <GuideCard step={step} content={content} coaching={coaching} onAction={guideAction} onSkip={() => setGuide({ ...guide, skipped: true })} />
+    ) : (
+      <GoalBar goal={goal} onGo={setPlace} onReplay={() => setGuide({ acknowledged: [], skipped: false, opened: true, seen: guide.seen })} />
+    );
 
   const loadout = shown("loadout") ? (
     <Glow active={lit.has("loadout")}>
@@ -552,15 +572,11 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           </View>
         )}
         <View style={{ flex: 1 }}>
-        {/* The guide, or after it the next goal, is pinned above the page so it never scrolls away. */}
-        <View style={{ paddingHorizontal: 16, paddingTop: wide ? 16 : 8, maxWidth: 900, width: "100%", alignSelf: "center" }}>
-          {step && coaching ? (
-            <GuideCard step={step} content={content} coaching={coaching} onAction={guideAction} onSkip={() => setGuide({ ...guide, skipped: true })} />
-          ) : (
-            <GoalBar goal={goal} onGo={setPlace} onReplay={() => setGuide({ acknowledged: [], skipped: false, opened: true, seen: guide.seen })} />
-          )}
-        </View>
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, gap: 12, maxWidth: 900, width: "100%", alignSelf: "center" }}>
+        {/* On desktop the guide, or after it the next goal, is pinned above the page so it never scrolls away. */}
+        {wide && <View style={{ paddingHorizontal: 16, paddingTop: 16, maxWidth: 900, width: "100%", alignSelf: "center" }}>{guidance}</View>}
+        <ScrollView ref={pageScroll} style={{ flex: 1 }} contentContainerStyle={{ padding: 16, gap: 12, maxWidth: 900, width: "100%", alignSelf: "center" }}>
+          {/* On a phone it heads the page instead, which scrolls under it, so the card never leaves the page a sliver. */}
+          {!wide && guidance}
           {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
           {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} onClose={() => setAway(null)} />}
           {page}
