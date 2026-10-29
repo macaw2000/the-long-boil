@@ -157,6 +157,14 @@ Animation needs the closed and open envelopes to line up exactly, so the open on
 
 Save them as JPEGs in `~/Downloads` (any names; say which is which). I'll check that 1 and 2 line up, key out the magenta, and build the opening into the sign-in.
 
+## 11. Professor Brassbuckle, for the guide card, 28 October 2026
+
+One bust portrait for the first-session guide's card, which had a plain "B" disc. Jeremy generated it from: "Bust portrait of Professor Brassbuckle, an elderly steampunk engineer and university professor: grey hair pinned up, round brass spectacles, a soot-marked leather apron over a tweed waistcoat, a pencil behind one ear, a kind but no-nonsense expression. Same painted pixel-art style as the attached Tinker portrait. Square 512x512, head and shoulders, facing slightly left, on a flat magenta (#FF00FF) background." (attached: `tinker_brass_spanner_portrait_0.png`). Saved as `art/concepts/sheets/brassbuckle.jpeg`; `import_art.py`'s `brassbuckle()` keys it and writes `brassbuckle_portrait.png` at 128 by 128.
+
+## 12. The Brass Slingshot's icon, 28 October 2026
+
+Sheet B's "Brass Catapult (slingshot)" cell came back as a wheeled siege catapult, while the Tinker holds a slingshot; the item is now named Brass Slingshot. One icon, redrawn alone: "A single 64 by 64 pixel-art item icon in the same style, outline and palette as the attached icon: a hand-held brass slingshot (a Y-shaped brass fork with a short leather-wrapped handle and a strip of dark rubber gasket stretched between the prongs, a small hex nut in the pouch), drawn diagonally, centred, filling most of the square, on a flat magenta (#FF00FF) background. No wheels, no frame, no text." (attached: `icon_brass_spanner.png`). Save as `art/concepts/sheets/icon-brass-slingshot.jpeg`; `import_art.py` uses it in place of the sheet's cell.
+
 ## Order of work
 
 Backgrounds and skill icons change the look most for the least work, so start there. Then Sheets A and B (every tile and the stores grid use them), the Rust Rats and Scrapjaw, the Tinker, and the vignettes.

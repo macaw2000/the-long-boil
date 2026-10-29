@@ -265,6 +265,7 @@ SKILLS = ["prospecting", "smithing", "tinkering", "cooking", "scavenging", "figh
 SHEET_A = ["copper", "iron_ore", "coal", "garnet", "brass_ingot", "iron_ingot", "steel_ingot", "rat_scrap",
            "barley_meal", "salt_pork", "rustmoor_ration", "bent_nails", "umbrella_ribs", "odd_spoons", "clock_movement",
            "cracked_gauge_glass"]
+REDRAWN_ICONS = {"brass_catapult": "icon-brass-slingshot.jpeg"}
 SHEET_B = ["steel_blade", "brass_spanner", "iron_crowbar", "riveting_hammer", "scrapjaws_cleaver", "brass_catapult", "iron_rifle",
            "steel_carbine", "garnet_rifle", "copper_coil", "spark_rod", "brass_sparker", "garnet_rod", "brass_key", "iron_lock",
            "garnet_sight"]
@@ -313,6 +314,13 @@ def main() -> None:
         for item, cell in zip(names, cells(sheet(file), 4, 4)):
             save(fit_icon(keyed(cell)), f"icon_{item}")
             written += 1
+
+    # Icons redrawn alone replace their sheet's cell: Sheet B's Brass Catapult came out a siege engine,
+    # not the slingshot the Tinker holds (docs/art-requests.md, 12).
+    for item, file in REDRAWN_ICONS.items():
+        if (SHEETS / file).exists():
+            redrawn = keyed(sheet(file))
+            save(fit_icon(redrawn.crop(content_box(redrawn))), f"icon_{item}")
 
     sheet_c = [fit_icon(keyed(cell)) for cell in cells(sheet("sheet-c-papers-curios-icons.jpeg"), 4, 4)]
     for item, icon in zip(SHEET_C_ITEMS, sheet_c):
@@ -395,6 +403,7 @@ def main() -> None:
     written += app_icons()
     written += splash_layers()
     written += letter()
+    written += brassbuckle()
     print(f"wrote {written} files to {SPRITES.relative_to(ROOT)} and {PAINTINGS.relative_to(ROOT)}")
 
 
@@ -577,6 +586,18 @@ def letter() -> int:
     for name, image in (("seal", whole), ("seal-left", left), ("seal-right", right)):
         centred(image).save(LETTER / f"{name}.webp", quality=88, method=6)
     return 6
+
+
+def brassbuckle() -> int:
+    """Professor Brassbuckle's head and shoulders, for the guide card: keyed, cropped to her, and made square."""
+    portrait = keyed(sheet("brassbuckle.jpeg"))
+    portrait = portrait.crop(content_box(portrait))
+    side = max(portrait.size)
+    canvas = Image.new("RGBA", (side, side), (0, 0, 0, 0))
+    # Centred across, standing on the bottom edge, as a bust does.
+    canvas.alpha_composite(portrait, ((side - portrait.width) // 2, side - portrait.height))
+    save(canvas.resize((128, 128), Image.LANCZOS), "brassbuckle_portrait")
+    return 1
 
 
 if __name__ == "__main__":

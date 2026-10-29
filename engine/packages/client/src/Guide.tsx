@@ -12,7 +12,7 @@
 // piece at a time as the steps reach each place; skipping or finishing the
 // guide opens the rest.
 
-import { Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, View } from "react-native";
 import type { Content, GuideProgress, Tinker } from "./api";
 import { FIGHT, SKILL_ORDER } from "./jobs";
 import type { Place } from "./SideNav";
@@ -36,6 +36,8 @@ export type Pointer =
 
 /** The parts of the screen the nudges can light after the guide. */
 export type Target = "boiler" | "queue" | "story" | "loadout" | "exchange";
+
+const BRASSBUCKLE = require("../assets/art/brassbuckle_portrait.png");
 
 const SPANNER = "item.rustmoor.brass_spanner";
 const SPANNER_ACTION = "action.rustmoor.tinker_brass_spanner";
@@ -297,9 +299,11 @@ export function GuideCard({
   const position = STEPS.indexOf(step);
   return (
     <View style={[ui.panel, { borderColor: GOLD, borderWidth: 2, flexDirection: "row", gap: 12, alignItems: "flex-start", padding: 12 }]}>
-      <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.brassDim, alignItems: "center", justifyContent: "center" }}>
-        <Text style={[ui.heading, { color: colors.soot }]}>B</Text>
-      </View>
+      <Image
+        source={BRASSBUCKLE}
+        style={{ width: 56, height: 56, borderRadius: 28, borderWidth: 2, borderColor: colors.brass, backgroundColor: colors.soot }}
+        accessibilityLabel="Professor Brassbuckle"
+      />
       <View style={{ flex: 1, gap: 6 }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
           <Text style={[ui.muted, { color: colors.brass, fontSize: 12 }]}>{words?.speaker ?? "Professor Brassbuckle"}</Text>
