@@ -137,7 +137,7 @@ export function Shop({
               {shop.crates.toLocaleString()} Cog {shop.crates === 1 ? "Crate" : "Crates"} · {shop.crate.cogs} Cogs each
             </Text>
             <Text style={[ui.muted, { fontSize: 12 }]}>
-              Crates trade on the Exchange for Crowns ({Math.round(shop.crate.exchangeTax * 100)}% tax), so anyone can earn Cogs by playing.
+              Cogs are bought with money only, and a crate is yours alone: it opens, but never sells for Crowns.
             </Text>
           </View>
           <Button label="Open one" disabled={busy || shop.crates < 1} onPress={() => take(api.openCrates(tinkerId, 1))} />

@@ -380,7 +380,11 @@ Logging off leaves 12 hours of steam, shown as a pressure gauge; at zero your Ti
 
 ### Combat
 
-Combat is automatic: pick a zone, a loadout, and triggers ("eat a Ration below 40% HP"), then watch or walk away. Monsters are weak to Melee, Marksmanship, or Aetherics, so loadouts matter. A knockout respawns in 60 seconds and resumes the queue, so offline hours are never wasted. Bosses are fought on purpose: a boss attempt is a separate queue item, and a lost fight spends the attempt and pays no XP. Attempts can be queued again, so a boss pays XP no faster than the zone's best monster; players come back for its drop, not its XP. A boss's first-kill reward replaces its ordinary drop roll on that kill. A loadout is one weapon and one armour piece, and its focus is the weapon's style: Melee, Marksmanship or Aetherics. A Tinker who outlevels a monster still takes its usual time per kill, so fighting easy monsters is safe but no faster; the reward for levelling is reaching harder ones. A boss fight allows at most 3 Rations, and a boss is all but unbeatable without them, so Cooking matters from Act I. Every attack style has a weapon at levels 1, 5, 10 and 15 in Rustmoor, so a Tinker can start in any style, though each boss rewards the style it is weak to. Rustmoor has no armour; armour arrives with Tailoring in the Cinderworks.
+Combat is automatic: pick a zone, a loadout, and triggers ("eat a Ration below 40% HP"), then watch or walk away. Monsters are weak to Melee, Marksmanship, or Aetherics, so loadouts matter. A knockout respawns in 60 seconds and resumes the queue, so offline hours are never wasted. Bosses are fought on purpose: a boss attempt is a separate queue item, and a lost fight spends the attempt and pays no XP. Attempts can be queued again, so a boss pays XP no faster than the zone's best monster; players come back for its drop, not its XP. A boss's first-kill reward replaces its ordinary drop roll on that kill. A loadout fills seven gear slots, Weapon, Off-hand, Head, Body, Hands, Feet and a Charm, and its focus is the weapon's style: Melee, Marksmanship or Aetherics. A Tinker who outlevels a monster still takes its usual time per kill, so fighting easy monsters is safe but no faster; the reward for levelling is reaching harder ones. A boss fight allows at most 3 Rations, and a boss is all but unbeatable without them, so Cooking matters from Act I. Every attack style has a weapon at levels 1, 5, 10 and 15 in Rustmoor, so a Tinker can start in any style, though each boss rewards the style it is weak to. Armour is worn by combat level, the Tinker's highest attack style, so it keeps pace with weapons; every zone has armour for each slot, and Tailoring's coats and goggles join them in the Cinderworks.
+
+### Gear and tools
+
+Gear is how a Tinker feels stronger between sessions (amended 30 October 2026, after playtests found the first days too bare). Besides the seven combat slots, every gathering and production skill has a tool slot: a pick for Prospecting, tongs for Smithing, a needle case for Tailoring, and so on. A tool makes its skill's work faster, so each upgrade shows in the next idle haul. Each zone's ladder is dense: in Rustmoor a new piece or tool every two or three levels across the slots, made from Rustmoor materials, so the first session lands several upgrades and the first week has something to make and put on every few hours. Weapons are wielded by their style's level, armour by combat level, and tools by their own skill's level. Calibrating raises any of them from +0 to +20, which is what turns a favourite piece into an investment.
 
 | Zone | Levels | Monsters | Boss and drop | Act | Ledger Pages |
 | --- | --- | --- | --- | --- | --- |
@@ -479,7 +483,7 @@ She is waiting for Act IV the way Fallen London players wait for a new season: i
 
 ## 8. Monetization and Fairness
 
-The game is free, Gilded Cogs pay for time and looks, and the story is never for sale. Cogs come in Cog Crates of 10, bought through Stripe. A crate can be opened or sold on the Exchange (15% tax), so free players can buy Cogs with Crowns. Crates lock for 72 hours after purchase to blunt card fraud.
+The game is free, Gilded Cogs pay for time and looks, and the story is never for sale. Cogs come in Cog Crates of 10, bought through Stripe. A crate is bound to the account that bought it and is only opened, never sold, so Cogs and Crowns never trade (amended 30 October 2026): Crowns are the players' own currency, for the Exchange and everything earned in play, and Cogs are only bought with money. Crates lock for 72 hours after purchase to blunt card fraud.
 
 | Cogs buy | Starting price | Why it is fair |
 | --- | --- | --- |
@@ -491,7 +495,7 @@ The game is free, Gilded Cogs pay for time and looks, and the story is never for
 
 A crate of 10 Cogs starts at $4.99. Every price here is a starting point the Assayer models before launch.
 
-**Lines that never move.** Cogs never buy Nerve, storylets, Needle resets, Ledger Pages, Favour, Reckoning pledges, or gear with stats. A player who never pays can own everything a paying player owns by trading Crowns for crates.
+**Lines that never move.** Cogs never buy Nerve, storylets, Needle resets, Ledger Pages, Favour, Reckoning pledges, or gear with stats. A player who never pays can own every piece of gear, every page and every ending a paying player can; what money buys is time and looks, and nothing a paying player buys can be sold to anyone else.
 
 **Payments path.** Stripe Checkout runs in test mode for the capstone. Its signed webhook reaches the game server, which grants crates exactly once per Checkout Session, held by a unique key in Postgres. Live payments, and the app-store builds whose billing rules differ outside the US, come after the capstone.
 

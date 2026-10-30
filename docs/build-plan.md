@@ -86,6 +86,13 @@ Milestones 1 to 6 are built. The GDD makes Kettleport a shared city (sections 6 
     - Cosmetics wait for art. The shop's own icons (docs/art-requests.md, section 7) are in.
     - Step 2, Stripe Checkout in test mode, is built (27 October 2026): the shop's Buy buttons open a Stripe-hosted Checkout Session for 1 or 5 crates at the shop's price, and Stripe's signed webhook (`POST /stripe/webhook`, open without sign-in) queues a locked delivery whose reference is the Checkout Session id. It acts on `checkout.session.completed` and `checkout.session.async_payment_succeeded` once the session is paid. The webhook runs on the game server rather than the GDD's Lambda and DynamoDB, with Postgres's unique reference for the once-only grant. The server reads `STRIPE_API_KEY` (a restricted key that may only write Checkout Sessions) and `STRIPE_WEBHOOK_SECRET`, from the `long-boil/dev/stripe` secret when deployed with `-c stripe=1`; it refuses a live key unless `STRIPE_ALLOW_LIVE=1`. infra/README.md has the setup.
 
+13. **Gear and tools** (Jeremy, 30 October 2026, after playtests found the first days too bare: "players should feel more progress and more attachment to their character as they gear it out"). GDD section 6, Gear and tools, and section 8 are amended to match.
+    - **Slots:** Weapon, Off-hand, Head, Body, Hands, Feet and a Charm, plus one tool slot per gathering and production skill. A tool makes its skill's work faster.
+    - **Wear rules:** weapons by their style's level, armour by combat level (the highest attack style, no longer Fortitude), tools by their own skill's level.
+    - **A dense ladder:** in Rustmoor a new piece or tool every two or three levels across the slots, so the first session lands several upgrades and the first week has something to make every few hours.
+    - **Cog Crates are bound** and never sell for Crowns: Crowns are earned in play, Cogs are bought with money (done 30 October 2026).
+    - **Order of work:** work order 029, the gear model (slots, stats, tool speed, the combat-level gate, and how pacing counts tools); the engine and Loadout for the new slots; work order 030, Rustmoor's gear and tool ladder, with the monsters and Scrapjaw retuned; Cinderworks armour (work order 028) moved into slots; the assayer measuring upgrades per session before any change to XP or action tiers; then the art.
+
 ## Prerequisites on this machine
 
 Not installed yet: Node.js 22 LTS and Docker. With Homebrew:

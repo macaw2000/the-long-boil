@@ -141,14 +141,15 @@ describe("the Cog Shop", () => {
 });
 
 describe("Cog Crates on the Exchange", () => {
-  it("tax the seller 15%", async () => {
+  // GDD section 8, amended 30 October 2026: Cogs and Crowns never trade.
+  it("cannot be sold or bid for", async () => {
     const seller = await tinker("crate-seller@example.com");
     const buyer = await tinker("crate-buyer@example.com");
     await call("POST", `/dev/tinkers/${seller}/crates`, { qty: 1 });
     await db.query("UPDATE tinkers SET crowns = 10000 WHERE id = $1", [buyer]);
-    expect((await call("POST", `/tinkers/${seller}/orders`, { item: CRATE, side: "sell", price: 1000, qty: 1 })).status).toBe(201);
-    expect((await call("POST", `/tinkers/${buyer}/orders`, { item: CRATE, side: "buy", price: 1000, qty: 1 })).status).toBe(201);
-    const paid = await call("GET", `/tinkers/${seller}`);
-    expect(paid.body.trades).toEqual([expect.objectContaining({ kind: "sold", item: CRATE, qty: 1, price: 1000, tax: 150 })]);
+    const sell = await call("POST", `/tinkers/${seller}/orders`, { item: CRATE, side: "sell", price: 1000, qty: 1 });
+    expect(sell.status).toBe(400);
+    expect(sell.body.error).toMatch(/bound/);
+    expect((await call("POST", `/tinkers/${buyer}/orders`, { item: CRATE, side: "buy", price: 1000, qty: 1 })).status).toBe(400);
   });
 });

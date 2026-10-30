@@ -4,12 +4,12 @@
   "zone": "global",
   "items": {
     "item.global.cog_crate": {
-      "bound": false,
+      "bound": true,
       "collector_price": null,
       "collector_weekly_cap": null
     }
   },
   "anchors": {
-    "cog_crate": "GDD section 8: a crate can be opened or sold on the Exchange, so free players can buy Cogs with Crowns. No collector buys one."
+    "cog_crate": "GDD section 8 (amended 30 October 2026): a crate is bound to the account that bought it and is only opened, never sold, so Cogs and Crowns never trade. No collector buys one."
   }
 }
