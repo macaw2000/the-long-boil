@@ -1,0 +1,38 @@
+{
+ "schema": "gear/2",
+ "id": "gear.global.fixture_tools",
+ "gear": [
+  {
+   "item": "item.global.fixture_tongs_1",
+   "slot": "tool",
+   "skill": "smithing",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "speed_percent": 2
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ ]
+}

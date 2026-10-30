@@ -1,7 +1,7 @@
 # Work order 029: the gear model
 
 **Agent:** `draftsman`
-**Status:** ready to run
+**Status:** done (30 October 2026). `combat.json` revision 10 and the new `tools.json` hold the model; the validators (gear/2, `gear.py`, the combat and pacing checks) and the engine follow it. Settled by Jeremy: tools at 1% a level, with the band rates to be re-solved so 14 days assume tools; a floor on every piece (3 + 3L/16 armour; the Charm's 1 + L/20 accuracy is the orchestrator's extension); over-gearing may cut a kill to 75% of its target, never a boss's, against the fastest of the three styles' +0 loadouts from any zone at the Tinker's own levels; Cooking makes its own ladle. A first full Rustmoor set cuts Rations a kill 16% at level 1 and 25% at level 15. The inspector failed the first draft (an off-style reference let levels alone reach the cap; the boss's slots ignored work order 025; settlements were credited wrongly) and passed the fix. All four rows reviewed; approval waits on Jeremy. For work order 030: measure what work order 025's Act I walk holds in the six slots before re-solving Scrapjaw; re-solve the band rates once tools exist (tools.json `pacing.resolve_must_hit`); the rats need more hit points and harder hits for the floors. For the economy work orders: at the cap a calibrated player earns 1.333x per hour, and tools raise items made per hour by about 10% in Rustmoor and 31% in the Cinderworks.
 **Blocks:** the engine work for the new slots, work order 030 (Rustmoor's gear and tool ladder), and moving work order 028's Cinderworks armour into slots.
 
 ## Why this one

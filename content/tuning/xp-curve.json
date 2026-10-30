@@ -1,8 +1,8 @@
 {
  "schema": "tuning.xp_curve/1",
  "id": "tuning.global.xp_curve",
- "revision": 2,
- "source": "docs/work-orders/001-xp-curve.md (revision 2); docs/gdd.md sections 1, 6, 7; docs/targets.md Pacing",
+ "revision": 3,
+ "source": "docs/work-orders/001-xp-curve.md (revision 2); docs/work-orders/029-gear-model.md (band_xp_rate_targets note, revision 3); docs/gdd.md sections 1, 6, 7; docs/targets.md Pacing",
  "applies_to": "all sixteen skills (GDD section 6: 'All sixteen skills share one XP curve; no skill is cheaper to level than another.')",
  "assumptions": {
   "_note": "Assumptions, not canon. The assayer reports these as assumed.",
@@ -95,7 +95,7 @@
   ]
  },
  "band_xp_rate_targets": {
-  "_note": "Targets for the later action-table work order, not action yields. Multiple of the reference rate (666.67 XP/h). Solved from the curve, so the band gaps are rounding only; the real test is whether the action table can deliver them.",
+  "_note": "Targets for the later action-table work order, not action yields. Multiple of the reference rate (666.67 XP/h). Solved from the curve, so the band gaps are rounding only; the real test is whether the action table can deliver them. Settled intent, Jeremy, 30 October 2026 (work order 029; content/tuning/tools.json pacing.settled_intent): these are the rates for a reference player who holds the best reachable tool at every level (a +0 tool is 1% faster per level required). The tool-free action rates are these divided by the band's tool factor: about 0.91x, 2.58x and 5.1x (0.9081, 2.5794 and an estimate), all on the tiers ladder, a tool at every action tier, with 45 to 70 estimated at a tool every 5 levels from 45. The values here do not change; the actions are re-solved in later work orders, once the pacing check counts tools (tools.json pacing.resolve_must_hit).",
   "band_1_to_20": 1.0,
   "band_20_to_45": 3.38,
   "band_45_to_70": 7.98

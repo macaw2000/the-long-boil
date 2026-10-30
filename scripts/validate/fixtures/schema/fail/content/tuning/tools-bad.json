@@ -1,0 +1,76 @@
+{
+ "schema": "tuning.tools/1",
+ "id": "tuning.global.tools",
+ "revision": 1,
+ "source": "Validator fixture. Not game content.",
+ "applies_to": "Validator fixture.",
+ "slots": {
+  "skills": [
+   "prospecting",
+   "scavenging",
+   "lumbering",
+   "smithing",
+   "tinkering",
+   "tailoring",
+   "cooking",
+   "tea_blending"
+  ]
+ },
+ "wear": {
+  "_note": "Fixture; the rules are the ones tuning.tools/1 fixes."
+ },
+ "makers": {
+  "by_skill": {
+   "prospecting": {
+    "tool": "fixture tool",
+    "made_by": "smithing"
+   },
+   "scavenging": {
+    "tool": "fixture tool",
+    "made_by": "smithing"
+   },
+   "lumbering": {
+    "tool": "fixture tool",
+    "made_by": "smithing"
+   },
+   "smithing": {
+    "tool": "fixture tool",
+    "made_by": "smithing"
+   },
+   "tinkering": {
+    "tool": "fixture tool",
+    "made_by": "smithing"
+   },
+   "tailoring": {
+    "tool": "fixture tool",
+    "made_by": "smithing"
+   },
+   "cooking": {
+    "tool": "fixture tool",
+    "made_by": "prospecting"
+   },
+   "tea_blending": {
+    "tool": "fixture tool",
+    "made_by": "smithing"
+   }
+  }
+ },
+ "constants": {
+  "TOOL_SPEED_PERCENT_PER_LEVEL": {
+   "value": 2,
+   "basis": "proposal"
+  }
+ },
+ "speed": {
+  "_note": "Fixture; the rules are the ones tuning.tools/1 fixes."
+ },
+ "composition": {
+  "_note": "Fixture; the rules are the ones tuning.tools/1 fixes."
+ },
+ "go_start": {
+  "_note": "Fixture; the rules are the ones tuning.tools/1 fixes."
+ },
+ "pacing": {
+  "_note": "Fixture; the rules are the ones tuning.tools/1 fixes."
+ }
+}

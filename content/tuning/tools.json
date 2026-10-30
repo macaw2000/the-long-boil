@@ -1,0 +1,194 @@
+{
+ "schema": "tuning.tools/1",
+ "id": "tuning.global.tools",
+ "revision": 1,
+ "source": "docs/work-orders/029-gear-model.md ('Settled before you start', scope 3 and 4, and Jeremy's answers to the first draft, 30 October 2026); docs/gdd.md section 6 (Skills table, Gear and tools, amended 30 October 2026) and section 8 (the Boiler Boost); docs/build-plan.md milestone 13; content/tuning/cog-shop.json (boiler_boost); content/tuning/xp-curve.json; content/actions/rustmoor.json and cinderworks.json (the band rates the pacing check reads); engine/packages/rules/src/boiler.ts and shop.ts (how the Boost is fixed at a go's start)",
+ "applies_to": "every go of the eight gathering and production skills; no combat skill and not Calibrating",
+ "basis_key": {
+  "settled": "Jeremy has decided it (work order 029: 'Settled before you start', or his answers to the first draft, 30 October 2026); where the GDD records it, the line is quoted",
+  "derived": "follows from a quoted GDD line or an existing approved file; the derivation names it",
+  "proposal": "a choice made here for Jeremy to accept or change; not canon",
+  "open": "the model needs it but neither the GDD nor a derivation gives it"
+ },
+ "slots": {
+  "skills": [
+   "prospecting",
+   "scavenging",
+   "lumbering",
+   "smithing",
+   "tinkering",
+   "tailoring",
+   "cooking",
+   "tea_blending"
+  ],
+  "rule": "One tool slot per skill, one tool in each. A tool works only in its own skill's slot. A slot may be empty (speed 0).",
+  "basis": "settled",
+  "settled": "Work order 029: 'One tool slot per gathering and production skill (Prospecting, Scavenging, Lumbering, Smithing, Tinkering, Tailoring, Cooking, Tea Blending). A tool makes its skill's work faster.'",
+  "gdd": "Section 6, Gear and tools: 'every gathering and production skill has a tool slot: a pick for Prospecting, tongs for Smithing, a needle case for Tailoring, and so on. A tool makes its skill's work faster, so each upgrade shows in the next idle haul.'",
+  "not_combat": "derived: the seven combat skills fight through the seven combat slots (combat.json gear.loadout), and Calibrating is 'Special', not gathering or production (section 6 Skills table), so neither has a tool slot."
+ },
+ "wear": {
+  "rule": "A tool is worn when its skill's level >= the tool's level_required.",
+  "basis": "settled",
+  "settled": "Work order 029: 'a tool by its own skill's level'.",
+  "gdd": "Section 6, Gear and tools: 'tools by their own skill's level'."
+ },
+ "constants": {
+  "TOOL_SPEED_PERCENT_PER_LEVEL": {
+   "value": 1,
+   "basis": "settled",
+   "settled": "Jeremy, 30 October 2026 (work order 029, after the first draft): 'Tool speed is 1% per level (speed_percent(0) = level_required).'",
+   "note": "The first draft derived 1 from Rustmoor's own tier climb (speed.at_plus_0)."
+  }
+ },
+ "speed": {
+  "at_plus_0": {
+   "rule": "speed_percent(0) = TOOL_SPEED_PERCENT_PER_LEVEL * level_required",
+   "basis": "settled",
+   "derivation": "Settled at 1 (constants). The first draft's derivation: section 6, 'Within a zone, later actions pay a little more XP per hour than early ones'; the Rustmoor tiers pay 0.90x, 0.95x, 1.00x and 1.05x the reference at levels 1, 5, 10 and 15, which is +0.05x every 5 levels on a band averaging 1.0x, or 1 percentage point of speed per level, so a tool upgrade is worth what moving up an action tier is worth. At level_required 20 the tool is +20%, the size of the Boiler Boost (cog-shop.json boiler_boost.speed_percent)."
+  },
+  "fields": "A tool's gear entry carries its skill, level_required (that skill's level) and stats_by_calibration: 21 rows, +0 to +20, each {calibration, speed_percent}. Rows +1 to +20 stay null until CALIBRATION_STEP is set (combat.json constants.CALIBRATION_STEP).",
+  "what_it_changes": "A go's time is divided by 1 + speed_percent / 100. XP, inputs and outputs per go are unchanged, so XP, inputs used and items made per hour all rise by the same factor.",
+  "examples": "speed_percent(0) at level_required 1, 5, 10, 15, 20, 45, 70: 1, 5, 10, 15, 20, 45, 70. A 54 s go with a level-5 tool takes 51.43 s; a 12-hour haul of 800 copper becomes 840.",
+  "source": "settled (Jeremy, 30 October 2026 (work order 029, after the first draft)): tools are spread across the crafts (makers). GDD section 6 now records it ('The crafts share the making ...'; Tinkering produces 'Instruments, rifles, keys')."
+ },
+ "composition": {
+  "rule": "Multiplied. go_ms = round(base_ms * 100 * 100 / ((100 + tool_speed_percent) * (100 + boost_percent))), boost_percent being 0 when no Boost burns. One rounding, to the whole millisecond.",
+  "basis": "proposal (standing default, not objected to)",
+  "why": "Section 8 sells the Boost as '+20% action speed', and the engine applies it as a divisor, time / (1 + percent / 100) (engine/packages/rules/src/shop.ts boostedMs). Multiplying keeps the Boost exactly 20% faster than the same Tinker unboosted whatever tool they hold, so it saves every buyer the same share of time and never grows or shrinks with gear. Adding (1 + tool + boost) would make the Boost worth less to a better-equipped Tinker, 20/145 = 13.8% at a level-45 tool.",
+  "rounding": "One rounding of the product, not one per factor, so the order in which tool and Boost are applied cannot change a go's length. The engine must compute it in integers, never in floating point: with D = (100 + tool_speed_percent) * (100 + boost_percent), both whole numbers, go_ms = (base_ms * 20000 + D) div (2 * D), integer division, which is round(base_ms * 10000 / D) with halves rounded up. base_ms is a whole number of milliseconds. With no tool this equals the engine's boostedMs today, which divides in floating point and must move to the integer form."
+ },
+ "go_start": {
+  "rule": "A go's speed is fixed when the go starts: the tool in that skill's slot then, and whether the Boost burns then, decide its length. Equipping, removing or changing a tool mid-go changes nothing until the next go starts.",
+  "basis": "settled for the principle (work order 029: 'a go keeps the speed it started with, as the Boost does'); the record is a proposal",
+  "engine": "The engine already fixes the Boost at a go's start (engine/packages/rules/src/boiler.ts, headBoosted). The tool's speed_percent needs the same treatment, held beside it for the head go.",
+  "replay": "Offline resolution equals step-by-step replay: each go's length is a pure function of the state at its start, and a tool can only change through a player action, which is applied at a known time.",
+  "selling": "A worn tool cannot be sold or listed while worn (noted with Jeremy's answers, 30 October 2026). An engine rule; the model only assumes it."
+ },
+ "pacing": {
+  "_note": "Work order 029 scope 4. The pacing check today assumes no tools. Days are computed exactly as scripts/validate/check_pacing.py computes them (best action at each level, the curve's cost_to_next, 8.4 band-skill hours a day), with each level's best XP per hour multiplied by 1 + speed_percent(0) / 100 of the reference tool. Every gathering and production skill with actions has the same tier rates, so one table covers Prospecting, Scavenging, Smithing, Tinkering, Cooking and Tailoring alike. No tool exists yet, so the ladder is an assumption: 'tiers' is a tool at every action tier (1, 5, 10, 15 in Rustmoor; 20, 25, 30, 35, 40 in the Cinderworks), 'dense' a tool at every level (the upper bound).",
+  "reference": "Settled (Jeremy, 30 October 2026 (work order 029): 'the band rates are re-tuned so the 14 days per zone assume the reference player holds tools'): the reference player holds the zone's best reachable +0 tool in each skill (tool level_required <= the skill's level). A Tinker who keeps their tools up meets the targets; one who skips them falls behind.",
+  "derived": true,
+  "table_at_1_percent": [
+   {
+    "band": "1 to 20",
+    "no_tool_days": 13.96,
+    "tiers_days": 12.68,
+    "tiers_factor": 1.101,
+    "dense_days": 12.44,
+    "dense_factor": 1.122,
+    "boost_only_days": 11.64,
+    "tiers_and_boost_days": 10.57,
+    "within_2_days_of_14": "yes (tiers and dense)"
+   },
+   {
+    "band": "20 to 45",
+    "no_tool_days": 13.8,
+    "tiers_days": 10.53,
+    "tiers_factor": 1.31,
+    "dense_days": 10.37,
+    "dense_factor": 1.331,
+    "boost_only_days": 11.5,
+    "tiers_and_boost_days": 8.77,
+    "within_2_days_of_14": "no: 3.5 days under"
+   },
+   {
+    "band": "45 to 70",
+    "no_tool_days": null,
+    "tiers_factor_estimate": 1.564,
+    "note": "No actions yet. Estimate with a tool every 5 levels from 45 and a flat rate across the band."
+   }
+  ],
+  "combat_band": "Unchanged at 13.96 days. Combat has no tool, and a full +0 set changes no floored kill time (combat.json gear.full_set_at_reference). The zone's two weeks follow the main combat skill (section 6: 'a zone's level band refers to that skill'), so tools move the crafting bands, not the zone.",
+  "day_2_check": "Unchanged: tools at level 6 or below add at most 6%, which moves no skill across a level in xp-curve.json day2_check (5,333 XP is level 6 with or without it; level 7 needs 8,338). Total level at 48 hours stays 55.",
+  "bringing_it_back": "Superseded by settled_intent and resolve_must_hit. In the first draft: with the 1% rule and today's actions the Cinderworks crafting bands fall 3.5 days under 14 and fail the 2-day tolerance (once the pacing check counts tools); Rustmoor's stay inside it.",
+  "alternative": {
+   "TOOL_SPEED_PERCENT_PER_LEVEL": 0.4,
+   "derivation": "derived: the largest coefficient, rounded down to one decimal, that keeps every existing band within the 2-day tolerance with a tool at every level and nothing else changed. The exact limit is 0.4496 (dense) or 0.4795 (tiers), set by the 20 to 45 band.",
+   "days": "1 to 20: 13.41 (tiers), 13.31 (dense); 20 to 45: 12.26 (tiers), 12.17 (dense); 45 to 70 factor about 1.226. A level-5 tool is 2% faster, a level-20 tool 8%.",
+   "trade": "Needs no re-solve of the curve or actions, but an early tool upgrade is worth 16 more copper in a 12-hour haul of 800 rather than 40, which may not read as 'each upgrade shows in the next idle haul'.",
+   "status": "Not taken: Jeremy settled 1% (constants)."
+  },
+  "settled_intent": {
+   "settled": "Jeremy, 30 October 2026 (work order 029, after the first draft): 'the band rates are re-tuned so the 14 days per zone assume the reference player holds tools.'",
+   "rule": "Each gathering and production band takes 14 days (within the pacing check's 2) for a reference player who holds the best reachable tool at every level. content/tuning/xp-curve.json band_xp_rate_targets (1.0x, 3.38x, 7.98x) stay the with-tool rates the curve was solved for; the tool-free action rates are those divided by the band's tool factor F.",
+   "tool_free_targets": {
+    "band_1_to_20": 0.9081,
+    "band_20_to_45": 2.5794,
+    "band_45_to_70": "about 5.10 (estimate; no actions yet)",
+    "ladder": "All three figures (about 0.91x, 2.58x and 5.1x) are on the tiers ladder: a tool at every action tier (1, 5, 10, 15; 20, 25, 30, 35, 40), and for 45 to 70 an estimate with a tool every 5 levels from 45, with F 1.1013, 1.3104 and about 1.564. On a dense ladder (a tool at every level) the first two would be 0.8909 and 2.5395."
+   },
+   "not_yet": "Not applied: xp-curve.json's values and every action are unchanged. check_pacing.py now has the tool factor, so the band days it reports are the with-tool figures. No tool is drafted yet, so the factor is 1 and the bands still read 13.96 and 13.80 days; once work order 030's tools exist they fall under 14 (about 12.7 and 10.5 on the tiers ladder). What still waits is the re-solve of the band rates to resolve_must_hit, in later work orders."
+  },
+  "resolve_must_hit": {
+   "factor": "F(band) = band hours with no tool / band hours with the reference tool ladder, both by check_pacing.py's method (best action at each level, the curve's cost_to_next, 8.4 band-skill hours a day), the with-tool hours dividing each level's best XP per hour by 1 + speed_percent(0) / 100 of the best tool with level_required <= that level. F is measured on the tool ladder work order 030 (and its Cinderworks and Thunderhead successors) actually drafts, not on the tiers or dense assumptions here; the figures in settled_intent are on the tiers ladder only.",
+   "target": "After the re-solve, the pacing check with the tool factor must give each gathering and production band 14 days within 2, and no further than today's figures from 14: 13.96 days for 1 to 20 and 13.80 for 20 to 45, 0.04 and 0.20 under. Equivalently each band's tool-free effective rate is band_xp_rate_targets / F: 0.9081x and 2.5794x on the tiers ladder.",
+   "how": "Scale every action's XP per go in the band by 1 / F, keeping its seconds and tier, so the in-band climb (section 6: first actions slightly under, later ones slightly over) keeps its shape. Whole-number XP rounding must leave the band inside the target above. Rustmoor's tiers would go from 9, 19, 30, 42 XP to about 8.2, 17.3, 27.2, 38.1 before rounding at F 1.1013.",
+   "unaffected": "The main combat skill band (no tool; 13.96 days), the curve's table, and the day-2 check, which reads the reference rate rather than the actions and stays at 55.",
+   "target_basis": "proposal: the settled intent is 14 days a band with tools held; holding each band no further from 14 than today is this draft's reading of it."
+  }
+ },
+ "settled_points": [
+  "One tool slot per gathering and production skill, eight in all (slots)",
+  "A tool is worn by its own skill's level (wear)",
+  "A tool makes its skill's work faster (slots)",
+  "A go keeps the speed it started with, as the Boost does (go_start)",
+  "Tool speed is 1% per level required at +0 (constants.TOOL_SPEED_PERCENT_PER_LEVEL; Jeremy, 30 October 2026)",
+  "The 14 days per zone assume the reference player holds tools; the band rates are re-tuned to that later (pacing.settled_intent; Jeremy, 30 October 2026)",
+  "Smithing makes the pick and tongs, Tinkering the fine instruments, Tailoring the needle case and aprons, Cooking its own ladle (makers; Jeremy, 30 October 2026)",
+  "A worn tool cannot be sold while worn (go_start.selling; an engine rule)"
+ ],
+ "open_questions": [
+  "Standing defaults, not objected to (30 October 2026), still proposals: tool and Boost multiply (composition); the axe from Smithing, the apron as Scavenging's tool, the tea scale from Tinkering (makers); resolve_must_hit.target.",
+  "The re-solve of the band rates (resolve_must_hit) is still waiting. check_pacing.py's tool factor is in; once tools are drafted, the with-tool band days it reports fall under 14 until the actions are re-solved in later work orders.",
+  "What Lumbering's and Tea Blending's tools are worth before either skill has actions.",
+  "The economy: a tool raises inputs eaten and items made per hour by F (about 10% across Rustmoor and 31% across the Cinderworks) until the re-solve brings XP back; after it, items per hour stay higher by F while XP per hour returns to target, which the economy work orders' sinks and collectors must count."
+ ],
+ "makers": {
+  "_note": "Which skill makes each skill's tool. The tool descriptions are kinds, not item names; work order 030 names the items. A maker's own tool (tongs, fine instruments, a needle case, a ladle) is made at the maker's level 1, so no skill waits on another to start.",
+  "settled": "Jeremy, 30 October 2026 (work order 029): 'Tools are spread across crafts: Smithing makes picks and tongs, Tinkering the fine instruments, Tailoring needle cases and aprons'; and 'Cooking makes its own ladle.' Only the pick, the tongs, the fine instruments, the needle case, Tailoring's aprons and Cooking's ladle rest on Jeremy's words; the axe, the apron's going to Scavenging and the tea scale are proposals.",
+  "by_skill": {
+   "prospecting": {
+    "tool": "pick",
+    "made_by": "smithing",
+    "basis": "settled (Jeremy, 30 October 2026 (work order 029): 'Smithing makes picks')"
+   },
+   "smithing": {
+    "tool": "tongs",
+    "made_by": "smithing",
+    "basis": "settled (Jeremy, 30 October 2026 (work order 029): 'Smithing makes ... tongs')"
+   },
+   "tinkering": {
+    "tool": "fine instruments (a roll of drivers and gauges)",
+    "made_by": "tinkering",
+    "basis": "settled (Jeremy, 30 October 2026 (work order 029): 'Tinkering the fine instruments')"
+   },
+   "tailoring": {
+    "tool": "needle case",
+    "made_by": "tailoring",
+    "basis": "settled (Jeremy, 30 October 2026 (work order 029): 'Tailoring needle cases')"
+   },
+   "cooking": {
+    "tool": "ladle",
+    "made_by": "cooking",
+    "basis": "settled (Jeremy, 30 October 2026 (work order 029): 'Cooking makes its own ladle.')"
+   },
+   "scavenging": {
+    "tool": "apron, with salvage pockets",
+    "made_by": "tailoring",
+    "basis": "proposal: that Tailoring makes aprons is settled (Jeremy, 30 October 2026 (work order 029)); that the apron is Scavenging's tool is a proposal, Scavenging, which picks over loose salvage, being the skill left without one."
+   },
+   "lumbering": {
+    "tool": "axe",
+    "made_by": "smithing",
+    "basis": "proposal: an edge tool, like the pick, from the skill that makes 'blades'."
+   },
+   "tea_blending": {
+    "tool": "tea scale",
+    "made_by": "tinkering",
+    "basis": "proposal: a fine instrument, which Jeremy gives to Tinkering."
+   }
+  },
+  "spread": "Smithing makes 3 tools (pick, tongs, axe), Tinkering 2 (fine instruments, tea scale), Tailoring 2 (needle case, apron), Cooking 1 (ladle)."
+ }
+}

@@ -1,0 +1,50 @@
+{
+ "schema": "monster/2",
+ "monsters": [
+  {
+   "id": "monster.global.fixture_slot_rat",
+   "name": "Fixture Slot Rat",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 10,
+   "boss": false,
+   "weakness": "aetherics",
+   "xp": 10,
+   "seconds_per_kill": 120,
+   "hp": 3281,
+   "max_hit": 22,
+   "hit_chance": 0.6,
+   "attack_interval_s": 2.0,
+   "evasion": 18
+  },
+  {
+   "id": "monster.global.fixture_bolt_rat",
+   "name": "Fixture Bolt Rat",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 5,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 10,
+   "seconds_per_kill": 90,
+   "hp": 1333,
+   "max_hit": 23,
+   "hit_chance": 0.6,
+   "attack_interval_s": 2.0,
+   "evasion": 10
+  },
+  {
+   "id": "monster.global.fixture_jaw_king",
+   "name": "Fixture Jaw King",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 15,
+   "boss": true,
+   "weakness": "marksmanship",
+   "xp": 400,
+   "seconds_per_kill": 200,
+   "hp": 6814,
+   "max_hit": 80,
+   "hit_chance": 0.7,
+   "attack_interval_s": 3.0,
+   "evasion": 28
+  }
+ ]
+}

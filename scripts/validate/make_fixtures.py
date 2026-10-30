@@ -503,7 +503,7 @@ CMV = dict(PLAYER_ATTACK_INTERVAL_S=2.5, BETWEEN_KILLS_S=5, KNOCKOUT_RESPAWN_S=3
            ARMOUR_HALF_POINT=50, WEAKNESS_MULTIPLIER=1.5, REFERENCE_DAMAGE_SHARE_PER_KILL=0.3,
            BOSS_TARGET_WIN_CHANCE=0.5, BOSS_RATION_CAP_PER_ATTEMPT=2, MAIN_COMBAT_SKILL_SHARE=0.4,
            OTHER_COMBAT_SKILLS_SHARE_EACH=0.1, CALIBRATION_STEP=None, RATION_HEAL_HP=250)
-def model(ident="tuning.global.fixture_combat", schema="tuning.combat/1", **override):
+def model(ident="tuning.global.fixture_combat", schema="tuning.combat/1", cap=0.8, **override):
     v = dict(CMV, **override)
     consts = {k: {"value": x, "basis": "open" if x is None else "proposal", "note": "Fixture value."}
               for k, x in v.items() if x is not ...}
@@ -513,7 +513,8 @@ def model(ident="tuning.global.fixture_combat", schema="tuning.combat/1", **over
             "basis_key": {"proposal": "fixture"}, "units": {"HP_DAMAGE_SCALE": 10, "basis": "proposal"},
             "constants": consts, "skills": prose, "player_formulas": prose, "gear": prose,
             "monster_stats_shape": prose, "reference_player": prose, "weakness": prose,
-            "kill_time": prose, "rations": prose, "boss": prose, "combat_xp_split": prose,
+            "kill_time": dict(prose, floor={"KILL_TIME_CAP_FRACTION": {"value": cap, "basis": "proposal"}}),
+            "rations": prose, "boss": prose, "combat_xp_split": prose,
             "settled_points": [], "open_questions": []}
 CM = model()
 CMP = "content/tuning/combat.json"
@@ -684,7 +685,7 @@ OWN = "item.global.fixture_own_wand"
 # Level 15, so only the level-15 own king could use it.
 put(CF + "content/gear/own.json", gearfile("gear.global.fixture_own", weapon(OWN, "marksmanship", 15, 20, 6)))
 put(CF + DP, drops("drops.global.fixture", table("monster.global.fixture_own_king", 1, 1, [(OWN, 0.1, 1, 1)])))
-put(CF + "content/gear/future.json", gearfile("gear.global.fixture_future", schema="gear/2"))
+put(CF + "content/gear/future.json", gearfile("gear.global.fixture_future", schema="gear/3"))
 put(CF + "content/gear/broken.json", gearfile("gear.global.fixture_broken", weapon("item.global.fixture_short_rows", "melee", 1, 1, 1, rows=[wrow(0, 1, 1)])))
 TK = solve_boss("monster.global.fixture_tough_king", 10, 200, "aetherics", 40, 0, 10)
 ON = solve_kill("monster.global.fixture_on_target", 10, 120, "aetherics", 40, 0, 10)
@@ -763,6 +764,151 @@ put(FW + MP, monsters2(TEN, *[kings[k] for k in sorted(kings)]))
 put("references/pass/" + GP, gearfile("gear.global.fixture", weapon(INGOT, "melee", 1, 10, 0)))
 put(R + "gear/fixture.json", gearfile("gear.global.fixture", weapon(INGOT, "melee", 1, 10, 0),
     armour("item.global.fixture_ghost_coat", 1, 5), armour("item.global.fixture_stray", 1, 5)))
+
+# ---- work order 029: gear/2 (every slot, tools), the combat-level gate,
+# kill_time.floor's cap and gear_ratio, and the pacing tool factor. Zone
+# "global", names prefixed fixture_; numbers synthetic, set against the
+# fixture model CM (cap 0.8, not the real 0.75) and curve PC.
+def piece(item, slot, level, stat, rows=None):
+    key = "accuracy" if slot == "charm" else "armour"
+    return dict(item=item, slot=slot, level_required=level,
+                stats_by_calibration=rows or [{"calibration": 0, key: stat}] + [None] * 20)
+def tool(item, skill, level, speed, rows=None):
+    return dict(item=item, slot="tool", skill=skill, level_required=level,
+                stats_by_calibration=rows or [dict(calibration=0, speed_percent=speed)] + [None] * 20)
+TOOL_SKILLS = ["prospecting", "scavenging", "lumbering", "smithing", "tinkering", "tailoring", "cooking", "tea_blending"]
+def tools_model(per_level=2, made_by=None):
+    prose = {"_note": "Fixture; the rules are the ones tuning.tools/1 fixes."}
+    return {"schema": "tuning.tools/1", "id": "tuning.global.tools", "revision": 1,
+            "source": "Validator fixture. Not game content.", "applies_to": "Validator fixture.",
+            "slots": {"skills": TOOL_SKILLS}, "wear": prose,
+            "makers": {"by_skill": dict((s, {"tool": "fixture tool", "made_by": (made_by or {}).get(s, "smithing")})
+                                        for s in TOOL_SKILLS)},
+            "constants": {"TOOL_SPEED_PERCENT_PER_LEVEL": {"value": per_level, "basis": "proposal"}},
+            "speed": prose, "composition": prose, "go_start": prose, "pacing": prose}
+TP = "content/tuning/tools.json"
+G2 = "content/gear/fixture-2.json"
+
+# schema: gear/2 holds every slot, the legacy armour slot and tools; it
+# refuses an unknown slot or skill and a negative speed. gear/1 refuses the
+# new slots. tuning.tools/1 refuses a gathering skill as a maker.
+SLOTS_GEAR = gearfile("gear.global.fixture_slots",
+    weapon("item.global.fixture_slot_coil", "aetherics", 1, 10, 0),
+    piece("item.global.fixture_slot_guard", "off_hand", 1, 3),
+    piece("item.global.fixture_slot_cap", "head", 1, 3),
+    piece("item.global.fixture_slot_vest", "body", 1, 3),
+    piece("item.global.fixture_slot_gloves", "hands", 1, 3),
+    piece("item.global.fixture_slot_boots", "feet", 1, 3),
+    piece("item.global.fixture_slot_locket", "charm", 1, 1),
+    tool("item.global.fixture_slot_tongs", "smithing", 1, 2),
+    armour("item.global.fixture_slot_coat", 1, 3), schema="gear/2")
+put("schema/pass/" + G2, SLOTS_GEAR)
+put("schema/pass/" + TP, tools_model())
+put(S + "gear/bad-2.json", gearfile("gear.global.fixture_bad_2",
+    piece("item.global.fixture_neck", "neck", 1, 3),
+    tool("item.global.fixture_rod", "fishing", 1, 1),
+    tool("item.global.fixture_slow_tongs", "smithing", 1, -1), schema="gear/2"))
+put(S + "gear/new-in-1.json", gearfile("gear.global.fixture_new_in_1",
+    piece("item.global.fixture_old_cap", "head", 1, 3)))
+put(S + "tuning/tools-bad.json", dict(tools_model(made_by={"cooking": "prospecting"}), id="tuning.global.tools"))
+
+# combat fail: every gear/2 shape rule broken once, in a gear/2 file.
+put(CF + "content/gear/broken-rules-2.json", gearfile("gear.global.fixture_broken_rules_2",
+    piece("item.global.fixture_armoured_charm", "charm", 1, 1,
+          rows=[dict(calibration=0, accuracy=1, armour=2)] + [None] * 20),
+    {k: v for k, v in tool("item.global.fixture_no_skill", "smithing", 1, 1).items() if k != "skill"},
+    dict(piece("item.global.fixture_styled_cap", "head", 1, 3), style="melee"),
+    tool("item.global.fixture_power_tongs", "smithing", 1, 1, rows=[dict(calibration=0, power=5)] + [None] * 20),
+    dict(piece("item.global.fixture_skilled_guard", "off_hand", 1, 3), skill="smithing"),
+    dict(weapon("item.global.fixture_skilled_spanner", "melee", 1, 9, 9), skill="smithing"),
+    dict(tool("item.global.fixture_styled_tongs", "smithing", 1, 1), style="melee"),
+    schema="gear/2"))
+
+# combat fail-slots: KILL_TIME_CAP_FRACTION out of (0, 1] fails, and every
+# floored time falls back to gear_ratio 1; the monster's slots are empty.
+FS = "combat/fail-slots/"
+put(FS + CP, PC)
+put(FS + CMP, model(cap=1.5))
+put(FS + GP, GOOD_GEAR)
+put(FS + MP, monsters2(TEN))
+
+# combat pass-slots: the reference player wears every slot by combat level.
+# The slot rat (aetherics, level 10, Fortitude sec_level(10)) is solved
+# against the coil, five armour pieces and the charm; the legacy coat by
+# Fortitude counts too. Wrongly counted, any of these would break its 5%:
+# the level-10 head (combat level 10, above Fortitude), the level-11 body
+# (above combat level), the thunderhead helm (another zone). The coil's
+# calibrated rows let an over-geared player reach the cap (capped at 0.8).
+# The bolt rat (melee, level 5) has a spanner whose +1 row is a little
+# better: its over-geared time falls in proportion, above the cap. The jaw
+# king's six slots are empty (boss.reference_weapon._non_weapon_slots lists
+# none), so it is solved with the coat alone.
+PSL = "combat/pass-slots/"
+SLOT_PTS = dict(head=6, body=4, hands=2, feet=2, off_hand=4)
+COIL_ROWS = [wrow(n, 40 + 10 * n, 0) for n in range(21)]
+SPANNER_ROWS = [wrow(0, 30, 2), wrow(1, 32, 2)] + [None] * 19
+PASS_SLOTS = gearfile("gear.global.fixture_slots",
+    weapon(WPN["aetherics"][0], "aetherics", 10, 40, 0, rows=COIL_ROWS),
+    weapon(WPN["melee"][0], "melee", 1, 30, 2, rows=SPANNER_ROWS),
+    weapon(WPN["marksmanship"][0], "marksmanship", 5, *WPN["marksmanship"][1:]),
+    piece("item.global.fixture_slot_cap", "head", 10, SLOT_PTS["head"]),
+    piece("item.global.fixture_slot_vest", "body", 3, SLOT_PTS["body"]),
+    piece("item.global.fixture_slot_plate", "body", 11, 300),
+    piece("item.global.fixture_slot_gloves", "hands", 1, SLOT_PTS["hands"]),
+    piece("item.global.fixture_slot_boots", "feet", 1, SLOT_PTS["feet"]),
+    piece("item.global.fixture_slot_guard", "off_hand", 5, SLOT_PTS["off_hand"]),
+    piece("item.global.fixture_slot_locket", "charm", 8, 3),
+    piece("item.thunderhead.fixture_far_helm", "head", 1, 400),
+    armour(COAT, 1, 10),
+    tool("item.global.fixture_slot_tongs", "smithing", 5, 10), schema="gear/2")
+SLOT_RAT = solve_kill("monster.global.fixture_slot_rat", 10, 120, "aetherics", 40, 3, 10 + sum(SLOT_PTS.values()))
+# Level 5: head (10) and charm (8) are above combat level 5.
+BOLT_RAT = solve_kill("monster.global.fixture_bolt_rat", 5, 90, "melee", 30, 2,
+                      10 + SLOT_PTS["body"] + SLOT_PTS["hands"] + SLOT_PTS["feet"] + SLOT_PTS["off_hand"])
+put(PSL + CP, PC)
+put(PSL + CMP, CM)
+put(PSL + GP, PASS_SLOTS)
+put(PSL + MP, monsters2(SLOT_RAT, BOLT_RAT, BOSS))
+if not os.path.exists(os.path.join(F, PSL + "expected-notes.txt")):
+    put(PSL + "expected-notes.txt", "")
+
+# pacing pass-tools: smithing holds a tool at levels 1, 5, 10 and 15 (2% a
+# level in the fixture model). Without tools its band 1 would be about 17
+# days, outside the 2-day tolerance; with them it is within it, so passing
+# shows the with-tool days are the ones held to 14. Prospecting has no tool,
+# so its line keeps the old form. Lumbering has a tool and no actions.
+PT = "pacing/pass-tools/"
+put(PT + CP, PC)
+put(PT + TP, tools_model())
+put(PT + AP, actions(
+    act("action.global.fixture_tooled_smelt", "smithing", 1, 54, 8.6),
+    act("action.global.fixture_untooled_dig", "prospecting", 1, 60, 11.8)))
+put(PT + G2, gearfile("gear.global.fixture_tools",
+    tool("item.global.fixture_tongs_1", "smithing", 1, 2),
+    tool("item.global.fixture_tongs_5", "smithing", 5, 10),
+    tool("item.global.fixture_tongs_10", "smithing", 10, 20),
+    tool("item.global.fixture_tongs_15", "smithing", 15, 30),
+    tool("item.global.fixture_axe_1", "lumbering", 1, 2), schema="gear/2"))
+if not os.path.exists(os.path.join(F, PT + "expected-notes.txt")):
+    put(PT + "expected-notes.txt", "")
+
+# pacing fail-tools: a tool off its speed rule (tool-speed); tinkering paces within 14 days without tools but too fast with them
+# (band-days on the with-tool figure).
+PFT = "pacing/fail-tools/"
+put(PFT + CP, PC)
+put(PFT + TP, tools_model())
+put(PFT + AP, actions(
+    act("action.global.fixture_quick_tinker", "tinkering", 1, 54, 10.6)))
+put(PFT + G2, gearfile("gear.global.fixture_tools",
+    tool("item.global.fixture_wrong_roll", "tinkering", 1, 5),
+    tool("item.global.fixture_roll_10", "tinkering", 10, 20),
+    tool("item.global.fixture_big_roll", "tinkering", 15, 60), schema="gear/2"))
+
+# pacing fail-tool-model: a tool and no tuning.tools/1 model.
+PFM = "pacing/fail-tool-model/"
+put(PFM + CP, PC)
+put(PFM + AP, actions(act("action.global.fixture_modelless", "smithing", 1, 54, 10.6)))
+put(PFM + G2, gearfile("gear.global.fixture_tools", tool("item.global.fixture_tongs_1", "smithing", 1, 2), schema="gear/2"))
 
 # ---- work order 013: tuning.economy/2 (grocer_price), start/1, the grocer
 # rule, the grocer sink report and the start check. Names prefixed fixture_;

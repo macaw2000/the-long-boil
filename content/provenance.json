@@ -12366,15 +12366,15 @@
       "type": "tuning",
       "path": "content/tuning/combat.json",
       "pointer": null,
-      "revision": 9,
-      "work_order": "docs/work-orders/028-tailoring-and-first-armour.md",
+      "revision": 10,
+      "work_order": "docs/work-orders/029-gear-model.md",
       "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-29T16:12:08Z",
+        "run": "2026-10-30T20:29:18Z",
         "checks": [
           "schema",
           "provenance",
@@ -12395,7 +12395,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "The 028 citation now resolves, since the work order has a Settled section; ARMOUR_HALF_POINT is still a proposal; reference_gear could say it means Fortitude for armour."
+        "notes": "Pass with notes: the gear_ratio reference and reference_gear are proposals (standing defaults); legacy Fortitude-gated armour counts in T_own but not T_ref (about 0.1% today), closing when the Cinderworks armour moves into slots; at the cap calibrated players earn 1.333x XP, Crowns and drops per hour (to the economy work orders); gear speeds kills mostly near the player's level."
       },
       "approved_by": null,
       "approved_at": null,
@@ -12484,6 +12484,31 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-10-30T19:52:52Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-30T19:53:14Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-30T20:29:18Z",
+          "status": "drafted",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-30T20:29:18Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-30T20:29:18Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -12537,33 +12562,110 @@
       "retirement": null
     },
     {
-      "id": "tuning.global.xp_curve",
+      "id": "tuning.global.tools",
       "type": "tuning",
-      "path": "content/tuning/xp-curve.json",
+      "path": "content/tuning/tools.json",
       "pointer": null,
-      "revision": 2,
-      "work_order": "docs/work-orders/001-xp-curve.md",
-      "status": "approved",
+      "revision": 1,
+      "work_order": "docs/work-orders/029-gear-model.md",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-21T23:55:00Z",
+        "run": "2026-10-30T20:29:18Z",
         "checks": [
           "schema",
           "provenance",
-          "xp_curve"
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
         ],
         "waiver": null
       },
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass with notes: fits GDD pacing; open design calls carried forward in work order 001 (band-1 rate climb, balanced-player target, 70/30 split provisional)."
+        "notes": "Pass with notes: the axe, the apron for Scavenging and the tea scale are proposals; tools raise items made per hour by F (to the economy work orders)."
       },
-      "approved_by": "jeremy",
-      "approved_at": "2026-10-22T00:04:01Z",
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-30T19:52:52Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-30T19:53:14Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-30T20:29:18Z",
+          "status": "drafted",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-30T20:29:18Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-30T20:29:18Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "tuning.global.xp_curve",
+      "type": "tuning",
+      "path": "content/tuning/xp-curve.json",
+      "pointer": null,
+      "revision": 3,
+      "work_order": "docs/work-orders/029-gear-model.md",
+      "status": "reviewed",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-10-30T20:29:18Z",
+        "checks": [
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass."
+      },
+      "approved_by": null,
+      "approved_at": null,
       "history": [
         {
           "at": "2026-10-21T21:50:15Z",
@@ -12584,6 +12686,31 @@
           "at": "2026-10-22T00:04:01Z",
           "status": "approved",
           "by": "jeremy"
+        },
+        {
+          "at": "2026-10-30T19:52:52Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-30T19:53:14Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-30T20:29:18Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-30T20:29:18Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-30T20:29:18Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -12593,29 +12720,39 @@
       "type": "tuning",
       "path": "content/tuning/xp-curve.json",
       "pointer": "/reference_action",
-      "revision": 2,
-      "work_order": "docs/work-orders/001-xp-curve.md",
-      "status": "approved",
+      "revision": 3,
+      "work_order": "docs/work-orders/029-gear-model.md",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-21T23:55:00Z",
+        "run": "2026-10-30T20:29:18Z",
         "checks": [
           "schema",
           "provenance",
-          "xp_curve"
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
         ],
         "waiver": null
       },
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass with notes: 54 s per smelt marked as an inferred upper bound, not derived; 10 XP is a unit choice."
+        "notes": "Pass. Its pointed-to content is unchanged; whether pointer rows should follow the file's revision is still open."
       },
-      "approved_by": "jeremy",
-      "approved_at": "2026-10-22T00:04:01Z",
+      "approved_by": null,
+      "approved_at": null,
       "history": [
         {
           "at": "2026-10-21T21:50:15Z",
@@ -12636,6 +12773,21 @@
           "at": "2026-10-22T00:04:01Z",
           "status": "approved",
           "by": "jeremy"
+        },
+        {
+          "at": "2026-10-30T19:52:52Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-10-30T19:53:14Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-30T20:29:18Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null

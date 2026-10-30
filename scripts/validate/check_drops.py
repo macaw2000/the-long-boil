@@ -601,13 +601,7 @@ class _Combat:
             return
         self.c = c
         _n, gear = check_combat.load_gear(scratch, root, schemas)
-        self.weapons = sorted((e["item"], e["style"], e["level_required"],
-                               e["stats_by_calibration"][0]["power"],
-                               e["stats_by_calibration"][0]["accuracy"])
-                              for _p, e in gear if e["slot"] == "weapon")
-        self.armours = sorted((e["item"], e["level_required"],
-                               e["stats_by_calibration"][0]["armour"])
-                              for _p, e in gear if e["slot"] == "armour")
+        self.gearset = check_combat.GearSet(gear)
         self.boss_drops = check_combat.load_boss_drops(root)
         self.sec_of = check_combat.secondary_levels(curve, c)
 
@@ -624,8 +618,7 @@ class _Combat:
         if "hp" not in m:
             return None, "%s has no combat stats (monster/1)" % m["id"]
         c, heal = self.c, self.c[check_combat.RATION_KEY]
-        ref = check_combat.Reference(c, self.sec_of, self.weapons, self.armours,
-                                     self.boss_drops, m)
+        ref = check_combat.Reference(c, self.sec_of, self.gearset, self.boss_drops, m)
         if not ref.level_ok:
             return None, "%s: level %d is not in the curve table" % (m["id"], m["level"])
         if ref.player is None:

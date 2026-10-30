@@ -1,9 +1,9 @@
 {
  "schema": "tuning.combat/1",
  "id": "tuning.global.combat",
- "revision": 9,
- "source": "docs/work-orders/009-combat-model.md (including 'Settled after the first draft'); docs/work-orders/011-rustmoor-combat-stats.md ('Settled after the first draft' and 'Settled after the inspector's review'); docs/gdd.md sections 1, 6 (Combat paragraph), 7; content/monsters/rustmoor.json; content/tuning/xp-curve.json; docs/work-orders/001-xp-curve.md and 008-rustmoor-drops.md (carried-forward notes); docs/work-orders/012-rustmoor-cooking.md (the Rustmoor Ration, revision 5; 'Settled after review', revision 6); docs/work-orders/013-grocer-and-starting-inventory.md (the Ration consumption correction, revision 7); docs/work-orders/025-scrapjaw-on-day-14.md (Scrapjaw's reference weapon, revision 8); docs/work-orders/028-tailoring-and-first-armour.md (armour points at +0, revision 9)",
- "applies_to": "every fight: the seven combat skills, weapons and armour, monsters and bosses in all zones",
+ "revision": 10,
+ "source": "docs/work-orders/009-combat-model.md (including 'Settled after the first draft'); docs/work-orders/011-rustmoor-combat-stats.md ('Settled after the first draft' and 'Settled after the inspector's review'); docs/gdd.md sections 1, 6 (Combat paragraph), 7; content/monsters/rustmoor.json; content/tuning/xp-curve.json; docs/work-orders/001-xp-curve.md and 008-rustmoor-drops.md (carried-forward notes); docs/work-orders/012-rustmoor-cooking.md (the Rustmoor Ration, revision 5; 'Settled after review', revision 6); docs/work-orders/013-grocer-and-starting-inventory.md (the Ration consumption correction, revision 7); docs/work-orders/025-scrapjaw-on-day-14.md (Scrapjaw's reference weapon, revision 8); docs/work-orders/028-tailoring-and-first-armour.md (armour points at +0, revision 9); docs/work-orders/029-gear-model.md and docs/gdd.md section 6 (Combat, Gear and tools, amended 30 October 2026) and docs/build-plan.md milestone 13 (seven combat slots, the combat-level gate and reference_gear, revision 10; tools are in content/tuning/tools.json)",
+ "applies_to": "every fight: the seven combat skills, the seven gear slots (weapon, off-hand, head, body, hands, feet, charm), monsters and bosses in all zones",
  "basis_key": {
   "settled": "Jeremy has decided it (work order 009, 'Settled after the first draft', 22 October 2026); where the GDD records it, the line is quoted",
   "derived": "follows from a quoted GDD line or an existing approved file; the derivation names it",
@@ -36,7 +36,7 @@
   "CRIT_CHANCE_PER_PRECISION": {"value": 0.005, "basis": "proposal"},
   "CRIT_CHANCE_CAP": {"value": 0.5, "basis": "proposal", "note": "Reached at Precision 100."},
   "CRIT_MULTIPLIER": {"value": 1.5, "basis": "proposal"},
-  "ARMOUR_HALF_POINT": {"value": 100, "basis": "proposal", "note": "Armour 100 halves damage taken. Armour is Fortitude level plus the armour piece's armour points, not HP, so it is not scaled."},
+  "ARMOUR_HALF_POINT": {"value": 100, "basis": "proposal", "note": "Armour 100 halves damage taken. Armour is Fortitude level plus the armour points of every worn Head, Body, Hands, Feet and Off-hand piece (revision 10; revision 9 had one armour piece), not HP, so it is not scaled."},
   "WEAKNESS_MULTIPLIER": {"value": 1.25, "basis": "proposal", "note": "A matched style's max hit is multiplied by this. The band consequence of 1.25 under a one-style player is settled (see weakness); the value itself rests on that acceptance."},
   "REFERENCE_DAMAGE_SHARE_PER_KILL": {"value": 0.25, "basis": "proposal", "note": "A reference player loses a quarter of their HP per at-level kill. Without Rations that is a knockout about every 4 kills."},
   "BOSS_TARGET_WIN_CHANCE": {"value": 0.5, "basis": "derived", "gdd": "Section 7: 'she beats Scrapjaw on her second attempt'. With win chance P, expected attempts to the first win are 1/P; 1/P = 2 gives P = 0.5."},
@@ -55,13 +55,15 @@
   "melee": {"stat": "style level when the weapon's style is melee", "formula": "style_level in max_hit and accuracy", "basis": "proposal"},
   "marksmanship": {"stat": "style level when the weapon's style is marksmanship", "formula": "style_level in max_hit and accuracy", "basis": "proposal"},
   "aetherics": {"stat": "style level when the weapon's style is aetherics", "formula": "style_level in max_hit and accuracy", "basis": "proposal"},
-  "fortitude": {"stat": "armour", "formula": "armour = fortitude + armour_piece.armour; damage_taken_mult = 1 - armour / (armour + ARMOUR_HALF_POINT)", "basis": "proposal; one armour piece is settled (gear.loadout)"},
+  "fortitude": {"stat": "armour", "formula": "armour = fortitude + head.armour + body.armour + hands.armour + feet.armour + off_hand.armour (an empty slot gives 0); damage_taken_mult = 1 - armour / (armour + ARMOUR_HALF_POINT)", "basis": "proposal; the seven slots are settled (gear.loadout); Off-hand giving armour is a proposal (gear.slot_rules.off_hand)", "no_longer_a_gate": "Fortitude no longer decides which armour a Tinker can wear; combat level does (gear.combat_level, settled 30 October 2026). Fortitude still adds its level to armour."},
   "styles_are_symmetric": "The three style skills use identical formulas; they differ only through weapons and monster weakness. Derived from section 6: 'no skill is cheaper to level than another' read together with 'loadouts matter'; the symmetry itself is a proposal."
  },
 
  "player_formulas": {
   "max_hp": "HP_BASE + HP_PER_VITALITY * vitality",
-  "accuracy": "style_level + precision + weapon.accuracy",
+  "accuracy": "style_level + precision + weapon.accuracy + charm.accuracy (an empty Charm slot gives 0; revision 10, gear.slot_rules.charm)",
+  "armour": "fortitude + head.armour + body.armour + hands.armour + feet.armour + off_hand.armour (skills.fortitude; revision 10)",
+  "combat_level": "max(melee, marksmanship, aetherics) (gear.combat_level; revision 10)",
   "hit_chance": "clamp(HIT_CHANCE_BASE + HIT_CHANCE_PER_POINT * (accuracy - monster.evasion), HIT_CHANCE_MIN, HIT_CHANCE_MAX)",
   "max_hit": "(weapon.power + DAMAGE_PER_STYLE_LEVEL * style_level) * pressure_mult * (WEAKNESS_MULTIPLIER if weapon.style == monster.weakness else 1)",
   "landed_hit_roll": "modelled as uniform on [0, max_hit]; a crit multiplies the roll by CRIT_MULTIPLIER. The engine rolls whole numbers (units.whole_number_rolls)",
@@ -74,11 +76,55 @@
  "gear": {
   "_note": "Shape only. Section 6: 'Gear has fixed stats per calibration level, so a +5 Brass Spanner is identical everywhere'; section 6 Skills table: 'Calibrating ... Gear +1 to +20'. Values come in work order 011.",
   "loadout": {
-   "slots": ["weapon", "armour"],
-   "rule": "A loadout is exactly one weapon and one armour piece. Consumables (Rations, teas) are not loadout slots; they are set by triggers.",
+   "slots": ["weapon", "off_hand", "head", "body", "hands", "feet", "charm"],
+   "rule": "A loadout fills seven slots, one piece in each, and any slot may be empty (an empty slot gives 0 of its stat). Its focus is the weapon's style. Consumables (Rations, teas) are not loadout slots; they are set by triggers. Tools are not combat slots: each gathering and production skill has its own tool slot (content/tuning/tools.json).",
    "consumables": {"basis": "settled", "settled": "Work order 009, settled with revision 2: 'Consumables are set by triggers, not loadout slots. GDD section 7's calming tea is a trigger.'"},
    "basis": "settled",
-   "gdd": "Section 6: 'A loadout is one weapon and one armour piece, and its focus is the weapon's style: Melee, Marksmanship or Aetherics.'"
+   "settled": "Jeremy, 30 October 2026 (work order 029, 'Settled before you start'): 'Seven combat slots: Weapon, Off-hand, Head, Body, Hands, Feet, Charm. One piece in each.'",
+   "gdd": "Section 6, Combat: 'A loadout fills seven gear slots, Weapon, Off-hand, Head, Body, Hands, Feet and a Charm, and its focus is the weapon's style: Melee, Marksmanship or Aetherics.'",
+   "replaces": "Revision 9's two slots, ['weapon', 'armour'] (work order 009, 'Gear slots for the capstone: one weapon and one armour piece')."
+  },
+  "combat_level": {
+   "rule": "combat_level = max(melee, marksmanship, aetherics). Head, Body, Hands, Feet, Off-hand and Charm are worn when combat_level >= level_required. A weapon is still wielded when its style's level >= level_required (gear.weapon).",
+   "basis": "settled",
+   "settled": "Work order 029, 'Settled before you start': 'armour, Off-hand and Charm by combat level, the highest of Melee, Marksmanship and Aetherics'.",
+   "gdd": "Section 6, Combat: 'Armour is worn by combat level, the Tinker's highest attack style, so it keeps pace with weapons'; Gear and tools: 'Weapons are wielded by their style's level, armour by combat level, and tools by their own skill's level.'",
+   "reference": "derived: the reference player's main style is at L and the other two styles at secondary_level(L) <= L (reference_player), so the reference combat level is L, the main level. Revision 9 gated armour on Fortitude, which is secondary_level(L): 6 at main level 20, 10 at 45."
+  },
+  "slot_rules": {
+   "_note": "What each slot gives at +0. Every rule uses a stat the model already has (armour points, accuracy). Rows +1 to +20 stay null until CALIBRATION_STEP is set, as for weapons. The derivations are in armour_share, armour_floor and equal_value.",
+   "weapon": {"gives": "power, accuracy", "rule": "unchanged: power(0) = 10 * level_required, accuracy(0) = 0 (gear.weapon.power_at_plus_0)", "basis": "settled"},
+   "head": {"gives": "armour", "rule": "armour(0) = 3 + 3 * level_required / 16", "basis": "that it gives armour is settled (work order 029 scope 1); the floor is settled (Jeremy, 30 October 2026 (work order 029)) and its value 3 a proposal (armour_floor); the slope is derived (armour_share)"},
+   "body": {"gives": "armour", "rule": "armour(0) = 3 + 3 * level_required / 16", "basis": "as head"},
+   "hands": {"gives": "armour", "rule": "armour(0) = 3 + 3 * level_required / 16", "basis": "as head"},
+   "feet": {"gives": "armour", "rule": "armour(0) = 3 + 3 * level_required / 16", "basis": "as head"},
+   "off_hand": {"gives": "armour", "rule": "armour(0) = 3 + 3 * level_required / 16, the same as one body piece, floor included", "basis": "proposal (standing default, not objected to); a guard held in the free hand, its size from equal_value. It adds to the four pieces' set, it does not take a share of it.", "weapons": {"rule": "No weapon blocks the Off-hand; every weapon is one-handed for the model.", "basis": "proposal (the orchestrator, 30 October 2026), for the weapons work orders to revisit (a rifle or a two-handed hammer may)."}},
+   "charm": {"gives": "accuracy", "rule": "accuracy(0) = 1 + level_required / 20", "basis": "proposal (standing default, not objected to) for the stat and the slope (equal_value, 1 / 22.6 rounded to 1 / 20)", "floor_basis": "proposal: an extension of Jeremy's floor rule, by the orchestrator, 30 October 2026. 1 is what equal_value gives a level-1 piece with the armour floor (37.5 x 3.19 / 113.75 = 1.05)."},
+   "level_required": "combat level for head, body, hands, feet, off_hand and charm (combat_level); style level for the weapon"
+  },
+  "armour_share": {
+   "rule": "Above the floor, the four armour slots share a zone's armour equally: the sloped part of a full four-piece set at combat level C is 4 * 3C/16 = 3C/4 armour points, and each piece is a quarter of it, so no slot dominates.",
+   "derivation": "derived. Work order 028 settled armour(0) = 3 x the Fortitude level required, for one piece. Work order 029 asks for it restated against combat level, with the reference player's combat level in place of Fortitude. The reference player at combat level C has Fortitude secondary_level(C): 6 at 20, 10 at 45, 18 at 70 (reference_player). A least-squares line through the origin on those three checkpoints gives Fortitude = 0.2498 C, so Fortitude is about C / 4 and the settled piece is worth 3 x C / 4 at combat level C. The four pieces share that; each slopes at 3C/16. At the checkpoints the sloped part gives 15, 33.75 and 52.5 points against the settled 18, 30 and 54 (-17%, +12.5%, -3%).",
+   "equal_shares": "proposal (standing default, not objected to). GDD section 6 names the four slots and gives no reason one should outweigh another.",
+   "basis": "derived; equal_shares a proposal"
+  },
+  "armour_floor": {
+   "rule": "ARMOUR_FLOOR = 3 armour points on every Head, Body, Hands, Feet and Off-hand piece at +0, added to its level-based share.",
+   "settled": "Jeremy, 30 October 2026 (work order 029): 'Every piece gets a floor. Each Head, Body, Hands, Feet and Off-hand piece gets a base armour value plus its level-based share, so a first Rustmoor set noticeably cuts Rations eaten.'",
+   "derivation": "proposal for the value 3, derived as follows. The floor is the settled rule's own level-1 piece: work order 028's 3 x level_required at level 1 is 3, so no piece is ever worth less than the smallest piece Jeremy settled. What reads as felt comes from work order 028's settlement: the draft's 1x rule, which cut damage 5 to 8%, was rejected, and the 3x rule, cutting about 15%, was accepted. At 3 the five armour pieces of a level-1 set are 15.94 armour on top of Fortitude 1, which alone cuts Rations eaten against the Rust Rat Runt from 0.416 to 0.358 a kill, -13.9%: clear of the rejected band and near the accepted 15%. With the Charm's proposed floor of 1 as well, the full set's cut is -16.3% (0.348 a kill; full_set_at_reference). Armour-only floors of 2, 3.5 and 4 would give -10.1%, -15.9% and -17.5%.",
+   "later_levels": "The floor is flat, so it matters most early: a level-20 piece is 3 + 3.75 = 6.75, and a full level-20 set (five pieces) is 33.75 points against 18.75 without it.",
+   "basis": "settled for the floor (Jeremy, 30 October 2026 (work order 029)); the value 3 is a proposal"
+  },
+  "equal_value": {
+   "rule": "Off-hand and Charm were each sized to be worth one armour piece to the reference player at their level_required, so removing any one of the six non-weapon pieces raises damage taken per kill by about the same share.",
+   "off_hand": "Giving it the same armour as one piece, floor included, meets the rule exactly.",
+   "charm": "Derived in the first draft, before the floor. Damage taken per kill scales as 1 / hit_chance through the unfloored fight time and as (A + 100) / (A + a + 100) through armour. With hit chance at HIT_CHANCE_BASE (0.75), x accuracy matches one piece a against the other armour A when x = 37.5 a / (A + 100): 1.16 at L 20, 2.20 at 45, 2.89 at 70 without the floor, fitted as 0.0443 L and rounded to L / 20. With the armour floor a piece is bigger, and equal value needs about 1 + L / 20 (1.05 at L 1), which the Charm's proposed floor of 1 gives (slot_rules.charm).",
+   "basis": "proposal (standing default, not objected to)"
+  },
+  "legacy_armour_slot": {
+   "rule": "Until the Cinderworks armour moves into slots (a later step of milestone 13), the five gear/1 entries on slot 'armour' in content/gear/cinderworks.json keep revision 9's rule: worn by Fortitude, armour(0) = 3 x Fortitude required, one worn at a time. The engine and the combat check still read them that way. No new gear is drafted on slot 'armour'.",
+   "consequence": "Moved under this revision's rule, a level-20 piece gives 6.75 armour where the Gauze Goggles give 18 today; the move re-rates them.",
+   "basis": "proposal (transition)"
   },
   "weapon": {
    "fields": {
@@ -93,14 +139,45 @@
   },
   "armour": {
    "fields": {
-    "level_required": "fortitude level needed to wear",
+    "slot": "head | body | hands | feet | off_hand (revision 10); 'armour' only for the legacy entries (legacy_armour_slot)",
+    "level_required": "combat level needed to wear (combat_level); Fortitude level for the legacy 'armour' slot",
     "stats_by_calibration": "21 rows, +0 to +20, each {calibration, armour}"
    },
-   "slot": "None. There is one armour slot (gear.loadout, settled), so coats, goggles and plate (section 6 Skills table: Tailoring, Smithing) all fill it and one is worn at a time.",
-   "armour_at_plus_0": {"rule": "armour(0) = 3 * level_required", "basis": "settled", "settled": "Work order 028 (29 October 2026): Jeremy settled armour points at +0 as 3 x the Fortitude level required to wear the piece."},
-   "basis": "proposal for the fields, except armour_at_plus_0 (settled); the single slot is settled"
+   "slot": "Revision 10: four armour slots, Head, Body, Hands and Feet, plus the Off-hand, which also gives armour (slot_rules). Section 6: 'every zone has armour for each slot, and Tailoring's coats and goggles join them in the Cinderworks.' Which slot a coat or goggles fills is the gear work order's to name.",
+   "armour_at_plus_0": {"rule": "armour(0) = ARMOUR_FLOOR + 3 * level_required / 16 for each of head, body, hands, feet and off_hand, level_required being a combat level; ARMOUR_FLOOR = 3", "basis": "the floor is settled and its value derived (gear.armour_floor); the slope is derived (gear.armour_share)", "settled_rule_restated": "Work order 028 (29 October 2026): Jeremy settled armour points at +0 as 3 x the Fortitude level required to wear the piece. That rule stays in force for the legacy 'armour' slot only."},
+   "basis": "proposal for the fields; the slots and the combat-level gate are settled; armour_at_plus_0 is derived"
   },
-  "reference_gear": "For the target, 'the gear the zone offers' is the best +0 weapon of the matched style, and the best +0 armour piece, that the zone offers with level_required at or below the player's level. Calibration is headroom above the target, not part of it (proposal; section 7 month three treats calibrating toward +10 as a long sink). A boss listed in boss.reference_weapon is the one exception: its reference player holds that weapon instead of the best one (revision 8, work order 025)."
+  "charm": {
+   "fields": {
+    "slot": "charm",
+    "level_required": "combat level needed to wear (combat_level)",
+    "stats_by_calibration": "21 rows, +0 to +20, each {calibration, accuracy}"
+   },
+   "accuracy_at_plus_0": {"rule": "accuracy(0) = 1 + level_required / 20", "basis": "proposal (standing default, not objected to) for the slope; the floor of 1 a proposal, an extension of Jeremy's floor rule by the orchestrator, 30 October 2026 (slot_rules.charm)"},
+   "proposed_row_rule": "accuracy(c) = accuracy(0) + c, as for weapons; waits on CALIBRATION_STEP like every row +1 to +20"
+  },
+  "reference_gear": {
+   "rule": "For the target, 'the gear the zone offers' is the best +0 weapon of the matched style with level_required at or below the main style level, and in each of off_hand, head, body, hands, feet and charm the best +0 piece the zone offers with level_required at or below the reference combat level (the main level L; combat_level.reference). A slot the zone fills with nothing below L is empty and gives 0. Calibration is headroom above the target, not part of it (section 7 month three treats calibrating toward +10 as a long sink); it is what earns kill_time.floor's cap. Bosses are the exception: a boss's weapon is boss.reference_weapon where listed, and its six non-weapon slots are what work order 025's Act I walk actually holds before the fight (boss.reference_weapon._non_weapon_slots). A boss's own drops never count for it (as the combat check reads it). kill_time.floor's T_ref is a different reference: it draws on every zone at the player's own levels.",
+   "basis": "proposal (standing default, not objected to): the reference player holds the zone's best reachable piece in every slot, so a Tinker who keeps up with the ladder meets every target and one who skips a slot falls behind it. Bosses excepted (rule).",
+   "replaces": "Revision 9: the best +0 weapon and the best +0 armour piece, armour by Fortitude.",
+   "selling": "A worn piece or tool cannot be sold or listed while worn (noted with Jeremy's answers, 30 October 2026). An engine rule; the model only assumes it.",
+   "retune": "Today's Rustmoor monsters and Scrapjaw were solved against one weapon and no armour. Under this reference they hurt less than the targets ask (full_set_at_reference.off_target). Work order 030 re-solves them against Rustmoor's slot ladder; until it does, the check sees no Rustmoor off-hand, armour or charm, and its figures are unchanged."
+  },
+  "full_set_at_reference": {
+   "_note": "The reference player at main levels 1, 5, 10, 15 and 20 against today's at-level monster: today's one-weapon loadout against a full +0 set in all seven slots, each piece at level_required = L (the best case; a ladder that lags two or three levels gives a little less). Rations stocked, RATION_HEAL_HP 600, today's monster stats. Damage is HP taken per kill in x10 units, from the unfloored fight (kill_time.floor.damage_and_rations). Kill time is computed / expected; expected is seconds_per_kill for the reference, whose gear_ratio is 1 by definition (kill_time.floor). At level 20 the monster is Scrapjaw with the Riveting Hammer (boss.reference_weapon) and 3 Rations; damage is the mean taken over a won attempt.",
+   "derived": true,
+   "per_piece_at_L": "armour 3 + 3L/16 each (3.19, 3.94, 4.88, 5.81, 6.75 at L 1, 5, 10, 15, 20), five pieces with the Off-hand; charm accuracy 1 + L/20 with the proposed floor (1.05, 1.25, 1.5, 1.75, 2.0). The level-20 Scrapjaw row is the full-set upper bound; the boss's own reference is what work order 025's walk holds (boss.reference_weapon._non_weapon_slots).",
+   "armour_only_level_1": "The five armour pieces alone at level 1 (no Charm) cut Rations per kill against the Runt from 0.416 to 0.358, -13.9%; the row above, -16.3%, includes the Charm's proposed floor.",
+   "table": [
+    {"main_level": 1, "monster": "monster.rustmoor.rust_rat_runt", "one_weapon": {"armour": 1, "accuracy": 2, "damage_per_kill": 249.6, "share_of_max_hp": 0.250, "rations_per_kill": 0.416, "kill_time_s": "54.0 / 54"}, "full_set": {"armour": 16.94, "accuracy": 3.05, "damage_per_kill": 209.0, "share_of_max_hp": 0.209, "rations_per_kill": 0.348, "kill_time_s": "52.5 / 54"}, "damage_change": "-16.3%", "rations_change": "-16.3%"},
+    {"main_level": 5, "monster": "monster.rustmoor.rust_rat_scrounger", "one_weapon": {"armour": 2, "accuracy": 7, "damage_per_kill": 275.0, "share_of_max_hp": 0.250, "rations_per_kill": 0.458, "kill_time_s": "108.0 / 108"}, "full_set": {"armour": 21.69, "accuracy": 8.25, "damage_per_kill": 222.6, "share_of_max_hp": 0.202, "rations_per_kill": 0.371, "kill_time_s": "104.5 / 108"}, "damage_change": "-19.1%", "rations_change": "-19.0%"},
+    {"main_level": 10, "monster": "monster.rustmoor.rust_rat_tinplate", "one_weapon": {"armour": 4, "accuracy": 14, "damage_per_kill": 325.0, "share_of_max_hp": 0.250, "rations_per_kill": 0.542, "kill_time_s": "162.0 / 162"}, "full_set": {"armour": 28.38, "accuracy": 15.5, "damage_per_kill": 252.6, "share_of_max_hp": 0.194, "rations_per_kill": 0.421, "kill_time_s": "155.7 / 162"}, "damage_change": "-22.3%", "rations_change": "-22.3%"},
+    {"main_level": 15, "monster": "monster.rustmoor.rust_rat_gaffer", "one_weapon": {"armour": 5, "accuracy": 20, "damage_per_kill": 350.0, "share_of_max_hp": 0.250, "rations_per_kill": 0.583, "kill_time_s": "216.0 / 216"}, "full_set": {"armour": 34.06, "accuracy": 21.75, "damage_per_kill": 261.4, "share_of_max_hp": 0.187, "rations_per_kill": 0.436, "kill_time_s": "206.3 / 216"}, "damage_change": "-25.3%", "rations_change": "-25.2%"},
+    {"main_level": 20, "monster": "monster.rustmoor.scrapjaw", "one_weapon": {"armour": 6, "accuracy": 26, "damage_per_won_attempt": 3299.9, "win_chance": 0.500, "won_attempt_s": "270.0 / 270"}, "full_set": {"armour": 39.75, "accuracy": 28.0, "damage_per_won_attempt": 2380.6, "win_chance": 0.924, "won_attempt_s": "257.1 / 270"}, "damage_change": "-27.9%", "split": "Four armour pieces alone: win chance 0.843; adding the Off-hand: 0.891; adding the Charm (floor 1): 0.924."}
+   ],
+   "off_target": "For work order 030, how far today's monsters land from their targets with the full-set reference: computed kill time -2.8% (Runt), -3.2% (Scrounger), -3.9% (Tinplate), -4.5% (Gaffer), inside the combat check's 5% tolerance but only just, so hp must rise; damage share per kill 0.209, 0.202, 0.194, 0.187 against REFERENCE_DAMAGE_SHARE_PER_KILL 0.25 (-16% to -25%), so max_hit must rise; Scrapjaw's win chance 0.924 against 0.5, +0.424 against a tolerance of 0.05.",
+   "reading": "A full +0 set cuts Rations eaten by 16% at level 1, rising to 25% at 15 and 28% of the damage at Scrapjaw. It changes no expected kill time for the reference player, so the combat band stays at 13.96 days."
+  }
  },
 
  "monster_stats_shape": {
@@ -120,17 +197,17 @@
  },
 
  "reference_player": {
-  "_note": "The 'player at a monster's level' in the work order's constraint. Main style skill at L (the monster's weakness, so the loadout is matched); the other six combat skills at secondary_level(L); reference_gear for that level. max_hp is in x10 units.",
+  "_note": "The 'player at a monster's level' in the work order's constraint. Main style skill at L (the monster's weakness, so the loadout is matched); the other six combat skills at secondary_level(L); reference_gear for that level, in all seven slots since revision 10. max_hp is in x10 units. combat_level is L (gear.combat_level.reference): it gates the six non-weapon slots, as Fortitude (secondary_level) gated the one armour piece in revision 9.",
   "secondary_level": "the highest level S with total_xp(S) <= total_xp(L) * OTHER_COMBAT_SKILLS_SHARE_EACH / MAIN_COMBAT_SKILL_SHARE, using the xp-curve table",
   "derived": true,
   "table": [
-   {"main_level": 1, "secondary_level": 1, "max_hp": 1000},
-   {"main_level": 5, "secondary_level": 2, "max_hp": 1100},
-   {"main_level": 10, "secondary_level": 4, "max_hp": 1300},
-   {"main_level": 15, "secondary_level": 5, "max_hp": 1400},
-   {"main_level": 20, "secondary_level": 6, "max_hp": 1500},
-   {"main_level": 45, "secondary_level": 10, "max_hp": 1900},
-   {"main_level": 70, "secondary_level": 18, "max_hp": 2700}
+   {"main_level": 1, "secondary_level": 1, "combat_level": 1, "max_hp": 1000},
+   {"main_level": 5, "secondary_level": 2, "combat_level": 5, "max_hp": 1100},
+   {"main_level": 10, "secondary_level": 4, "combat_level": 10, "max_hp": 1300},
+   {"main_level": 15, "secondary_level": 5, "combat_level": 15, "max_hp": 1400},
+   {"main_level": 20, "secondary_level": 6, "combat_level": 20, "max_hp": 1500},
+   {"main_level": 45, "secondary_level": 10, "combat_level": 45, "max_hp": 1900},
+   {"main_level": 70, "secondary_level": 18, "combat_level": 70, "max_hp": 2700}
   ]
  },
 
@@ -161,11 +238,19 @@
    "assumptions": "No HP regeneration between kills; a knockout restores full HP after the respawn; the half-fought monster is lost, costing on average half a fight (an approximation)."
   },
   "floor": {
-   "formula": "expected_seconds_per_kill = max(monster.seconds_per_kill, computed_seconds_per_kill), at every player level",
-   "basis": "settled",
-   "gdd": "Section 6: 'A Tinker who outlevels a monster still takes its usual time per kill, so fighting easy monsters is safe but no faster; the reward for levelling is reaching harder ones.' Work order 009, settled with revision 2: 'The kill-time floor applies at every level, not only at or above the monster's level. Nothing kills faster than its target time.'",
-   "rewards": "XP, Crowns, drop rolls and the Ledger Page counter are paid per kill, unchanged, at the paced rate: per hour = 3600 / expected_seconds_per_kill times the per-kill amount. A floored fight therefore never pays faster than monster.xp * 3600 / monster.seconds_per_kill, so the pacing and drops checks that use seconds_per_kill stay valid.",
-   "what_outlevelling_buys": "Inside the floor, a stronger player takes less damage per kill: fewer Rations (rations_per_kill falls with t_fight computed unfloored) and fewer knockouts.",
+   "formula": "expected_seconds_per_kill = max(T_own, monster.seconds_per_kill * max(KILL_TIME_CAP_FRACTION, min(1, gear_ratio))), with gear_ratio = T_own / T_ref, at every player level, for every non-boss monster",
+   "gear_ratio": {"T_own": "computed_seconds_per_kill (kill_time.stocked: BETWEEN_KILLS_S + t_pure / (1 - f)) for the player exactly as they fight: their seven combat skill levels, the gear they wear in all seven slots at its calibration, their buffs and consumables, Rations stocked, against this monster.", "T_ref": "min over the three styles s in {melee, marksmanship, aetherics} of computed_seconds_per_kill for the same player, with the same seven skill levels and the same buffs and consumables, Rations stocked, against the same monster, wearing reference loadout s: (1) weapon: the +0 weapon of style s with level_required <= the player's level in s that gives the highest mean swing against this monster, ties to the lower item id (the style level in max_hit and accuracy is the player's level in s, and WEAKNESS_MULTIPLIER applies when s is the monster's weakness); (2) each of off_hand, head, body, hands and feet: the +0 piece with the most armour, and charm: the +0 piece with the most accuracy, each with level_required <= the player's combat level, ties to the lower item id, empty (0) when none qualifies. A style with no qualifying weapon is left out of the minimum. Only the six slots of gear.loadout count; the legacy 'armour' slot does not.", "pool": "Reference pieces for T_ref come from every zone's gear files, at or below the player's own levels, boss drops included, never from the monster's zone alone. Boss drops count like any other piece (proposal). Scrapjaw's Cleaver (melee, level 20, +0 power 180) earns nothing because it is in the pool itself: Rustmoor has no other level-20 melee weapon, so at Melee 20 the Cleaver is T_ref's melee weapon, and wielding it gives gear_ratio 1.", "pool_basis": "settled, Jeremy, 30 October 2026 (work order 029): only being ahead of your own level counts, so bringing later-zone gear back to an earlier zone does not earn the cap.", "fastest_style_basis": "proposal (the orchestrator's correction after the inspector's review, 30 October 2026): taking the fastest of the three styles means levels alone, or an off-style matchup, never earn the cap.", "reference_player": "derived: the reference player at monster level L has main style L in the monster's weakness and the other styles at secondary_level(L) < L, so the fastest of the three reference loadouts is the main style's, which is the gear it wears (gear.reference_gear; +0 stats follow level-only rules, so the all-zone pool gives the same pieces wherever the zone has a piece at that level). T_own = T_ref, gear_ratio = 1, expected = seconds_per_kill, and the combat band stays at 13.96 days."},
+   "KILL_TIME_CAP_FRACTION": {"value": 0.75, "basis": "settled", "settled": "Jeremy, 30 October 2026 (work order 029): 0.75 is the value. Not yet a constant: tuning.combat/1 allows no new constant, so it sits here until the toolwright adds it to the schema and check_combat.py."},
+   "basis": "settled for the principle, the cap value, the boss exclusion and the all-zone pool (Jeremy, 30 October 2026); the fastest-style minimum and boss drops counting are proposals",
+   "gdd": "Section 6: 'A Tinker who outlevels a monster still takes its usual time per kill, so fighting easy monsters is safe but no faster; the reward for levelling is reaching harder ones.' Amended by work order 029 (30 October 2026): levels alone still buy no speed, but gear better than the reference for the Tinker's own level may beat seconds_per_kill, down to KILL_TIME_CAP_FRACTION of it. GDD section 6 now carries it: 'better gear than a Tinker's level calls for can cut a kill to three quarters of its usual time, but never a boss fight (amended 30 October 2026)'. Work order 009, settled with revision 2: 'The kill-time floor applies at every level, not only at or above the monster's level. Nothing kills faster than its target time' is replaced by this rule.",
+   "cases": "Gear no better than T_ref's loadouts: gear_ratio >= 1, clamped to 1, so expected = max(T_own, seconds_per_kill): outlevelling alone is safe but no faster, as before, and levels can still make up for weak gear back to seconds_per_kill. Better gear (calibrated pieces, or a piece whose stats are ahead of its level's rule): gear_ratio < 1, so the kill time falls in proportion, to no less than KILL_TIME_CAP_FRACTION * seconds_per_kill.",
+   "why_own_level": "derived: measuring gear against the reference at the monster's level would let the band's own reference player beat targets. At level 18 it holds level-15 weapons and fights the level-10 Tinplate, which would then pay 30 XP per 121.5 s, 889 XP/h, against the at-level Gaffer's 700 XP/h. Easier monsters would out-pay harder ones, breaking section 6's 'the reward for levelling is reaching harder ones', and the combat band would fall to 11.30 days with Rustmoor's settled weapons (11.01 with a weapon at every level). Measured against the player's own levels, every style and every zone, the reference player always has gear_ratio 1.",
+   "how_far_ahead": "derived: the reference fight has seconds_per_kill = BETWEEN_KILLS_S + t_fight, and t_fight scales as 1 / mean swing, so reaching the cap needs a mean swing (seconds_per_kill - 6) / (0.75 * seconds_per_kill - 6) times T_ref's: 1.391 (Runt), 1.360 (Scrounger), 1.351 (Tinplate), 1.346 (Gaffer). By weapon power alone that is about 1.7x the 10 x level rule. Accuracy alone cannot reach it, since a 1.35x hit chance passes HIT_CHANCE_MAX. T_ref already holds the best +0 piece the player can wear in every slot, from every zone, boss drops included, so no +0 piece can be ahead of it: the Cleaver, for one, is T_ref's own melee weapon at Melee 20 (gear_ratio.pool). The cap is earned only by Calibrating, or by gear genuinely ahead of the player's level. A smaller lead buys a proportional saving.",
+   "legacy_armour": "Legacy Fortitude-gated armour (the five Cinderworks pieces on slot 'armour', gear.legacy_armour_slot) counts in T_own when worn but never in T_ref, whose loadouts fill only the six gear.loadout slots. A Tinker wearing one is a little faster than T_ref, about 0.1% against today's Rustmoor rats. The gap closes when the Cinderworks armour moves into the new slots, before the Soot Wraiths work order. The engine makes the same choice as the check.",
+   "bosses": {"rule": "Bosses keep the old floor: a won attempt takes no less than boss.seconds_per_kill.", "basis": "settled", "settled": "Jeremy, 30 October 2026 (work order 029): bosses stay outside the cap.", "why": "Section 6: 'a boss pays XP no faster than the zone's best monster; players come back for its drop, not its XP.'"},
+   "rewards": "XP, Crowns, drop rolls and the Ledger Page counter are paid per kill, unchanged, at the paced rate: per hour = 3600 / expected_seconds_per_kill times the per-kill amount. At the cap a monster pays 1 / 0.75 = 1.333 times its target rate; the pacing and drops checks, which use seconds_per_kill, describe the reference player, for whom nothing changes.",
+   "combat_band_at_cap": "derived: a Tinker at the cap against every target takes 13.96 x 0.75 = 10.47 days for the 1 to 20 band, against the reference's 13.96. GDD section 6 already accepts that 'a player who fights around the clock moves about twice as fast'.",
+   "what_outlevelling_buys": "A stronger player takes less damage per kill: fewer Rations (rations_per_kill falls with t_fight computed unfloored) and fewer knockouts. Only better gear buys speed.",
    "damage_and_rations": {"rule": "Damage taken, Rations eaten and knockouts are computed from the unfloored fight; the extra floored seconds are idle and cost no HP.", "basis": "settled", "settled": "Work order 009, settled with revision 2: 'Damage taken and Rations eaten come from the unfloored fight; the extra floored seconds are idle.'"}
   },
   "target": "For the reference player at monster.level with a matched reference_gear loadout and Rations stocked, computed_seconds_per_kill == monster.seconds_per_kill and monster_dps * t_fight == REFERENCE_DAMAGE_SHARE_PER_KILL * max_hp.",
@@ -197,6 +282,7 @@
   "target": "For the reference player at boss.level with a matched loadout and n Rations, m_b == m_p (so P == BOSS_TARGET_WIN_CHANCE) and BETWEEN_KILLS_S + m_p == boss.seconds_per_kill.",
   "reference_weapon": {
    "_note": "Work order 025, Jeremy's decision after part 1 (28 October 2026): a launch-day player cannot be assumed to buy a Steel Blade on the Exchange by day 13, so Scrapjaw is tuned to the weapon a player actually holds. A boss listed here is solved for a reference player who holds this weapon at +0 in place of gear.reference_gear's best weakness-style weapon; level, the other six skills (reference_player), armour and Rations are unchanged. A boss not listed keeps gear.reference_gear.",
+   "_non_weapon_slots": "A boss's six non-weapon slots (off_hand, head, body, hands, feet, charm) are what work order 025's Act I walk actually holds before the fight, at the check-in rhythms work order 025 measured, not gear.reference_gear's best reachable piece, as the weapon is (a launch-day player cannot be assumed to have made or bought every piece). Work order 030 must measure that walk against Rustmoor's slot ladder and list each boss's pieces here before Scrapjaw is re-solved; until then none are listed. Basis: proposal (the orchestrator, after the inspector's review, 30 October 2026), following work order 025's settled reasoning for the weapon. The key starts with '_' so check_combat.py reads it as prose.",
    "monster.rustmoor.scrapjaw": {
     "item": "item.rustmoor.riveting_hammer",
     "basis": "settled",
@@ -228,7 +314,7 @@
  },
 
  "settled_points": [
-  "Kill-time floor at seconds_per_kill at every level (kill_time.floor)",
+  "Kill-time floor at seconds_per_kill for a Tinker whose gear is no better than the reference loadouts at their own levels; better gear may beat it down to KILL_TIME_CAP_FRACTION 0.75 of seconds_per_kill, levels alone never do, and bosses are outside the cap (kill_time.floor; Jeremy, 30 October 2026, work order 029, amending GDD section 6 and work order 009)",
   "Damage taken and Rations eaten from the unfloored fight (kill_time.floor.damage_and_rations)",
   "Consumables set by triggers, not loadout slots (gear.loadout.consumables)",
   "Checks use the closed forms as written, continuous moments (units.closed_forms_for_checks)",
@@ -240,14 +326,24 @@
   "Boss Ration cap 3 (constants.BOSS_RATION_CAP_PER_ATTEMPT)",
   "Ration heal 600, the Rustmoor Ration (constants.RATION_HEAL_HP; work order 012, 'Settled after review')",
   "Focus is one of the three attack styles (combat_xp_split)",
-  "Loadout is one weapon and one armour piece (gear.loadout)",
+  "Loadout is seven slots: weapon, off-hand, head, body, hands, feet, charm, one piece in each (gear.loadout; Jeremy, 30 October 2026, work order 029; replaces 'one weapon and one armour piece')",
+  "Wear rules: a weapon by its style's level; head, body, hands, feet, off-hand and charm by combat level, the highest of Melee, Marksmanship and Aetherics (gear.combat_level; work order 029)",
+  "Head, Body, Hands and Feet give armour points (gear.slot_rules; work order 029 scope 1)",
   "Hit points and damage scaled x10 (units)",
   "Calibration step left to the calibration work order (constants.CALIBRATION_STEP)",
-  "Armour points at +0 are 3 x the Fortitude level required to wear the piece (gear.armour.armour_at_plus_0; work order 028, 29 October 2026)"
+  "Armour points at +0 are 3 x the Fortitude level required to wear the piece (work order 028, 29 October 2026); since revision 10 it holds only for the legacy 'armour' slot, and the per-slot rule 3 x level_required / 16 is derived from it (gear.armour_share)",
+  "Every Head, Body, Hands, Feet and Off-hand piece has an armour floor plus its level-based share (gear.armour_floor; Jeremy, 30 October 2026, work order 029); the value 3 is a proposal",
+  "A worn piece or tool cannot be sold while worn (gear.reference_gear.selling; an engine rule)",
+  "Reference pieces for kill_time.floor's T_ref come from every zone at or below the player's own levels; only Calibrating, or gear ahead of the player's level, earns the cap (kill_time.floor.gear_ratio.pool; Jeremy, 30 October 2026, work order 029)"
  ],
 
  "open_questions": [
-  "CALIBRATION_STEP: for the calibration work order.",
-  "Every value still marked proposal (intervals, HP base and per-Vitality, hit and crit constants, ARMOUR_HALF_POINT, WEAKNESS_MULTIPLIER, REFERENCE_DAMAGE_SHARE_PER_KILL) waits on Jeremy."
+  "CALIBRATION_STEP: for the calibration work order. It also decides how many calibration levels reach kill_time.floor's cap.",
+  "Every value still marked proposal (intervals, HP base and per-Vitality, hit and crit constants, ARMOUR_HALF_POINT, WEAKNESS_MULTIPLIER, REFERENCE_DAMAGE_SHARE_PER_KILL) waits on Jeremy.",
+  "Off-hand: no weapon blocks it for now (gear.slot_rules.off_hand.weapons), a proposal for the weapons work orders to revisit.",
+  "The Cinderworks armour (gear.legacy_armour_slot) re-rates sharply when it moves: a level-20 piece is 6.75 armour under the per-slot rule against 18 to 30 today.",
+  "Standing defaults, not objected to (30 October 2026), still proposals: Off-hand gives armour and Charm gives accuracy (gear.slot_rules); equal quarter shares (gear.armour_share); equal value (gear.equal_value); the non-boss reference player holds the zone's best reachable piece in every slot (gear.reference_gear). Also proposals: the Charm's floor of 1, the armour floor's value 3, the fastest-style minimum in T_ref, and boss drops counting in T_ref's pool.",
+  "Work order 030 must measure what work order 025's Act I walk holds in the six non-weapon slots before each boss and list it (boss.reference_weapon._non_weapon_slots).",
+  "Still open after work order 029: the engine (engine/packages/rules/src/combat.ts, being built now) must apply the seven slots, the combat-level gate and kill_time.floor as written; and KILL_TIME_CAP_FRACTION must become a constant in the combat schema (today it sits in kill_time.floor, since tuning.combat/1 allows no new constant)."
  ]
 }

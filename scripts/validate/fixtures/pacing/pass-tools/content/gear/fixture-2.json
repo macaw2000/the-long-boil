@@ -1,0 +1,166 @@
+{
+ "schema": "gear/2",
+ "id": "gear.global.fixture_tools",
+ "gear": [
+  {
+   "item": "item.global.fixture_tongs_1",
+   "slot": "tool",
+   "skill": "smithing",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "speed_percent": 2
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_tongs_5",
+   "slot": "tool",
+   "skill": "smithing",
+   "level_required": 5,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "speed_percent": 10
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_tongs_10",
+   "slot": "tool",
+   "skill": "smithing",
+   "level_required": 10,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "speed_percent": 20
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_tongs_15",
+   "slot": "tool",
+   "skill": "smithing",
+   "level_required": 15,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "speed_percent": 30
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_axe_1",
+   "slot": "tool",
+   "skill": "lumbering",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "speed_percent": 2
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ ]
+}

@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tuning.tools/1",
+  "title": "The tool model (work order 029), version 1",
+  "description": "Shape of content/tuning/tools.json: how a tool in a gathering or production skill's tool slot makes that skill's work faster (GDD section 6, Gear and tools, amended 30 October 2026). 'slots.skills' lists the eight skills that have a tool slot, one slot each, in the order Prospecting, Scavenging, Lumbering, Smithing, Tinkering, Tailoring, Cooking, Tea Blending (prefixItems pins each position, which is how this repo's validator enforces uniqueness: it does not read uniqueItems, which is stated for standard tools). 'wear' says a tool is worn by its own skill's level. 'makers.by_skill' names, for each of the eight skills, its tool (a kind, not an item name) and the production skill that makes it (made_by: smithing, tinkering, tailoring, cooking or tea_blending; never a gathering skill). 'constants' holds every number the speed rule reads, each {value, basis}, basis one of settled, derived, proposal, open; TOOL_SPEED_PERCENT_PER_LEVEL is required. 'speed', 'composition' (how a tool combines with the Boiler Boost), 'go_start' (a go keeps the speed it started with) and 'pacing' are prose objects for the reader; the rules are fixed by this schema version, so a model whose rules change needs a new version. No 'status' field: the register owns status. 'revision' exists so a register row's revision can match the file.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "revision",
+    "source",
+    "applies_to",
+    "slots",
+    "wear",
+    "makers",
+    "constants",
+    "speed",
+    "composition",
+    "go_start",
+    "pacing"
+  ],
+  "properties": {
+    "schema": {
+      "const": "tuning.tools/1"
+    },
+    "id": {
+      "const": "tuning.global.tools"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "applies_to": {
+      "type": "string",
+      "minLength": 1
+    },
+    "basis_key": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "slots": {
+      "type": "object",
+      "required": [
+        "skills"
+      ],
+      "properties": {
+        "skills": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "prefixItems": [
+            {
+              "const": "prospecting"
+            },
+            {
+              "const": "scavenging"
+            },
+            {
+              "const": "lumbering"
+            },
+            {
+              "const": "smithing"
+            },
+            {
+              "const": "tinkering"
+            },
+            {
+              "const": "tailoring"
+            },
+            {
+              "const": "cooking"
+            },
+            {
+              "const": "tea_blending"
+            }
+          ],
+          "items": {
+            "enum": [
+              "prospecting",
+              "scavenging",
+              "lumbering",
+              "smithing",
+              "tinkering",
+              "tailoring",
+              "cooking",
+              "tea_blending"
+            ]
+          }
+        }
+      }
+    },
+    "wear": {
+      "type": "object"
+    },
+    "makers": {
+      "type": "object",
+      "required": [
+        "by_skill"
+      ],
+      "properties": {
+        "by_skill": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "prospecting",
+            "lumbering",
+            "scavenging",
+            "smithing",
+            "tinkering",
+            "tailoring",
+            "cooking",
+            "tea_blending"
+          ],
+          "properties": {
+            "prospecting": {
+              "$ref": "#/$defs/maker"
+            },
+            "lumbering": {
+              "$ref": "#/$defs/maker"
+            },
+            "scavenging": {
+              "$ref": "#/$defs/maker"
+            },
+            "smithing": {
+              "$ref": "#/$defs/maker"
+            },
+            "tinkering": {
+              "$ref": "#/$defs/maker"
+            },
+            "tailoring": {
+              "$ref": "#/$defs/maker"
+            },
+            "cooking": {
+              "$ref": "#/$defs/maker"
+            },
+            "tea_blending": {
+              "$ref": "#/$defs/maker"
+            }
+          }
+        }
+      }
+    },
+    "constants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "TOOL_SPEED_PERCENT_PER_LEVEL"
+      ],
+      "properties": {
+        "TOOL_SPEED_PERCENT_PER_LEVEL": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "required": [
+            "value",
+            "basis"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "basis": {
+              "$ref": "#/$defs/basis"
+            }
+          }
+        }
+      }
+    },
+    "speed": {
+      "type": "object"
+    },
+    "composition": {
+      "type": "object"
+    },
+    "go_start": {
+      "type": "object"
+    },
+    "pacing": {
+      "type": "object"
+    },
+    "settled_points": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "basis": {
+      "enum": [
+        "settled",
+        "derived",
+        "proposal",
+        "open"
+      ]
+    },
+    "maker": {
+      "type": "object",
+      "required": [
+        "tool",
+        "made_by"
+      ],
+      "properties": {
+        "tool": {
+          "type": "string",
+          "minLength": 1
+        },
+        "made_by": {
+          "enum": [
+            "smithing",
+            "tinkering",
+            "tailoring",
+            "cooking",
+            "tea_blending"
+          ]
+        }
+      }
+    }
+  }
+}

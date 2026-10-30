@@ -6,18 +6,12 @@ one valid tuning.xp_curve/1 curve. No simulation: the closed forms are used as
 written, with continuous moments (combat.json units.closed_forms_for_checks,
 settled with revision 2).
 
-Gear files (gear/1, under content/gear/), checked whether or not any monster
-uses them. These are the rules gear/1's JSON Schema subset cannot say:
-
-- row n of stats_by_calibration has calibration n, and row +0 is not null;
-- a weapon has a style, and each of its rows has power and accuracy and no
-  armour; an armour piece has no style, and each row has armour and nothing
-  else;
-- one gear entry per item across every gear file.
-
-A gear/* file that is not gear/1, or does not match it, fails as
-not-checkable. Gear entries that break a rule above are left out of the
-reference gear.
+Gear files (gear/1 and gear/2, under content/gear/), checked whether or not
+any monster uses them, by the rules in scripts/validate/gear.py (row order,
+row +0 present, which stats each slot's rows carry, style only on weapons,
+skill only on tools, one entry per item). A gear/* file that is neither
+version, or does not match it, fails as not-checkable. Gear entries that
+break a rule are left out of the reference gear.
 
 Monsters on monster/2 (monster/1 files are counted and skipped; they carry no
 combat stats until work order 011 moves them). For each one, the reference
@@ -40,7 +34,7 @@ player at the monster's level L (combat.json reference_player):
 - the one exception (combat.json boss.reference_weapon, revision 8, work
   order 025): a boss listed there, {monster id: {"item": item id, ...}}, keys
   starting with "_" being prose, is fought with that item at +0 instead of
-  the best weapon. The listed item must be a gear/1 weapon entry that keeps
+  the best weapon. The listed item must be a gear weapon entry that keeps
   the gear rules (reference-weapon-missing), of the boss's weakness style
   (reference-weapon-style), with level_required <= the boss's level
   (reference-weapon-level), and not one of the boss's own drops
@@ -49,10 +43,23 @@ player at the monster's level L (combat.json reference_player):
   (reference-weapon-not-boss), as is an entry without an "item" id
   (reference-weapon-shape). The zone rule above is not applied to the listed
   item;
-- armour: of that gear, the +0 armour piece with the most armour whose
-  level_required is at or below the player's Fortitude, S (combat.json
-  gear.armour.fields: armour level_required is a Fortitude level). None is a
-  WARN and armour 0 is used;
+- the six other combat slots (combat.json revision 10, gear.reference_gear):
+  of that gear, in each of off_hand, head, body, hands and feet the +0 piece
+  with the most armour, and in charm the +0 piece with the most accuracy,
+  whose level_required is at or below the reference player's combat level,
+  the highest of Melee, Marksmanship and Aetherics, which is L
+  (gear.combat_level.reference). Ties go to the lower item id. A slot with
+  no such piece is empty and gives 0; one WARN per monster (empty-slots)
+  names the empty slots. A boss's six are what work order 025's Act I walk
+  holds (boss.reference_weapon._non_weapon_slots); none are listed yet, so
+  they are empty, with an empty-slots WARN saying so;
+- the legacy armour slot (gear.legacy_armour_slot, until the Cinderworks
+  armour moves into slots): of that gear, the +0 armour piece with the most
+  armour whose level_required is at or below the player's Fortitude, S, as
+  in revision 9. None gives 0, without a WARN: no new gear is drafted on it;
+- the player's armour is Fortitude plus the sum of the five armour slots and
+  the legacy piece; their accuracy is style level plus Precision plus the
+  weapon's and the Charm's accuracy;
 - Rations stocked, healing RATION_HEAL_HP each. While it is null (open,
   Cooking work order), everything that needs it is a WARN
   (ration-heal-open), not computed.
@@ -60,12 +67,31 @@ player at the monster's level L (combat.json reference_player):
 Non-boss monsters: the stocked computed seconds per kill,
 BETWEEN_KILLS_S + t_pure / (1 - f), must be within
 KILL_TIME_TOLERANCE_FRACTION of seconds_per_kill. This compares the
-unfloored time, as combat.json kill_time.target states the target; the
-floored expected time, max(seconds_per_kill, computed) at every level
-(kill_time.floor, revision 2), is printed beside it. Comparing the floored time
-instead would let a monster that dies too fast pass, since the floor lifts
-it to exactly the target. f >= 1 is a FAIL (ration-diverges): the stocked
-fight never ends.
+unfloored time, as combat.json kill_time.target states the target. The
+floored expected time is printed beside it, by kill_time.floor (revision
+10):
+
+  expected = max(computed, seconds_per_kill x max(KILL_TIME_CAP_FRACTION,
+                                                 min(1, gear_ratio)))
+
+gear_ratio = T_own / T_ref (kill_time.floor.gear_ratio): T_own is the
+stocked computed time with the loadout shown; T_ref is the fastest of the
+three styles' reference loadouts for the same player's levels, Rations
+stocked: in each style s, the +0 weapon of s with level_required <= the
+player's level in s and the highest mean swing (style level s in max_hit and
+accuracy), plus the best +0 piece in each of off_hand, head, body, hands,
+feet and charm at or below combat level. T_ref draws on every zone, boss
+drops included, and leaves out the legacy armour slot. A style with no
+weapon is left out of the minimum. For the reference player gear_ratio is at
+least 1, so expected is max(computed, seconds_per_kill), as before revision
+10. Bosses keep the old floor: a won
+attempt is never shorter than seconds_per_kill. KILL_TIME_CAP_FRACTION is
+read from combat.json kill_time.floor.KILL_TIME_CAP_FRACTION.value (not yet a
+constant, as the model says); with monster/2 monsters, anything but a number
+in (0, 1] there is a FAIL (kill-time-cap), and every floored time then uses
+gear_ratio 1. Comparing the floored time instead would let a monster that
+dies too fast pass, since the floor lifts it to exactly the target. f >= 1
+is a FAIL (ration-diverges): the stocked fight never ends.
 
 Bosses: the win chance with BOSS_RATION_CAP_PER_ATTEMPT Rations must be within
 WIN_CHANCE_TOLERANCE of BOSS_TARGET_WIN_CHANCE.
@@ -80,7 +106,11 @@ These are for information only and never feed the reference player; for a
 boss with a listed reference weapon, the win chance with the best weapon
 (the one gear.reference_gear would pick), Rations stocked; and the matched
 kill time (win chance) without Rations. Each kill time is shown computed and
-floored.
+floored. For a non-boss monster, when gear beyond the reference exists, one
+more NOTE shows the cap at work (over-geared): the same player with the best
+piece in every slot from any zone and at any calibration row that is not
+null, under the same level gates, its gear_ratio and its expected time. It is
+printed only when gear_ratio < 1.
 
 With no monster/2 monsters there is nothing to check, and neither the model
 nor the curve is needed.
@@ -95,6 +125,7 @@ sys.dont_write_bytecode = True  # keep __pycache__ out of the repo
 
 import lib  # noqa: E402
 import check_pacing  # noqa: E402
+import gear as gearlib  # noqa: E402
 
 CHECK = "combat"
 
@@ -102,9 +133,18 @@ MODEL_PREFIX = "tuning.combat/"
 MODEL_SCHEMA = "tuning.combat/1"
 MONSTER_PREFIX = "monster/"
 COMBAT_MONSTER_SCHEMA = "monster/2"
-GEAR_PREFIX = "gear/"
 DROPS_PREFIX = "drops/"
-GEAR_SCHEMA = "gear/1"
+
+# combat.json revision 10, kill_time.floor: over-gearing may beat
+# seconds_per_kill down to this fraction of it. Settled at 0.75, but not yet
+# a constant (tuning.combat/1 allows no new one), so it is read from
+# kill_time.floor.KILL_TIME_CAP_FRACTION.value, where the model keeps it.
+CAP_KEY = "KILL_TIME_CAP_FRACTION"
+
+# The slots worn by combat level, and the legacy one worn by Fortitude.
+ARMOUR_SLOTS = gearlib.ARMOUR_SLOTS
+COMBAT_LEVEL_SLOTS = gearlib.COMBAT_LEVEL_SLOTS
+LEGACY_ARMOUR = gearlib.LEGACY_ARMOUR
 
 # GDD section 6: "Monsters are weak to Melee, Marksmanship, or Aetherics".
 STYLES = ("melee", "marksmanship", "aetherics")
@@ -149,79 +189,69 @@ def _files(root, prefix):
     return out
 
 
-def load_gear(report, root, schemas):
-    """Returns (file_count, [(path, entry)]) for gear entries that keep every
-    rule; reports the ones that do not."""
-    files = _files(root, GEAR_PREFIX)
-    good = []
-    seen = {}
-    for path, data, declared in files:
-        if declared != GEAR_SCHEMA:
-            report.fail("not-checkable", path,
-                        "schema is %r; only %s can be checked" % (declared, GEAR_SCHEMA),
-                        data.get("id") if isinstance(data.get("id"), str) else None)
-            continue
-        errors = lib.validate(data, schemas[GEAR_SCHEMA])
-        if errors:
-            report.fail("not-checkable", path,
-                        "file does not match %s (%d errors; see the schema check); "
-                        "its gear is left out of the reference gear"
-                        % (GEAR_SCHEMA, len(errors)), data.get("id"))
-            continue
-        for index, entry in enumerate(data["gear"]):
-            seen.setdefault(entry["item"], []).append("%s#/gear/%d" % (path, index))
-            if _gear_entry_ok(report, path, index, entry):
-                good.append((path, entry))
-    duplicates = set()
-    for item in sorted(seen):
-        if len(seen[item]) > 1:
-            duplicates.add(item)
-            for path in sorted(set(w.split("#")[0] for w in seen[item])):
-                report.fail("gear-duplicate", path,
-                            "item has %d gear entries: %s; one entry per item"
-                            % (len(seen[item]), ", ".join(seen[item])), item)
-    return len(files), [(p, e) for p, e in good if e["item"] not in duplicates]
+load_gear = gearlib.load_gear  # the drops check reads gear through here
 
 
-def _gear_entry_ok(report, path, index, entry):
-    item = entry["item"]
-    where = "/gear/%d" % index
-    ok = True
-    slot = entry["slot"]
-    if slot == "weapon" and "style" not in entry:
-        report.fail("gear-shape", path, "%s: a weapon needs a style" % where, item)
-        ok = False
-    if slot == "armour" and "style" in entry:
-        report.fail("gear-shape", path, "%s: armour has no style" % where, item)
-        ok = False
-    need = ("power", "accuracy") if slot == "weapon" else ("armour",)
-    banned = ("armour",) if slot == "weapon" else ("power", "accuracy")
-    rows = entry["stats_by_calibration"]
-    if rows[0] is None:
-        report.fail("gear-row-zero", path,
-                    "%s/stats_by_calibration/0: row +0 is null; only rows +1 to +20 "
-                    "may be null" % where, item)
-        ok = False
-    for n, row in enumerate(rows):
-        if row is None:
-            continue
-        rwhere = "%s/stats_by_calibration/%d" % (where, n)
-        if row["calibration"] != n:
-            report.fail("gear-row-order", path,
-                        "%s: calibration is %s; row %d must be +%d"
-                        % (rwhere, row["calibration"], n, n), item)
-            ok = False
-        missing = [k for k in need if k not in row]
-        extra = [k for k in banned if k in row]
-        if missing or extra:
-            article = "a weapon" if slot == "weapon" else "an armour"
-            report.fail("gear-shape", path,
-                        "%s: %s row needs %s%s"
-                        % (rwhere, article, " and ".join(need),
-                           "; %s is not %s stat" % (", ".join(extra), article) if extra else ""),
-                        item)
-            ok = False
-    return ok
+class GearSet:
+    """The gear that keeps the gear rules, any zone, by slot.
+
+    weapons: [(item, style, level_required, power, accuracy)] at +0;
+    legacy: [(item, level_required, armour)] at +0, the legacy armour slot;
+    pieces: {slot: [(item, level_required, stat)]} at +0 for each slot worn
+    by combat level, stat being armour (charm: accuracy);
+    best_rows: the same three, but each entry at every calibration row that
+    is not null, for the over-geared NOTE ((item, calibration) in place of
+    item)."""
+
+    def __init__(self, gear):
+        self.weapons, self.legacy, self.pieces = [], [], dict((s, []) for s in COMBAT_LEVEL_SLOTS)
+        self.cal_weapons, self.cal_legacy = [], []
+        self.cal_pieces = dict((s, []) for s in COMBAT_LEVEL_SLOTS)
+        self.tools = 0
+        for _path, e in gear:
+            slot, item, req = e["slot"], e["item"], e["level_required"]
+            if slot == gearlib.TOOL:
+                self.tools += 1
+                continue
+            for n, row in enumerate(e["stats_by_calibration"]):
+                if row is None:
+                    continue
+                if slot == gearlib.WEAPON:
+                    found = (e["style"], req, row["power"], row["accuracy"])
+                    if n == 0:
+                        self.weapons.append((item,) + found)
+                    self.cal_weapons.append(((item, n),) + found)
+                elif slot == LEGACY_ARMOUR:
+                    if n == 0:
+                        self.legacy.append((item, req, row["armour"]))
+                    self.cal_legacy.append(((item, n), req, row["armour"]))
+                else:
+                    stat = row[gearlib.ROW_STATS[slot][0]]
+                    if n == 0:
+                        self.pieces[slot].append((item, req, stat))
+                    self.cal_pieces[slot].append(((item, n), req, stat))
+        for listed in [self.weapons, self.legacy, self.cal_weapons, self.cal_legacy] + \
+                list(self.pieces.values()) + list(self.cal_pieces.values()):
+            listed.sort()
+
+    def slot_count(self, slot):
+        return len(self.pieces[slot])
+
+
+def load_cap(report, path, data):
+    """KILL_TIME_CAP_FRACTION from the model's kill_time.floor, or None after
+    a FAIL (kill-time-cap)."""
+    floor = data.get("kill_time", {}).get("floor") if isinstance(data.get("kill_time"), dict) else None
+    entry = floor.get(CAP_KEY) if isinstance(floor, dict) else None
+    value = entry.get("value") if isinstance(entry, dict) else None
+    if isinstance(value, (int, float)) and not isinstance(value, bool) and 0 < value <= 1:
+        return value
+    report.fail("kill-time-cap", path,
+                "kill_time.floor.%s.value is %r; the kill-time rule needs a number in "
+                "(0, 1] (combat.json revision 10), so every floored time here uses "
+                "gear_ratio 1 and no over-geared time is shown"
+                % (CAP_KEY, value), data.get("id"))
+    return None
 
 
 def zone_of(ident):
@@ -361,7 +391,7 @@ def secondary_levels(curve, c):
 
 
 class Player:
-    def __init__(self, c, level, secondary, weapon, armour_points):
+    def __init__(self, c, level, secondary, weapon, armour_points, charm_accuracy=0):
         self.level = level
         self.secondary = secondary
         self.weapon = weapon  # (item, style, power, accuracy)
@@ -369,12 +399,13 @@ class Player:
         self.crit = min(c["CRIT_CHANCE_CAP"], c["CRIT_CHANCE_PER_PRECISION"] * secondary)
         self.pressure_mult = 1 + c["PRESSURE_DAMAGE_PER_LEVEL"] * secondary
         self.armour = secondary + armour_points
+        self.charm_accuracy = charm_accuracy
 
 
 def swing(c, player, monster):
     """(mean, second moment) of the player's swing damage against monster."""
     _item, style, power, accuracy_bonus = player.weapon
-    accuracy = player.level + player.secondary + accuracy_bonus
+    accuracy = player.level + player.secondary + accuracy_bonus + player.charm_accuracy
     hit = c["HIT_CHANCE_BASE"] + c["HIT_CHANCE_PER_POINT"] * (accuracy - monster["evasion"])
     hit = min(c["HIT_CHANCE_MAX"], max(c["HIT_CHANCE_MIN"], hit))
     max_hit = (power + c["DAMAGE_PER_STYLE_LEVEL"] * player.level) * player.pressure_mult
@@ -448,23 +479,96 @@ class Fight:
 
 
 def _best_weapon(c, weapons, style, player_args, monster):
-    """The +0 weapon of style with level_required <= L and the highest mean
-    swing against monster; ties to the lower item id. None if there is none."""
-    level, secondary, armour_points = player_args
+    """The weapon of style with level_required <= the player's level (the
+    first of player_args) and the highest mean swing against monster; ties
+    to the lower item id. None if there is none. weapons are (item, style,
+    level_required, power, accuracy); item may be (item, calibration)."""
+    level, secondary, armour_points, charm = player_args
     best = None
     for item, wstyle, required, power, accuracy in weapons:
         if wstyle != style or required > level:
             continue
         weapon = (item, wstyle, power, accuracy)
-        mean, _ = swing(c, Player(c, level, secondary, weapon, armour_points), monster)
+        mean, _ = swing(c, Player(c, level, secondary, weapon, armour_points, charm), monster)
         key = (-mean, item)
         if best is None or key < best[0]:
             best = (key, weapon)
     return best[1] if best else None
 
 
-def _times(seconds, target):
-    return "computed %.1f s, floored %.1f s" % (seconds, max(target, seconds))
+def _best_piece(pieces, gate, keep=None):
+    """(item, stat) of the piece with the highest stat and level_required <=
+    gate, ties to the lower item; None if none. pieces are (item,
+    level_required, stat)."""
+    best = None
+    for item, required, stat in pieces:
+        if required > gate or (keep is not None and not keep(item)):
+            continue
+        if best is None or (-stat, item) < (-best[1], best[0]):
+            best = (item, stat)
+    return best
+
+
+def _label(item):
+    """An item id, or "<id> +<n>" for a calibrated row."""
+    return item if isinstance(item, str) else "%s +%d" % item
+
+
+class Loadout:
+    """The non-weapon slots of one loadout: legacy, (item, armour) or None,
+    the legacy armour slot (worn by Fortitude); slots, {slot: (item, stat) or
+    None} for each slot worn by combat level. armour_points is the legacy
+    piece plus the five armour slots; charm is the Charm's accuracy."""
+
+    def __init__(self, legacy, slots):
+        self.legacy = legacy
+        self.slots = slots
+        self.armour_points = legacy[1] if legacy else 0
+        for slot in ARMOUR_SLOTS:
+            if slots.get(slot):
+                self.armour_points += slots[slot][1]
+        self.charm = slots[gearlib.CHARM][1] if slots.get(gearlib.CHARM) else 0
+
+    def empty(self):
+        return [s for s in COMBAT_LEVEL_SLOTS if not self.slots.get(s)]
+
+    def args(self, level, secondary):
+        return (level, secondary, self.armour_points, self.charm)
+
+    def text(self):
+        """", armour X" exactly as before revision 10 when no slot worn by
+        combat level is filled; otherwise every slot, the empty ones named."""
+        legacy = _label(self.legacy[0]) if self.legacy else "none"
+        filled = [s for s in COMBAT_LEVEL_SLOTS if self.slots.get(s)]
+        if not filled:
+            return ", armour %s" % legacy
+        out = ", legacy armour %s" % legacy
+        for s in filled:
+            out += ", %s %s" % (s, _label(self.slots[s][0]))
+        if self.empty():
+            out += " (empty: %s)" % ", ".join(self.empty())
+        return out + "; armour points %s, charm accuracy %s" % (
+            _num(self.armour_points), _num(self.charm))
+
+
+def _loadout(legacy, pieces, sec, combat_level, keep=None):
+    return Loadout(_best_piece(legacy, sec, keep),
+                   dict((s, _best_piece(pieces[s], combat_level, keep))
+                        for s in COMBAT_LEVEL_SLOTS))
+
+
+def expected_seconds(computed, target, ratio, cap, boss):
+    """kill_time.floor (revision 10): max(computed, seconds_per_kill x
+    max(cap, min(1, gear_ratio))). Bosses, an unset cap or an unknown ratio
+    keep the old floor, max(computed, seconds_per_kill)."""
+    if boss or cap is None or ratio is None or ratio >= 1:
+        return max(target, computed)
+    return max(computed, target * max(cap, ratio))
+
+
+def _times(seconds, target, ratio=None, cap=None, boss=False):
+    return "computed %.1f s, floored %.1f s" % (
+        seconds, expected_seconds(seconds, target, ratio, cap, boss))
 
 
 class Reference:
@@ -473,41 +577,87 @@ class Reference:
     (work order 013) so both read the same player. level_ok is False when the
     monster's level is not in the curve table; weapon is None when no
     weakness-style weapon qualifies, or when the boss's listed reference
-    weapon breaks a rule (listed_problems, [(rule, text)]); armour is None
-    when no armour does. best_weapon is the gear.reference_gear weapon,
-    which is the weapon unless the boss is in reference_weapons
-    ({boss id: item id}, combat.json boss.reference_weapon); listed is that
-    item, or None."""
+    weapon breaks a rule (listed_problems, [(rule, text)]); armour is the
+    legacy armour piece, or None. loadout holds every non-weapon slot; a
+    boss's six slots worn by combat level are empty (boss_slots_empty) until
+    work order 030 records what work order 025's Act I walk holds.
+    best_weapon is the gear.reference_gear weapon, which is the weapon unless
+    the boss is in reference_weapons ({boss id: item id}, combat.json
+    boss.reference_weapon); listed is that item, or None.
 
-    def __init__(self, c, sec_of, all_weapons, all_armours, boss_drops, m,
-                 reference_weapons=None):
+    reference_time is the gear_ratio denominator (combat.json
+    kill_time.floor, Jeremy, 30 October 2026): the fastest of the three
+    styles' reference loadouts for the player's own levels, each the best +0
+    weapon of that style at or below the player's level in it plus the best
+    +0 piece in each of the six other gear.loadout slots (not the legacy
+    armour slot), all from any zone, boss drops counting like any other
+    piece, Rations stocked (kill_time.floor.gear_ratio.T_ref and .pool). None
+    for a boss, or when no style's loadout can be computed."""
+
+    def __init__(self, c, sec_of, gearset, boss_drops, m, reference_weapons=None):
         ident, level = m["id"], m["level"]
         self.zone = zone_of(ident)
         self.banned = boss_drops.get(ident, set()) if m["boss"] else set()
-        self.weapons = [w for w in all_weapons
-                        if zone_of(w[0]) == self.zone and w[0] not in self.banned]
-        armours = [a for a in all_armours
-                   if zone_of(a[0]) == self.zone and a[0] not in self.banned]
+
+        def keep(item):
+            return zone_of(item) == self.zone and item not in self.banned
+        self.weapons = [w for w in gearset.weapons if keep(w[0])]
         self.level_ok = level in sec_of
         self.armour = self.weapon = self.player = self.best_weapon = None
+        self.loadout = None
+        self.reference_time = None
+        self.boss_slots_empty = bool(m["boss"])
         self.listed = (reference_weapons or {}).get(ident) if m["boss"] else None
         self.listed_problems = []
         if not self.level_ok:
             return
         self.sec = sec_of[level]
-        for item, required, points in armours:
-            if required <= self.sec and (self.armour is None or
-                                         (-points, item) < (-self.armour[1], self.armour[0])):
-                self.armour = (item, points)
-        self.armour_points = self.armour[1] if self.armour else 0
-        self.args = (level, self.sec, self.armour_points)
+        # combat_level = max(melee, marksmanship, aetherics): main at L, the
+        # other two at S <= L (gear.combat_level.reference).
+        self.combat_level = max(level, self.sec)
+        pieces = gearset.pieces
+        if m["boss"]:
+            pieces = dict((s, []) for s in COMBAT_LEVEL_SLOTS)
+        self.loadout = _loadout(gearset.legacy, pieces, self.sec, self.combat_level, keep)
+        self.armour = self.loadout.legacy
+        self.armour_points = self.loadout.armour_points
+        self.charm = self.loadout.charm
+        self.args = self.loadout.args(level, self.sec)
         self.best_weapon = _best_weapon(c, self.weapons, m["weakness"], self.args, m)
         if self.listed is None:
             self.weapon = self.best_weapon
         else:
-            self.weapon = self._listed_weapon(all_weapons, m)
+            self.weapon = self._listed_weapon(gearset.weapons, m)
         if self.weapon is not None:
-            self.player = Player(c, level, self.sec, self.weapon, self.armour_points)
+            self.player = Player(c, level, self.sec, self.weapon, self.armour_points,
+                                 self.charm)
+        if not m["boss"] and c[RATION_KEY] is not None:
+            self.reference_time = self._reference_time(c, gearset, m)
+
+    def _reference_time(self, c, gearset, m):
+        level, sec = m["level"], self.sec
+        # T_ref counts only gear.loadout's six slots; the legacy slot does not.
+        every = _loadout([], gearset.pieces, sec, self.combat_level)
+        times = []
+        for style in STYLES:
+            style_level = level if style == m["weakness"] else sec
+            args = every.args(style_level, sec)
+            w = _best_weapon(c, gearset.weapons, style, args, m)
+            if w is None:
+                continue
+            fight = Fight(c, Player(c, style_level, sec, w, every.armour_points, every.charm),
+                          m, c[RATION_KEY])
+            seconds = fight.stocked() if fight.damaging() else None
+            if seconds is not None:
+                times.append(seconds)
+        return min(times) if times else None
+
+    def gear_ratio(self, seconds):
+        """Stocked computed seconds with some loadout / reference_time, or
+        None when either is unknown."""
+        if seconds is None or not self.reference_time:
+            return None
+        return seconds / self.reference_time
 
     def _listed_weapon(self, all_weapons, m):
         """The listed weapon as (item, style, power, accuracy), or None after
@@ -517,7 +667,7 @@ class Reference:
         if not found:
             self.listed_problems.append((
                 "reference-weapon-missing",
-                "boss.reference_weapon is %s, which has no gear/1 weapon entry that "
+                "boss.reference_weapon is %s, which has no gear weapon entry that "
                 "keeps the gear rules" % item))
             return None
         _item, style, required, power, accuracy = found[0]
@@ -541,10 +691,10 @@ class Reference:
         return (item, style, power, accuracy)
 
 
-def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path, m,
-                  reference_weapons=None):
+def check_monster(report, c, sec_of, gearset, boss_drops, path, m,
+                  reference_weapons=None, cap=None):
     ident, level, style = m["id"], m["level"], m["weakness"]
-    ref = Reference(c, sec_of, all_weapons, all_armours, boss_drops, m, reference_weapons)
+    ref = Reference(c, sec_of, gearset, boss_drops, m, reference_weapons)
     zone, banned, weapons = ref.zone, ref.banned, ref.weapons
     target = m["seconds_per_kill"]
     heal = c[RATION_KEY]
@@ -552,14 +702,20 @@ def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path,
         report.fail("level-off-curve", path,
                     "level %d is not in the curve table" % level, ident)
         return
-    sec, armour = ref.sec, ref.armour
-    if armour is None:
-        report.warn("no-armour", path,
-                    "no +0 %s armour with level_required <= %d (the reference "
-                    "player's Fortitude at level %d)%s; armour 0 used"
-                    % (zone, sec, level, ", leaving out the boss's own drops" if banned else ""),
-                    ident)
-    armour_points, args, weapon = ref.armour_points, ref.args, ref.weapon
+    sec, loadout = ref.sec, ref.loadout
+    empty = loadout.empty()
+    if m["boss"]:
+        report.warn("empty-slots", path,
+                    "a boss's %s are what work order 025's Act I walk holds "
+                    "(boss.reference_weapon._non_weapon_slots), and none are listed yet "
+                    "(work order 030); they are empty and give 0" % ", ".join(empty), ident)
+    elif empty:
+        report.warn("empty-slots", path,
+                    "no +0 %s piece with level_required <= %d (the reference player's "
+                    "combat level at level %d) in %s; %s 0"
+                    % (zone, ref.combat_level, level, ", ".join(empty),
+                       "it gives" if len(empty) == 1 else "they give"), ident)
+    args, weapon = ref.args, ref.weapon
     if ref.listed_problems:
         for rule, text in ref.listed_problems:
             report.fail(rule, path, "%s; its win chance is not computed" % text, ident)
@@ -578,17 +734,19 @@ def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path,
                     "the reference player's mean swing with %s is 0 (or max_hp is 0); "
                     "nothing can be computed" % weapon[0], ident)
         return
-    who = ("reference player main %s %d, other six %d, max_hp %s, %s%s, armour %s"
+    who = ("reference player main %s %d, other six %d, max_hp %s, %s%s%s"
            % (style, level, sec, _num(player.max_hp), weapon[0],
-              " (boss.reference_weapon)" if ref.listed else "",
-              armour[0] if armour else "none"))
+              " (boss.reference_weapon)" if ref.listed else "", loadout.text()))
     heal_open = ("%s is %s in the combat model (Cooking work order)"
                  % (RATION_KEY, "null" if heal is None else heal))
+
+    def make(w, lo=loadout, lvl=level):
+        return Player(c, lvl, sec, w, lo.armour_points, lo.charm)
 
     if m["boss"]:
         _check_boss(report, c, path, m, fight, who, heal, heal_open)
     else:
-        _check_kill(report, path, m, fight, who, heal, heal_open)
+        _check_kill(report, path, m, fight, who, heal, heal_open, ref, cap)
 
     # NOTE lines: each unmatched style, Rations stocked; matched without Rations.
     for other in STYLES:
@@ -599,7 +757,7 @@ def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path,
         if w is None:
             report.note("%s: no +0 %s %s weapon at level %d" % (label, zone, other, level))
             continue
-        uf = Fight(c, Player(c, level, sec, w, armour_points), m, heal)
+        uf = Fight(c, make(w), m, heal)
         if not uf.damaging():
             report.note("%s with %s: mean swing is 0" % (label, w[0]))
         elif heal is None:
@@ -610,7 +768,8 @@ def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path,
         else:
             s = uf.stocked()
             report.note("%s with %s: %s" % (
-                label, w[0], "never ends (f >= 1)" if s is None else _times(s, target)))
+                label, w[0], "never ends (f >= 1)" if s is None
+                else _times(s, target, ref.gear_ratio(s), cap)))
     if ref.listed:
         best = ref.best_weapon
         label = ("%s: matched with the best weapon (gear.reference_gear), Rations stocked"
@@ -620,7 +779,7 @@ def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path,
                         % (label, zone, style, level,
                            ", leaving out the boss's own drops" if banned else ""))
         else:
-            bf = Fight(c, Player(c, level, sec, best, armour_points), m, heal)
+            bf = Fight(c, make(best), m, heal)
             if not bf.damaging():
                 report.note("%s with %s: mean swing is 0" % (label, best[0]))
             elif heal is None and c["BOSS_RATION_CAP_PER_ATTEMPT"] > 0:
@@ -632,12 +791,39 @@ def check_monster(report, c, sec_of, all_weapons, all_armours, boss_drops, path,
         p, t = fight.win_chance(0)
         report.note("%s: matched, without Rations: win chance %.3f" % (ident, p))
     else:
+        # gear_ratio compares stocked fights with the same gear: 1 here.
         s, k = fight.unstocked()
         report.note("%s: matched, without Rations: %s, %.2f knockouts per kill"
                     % (ident, _times(s, target), k))
+        _over_geared(report, c, gearset, ref, m, heal, cap)
 
 
-def _check_kill(report, path, m, fight, who, heal, heal_open):
+def _over_geared(report, c, gearset, ref, m, heal, cap):
+    """The NOTE showing kill_time.floor's cap at work: the same player with
+    the best piece in every slot from any zone at any calibration row that is
+    not null, under the same gates. Printed only when gear_ratio < 1."""
+    if heal is None or cap is None or not ref.reference_time:
+        return
+    level, sec = m["level"], ref.sec
+    lo = _loadout(gearset.cal_legacy, gearset.cal_pieces, sec, ref.combat_level)
+    w = _best_weapon(c, gearset.cal_weapons, m["weakness"], lo.args(level, sec), m)
+    if w is None:
+        return
+    fight = Fight(c, Player(c, level, sec, w, lo.armour_points, lo.charm), m, heal)
+    seconds = fight.stocked() if fight.damaging() else None
+    ratio = ref.gear_ratio(seconds)
+    if ratio is None or ratio >= 1 - 1e-9:
+        return
+    target = m["seconds_per_kill"]
+    report.note("%s: over-geared (the best piece in every slot, any zone, any calibration), "
+                "Rations stocked with %s%s: %s against seconds_per_kill %s; gear_ratio %.3f "
+                "against the reference %.1f s, %s %s"
+                % (m["id"], _label(w[0]), lo.text(), _times(seconds, target, ratio, cap),
+                   _num(target), ratio, ref.reference_time,
+                   "capped at" if ratio < cap else "above", CAP_KEY + " " + _num(cap)))
+
+
+def _check_kill(report, path, m, fight, who, heal, heal_open, ref=None, cap=None):
     ident, target = m["id"], m["seconds_per_kill"]
     if heal is None:
         report.warn("ration-heal-open", path,
@@ -652,8 +838,9 @@ def _check_kill(report, path, m, fight, who, heal, heal_open):
                     ident)
         return
     off = (seconds - target) / target
+    ratio = ref.gear_ratio(seconds) if ref is not None else None
     text = ("matched, Rations stocked: %s against seconds_per_kill %s (off by %+.1f%%); %s"
-            % (_times(seconds, target), _num(target), off * 100, who))
+            % (_times(seconds, target, ratio, cap), _num(target), off * 100, who))
     if KILL_TIME_TOLERANCE_FRACTION is None:
         report.warn("kill-time-tolerance-unset", path,
                     "%s; not enforced because KILL_TIME_TOLERANCE_FRACTION is unset" % text,
@@ -701,14 +888,14 @@ def run(root):
     schemas = lib.load_schemas("content")
     gear_files, gear = load_gear(report, root, schemas)
     old_files, monsters = load_monsters(report, root, schemas)
-    weapons = sorted((e["item"], e["style"], e["level_required"],
-                      e["stats_by_calibration"][0]["power"],
-                      e["stats_by_calibration"][0]["accuracy"])
-                     for _p, e in gear if e["slot"] == "weapon")
-    armours = sorted((e["item"], e["level_required"], e["stats_by_calibration"][0]["armour"])
-                     for _p, e in gear if e["slot"] == "armour")
-    report.note("%d gear file(s); %d weapon(s), %d armour piece(s) keep the gear rules, any zone"
-                % (gear_files, len(weapons), len(armours)))
+    gearset = GearSet(gear)
+    counts = ["%d %s" % (gearset.slot_count(s), s) for s in COMBAT_LEVEL_SLOTS
+              if gearset.slot_count(s)]
+    if gearset.tools:
+        counts.append("%d tool(s)" % gearset.tools)
+    report.note("%d gear file(s); %d weapon(s), %d armour piece(s)%s keep the gear rules, any zone"
+                % (gear_files, len(gearset.weapons), len(gearset.legacy),
+                   "" if not counts else " (legacy slot), " + ", ".join(counts)))
     if not monsters:
         report.note("%d monster/1 file(s) awaiting combat stats, 0 monsters on %s; "
                     "nothing to check" % (old_files, COMBAT_MONSTER_SCHEMA))
@@ -719,6 +906,7 @@ def run(root):
     if model is None or curve is None:
         return report
     c = dict((k, v["value"]) for k, v in model["constants"].items())
+    cap = load_cap(report, model_path, model)
     reference_weapons = load_reference_weapons(report, model_path, model, monsters)
     sec_of = secondary_levels(curve, c)
     report.note("%d monster(s) on %s, %d monster/1 file(s) skipped; model %s, curve %s, "
@@ -727,8 +915,8 @@ def run(root):
                            "null (open)" if c[RATION_KEY] is None else _num(c[RATION_KEY])))
     boss_drops = load_boss_drops(root)
     for path, m in monsters:
-        check_monster(report, c, sec_of, weapons, armours, boss_drops, path, m,
-                      reference_weapons)
+        check_monster(report, c, sec_of, gearset, boss_drops, path, m,
+                      reference_weapons, cap)
     return report
 
 

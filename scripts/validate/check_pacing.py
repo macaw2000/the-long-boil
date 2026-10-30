@@ -42,6 +42,29 @@ combat skill":
   curve derives 5,600 main-skill XP a day = 12 h x 0.70 x the reference
   rate. Applying the share to xp as well would count it twice.
 
+Tools (work order 029, content/tuning/tools.json): the reference player
+holds, at each level L of a gathering or production skill, the best tool for
+that skill they can wear: the tool entry (gear/2 slot "tool", read through
+scripts/validate/gear.py, which the combat check reports on) of that skill
+with level_required <= L and the highest +0 speed_percent, any zone, ties to
+the lower item id. A go then takes seconds / (1 + speed_percent / 100), so
+that level's best XP per hour is multiplied by 1 + speed_percent / 100. The
+band days and the effective rate above are the with-tool figures, which
+TARGET_BAND_DAYS is held to (tools.json pacing.settled_intent: the 14 days a
+zone assume the reference player holds tools). For a skill with at least one
+tool, each band's line gives the days with tools and without, and the tools
+used. A skill with no tool is paced exactly as before, and its lines are
+unchanged. Combat has no tool.
+
+When any tool exists, the tool model is needed: the one content file whose
+schema is tuning.tools/1 and which matches it (no-tool-model,
+many-tool-models). Every tool's +0 speed_percent must equal
+TOOL_SPEED_PERCENT_PER_LEVEL x level_required (tools.json speed.at_plus_0;
+tool-speed). Pacing uses the row as written either way, as the engine
+would. (A tool's skill is one of the eight by gear/2's enum, and
+tuning.tools/1 fixes slots.skills to the same eight, so no check here
+compares them.) A tool for a skill with no actions is a NOTE.
+
 The curve is the one content file whose schema is tuning.xp_curve/1 and which
 matches that schema. With no actions and no monsters there is nothing to check
 and no curve is needed.
@@ -54,6 +77,7 @@ import sys
 sys.dont_write_bytecode = True  # keep __pycache__ out of the repo
 
 import lib  # noqa: E402
+import gear as gearlib  # noqa: E402
 from check_xp_curve import TARGET_BAND_DAYS, ZONE_BANDS, band_key  # noqa: E402
 
 CHECK = "pacing"
@@ -68,6 +92,8 @@ CHECKABLE_MONSTER_SCHEMAS = ("monster/1", "monster/2")
 # the main combat skill is whichever one the loadout is built around.
 MAIN_COMBAT_LABEL = "main combat skill"
 CURVE_SCHEMA = "tuning.xp_curve/1"
+TOOLS_SCHEMA = "tuning.tools/1"
+TOOL_SPEED_KEY = "TOOL_SPEED_PERCENT_PER_LEVEL"
 
 # Work order 003, scope 4: a band passes when its days are within 2 of 14.
 BAND_DAYS_TOLERANCE = 2
@@ -151,6 +177,69 @@ def load_curve(report, root, schemas):
                     "%d valid %s files; pacing needs exactly one"
                     % (len(found), CURVE_SCHEMA))
     return None, None
+
+
+def load_tools_model(report, root, schemas):
+    """Returns (path, model) for the one valid tuning.tools/1 file, or
+    (None, None) after reporting why."""
+    found, bad = [], []
+    for path in lib.content_files(root):
+        data, error = lib.load_json(root, path)
+        if error or _declared(data) != TOOLS_SCHEMA:
+            continue
+        if lib.validate(data, schemas[TOOLS_SCHEMA]):
+            bad.append(path)
+        else:
+            found.append((path, data))
+    if len(found) == 1:
+        return found[0]
+    if not found:
+        report.fail("no-tool-model", ", ".join(bad) or "-",
+                    "tools exist but no file is a valid %s model%s, so no tool's speed "
+                    "can be checked against its rule"
+                    % (TOOLS_SCHEMA, " (these declare it but do not match it; see the "
+                       "schema check)" if bad else ""))
+    else:
+        report.fail("many-tool-models", ", ".join(p for p, _ in found),
+                    "%d valid %s files; pacing needs exactly one" % (len(found), TOOLS_SCHEMA))
+    return None, None
+
+
+def load_tools(report, root, schemas):
+    """{skill: [(item, level_required, speed_percent, path)]} for every tool
+    that keeps the gear rules, after checking each against the tool model.
+    Gear-rule failures are the combat check's to report."""
+    _n, gear = gearlib.load_gear(lib.Report("combat"), root, schemas)
+    by_skill = gearlib.tools(gear)
+    if not by_skill:
+        return by_skill
+    path, model = load_tools_model(report, root, schemas)
+    if model is None:
+        return by_skill
+    per_level = model["constants"][TOOL_SPEED_KEY]["value"]
+    for skill in sorted(by_skill):
+        for item, required, speed, gpath in by_skill[skill]:
+            want = per_level * required
+            if abs(speed - want) > 1e-9:
+                report.fail("tool-speed", gpath,
+                            "+0 speed_percent is %s; %s x level_required %d = %s (%s "
+                            "speed.at_plus_0)" % (_fmt(speed), TOOL_SPEED_KEY, required,
+                                                  _fmt(want), path), item)
+    return by_skill
+
+
+def _fmt(value):
+    return ("%d" % value) if float(value).is_integer() else ("%s" % value)
+
+
+def best_tool(tools, level):
+    """(item, speed_percent) of the best tool wearable at level, or None.
+    Ties go to the lower item id."""
+    worn = [t for t in tools if t[1] <= level]
+    if not worn:
+        return None
+    item, _req, speed, _path = min(worn, key=lambda t: (-t[2], t[0]))
+    return item, speed
 
 
 def _positive_number(value):
@@ -260,7 +349,9 @@ def _spans(used):
                      for i, a, b in spans)
 
 
-def check_band(report, pool, start, end, inputs):
+def check_band(report, pool, start, end, inputs, tools=None):
+    """tools: [(item, level_required, speed_percent, path)] for the pool's
+    skill, or None/[] for none (the band is then paced exactly as before)."""
     hours_per_day, reference_xph, costs, targets = inputs
     entries = pool.entries
     label = "%s band %d to %d" % (pool.label, start, end)
@@ -279,21 +370,35 @@ def check_band(report, pool, start, end, inputs):
         return
 
     hours = 0.0
+    bare_hours = 0.0
     band_xp = 0
-    used, paths = [], set()
+    used, paths, worn = [], set(), []
     for level in range(start, end):
         path, ident, _lvl, xph = best_entry(entries, level)
-        hours += costs[level] / xph
+        tool = best_tool(tools, level) if tools else None
+        if tool is None:
+            hours += costs[level] / xph
+        else:
+            hours += costs[level] / (xph * (1 + tool[1] / 100.0))
+            paths.update(t[3] for t in tools if t[0] == tool[0])
+        bare_hours += costs[level] / xph
         band_xp += costs[level]
         used.append((level, ident))
+        worn.append((level, tool[0] if tool else "no tool"))
         paths.add(path)
     days = hours / hours_per_day
     multiple = (band_xp / hours) / reference_xph
     target = targets.get(band_key(start, end))
     target_text = ("%sx" % target) if target is not None else "none stated"
-    summary = ("%s: %.2f days, effective rate %.2fx the reference (curve target %s); "
-               "best %s: %s" % (label, days, multiple, target_text, pool.best_word,
+    if tools:
+        days_text = "%.2f days with tools, %.2f without" % (days, bare_hours / hours_per_day)
+    else:
+        days_text = "%.2f days" % days
+    summary = ("%s: %s, effective rate %.2fx the reference (curve target %s); "
+               "best %s: %s" % (label, days_text, multiple, target_text, pool.best_word,
                                 _spans(used)))
+    if tools:
+        summary += "; best tools: %s" % _spans(worn)
     if abs(days - TARGET_BAND_DAYS) > BAND_DAYS_TOLERANCE:
         report.fail("band-days", ", ".join(sorted(paths)),
                     "%s; must be within %s of %d days"
@@ -322,6 +427,11 @@ def run(root):
     if inputs is None:
         return report
 
+    tools = load_tools(report, root, schemas)
+    if tools:
+        report.note("tools: %d tool(s) in %d skill(s) keep the gear rules; each band's "
+                    "days are with the best wearable tool at every level"
+                    % (sum(len(v) for v in tools.values()), len(tools)))
     if actions:
         by_skill = {}
         for pa in actions:
@@ -332,7 +442,10 @@ def run(root):
         for skill in sorted(by_skill):
             pool = action_pool(skill, by_skill[skill])
             for start, end in ZONE_BANDS:
-                check_band(report, pool, start, end, inputs)
+                check_band(report, pool, start, end, inputs, tools.get(skill))
+        for skill in sorted(set(tools) - set(by_skill)):
+            report.note("skill %s: %d tool(s), no actions; not paced"
+                        % (skill, len(tools[skill])))
 
     if monsters:
         pool = monster_pool(monsters)

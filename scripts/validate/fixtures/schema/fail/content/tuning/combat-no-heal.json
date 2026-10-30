@@ -147,7 +147,13 @@
   "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
  },
  "kill_time": {
-  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes.",
+  "floor": {
+   "KILL_TIME_CAP_FRACTION": {
+    "value": 0.8,
+    "basis": "proposal"
+   }
+  }
  },
  "rations": {
   "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."

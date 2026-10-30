@@ -1,0 +1,37 @@
+{
+ "schema": "gear/1",
+ "id": "gear.global.fixture_new_in_1",
+ "gear": [
+  {
+   "item": "item.global.fixture_old_cap",
+   "slot": "head",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 3
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ ]
+}

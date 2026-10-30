@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gear/2",
+  "title": "Gear, version 2",
+  "description": "A file under content/gear/ (work order 029; combat.json revision 10, content/tuning/tools.json). gear/1 plus every slot of the seven-slot loadout and the tool slots. A top-level id of the form gear.<zone>.<name>. 'gear' lists one entry per gear item: item, the id of an item under content/items/; slot, one of weapon, off_hand, head, body, hands, feet, charm (combat.json gear.loadout), tool (one tool slot per gathering and production skill, tools.json slots), or armour, the legacy revision-9 slot that content/gear/cinderworks.json still uses until it moves (combat.json gear.legacy_armour_slot); style, melee, marksmanship or aetherics, weapons only; skill, the skill whose tool slot a tool fills, tools only; level_required, the level that gates wearing it: the weapon's style level, combat level (the highest of Melee, Marksmanship and Aetherics) for off_hand, head, body, hands, feet and charm, the tool's own skill level for a tool, and Fortitude for the legacy armour slot (combat.json gear.combat_level, gear.legacy_armour_slot; tools.json wear); stats_by_calibration, exactly 21 rows, +0 to +20. A weapon row is {calibration, power, accuracy}, power in the model's x10 units; an armour, off_hand, head, body, hands or feet row is {calibration, armour}; a charm row is {calibration, accuracy}; a tool row is {calibration, speed_percent}. Rows +1 to +20 may be null while the calibration step is open. Rules this subset of JSON Schema cannot say (row n has calibration n, row +0 is not null, which stats each slot's rows carry, style only and always on weapons, skill only and always on tools, one entry per item across gear/1 and gear/2) are checked by scripts/validate/gear.py for the combat check; a tool's +0 speed_percent against tools.json's rule is checked by scripts/validate/check_pacing.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "gear"
+  ],
+  "properties": {
+    "schema": {
+      "const": "gear/2"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^gear\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "gear": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gear"
+      }
+    }
+  },
+  "$defs": {
+    "gear": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item",
+        "slot",
+        "level_required",
+        "stats_by_calibration"
+      ],
+      "properties": {
+        "item": {
+          "type": "string",
+          "pattern": "^item\\.(rustmoor|cinderworks|thunderhead|global)\\.[a-z][a-z0-9_]*$"
+        },
+        "slot": {
+          "enum": [
+            "weapon",
+            "off_hand",
+            "head",
+            "body",
+            "hands",
+            "feet",
+            "charm",
+            "tool",
+            "armour"
+          ]
+        },
+        "style": {
+          "enum": [
+            "melee",
+            "marksmanship",
+            "aetherics"
+          ]
+        },
+        "skill": {
+          "enum": [
+            "prospecting",
+            "scavenging",
+            "lumbering",
+            "smithing",
+            "tinkering",
+            "tailoring",
+            "cooking",
+            "tea_blending"
+          ]
+        },
+        "level_required": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "stats_by_calibration": {
+          "type": "array",
+          "minItems": 21,
+          "maxItems": 21,
+          "items": {
+            "$ref": "#/$defs/row"
+          }
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "row": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "calibration"
+      ],
+      "properties": {
+        "calibration": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 20
+        },
+        "power": {
+          "type": "number",
+          "minimum": 0
+        },
+        "accuracy": {
+          "type": "number"
+        },
+        "armour": {
+          "type": "number",
+          "minimum": 0
+        },
+        "speed_percent": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+ "schema": "action/1",
+ "actions": [
+  {
+   "id": "action.global.fixture_tooled_smelt",
+   "skill": "smithing",
+   "level_required": 1,
+   "seconds": 54,
+   "xp": 8.6,
+   "inputs": [],
+   "outputs": []
+  },
+  {
+   "id": "action.global.fixture_untooled_dig",
+   "skill": "prospecting",
+   "level_required": 1,
+   "seconds": 60,
+   "xp": 11.8,
+   "inputs": [],
+   "outputs": []
+  }
+ ]
+}

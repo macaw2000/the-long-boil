@@ -1,0 +1,2 @@
+FAIL combat/kill-time-cap content/tuning/combat.json id=tuning.global.fixture_combat : kill_time.floor.KILL_TIME_CAP_FRACTION.value is 1.5; the kill-time rule needs a number in (0, 1] (combat.json revision 10), so every floored time here uses gear_ratio 1 and no over-geared time is shown
+WARN combat/empty-slots content/monsters/fixture.json id=monster.global.fixture_tin_rat : no +0 global piece with level_required <= 10 (the reference player's combat level at level 10) in off_hand, head, body, hands, feet, charm; they give 0

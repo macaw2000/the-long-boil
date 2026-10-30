@@ -1,0 +1,10 @@
+NOTE pacing : 0 monster file(s), 0 checkable monsters; main combat skill: nothing to check
+NOTE pacing : tools: 5 tool(s) in 2 skill(s) keep the gear rules; each band's days are with the best wearable tool at every level
+NOTE pacing : 1 action file(s), 2 checkable actions, 2 skill(s); curve content/tuning/curve.json, 5.00 band-skill hours a day
+NOTE pacing : skill prospecting band 1 to 20: 13.98 days, effective rate 1.18x the reference (curve target 0.71x); best actions: action.global.fixture_untooled_dig (levels 1-19)
+NOTE pacing : skill prospecting band 20 to 45: no actions unlocked inside the band; not checked
+NOTE pacing : skill prospecting band 45 to 70: no actions unlocked inside the band; not checked
+NOTE pacing : skill smithing band 1 to 20: 14.43 days with tools, 17.26 without, effective rate 1.14x the reference (curve target 0.71x); best actions: action.global.fixture_tooled_smelt (levels 1-19); best tools: item.global.fixture_tongs_1 (levels 1-4), item.global.fixture_tongs_5 (levels 5-9), item.global.fixture_tongs_10 (levels 10-14), item.global.fixture_tongs_15 (levels 15-19)
+NOTE pacing : skill smithing band 20 to 45: no actions unlocked inside the band; not checked
+NOTE pacing : skill smithing band 45 to 70: no actions unlocked inside the band; not checked
+NOTE pacing : skill lumbering: 1 tool(s), no actions; not paced

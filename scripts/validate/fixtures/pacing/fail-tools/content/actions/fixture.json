@@ -1,0 +1,14 @@
+{
+ "schema": "action/1",
+ "actions": [
+  {
+   "id": "action.global.fixture_quick_tinker",
+   "skill": "tinkering",
+   "level_required": 1,
+   "seconds": 54,
+   "xp": 10.6,
+   "inputs": [],
+   "outputs": []
+  }
+ ]
+}

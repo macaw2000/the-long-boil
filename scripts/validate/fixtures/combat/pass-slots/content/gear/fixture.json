@@ -1,0 +1,500 @@
+{
+ "schema": "gear/2",
+ "id": "gear.global.fixture_slots",
+ "gear": [
+  {
+   "item": "item.global.fixture_coil",
+   "slot": "weapon",
+   "style": "aetherics",
+   "level_required": 10,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 40,
+     "accuracy": 0
+    },
+    {
+     "calibration": 1,
+     "power": 50,
+     "accuracy": 0
+    },
+    {
+     "calibration": 2,
+     "power": 60,
+     "accuracy": 0
+    },
+    {
+     "calibration": 3,
+     "power": 70,
+     "accuracy": 0
+    },
+    {
+     "calibration": 4,
+     "power": 80,
+     "accuracy": 0
+    },
+    {
+     "calibration": 5,
+     "power": 90,
+     "accuracy": 0
+    },
+    {
+     "calibration": 6,
+     "power": 100,
+     "accuracy": 0
+    },
+    {
+     "calibration": 7,
+     "power": 110,
+     "accuracy": 0
+    },
+    {
+     "calibration": 8,
+     "power": 120,
+     "accuracy": 0
+    },
+    {
+     "calibration": 9,
+     "power": 130,
+     "accuracy": 0
+    },
+    {
+     "calibration": 10,
+     "power": 140,
+     "accuracy": 0
+    },
+    {
+     "calibration": 11,
+     "power": 150,
+     "accuracy": 0
+    },
+    {
+     "calibration": 12,
+     "power": 160,
+     "accuracy": 0
+    },
+    {
+     "calibration": 13,
+     "power": 170,
+     "accuracy": 0
+    },
+    {
+     "calibration": 14,
+     "power": 180,
+     "accuracy": 0
+    },
+    {
+     "calibration": 15,
+     "power": 190,
+     "accuracy": 0
+    },
+    {
+     "calibration": 16,
+     "power": 200,
+     "accuracy": 0
+    },
+    {
+     "calibration": 17,
+     "power": 210,
+     "accuracy": 0
+    },
+    {
+     "calibration": 18,
+     "power": 220,
+     "accuracy": 0
+    },
+    {
+     "calibration": 19,
+     "power": 230,
+     "accuracy": 0
+    },
+    {
+     "calibration": 20,
+     "power": 240,
+     "accuracy": 0
+    }
+   ]
+  },
+  {
+   "item": "item.global.fixture_spanner",
+   "slot": "weapon",
+   "style": "melee",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 30,
+     "accuracy": 2
+    },
+    {
+     "calibration": 1,
+     "power": 32,
+     "accuracy": 2
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_rifle",
+   "slot": "weapon",
+   "style": "marksmanship",
+   "level_required": 5,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "power": 20,
+     "accuracy": 6
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_slot_cap",
+   "slot": "head",
+   "level_required": 10,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 6
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_slot_vest",
+   "slot": "body",
+   "level_required": 3,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 4
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_slot_plate",
+   "slot": "body",
+   "level_required": 11,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 300
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_slot_gloves",
+   "slot": "hands",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 2
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_slot_boots",
+   "slot": "feet",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 2
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_slot_guard",
+   "slot": "off_hand",
+   "level_required": 5,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 4
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_slot_locket",
+   "slot": "charm",
+   "level_required": 8,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "accuracy": 3
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.thunderhead.fixture_far_helm",
+   "slot": "head",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 400
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_coat",
+   "slot": "armour",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "armour": 10
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_slot_tongs",
+   "slot": "tool",
+   "skill": "smithing",
+   "level_required": 5,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "speed_percent": 10
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ ]
+}

@@ -40,6 +40,9 @@ FAIL schema/shape content/drops/bad.json id=drop.global.fixture_bad : /tables/2/
 FAIL schema/shape content/drops/bad.json id=drop.global.fixture_bad : /zone_pity/0/kills: below minimum 1
 FAIL schema/shape content/drops/no-id.json : /: missing required field 'id'
 FAIL schema/shape content/drops/no-id.json : /: missing required field 'zone_pity'
+FAIL schema/shape content/gear/bad-2.json id=gear.global.fixture_bad_2 : /gear/0/slot: must be one of ["weapon", "off_hand", "head", "body", "hands", "feet", "charm", "tool", "armour"], got "neck"
+FAIL schema/shape content/gear/bad-2.json id=gear.global.fixture_bad_2 : /gear/1/skill: must be one of ["prospecting", "scavenging", "lumbering", "smithing", "tinkering", "tailoring", "cooking", "tea_blending"], got "fishing"
+FAIL schema/shape content/gear/bad-2.json id=gear.global.fixture_bad_2 : /gear/2/stats_by_calibration/0/speed_percent: below minimum 0
 FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/0/stats_by_calibration: fewer than 21 items
 FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/1/level_required: below minimum 1
 FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/1/style: must be one of ["melee", "marksmanship", "aetherics"], got "pressure"
@@ -49,6 +52,7 @@ FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/3/ro
 FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/3/stats_by_calibration/0/weight: field 'weight' is not allowed by this schema
 FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /gear/4: missing required field 'stats_by_calibration'
 FAIL schema/shape content/gear/bad.json id=gear.foundry.fixture_bad : /id: does not match pattern ^gear\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
+FAIL schema/shape content/gear/new-in-1.json id=gear.global.fixture_new_in_1 : /gear/0/slot: must be one of ["weapon", "armour"], got "head"
 FAIL schema/shape content/items/bad.json : /items/0/id: does not match pattern ^item\.(rustmoor|cinderworks|thunderhead|global)\.[a-z][a-z0-9_]*$
 FAIL schema/shape content/items/bad.json : /items/1/flavour: has 21 words; at most 20 allowed
 FAIL schema/shape content/items/bad.json : /items/2/flavour: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
@@ -117,10 +121,11 @@ FAIL schema/shape content/tuning/start-bad.json id=start.global.other : /invento
 FAIL schema/shape content/tuning/start-bad.json id=start.global.other : /inventory/2: missing required field 'bound'
 FAIL schema/shape content/tuning/start-bad.json id=start.global.other : /inventory/3/note: field 'note' is not allowed by this schema
 FAIL schema/shape content/tuning/start-bad.json id=start.global.other : /status: field 'status' is not allowed by this schema
-FAIL schema/unknown-schema content/tuning/anchored.json : schema 'monster/9' is not accepted; known: action/1, drops/1, gear/1, guide/1, item/1, ledger_page/1, letter/1, monster/1, monster/2, start/1, storylet/1, tuning.cog_shop/1, tuning.combat/1, tuning.economy/1, tuning.economy/2, tuning.work_orders/1, tuning.xp_curve/1, work_order/1
-FAIL schema/unknown-schema content/tuning/combat-old.json id=tuning.global.fixture_combat_old : schema 'tuning.combat/0' is not accepted; known: action/1, drops/1, gear/1, guide/1, item/1, ledger_page/1, letter/1, monster/1, monster/2, start/1, storylet/1, tuning.cog_shop/1, tuning.combat/1, tuning.economy/1, tuning.economy/2, tuning.work_orders/1, tuning.xp_curve/1, work_order/1
-FAIL schema/unknown-schema content/tuning/old.json id=fixture.fail.old : schema 'tuning.xp_curve/0' is not accepted; known: action/1, drops/1, gear/1, guide/1, item/1, ledger_page/1, letter/1, monster/1, monster/2, start/1, storylet/1, tuning.cog_shop/1, tuning.combat/1, tuning.economy/1, tuning.economy/2, tuning.work_orders/1, tuning.xp_curve/1, work_order/1
-FAIL schema/unknown-schema content/tuning/unknown.json id=fixture.fail.unknown : schema 'monster/9' is not accepted; known: action/1, drops/1, gear/1, guide/1, item/1, ledger_page/1, letter/1, monster/1, monster/2, start/1, storylet/1, tuning.cog_shop/1, tuning.combat/1, tuning.economy/1, tuning.economy/2, tuning.work_orders/1, tuning.xp_curve/1, work_order/1
+FAIL schema/shape content/tuning/tools-bad.json id=tuning.global.tools : /makers/by_skill/cooking/made_by: must be one of ["smithing", "tinkering", "tailoring", "cooking", "tea_blending"], got "prospecting"
+FAIL schema/unknown-schema content/tuning/anchored.json : schema 'monster/9' is not accepted; known: action/1, drops/1, gear/1, gear/2, guide/1, item/1, ledger_page/1, letter/1, monster/1, monster/2, start/1, storylet/1, tuning.cog_shop/1, tuning.combat/1, tuning.economy/1, tuning.economy/2, tuning.tools/1, tuning.work_orders/1, tuning.xp_curve/1, work_order/1
+FAIL schema/unknown-schema content/tuning/combat-old.json id=tuning.global.fixture_combat_old : schema 'tuning.combat/0' is not accepted; known: action/1, drops/1, gear/1, gear/2, guide/1, item/1, ledger_page/1, letter/1, monster/1, monster/2, start/1, storylet/1, tuning.cog_shop/1, tuning.combat/1, tuning.economy/1, tuning.economy/2, tuning.tools/1, tuning.work_orders/1, tuning.xp_curve/1, work_order/1
+FAIL schema/unknown-schema content/tuning/old.json id=fixture.fail.old : schema 'tuning.xp_curve/0' is not accepted; known: action/1, drops/1, gear/1, gear/2, guide/1, item/1, ledger_page/1, letter/1, monster/1, monster/2, start/1, storylet/1, tuning.cog_shop/1, tuning.combat/1, tuning.economy/1, tuning.economy/2, tuning.tools/1, tuning.work_orders/1, tuning.xp_curve/1, work_order/1
+FAIL schema/unknown-schema content/tuning/unknown.json id=fixture.fail.unknown : schema 'monster/9' is not accepted; known: action/1, drops/1, gear/1, gear/2, guide/1, item/1, ledger_page/1, letter/1, monster/1, monster/2, start/1, storylet/1, tuning.cog_shop/1, tuning.combat/1, tuning.economy/1, tuning.economy/2, tuning.tools/1, tuning.work_orders/1, tuning.xp_curve/1, work_order/1
 FAIL schema/wrong-directory content/actions/misplaced.json : files under content/actions/ must declare action/*; this one declares 'item/1'
 FAIL schema/wrong-directory content/actions/misplaced.json : schema 'item/1' belongs under content/items/
 FAIL schema/wrong-directory content/actions/stray-economy.json id=tuning.global.economy_stray : files under content/actions/ must declare action/*; this one declares 'tuning.economy/1'

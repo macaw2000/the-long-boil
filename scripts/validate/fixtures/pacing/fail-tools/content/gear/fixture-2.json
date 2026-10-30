@@ -1,0 +1,102 @@
+{
+ "schema": "gear/2",
+ "id": "gear.global.fixture_tools",
+ "gear": [
+  {
+   "item": "item.global.fixture_wrong_roll",
+   "slot": "tool",
+   "skill": "tinkering",
+   "level_required": 1,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "speed_percent": 5
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_roll_10",
+   "slot": "tool",
+   "skill": "tinkering",
+   "level_required": 10,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "speed_percent": 20
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  {
+   "item": "item.global.fixture_big_roll",
+   "slot": "tool",
+   "skill": "tinkering",
+   "level_required": 15,
+   "stats_by_calibration": [
+    {
+     "calibration": 0,
+     "speed_percent": 60
+    },
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ ]
+}
