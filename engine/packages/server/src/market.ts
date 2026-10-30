@@ -31,6 +31,12 @@ async function begin(tx: Tx, content: GameContent, tinkerId: number, now: number
   return advance(tx, content, tinkerId, now, true);
 }
 
+/** Worn or wielded gear cannot be sold out from under the Tinker (combat.json gear.reference_gear): take it off first. */
+function keepWorn(state: rules.TinkerState, item: string, qty: number) {
+  const worn = [state.weapon, state.armour, ...Object.values(state.worn), ...Object.values(state.tools)];
+  if (worn.includes(item) && (state.inventory[item] ?? 0) - qty < 1) throw new BadRequest(`${item} is worn; put something else on before selling the last one`);
+}
+
 async function finish(tx: Tx, content: GameContent, tinkerId: number, now: number, seq: number, entries: LogEntry[], begun: Awaited<ReturnType<typeof begin>>, notes: TradeNote[] = []): Promise<Outcome> {
   const last = await appendEvents(tx, tinkerId, seq, entries, content.rules.version);
   await setLastSeq(tx, tinkerId, last);
@@ -80,6 +86,7 @@ export async function sellToCollector(db: Db, content: GameContent, tinkerId: nu
       throw new BadRequest(`the collectors take ${collectorWeeklyCap} ${item} a week; ${collectorWeeklyCap - sold} more this week`);
     }
     const crowns = collectorPrice * qty;
+    keepWorn(begun.state, item, qty);
     await adjustUnbound(tx, tinkerId, item, -qty);
     await adjustCrowns(tx, tinkerId, crowns);
     await tx.query("UPDATE collector_sales SET qty = qty + $4 WHERE account_id = $1 AND item = $2 AND week_start = $3", [account, item, week, qty]);
@@ -157,7 +164,10 @@ export async function placeOrder(
 
     const entries: LogEntry[] = [];
     const notes: TradeNote[] = [];
-    if (side === "sell") await adjustUnbound(tx, tinkerId, item, -qty);
+    if (side === "sell") {
+      keepWorn(begun.state, item, qty);
+      await adjustUnbound(tx, tinkerId, item, -qty);
+    }
     else await adjustCrowns(tx, tinkerId, -price * qty);
     const orderId = Number(
       (

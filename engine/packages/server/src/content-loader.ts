@@ -117,6 +117,7 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
       gear: all("gear", "gear"),
       drops: listJson(join(dir, "drops")).map(readJson),
       combat: readJson(join(dir, "tuning", "combat.json")).constants,
+      killTimeCap: readJson(join(dir, "tuning", "combat.json")).kill_time?.floor?.KILL_TIME_CAP_FRACTION?.value,
       storylets: listJson(join(dir, "storylets")).map(readJson),
       letters: listJson(join(dir, "letters")).map(readJson),
       workOrders: existsSync(workOrderDir) ? listJson(workOrderDir).map(readJson) : [],

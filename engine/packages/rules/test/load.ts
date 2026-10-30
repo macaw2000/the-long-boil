@@ -32,6 +32,7 @@ export function loadRealContent(): Content {
       .filter((file) => file.endsWith(".json"))
       .map((file) => readJson(join(CONTENT_DIR, "drops", file))),
     combat: readJson(join(CONTENT_DIR, "tuning", "combat.json")).constants,
+    killTimeCap: readJson(join(CONTENT_DIR, "tuning", "combat.json")).kill_time?.floor?.KILL_TIME_CAP_FRACTION?.value,
     storylets: files("storylets"),
     letters: files("letters"),
     workOrders: files("work_orders"),

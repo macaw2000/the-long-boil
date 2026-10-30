@@ -43,6 +43,29 @@ export interface Armour {
   armour: number;
 }
 
+/** The six slots worn by combat level (combat.json gear.slot_rules, work order 029). */
+export const PIECE_SLOTS = ["off_hand", "head", "body", "hands", "feet", "charm"] as const;
+export type PieceSlot = (typeof PIECE_SLOTS)[number];
+
+/** A piece for one of the six combat-level slots: armour from five of them, accuracy from the Charm. */
+export interface Piece {
+  item: string;
+  slot: PieceSlot;
+  /** The combat level needed to wear it. */
+  level_required: number;
+  armour: number;
+  accuracy: number;
+}
+
+/** A skill's tool (content/tuning/tools.json): its skill's work goes speed percent faster. */
+export interface Tool {
+  item: string;
+  skill: string;
+  /** That skill's level needed to hold it. */
+  level_required: number;
+  speed: number;
+}
+
 export interface DropEntry {
   item: string;
   chance: number;
@@ -67,21 +90,31 @@ export interface Fighter {
   pressure: number;
   precision: number;
   fortitude: number;
-  /** The worn armour piece's points; 0 with none, or one the Tinker's Fortitude is too low to wear. */
+  /** Armour points from what is worn (the legacy piece and the five armour slots), on top of Fortitude. */
   armour: number;
+  /** Accuracy from the Charm, on top of the weapon's. */
+  accuracy: number;
   weapon: Weapon;
 }
 
-export function fighterFor(skillXp: Record<string, number>, weapon: Weapon, content: Content, worn?: Armour): Fighter {
+/** The highest of the three attack styles, which the six combat-level slots are worn by (combat.json gear.combat_level). */
+export function combatLevel(skillXp: Record<string, number>, content: Content): number {
+  return Math.max(...COMBAT_STYLES.map((style) => levelFor(skillXp[style] ?? 0, content)));
+}
+
+export function fighterFor(skillXp: Record<string, number>, weapon: Weapon, content: Content, worn?: Armour, pieces: readonly Piece[] = []): Fighter {
   const level = (skill: string) => levelFor(skillXp[skill] ?? 0, content);
   const fortitude = level("fortitude");
+  const combat = combatLevel(skillXp, content);
+  const wearable = pieces.filter((piece) => combat >= piece.level_required);
   return {
     styleLevel: level(weapon.style),
     vitality: level("vitality"),
     pressure: level("pressure"),
     precision: level("precision"),
     fortitude,
-    armour: worn && fortitude >= worn.level_required ? worn.armour : 0,
+    armour: (worn && fortitude >= worn.level_required ? worn.armour : 0) + wearable.reduce((sum, piece) => sum + piece.armour, 0),
+    accuracy: wearable.reduce((sum, piece) => sum + piece.accuracy, 0),
     weapon,
   };
 }
@@ -92,7 +125,7 @@ export function maxHp(c: CombatConstants, fighter: Fighter): number {
 
 function playerSwing(c: CombatConstants, f: Fighter, m: Monster) {
   const crit = Math.min(c.CRIT_CHANCE_CAP!, c.CRIT_CHANCE_PER_PRECISION! * f.precision);
-  const accuracy = f.styleLevel + f.precision + f.weapon.accuracy;
+  const accuracy = f.styleLevel + f.precision + f.weapon.accuracy + f.accuracy;
   const hit = Math.min(c.HIT_CHANCE_MAX!, Math.max(c.HIT_CHANCE_MIN!, c.HIT_CHANCE_BASE! + c.HIT_CHANCE_PER_POINT! * (accuracy - m.evasion)));
   let top = (f.weapon.power + c.DAMAGE_PER_STYLE_LEVEL! * f.styleLevel) * (1 + c.PRESSURE_DAMAGE_PER_LEVEL! * f.pressure);
   if (f.weapon.style === m.weakness) top *= c.WEAKNESS_MULTIPLIER!;
@@ -114,6 +147,8 @@ function monsterSwing(c: CombatConstants, f: Fighter, m: Monster) {
 
 export interface KillPlan {
   seconds: number;
+  /** The kill time the fight itself takes, before the monster's target time floors it. */
+  computed: number;
   rations: number;
 }
 
@@ -126,11 +161,67 @@ export function planKill(c: CombatConstants, f: Fighter, m: Monster, heal: numbe
   const drag = (monsterDps * c.PLAYER_ATTACK_INTERVAL_S!) / heal;
   if (haveRations && drag < 1) {
     const tFight = tPure / (1 - drag);
-    return { seconds: Math.max(m.seconds_per_kill, c.BETWEEN_KILLS_S! + tFight), rations: (monsterDps * tFight) / heal };
+    const computed = c.BETWEEN_KILLS_S! + tFight;
+    return { seconds: Math.max(m.seconds_per_kill, computed), computed, rations: (monsterDps * tFight) / heal };
   }
   const knockouts = (monsterDps * tPure) / maxHp(c, f);
   const seconds = c.BETWEEN_KILLS_S! + tPure + knockouts * (c.KNOCKOUT_RESPAWN_S! + tPure / 2);
-  return { seconds: Math.max(m.seconds_per_kill, seconds), rations: 0 };
+  return { seconds: Math.max(m.seconds_per_kill, seconds), computed: seconds, rations: 0 };
+}
+
+/** Of several, the one with the most of a stat, ties to the lower item id. */
+function best<T extends { item: string }>(rows: readonly T[], score: (row: T) => number): T | undefined {
+  let top: T | undefined;
+  for (const row of rows) {
+    const better = !top || score(row) > score(top) || (score(row) === score(top) && row.item < top.item);
+    if (better) top = row;
+  }
+  return top;
+}
+
+/** The +0 pieces a Tinker of this combat level would reference: per slot, the most armour (the Charm, the most accuracy), from any zone. */
+function referencePieces(content: Content, combat: number): Piece[] {
+  const pieces: Piece[] = [];
+  for (const slot of PIECE_SLOTS) {
+    const open = [...content.pieces.values()].filter((piece) => piece.slot === slot && piece.level_required <= combat);
+    const top = best(open, (piece) => (slot === "charm" ? piece.accuracy : piece.armour));
+    if (top) pieces.push(top);
+  }
+  return pieces;
+}
+
+/**
+ * One kill of an ordinary monster as the queue runs it, with the kill-time cap
+ * (combat.json kill_time.floor, work order 029): gear better than the Tinker's
+ * own levels call for, from any zone, cuts a kill below its target time, to at
+ * most KILL_TIME_CAP_FRACTION of it. The reference is the fastest of the three
+ * styles' +0 loadouts at the Tinker's own levels, so levels alone or an
+ * off-style match never earn it.
+ */
+export function planCappedKill(
+  content: Content,
+  skillXp: Record<string, number>,
+  fighter: Fighter,
+  m: Monster,
+  haveRations: boolean,
+): KillPlan | null {
+  const c = content.combat;
+  const heal = content.ration.heal;
+  const own = planKill(c, fighter, m, heal, haveRations);
+  if (!own || content.killTimeCap >= 1) return own;
+  const pieces = referencePieces(content, combatLevel(skillXp, content));
+  let reference = Infinity;
+  for (const style of COMBAT_STYLES) {
+    const level = levelFor(skillXp[style] ?? 0, content);
+    const weapons = [...content.weapons.values()].filter((weapon) => weapon.style === style && weapon.level_required <= level);
+    const weapon = best(weapons, (candidate) => playerSwing(c, { ...fighter, styleLevel: level, weapon: candidate }, m).mean);
+    if (!weapon) continue;
+    const plan = planKill(c, { ...fighterFor(skillXp, weapon, content, undefined, pieces) }, m, heal, haveRations);
+    if (plan) reference = Math.min(reference, plan.computed);
+  }
+  if (!Number.isFinite(reference)) return own;
+  const ratio = Math.max(content.killTimeCap, Math.min(1, own.computed / reference));
+  return { ...own, seconds: Math.max(own.computed, m.seconds_per_kill * ratio) };
 }
 
 function erf(x: number): number {

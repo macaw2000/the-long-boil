@@ -14,12 +14,14 @@ import { boostedMs } from "./shop.js";
 import { levelFor } from "./xp.js";
 import {
   fighterFor,
+  planCappedKill,
   killXp,
   nextRandom,
   planBoss,
-  planKill,
   zoneOf,
+  combatLevel,
   type Armour,
+  type Piece,
   type DropTable,
   type Monster,
 } from "./combat.js";
@@ -48,8 +50,12 @@ export interface TinkerState {
   steamUntil: number;
   /** The equipped weapon's item id. */
   weapon: string | null;
-  /** The worn armour piece's item id. */
+  /** The worn armour piece's item id (the legacy Fortitude-gated slot). */
   armour: string | null;
+  /** What is worn in the six combat-level slots, by slot. */
+  worn: Record<string, string>;
+  /** The tool held for each skill, by skill. */
+  tools: Record<string, string>;
   /** The seeded generator's state. */
   rng: number;
   /** Rations eaten in part but not yet taken from the inventory. */
@@ -66,6 +72,8 @@ export interface TinkerState {
    * span is split between resolves.
    */
   headBoosted: boolean;
+  /** The tool speed, in percent, the head go started with; it keeps it to the end, like the Boost. */
+  headTool: number;
 }
 
 type Drops = Record<string, number>;
@@ -118,6 +126,8 @@ export function cloneState(state: TinkerState): TinkerState {
     queue: state.queue.map((entry) => ({ ...entry })),
     pity: Object.fromEntries(Object.entries(state.pity).map(([zone, p]) => [zone, { ...p }])),
     bossesBeaten: [...state.bossesBeaten],
+    worn: { ...state.worn },
+    tools: { ...state.tools },
   };
 }
 
@@ -220,7 +230,7 @@ function actionStep(state: TinkerState, content: Content, action: Action): Step 
 function fightStep(state: TinkerState, content: Content, monster: Monster): Step {
   const weapon = state.weapon ? content.weapons.get(state.weapon) : undefined;
   if (!weapon || (state.inventory[weapon.item] ?? 0) < 1) return { kind: "stall", reason: "no_weapon" };
-  const fighter = fighterFor(state.skillXp, weapon, content, worn(state, content));
+  const fighter = fighterFor(state.skillXp, weapon, content, worn(state, content), wornPieces(state, content));
   if (fighter.styleLevel < weapon.level_required) return { kind: "stall", reason: "level" };
   const c = content.combat;
   const heal = content.ration.heal;
@@ -260,7 +270,7 @@ function fightStep(state: TinkerState, content: Content, monster: Monster): Step
     };
   }
 
-  const plan = planKill(c, fighter, monster, heal, held > 0);
+  const plan = planCappedKill(content, state.skillXp, fighter, monster, held > 0);
   if (!plan) return { kind: "stall", reason: "cannot_win" };
   return {
     kind: "run",
@@ -288,9 +298,28 @@ function stepFor(state: TinkerState, content: Content, id: string): Step {
   return { kind: "stall", reason: "unknown_action" };
 }
 
-/** A step's time, boosted or not, at the Cog Shop's Boost. */
-function paced(ms: number, boosted: boolean, content: Content): number {
-  return boosted && content.shop ? boostedMs(ms, content.shop.boost.percent) : ms;
+/**
+ * A step's time at the Cog Shop's Boost and the tool's speed, which multiply
+ * (tools.json composition): (100 + tool)(100 + boost) in whole numbers,
+ * rounded once, halves up, so offline resolution equals step-by-step replay.
+ */
+function paced(ms: number, boosted: boolean, tool: number, content: Content): number {
+  const boost = boosted && content.shop ? content.shop.boost.percent : 0;
+  if (boost === 0 && tool === 0) return ms;
+  const d = (100 + tool) * (100 + boost);
+  return Math.floor((ms * 20000 + d) / (2 * d));
+}
+
+/** The speed, in percent, of the tool held for this queue entry's skill; 0 for a fight or no tool. */
+function toolSpeed(state: TinkerState, content: Content, actionId: string): number {
+  const skill = content.actions.get(actionId)?.skill;
+  const tool = skill ? held(state, content.tools.get(state.tools[skill] ?? "")) : undefined;
+  return tool && levelFor(state.skillXp[tool.skill] ?? 0, content) >= tool.level_required ? tool.speed : 0;
+}
+
+/** A piece of gear the Tinker still holds, or undefined. */
+function held<T extends { item: string }>(state: TinkerState, piece: T | undefined): T | undefined {
+  return piece && (state.inventory[piece.item] ?? 0) > 0 ? piece : undefined;
 }
 
 /** Whether a go starting at `at` runs under the Boost. */
@@ -304,7 +333,9 @@ export function headMs(state: TinkerState, content: Content): number | null {
   if (!head) return null;
   const step = stepFor(state, content, head.actionId);
   if (step.kind !== "run") return null;
-  return paced(step.ms, state.progressMs > 0 ? state.headBoosted : boostedAt(state, state.resolvedTo), content);
+  return state.progressMs > 0
+    ? paced(step.ms, state.headBoosted, state.headTool, content)
+    : paced(step.ms, boostedAt(state, state.resolvedTo), toolSpeed(state, content, head.actionId), content);
 }
 
 export type FightOutlook =
@@ -319,17 +350,17 @@ export type FightOutlook =
 export function fightOutlook(state: TinkerState, content: Content, monster: Monster): FightOutlook {
   const weapon = state.weapon ? content.weapons.get(state.weapon) : undefined;
   if (!weapon || (state.inventory[weapon.item] ?? 0) < 1) return { monsterId: monster.id, ready: false, reason: "no_weapon" };
-  const fighter = fighterFor(state.skillXp, weapon, content, worn(state, content));
+  const fighter = fighterFor(state.skillXp, weapon, content, worn(state, content), wornPieces(state, content));
   if (fighter.styleLevel < weapon.level_required) return { monsterId: monster.id, ready: false, reason: "level" };
   const c = content.combat;
   const held = state.inventory[content.ration.item] ?? 0;
-  const seconds = (planned: number) => paced(Math.round(planned * 1000), boostedAt(state, state.resolvedTo), content) / 1000;
+  const seconds = (planned: number) => paced(Math.round(planned * 1000), boostedAt(state, state.resolvedTo), 0, content) / 1000;
   if (monster.boss) {
     const rations = Math.min(c.BOSS_RATION_CAP_PER_ATTEMPT ?? 0, held);
     const plan = planBoss(c, fighter, monster, content.ration.heal, rations);
     return { monsterId: monster.id, ready: true, seconds: seconds(plan.seconds), winChance: plan.win, rations };
   }
-  const plan = planKill(c, fighter, monster, content.ration.heal, held > 0);
+  const plan = planCappedKill(content, state.skillXp, fighter, monster, held > 0);
   if (!plan) return { monsterId: monster.id, ready: false, reason: "cannot_win" };
   return { monsterId: monster.id, ready: true, seconds: seconds(plan.seconds), winChance: null, rations: plan.rations };
 }
@@ -352,8 +383,11 @@ export function resolve(previous: TinkerState, content: Content, now: number): R
       continue;
     }
 
-    if (state.progressMs === 0) state.headBoosted = boostedAt(state, t);
-    const needed = paced(step.ms, state.headBoosted, content) - state.progressMs;
+    if (state.progressMs === 0) {
+      state.headBoosted = boostedAt(state, t);
+      state.headTool = toolSpeed(state, content, head.actionId);
+    }
+    const needed = paced(step.ms, state.headBoosted, state.headTool, content) - state.progressMs;
     if (t + needed > workEnd) {
       state.progressMs += workEnd - t;
       t = workEnd;
@@ -406,8 +440,38 @@ function worn(state: TinkerState, content: Content): Armour | undefined {
   return armour && (state.inventory[armour.item] ?? 0) > 0 ? armour : undefined;
 }
 
-/** Puts on an armour piece the Tinker holds and has the Fortitude to wear. Resolve first: it changes the fight under way. */
+/** The pieces worn in the six combat-level slots that the Tinker still holds. */
+function wornPieces(state: TinkerState, content: Content): Piece[] {
+  return Object.values(state.worn)
+    .map((item) => held(state, content.pieces.get(item)))
+    .filter((piece): piece is Piece => piece !== undefined);
+}
+
+/**
+ * Puts on a piece of gear the Tinker holds and can wear: one of the six
+ * combat-level slots by combat level, a tool by its skill's level, or the
+ * legacy armour slot by Fortitude. Resolve first: it changes the work under way.
+ */
 export function wear(state: TinkerState, content: Content, item: string): TinkerState {
+  const piece = content.pieces.get(item);
+  const tool = content.tools.get(item);
+  if (!piece && !tool) return wearArmour(state, content, item);
+  if ((state.inventory[item] ?? 0) < 1) throw new Error(`you do not have ${item}`);
+  const next = cloneState(state);
+  if (piece) {
+    if (combatLevel(state.skillXp, content) < piece.level_required) throw new Error(`${item} needs combat level ${piece.level_required}`);
+    next.worn[piece.slot] = item;
+    if (next.queue[0] && content.monsters.has(next.queue[0].actionId)) next.progressMs = 0;
+  } else if (tool) {
+    if (levelFor(state.skillXp[tool.skill] ?? 0, content) < tool.level_required) throw new Error(`${item} needs ${tool.skill} ${tool.level_required}`);
+    // A go keeps the speed it started with (tools.json go_start), so the work under way runs on.
+    next.tools[tool.skill] = item;
+  }
+  return next;
+}
+
+/** Puts on an armour piece the Tinker holds and has the Fortitude to wear. Resolve first: it changes the fight under way. */
+function wearArmour(state: TinkerState, content: Content, item: string): TinkerState {
   const armour = content.armours.get(item);
   if (!armour) throw new Error(`${item} is not armour`);
   if ((state.inventory[item] ?? 0) < 1) throw new Error(`you do not have ${item}`);
@@ -446,11 +510,14 @@ export function newTinker(inventory: Record<string, number>, crowns: number, now
     steamUntil: now + BOILER_HOURS * HOUR_MS,
     weapon: null,
     armour: null,
+    worn: {},
+    tools: {},
     rng: seed >>> 0,
     rationDebt: 0,
     pity: {},
     bossesBeaten: [],
     boostUntil: 0,
     headBoosted: false,
+    headTool: 0,
   };
 }

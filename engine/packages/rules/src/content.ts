@@ -3,7 +3,7 @@
 // a Content and hands it in, so the same rules run on the server, in tests,
 // and later from AWS AppConfig.
 
-import type { Armour, CombatConstants, DropTable, Monster, Weapon } from "./combat.js";
+import { PIECE_SLOTS, type Armour, type CombatConstants, type DropTable, type Monster, type Piece, type PieceSlot, type Tool, type Weapon } from "./combat.js";
 import type { CogShop } from "./shop.js";
 import type { Scene } from "./story.js";
 import type { WorkOrder } from "./work_orders.js";
@@ -37,6 +37,12 @@ export interface Content {
   monsters: ReadonlyMap<string, Monster>;
   weapons: ReadonlyMap<string, Weapon>;
   armours: ReadonlyMap<string, Armour>;
+  /** Pieces for the six combat-level slots (gear/2). */
+  pieces: ReadonlyMap<string, Piece>;
+  /** Each skill's tools (gear/2). */
+  tools: ReadonlyMap<string, Tool>;
+  /** The kill-time cap (combat.json kill_time.floor); 1 means no cap. */
+  killTimeCap: number;
   drops: ReadonlyMap<string, DropTable>;
   /** Each zone's rare Ledger Pages, in reading order, on one shared pity counter (GDD section 5). */
   zonePity: ReadonlyMap<string, readonly PityEntry[]>;
@@ -62,8 +68,9 @@ export interface GearEntry {
   item: string;
   slot: string;
   style?: string;
+  skill?: string;
   level_required: number;
-  stats_by_calibration: ({ power?: number; accuracy?: number; armour?: number } | null)[];
+  stats_by_calibration: ({ power?: number; accuracy?: number; armour?: number; speed_percent?: number } | null)[];
 }
 
 export interface DropsFile {
@@ -79,6 +86,8 @@ export interface ContentSources {
   gear?: GearEntry[];
   drops?: DropsFile[];
   combat?: Record<string, { value: number | null; item?: string }>;
+  /** combat.json kill_time.floor.KILL_TIME_CAP_FRACTION.value. */
+  killTimeCap?: number;
   storylets?: Scene[];
   letters?: Scene[];
   workOrders?: WorkOrder[];
@@ -116,6 +125,19 @@ export function buildContent(sources: ContentSources): Content {
     .filter((entry) => entry.slot === "armour")
     .map((entry) => ({ item: entry.item, level_required: entry.level_required, armour: entry.stats_by_calibration[0]?.armour ?? 0 }));
 
+  const pieces: Piece[] = (sources.gear ?? [])
+    .filter((entry) => (PIECE_SLOTS as readonly string[]).includes(entry.slot))
+    .map((entry) => ({
+      item: entry.item,
+      slot: entry.slot as PieceSlot,
+      level_required: entry.level_required,
+      armour: entry.stats_by_calibration[0]?.armour ?? 0,
+      accuracy: entry.stats_by_calibration[0]?.accuracy ?? 0,
+    }));
+  const tools: Tool[] = (sources.gear ?? [])
+    .filter((entry) => entry.slot === "tool" && entry.skill)
+    .map((entry) => ({ item: entry.item, skill: entry.skill!, level_required: entry.level_required, speed: entry.stats_by_calibration[0]?.speed_percent ?? 0 }));
+
   const zonePity = new Map<string, PityEntry[]>();
   const tables: DropTable[] = [];
   for (const file of sources.drops ?? []) {
@@ -139,6 +161,9 @@ export function buildContent(sources: ContentSources): Content {
     monsters: index(sources.monsters ?? [], (monster) => monster.id, "monster id"),
     weapons: index(weapons, (weapon) => weapon.item, "weapon"),
     armours: index(armours, (armour) => armour.item, "armour"),
+    pieces: index(pieces, (piece) => piece.item, "piece"),
+    tools: index(tools, (tool) => tool.item, "tool"),
+    killTimeCap: sources.killTimeCap ?? 1,
     drops: index(tables, (table) => table.monster, "drop table for"),
     zonePity,
     combat,

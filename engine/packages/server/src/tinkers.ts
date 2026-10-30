@@ -39,6 +39,8 @@ export interface TinkerView {
   resolvedTo: string;
   weapon: string | null;
   armour: string | null;
+  worn: Record<string, string>;
+  tools: Record<string, string>;
   bossesBeaten: string[];
   story: StorySummary;
   /** Work Orders waiting on the desk, as last brought up to date; for the tab's badge. */
@@ -90,7 +92,7 @@ export interface Loaded {
 export async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
   const row = (
     await tx.query(
-      `SELECT progress_ms, resolved_to, steam_until, last_seq, crowns, weapon, armour, rng, ration_debt, pity, bosses_beaten,
+      `SELECT progress_ms, resolved_to, steam_until, last_seq, crowns, weapon, armour, worn, tools, head_tool, rng, ration_debt, pity, bosses_beaten,
          boost_until, head_boosted, queue_slots, boiler_hours
        FROM tinkers WHERE id = $1 FOR UPDATE`,
       [tinkerId],
@@ -123,6 +125,9 @@ export async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
       steamUntil: row.steam_until.getTime(),
       weapon: row.weapon,
       armour: row.armour,
+      worn: row.worn,
+      tools: row.tools,
+      headTool: Number(row.head_tool),
       rng: Number(row.rng),
       rationDebt: Number(row.ration_debt),
       pity: row.pity,
@@ -193,7 +198,7 @@ export async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state:
   await tx.query(
     `UPDATE tinkers SET progress_ms = $2, resolved_to = $3, steam_until = $4, last_seq = $5, content_version = $6,
        crowns = $7, weapon = $8, rng = $9, ration_debt = $10, pity = $11, bosses_beaten = $12, head_boosted = $13,
-       armour = $14
+       armour = $14, worn = $15, tools = $16, head_tool = $17
      WHERE id = $1`,
     [
       tinkerId,
@@ -210,6 +215,9 @@ export async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state:
       JSON.stringify(state.bossesBeaten),
       state.headBoosted,
       state.armour,
+      JSON.stringify(state.worn),
+      JSON.stringify(state.tools),
+      state.headTool,
     ],
   );
 }
@@ -356,6 +364,8 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent, now =
     resolvedTo: row.resolved_to.toISOString(),
     weapon: loaded.state.weapon,
     armour: loaded.state.armour,
+    worn: loaded.state.worn,
+    tools: loaded.state.tools,
     bossesBeaten: loaded.state.bossesBeaten,
     story: summarizeStory(await loadStory(tx, tinkerId), loaded.state, content, now),
     workOrders: waitingOrders(row.work_orders as rules.WorkOrderState, now),
@@ -399,7 +409,7 @@ export async function resetTinker(db: Db, content: GameContent, tinkerId: number
     const story = rules.newStory(now);
     await tx.query(
       `UPDATE tinkers SET crowns = $2, progress_ms = 0, resolved_to = $3, steam_until = $4, content_version = $5,
-         weapon = NULL, armour = NULL, ration_debt = 0, pity = '{}', bosses_beaten = '[]',
+         weapon = NULL, armour = NULL, worn = '{}', tools = '{}', head_tool = 0, ration_debt = 0, pity = '{}', bosses_beaten = '[]',
          nerve = $6, nerve_at = $7, post_at = $8, hand = '[]', needle_at = '{}', check_in_at = NULL,
          answered = '[]', played_at = '{}', work_orders = DEFAULT, guide = NULL, head_boosted = false
        WHERE id = $1`,

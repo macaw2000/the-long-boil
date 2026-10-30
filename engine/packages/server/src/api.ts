@@ -221,6 +221,8 @@ export function buildApi({
     monsters: [...content.rules.monsters.values()],
     weapons: [...content.rules.weapons.values()],
     armours: [...content.rules.armours.values()],
+    pieces: [...content.rules.pieces.values()],
+    tools: [...content.rules.tools.values()],
     items: [...content.items.values()],
     economy: Object.fromEntries(content.economy),
     guide: content.guide,
@@ -335,6 +337,13 @@ export function buildApi({
     "/tinkers/:id/weapon",
     { schema: { body: { type: "object", required: ["item"], properties: { item: { type: "string" } } } } },
     async (request) => equip(db, content, Number(request.params.id), request.body.item, now()),
+  );
+
+  // Any worn gear: a piece in one of the six combat-level slots, a tool, or the legacy armour piece.
+  app.put<{ Params: { id: string }; Body: { item: string } }>(
+    "/tinkers/:id/gear",
+    { schema: { body: { type: "object", required: ["item"], properties: { item: { type: "string" } } } } },
+    async (request) => wear(db, content, Number(request.params.id), request.body.item, now()),
   );
 
   app.put<{ Params: { id: string }; Body: { item: string } }>(
