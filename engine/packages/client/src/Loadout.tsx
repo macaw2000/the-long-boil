@@ -3,18 +3,35 @@
 // equipped; the weapon rack below shows every weapon owned, framed by its
 // tier, and picking one compares it with the weapon in hand on real kill
 // times from the server. Equipping lands with a flash and a burst of sparks.
-// Rustmoor has no armour, so the armour slot is not drawn until the Tinker
-// owns a piece (Tailoring, in the Cinderworks); an empty slot read to
-// playtesters as a bug.
+// Seven slots and a tool per skill (work order 029): armour down the left,
+// weapon, off-hand and charm down the right, the tools in a row beneath, and
+// one rack of everything held. The legacy Fortitude-gated armour slot shows
+// only while the Tinker holds such a piece.
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Easing, Image, Pressable, Text, View } from "react-native";
 import { api, type Content, type FightOutlook, type LoadoutWeapon, type Tinker } from "./api";
+import { SkillIcon } from "./SkillView";
 import { Sparks, useReducedMotion } from "./Juice";
 import { ItemIcon, UiIcon } from "./Sprite";
-import { characters } from "./sprites";
+import { characters, ui as uiIcons } from "./sprites";
 import { seconds, titleCase } from "./format";
 import { colors, fonts, ui } from "./theme";
+
+/** One thing in the gear rack: a piece, a tool or a legacy armour piece. */
+interface Wearable {
+  item: string;
+  on: boolean;
+  usable: boolean;
+  gain: string;
+  lock: string;
+  need: string;
+  order: number;
+}
+
+const SLOT_ORDER = ["head", "body", "hands", "feet", "off_hand", "charm"];
+const SLOT_LABELS: Record<string, string> = { head: "Head", body: "Body", hands: "Hands", feet: "Feet" };
+const round = (value: number) => Math.round(value * 10) / 10;
 
 /** A weapon's tier, from the level it needs: the frame it is shown in. */
 export function gearTier(level: number): { name: string; colour: string } {
@@ -63,14 +80,15 @@ function Portrait({ weapon, flash, size }: { weapon: string | null; flash: Anima
   );
 }
 
-function Slot({ label, item, empty, tierLevel, pop }: { label: string; item: string | null; empty: string; tierLevel?: number; pop?: Animated.Value }) {
+function Slot({ label, item, empty, tierLevel, pop, small }: { label: string; item: string | null; empty: string; tierLevel?: number; pop?: Animated.Value; small?: boolean }) {
   const tier = tierLevel === undefined ? null : gearTier(tierLevel);
+  const box = small ? 52 : 64;
   return (
-    <View style={{ alignItems: "center", gap: 4, width: 64 }}>
+    <View style={{ alignItems: "center", gap: 2, width: 64 }}>
       <Animated.View
         style={{
-          width: 64,
-          height: 64,
+          width: box,
+          height: box,
           borderRadius: 8,
           borderWidth: 2,
           borderColor: tier?.colour ?? colors.panelEdge,
@@ -84,15 +102,15 @@ function Slot({ label, item, empty, tierLevel, pop }: { label: string; item: str
         }}
       >
         {item ? (
-          <ItemIcon item={item} size={48} />
+          <ItemIcon item={item} size={box - 16} />
         ) : (
-          // An empty slot shows a faint hook or rack peg where the piece would hang.
+          // An empty slot shows a faint marker of what goes there, or a dash until that marker is drawn.
           <View style={{ opacity: 0.35 }}>
-            <UiIcon name={empty} size={44} />
+            {uiIcons[empty] !== undefined ? <UiIcon name={empty} size={box - 20} /> : <Text style={[ui.muted, { fontSize: 22 }]}>—</Text>}
           </View>
         )}
       </Animated.View>
-      <Text style={[ui.muted, { fontSize: 11, textAlign: "center" }]}>{label}</Text>
+      <Text style={[ui.muted, { fontSize: 10, textAlign: "center" }]}>{label}</Text>
     </View>
   );
 }
@@ -197,12 +215,44 @@ export function Loadout({
   const styleLevel = (style: string) => tinker.skills.find((skill) => skill.skill === style)?.level ?? 1;
   const shown = equipped && !choice ? equipped : choice;
   const equippedWeapon = content.weapons.find((weapon) => weapon.item === tinker.weapon);
-  // Armour pieces held, cheapest first; the slot appears with the first one.
-  const armours = content.armours
-    .filter((armour) => tinker.inventory.some((stack) => stack.item === armour.item && stack.qty > 0))
-    .sort((a, b) => a.level_required - b.level_required || a.armour - b.armour);
-  const worn = content.armours.find((armour) => armour.item === tinker.armour);
+  const holds = (item: string) => tinker.inventory.some((stack) => stack.item === item && stack.qty > 0);
+  // The legacy Fortitude-gated armour slot shows only while a Tinker holds such a piece.
+  const armours = content.armours.filter((armour) => holds(armour.item));
+  const legacyWorn = content.armours.find((armour) => armour.item === tinker.armour);
   const fortitude = styleLevel("fortitude");
+  const combat = Math.max(styleLevel("melee"), styleLevel("marksmanship"), styleLevel("aetherics"));
+  // Tools for the skills that have any, in the order the skills are listed.
+  const toolSkills = [...new Set(content.tools.map((tool) => tool.skill))];
+  // Everything held that can be worn, for the rack.
+  const rack: Wearable[] = [
+    ...content.pieces.filter((piece) => holds(piece.item)).map((piece) => ({
+      item: piece.item,
+      on: tinker.worn[piece.slot] === piece.item,
+      usable: combat >= piece.level_required,
+      gain: piece.slot === "charm" ? `+${round(piece.accuracy)} acc` : `+${round(piece.armour)}`,
+      lock: `Cmb ${piece.level_required}`,
+      need: `combat level ${piece.level_required}`,
+      order: SLOT_ORDER.indexOf(piece.slot) * 100 + piece.level_required,
+    })),
+    ...content.tools.filter((tool) => holds(tool.item)).map((tool) => ({
+      item: tool.item,
+      on: tinker.tools[tool.skill] === tool.item,
+      usable: styleLevel(tool.skill) >= tool.level_required,
+      gain: `+${tool.speed}%`,
+      lock: `${titleCase(tool.skill).slice(0, 5)} ${tool.level_required}`,
+      need: `${titleCase(tool.skill)} ${tool.level_required}`,
+      order: 1000 + toolSkills.indexOf(tool.skill) * 100 + tool.level_required,
+    })),
+    ...armours.map((armour) => ({
+      item: armour.item,
+      on: tinker.armour === armour.item,
+      usable: fortitude >= armour.level_required,
+      gain: `+${armour.armour}`,
+      lock: `Fort ${armour.level_required}`,
+      need: `Fortitude ${armour.level_required}`,
+      order: 2000 + armour.level_required,
+    })),
+  ].sort((a, b) => a.order - b.order);
 
   return (
     <View style={[ui.panel, { gap: 10 }]}>
@@ -222,9 +272,19 @@ export function Loadout({
             paddingVertical: 6,
           }}
         >
-          <Slot label="Weapon" item={tinker.weapon} empty="empty_weapon" tierLevel={equippedWeapon?.level_required} pop={pop} />
+          {/* Armour down the left, the hands down the right, as Milky Way Idle lays its paperdoll out. */}
+          <View style={{ gap: 4 }}>
+            {(["head", "body", "hands", "feet"] as const).map((slot) => (
+              <Slot key={slot} label={SLOT_LABELS[slot]} item={tinker.worn[slot] ?? null} empty={`empty_${slot}`} small />
+            ))}
+          </View>
           <Portrait weapon={tinker.weapon} flash={flash} size={portrait} />
-          {armours.length > 0 || worn ? <Slot label="Armour" item={tinker.armour} empty="empty_armour" /> : <View style={{ width: 64 }} />}
+          <View style={{ gap: 4 }}>
+            <Slot label="Weapon" item={tinker.weapon} empty="empty_weapon" tierLevel={equippedWeapon?.level_required} pop={pop} small />
+            <Slot label="Off-hand" item={tinker.worn.off_hand ?? null} empty="empty_off_hand" small />
+            <Slot label="Charm" item={tinker.worn.charm ?? null} empty="empty_charm" small />
+            {(armours.length > 0 || legacyWorn) && <Slot label="Armour" item={tinker.armour} empty="empty_armour" small />}
+          </View>
           {banner && (
             <Animated.Text
               pointerEvents="none"
@@ -336,40 +396,56 @@ export function Loadout({
         </View>
       )}
 
-      {/* The armour held: tap one to put it on. Armour adds to Fortitude against every hit. */}
-      {armours.length > 0 && (
+      {/* Each skill's tool: its work goes that much faster while it is held. */}
+      {toolSkills.length > 0 && (
         <View style={{ gap: 4 }}>
-          <Text style={[ui.muted, { fontSize: 11 }]}>Armour · tap to wear · your Fortitude {fortitude}, raised by fighting</Text>
+          <Text style={[ui.muted, { fontSize: 11 }]}>Tools · each speeds its skill's work</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
-            {armours.map((armour) => {
-              const on = armour.item === tinker.armour;
-              const usable = fortitude >= armour.level_required;
+            {toolSkills.map((skill) => {
+              const held = content.tools.find((tool) => tool.item === tinker.tools[skill]);
               return (
-                <Pressable
-                  key={armour.item}
-                  disabled={on || !usable}
-                  onPress={() => onWear(armour.item)}
-                  accessibilityRole="button"
-                  accessibilityLabel={on ? `${name(armour.item)}, worn` : usable ? `Wear ${name(armour.item)}` : `${name(armour.item)}, needs Fortitude ${armour.level_required}`}
-                  style={{
-                    width: 58,
-                    height: 66,
-                    borderRadius: 6,
-                    borderWidth: on ? 2 : 1,
-                    borderColor: on ? colors.brass : colors.panelEdge,
-                    backgroundColor: on ? "#2f2619" : colors.soot,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    opacity: usable ? 1 : 0.5,
-                  }}
-                >
-                  <ItemIcon item={armour.item} size={36} />
-                  <Text style={[ui.number, { fontSize: 10, color: usable ? colors.muted : colors.scald }]}>
-                    {on ? "worn" : usable ? `+${armour.armour}` : `🔒 Fort ${armour.level_required}`}
-                  </Text>
-                </Pressable>
+                <View key={skill} style={{ alignItems: "center", width: 58, gap: 2 }} accessibilityLabel={held ? `${titleCase(skill)}: ${name(held.item)}` : `${titleCase(skill)}: no tool`}>
+                  <View style={{ width: 52, height: 52, borderRadius: 8, borderWidth: 1, borderColor: held ? colors.brass : colors.panelEdge, backgroundColor: colors.soot, alignItems: "center", justifyContent: "center" }}>
+                    {held ? <ItemIcon item={held.item} size={36} /> : <View style={{ opacity: 0.35 }}><SkillIcon skill={skill} size={30} /></View>}
+                  </View>
+                  <Text style={[ui.muted, { fontSize: 10 }]}>{held ? `+${held.speed}%` : titleCase(skill).slice(0, 8)}</Text>
+                </View>
               );
             })}
+          </View>
+        </View>
+      )}
+
+      {/* Everything held that can be worn: tap one to put it on. */}
+      {rack.length > 0 && (
+        <View style={{ gap: 4 }}>
+          <Text style={[ui.muted, { fontSize: 11 }]}>Gear · tap to wear · combat level {combat}</Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+            {rack.map((gear) => (
+              <Pressable
+                key={gear.item}
+                disabled={gear.on || !gear.usable}
+                onPress={() => onWear(gear.item)}
+                accessibilityRole="button"
+                accessibilityLabel={gear.on ? `${name(gear.item)}, worn` : gear.usable ? `Wear ${name(gear.item)}` : `${name(gear.item)}, needs ${gear.need}`}
+                style={{
+                  width: 58,
+                  height: 66,
+                  borderRadius: 6,
+                  borderWidth: gear.on ? 2 : 1,
+                  borderColor: gear.on ? colors.brass : colors.panelEdge,
+                  backgroundColor: gear.on ? "#2f2619" : colors.soot,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  opacity: gear.usable ? 1 : 0.5,
+                }}
+              >
+                <ItemIcon item={gear.item} size={36} />
+                <Text style={[ui.number, { fontSize: 10, color: gear.usable ? colors.muted : colors.scald }]}>
+                  {gear.on ? "worn" : gear.usable ? gear.gain : `🔒 ${gear.lock}`}
+                </Text>
+              </Pressable>
+            ))}
           </View>
         </View>
       )}

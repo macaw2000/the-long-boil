@@ -65,6 +65,24 @@ export interface Armour {
   armour: number;
 }
 
+/** A piece for one of the six combat-level slots (gear/2): armour, or the Charm's accuracy. */
+export interface Piece {
+  item: string;
+  slot: "off_hand" | "head" | "body" | "hands" | "feet" | "charm";
+  /** The combat level, the highest attack style, needed to wear it. */
+  level_required: number;
+  armour: number;
+  accuracy: number;
+}
+
+/** A skill's tool: that skill's work goes speed percent faster. */
+export interface Tool {
+  item: string;
+  skill: string;
+  level_required: number;
+  speed: number;
+}
+
 export interface Item {
   id: string;
   name: string;
@@ -88,6 +106,8 @@ export interface Content {
   monsters: Monster[];
   weapons: Weapon[];
   armours: Armour[];
+  pieces: Piece[];
+  tools: Tool[];
   items: Item[];
   totalXp: number[];
   /** The Cog Shop's terms; the crate's own Exchange tax is the one the Exchange shows for it. */
@@ -121,6 +141,10 @@ export interface Tinker {
   resolvedTo: string;
   weapon: string | null;
   armour: string | null;
+  /** Worn pieces, by slot. */
+  worn: Record<string, string>;
+  /** Held tools, by skill. */
+  tools: Record<string, string>;
   bossesBeaten: string[];
   story: {
     nerve: number;
@@ -373,7 +397,7 @@ export const api = {
   look: (id: number) => request<Outcome>("GET", `/tinkers/${id}`),
   setQueue: (id: number, queue: QueueEntry[]) => request<Outcome>("PUT", `/tinkers/${id}/queue`, { queue }),
   equip: (id: number, item: string) => request<Outcome>("PUT", `/tinkers/${id}/weapon`, { item }),
-  wear: (id: number, item: string) => request<Outcome>("PUT", `/tinkers/${id}/armour`, { item }),
+  wear: (id: number, item: string) => request<Outcome>("PUT", `/tinkers/${id}/gear`, { item }),
   guide: (id: number) => request<{ guide: GuideProgress | null }>("GET", `/tinkers/${id}/guide`),
   saveGuide: (id: number, guide: GuideProgress) => request<{ guide: GuideProgress }>("PUT", `/tinkers/${id}/guide`, guide),
   market: (id: number) => request<MarketView>("GET", `/tinkers/${id}/market`),
