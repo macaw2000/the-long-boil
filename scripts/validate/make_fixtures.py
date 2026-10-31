@@ -865,12 +865,46 @@ SLOT_RAT = solve_kill("monster.global.fixture_slot_rat", 10, 120, "aetherics", 4
 # Level 5: head (10) and charm (8) are above combat level 5.
 BOLT_RAT = solve_kill("monster.global.fixture_bolt_rat", 5, 90, "melee", 30, 2,
                       10 + SLOT_PTS["body"] + SLOT_PTS["hands"] + SLOT_PTS["feet"] + SLOT_PTS["off_hand"])
+# The slot king (work order 031) is a level-15 marksmanship boss whose
+# boss.reference_weapon entry lists five pieces and leaves feet empty; it is
+# solved against the rifle, those pieces, the locket's accuracy and the coat.
+# Counted, the unlisted level-11 plate (300) or the boots would break it.
+SLOT_KING_PIECES = {"off_hand": "item.global.fixture_slot_guard", "head": "item.global.fixture_slot_cap",
+                    "body": "item.global.fixture_slot_vest", "hands": "item.global.fixture_slot_gloves",
+                    "charm": "item.global.fixture_slot_locket"}
+SLOT_KING = solve_boss("monster.global.fixture_slot_king", 15, 200, "marksmanship",
+                       WPN["marksmanship"][1], WPN["marksmanship"][2] + 3,
+                       10 + sum(SLOT_PTS[s] for s in ("off_hand", "head", "body", "hands")))
 put(PSL + CP, PC)
-put(PSL + CMP, CM)
+put(PSL + CMP, ref_model({SLOT_KING["id"]: {"item": WPN["marksmanship"][0], "basis": "proposal",
+                                            "pieces": SLOT_KING_PIECES}}))
 put(PSL + GP, PASS_SLOTS)
-put(PSL + MP, monsters2(SLOT_RAT, BOLT_RAT, BOSS))
+put(PSL + MP, monsters2(SLOT_RAT, BOLT_RAT, BOSS, SLOT_KING))
 if not os.path.exists(os.path.join(F, PSL + "expected-notes.txt")):
     put(PSL + "expected-notes.txt", "")
+
+# combat fail-reference-pieces (work order 031): boss.reference_weapon lists
+# pieces breaking each rule, one king per rule, each the slot king under
+# another id: a piece in the wrong slot, one from another zone, the king's
+# own drop, one above combat level 15, a slot that is not a combat-level slot
+# and a "pieces" that is not an object.
+FP = "combat/fail-reference-pieces/"
+OWN_CAP, LATE_CAP = "item.global.fixture_own_cap", "item.global.fixture_late_cap"
+pkings = dict((k, dict(SLOT_KING, id="monster.global.fixture_%s_king" % k))
+              for k in ("slotless", "far", "own", "late", "necked", "listy"))
+def listing(pieces): return {"item": WPN["marksmanship"][0], "pieces": pieces}
+put(FP + CP, PC)
+put(FP + CMP, ref_model({
+    pkings["slotless"]["id"]: listing({"head": "item.global.fixture_slot_gloves"}),  # gloves are hands
+    pkings["far"]["id"]: listing({"head": "item.thunderhead.fixture_far_helm"}),     # another zone
+    pkings["own"]["id"]: listing({"head": OWN_CAP}),                                 # its own drop
+    pkings["late"]["id"]: listing({"head": LATE_CAP}),                               # needs 16
+    pkings["necked"]["id"]: listing({"neck": "item.global.fixture_slot_cap"}),       # no such slot
+    pkings["listy"]["id"]: listing(["item.global.fixture_slot_cap"])}))              # not an object
+put(FP + GP, dict(PASS_SLOTS, gear=PASS_SLOTS["gear"] + [
+    piece(OWN_CAP, "head", 1, 6), piece(LATE_CAP, "head", 16, 6)]))
+put(FP + DP, drops("drops.global.fixture", table(pkings["own"]["id"], 1, 1, first_kill=[OWN_CAP])))
+put(FP + MP, monsters2(*[pkings[k] for k in sorted(pkings)]))
 
 # pacing pass-tools: smithing holds a tool at levels 1, 5, 10 and 15 (2% a
 # level in the fixture model). Without tools its band 1 would be about 17

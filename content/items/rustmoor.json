@@ -205,6 +205,226 @@
       "id": "item.rustmoor.misstruck_crown",
       "name": "Misstruck Crown",
       "flavour": "A Crown stamped with its needle pointing down, which no clerk at the window will take."
+    },
+    {
+      "id": "item.rustmoor.brass_breastplate",
+      "name": "Brass Breastplate",
+      "flavour": "A brass breastplate hammered from a single ingot, thin enough to hear a rat's teeth on it."
+    },
+    {
+      "id": "item.rustmoor.iron_cuirass",
+      "name": "Iron Cuirass",
+      "flavour": "Front and back plates of grey iron, buckled at the sides and heavier on the stairs."
+    },
+    {
+      "id": "item.rustmoor.steel_cuirass",
+      "name": "Steel Cuirass",
+      "flavour": "A steel cuirass, blued in the quench, that turns a Tinplate's teeth without comment."
+    },
+    {
+      "id": "item.rustmoor.ribbed_cuirass",
+      "name": "Ribbed Cuirass",
+      "flavour": "A steel cuirass stiffened inside with umbrella ribs from the tip, and still no use in the rain."
+    },
+    {
+      "id": "item.rustmoor.brass_buckler",
+      "name": "Brass Buckler",
+      "flavour": "A brass buckler the size of a saucepan lid, and about as respected."
+    },
+    {
+      "id": "item.rustmoor.iron_targe",
+      "name": "Iron Targe",
+      "flavour": "A round iron targe with a forearm strap and a dent already in it, free of charge."
+    },
+    {
+      "id": "item.rustmoor.steel_shield",
+      "name": "Steel Shield",
+      "flavour": "A riveted steel shield that rings like a dinner bell whenever a rat finds it."
+    },
+    {
+      "id": "item.rustmoor.garnet_boss_shield",
+      "name": "Garnet-Boss Shield",
+      "flavour": "A steel shield with a garnet in its boss, which a rat stares at one heartbeat too long."
+    },
+    {
+      "id": "item.rustmoor.brass_plumb_bob",
+      "name": "Brass Plumb Bob",
+      "flavour": "A brass plumb bob on a cord, for a Tinker who likes to know which way is down."
+    },
+    {
+      "id": "item.rustmoor.iron_dividers",
+      "name": "Iron Dividers",
+      "flavour": "A pair of iron dividers that walk off every distance twice and trust neither answer."
+    },
+    {
+      "id": "item.rustmoor.steel_vernier",
+      "name": "Steel Vernier",
+      "flavour": "A steel vernier scale, read to the hundredth of an inch by anyone with the patience."
+    },
+    {
+      "id": "item.rustmoor.garnet_pendulum",
+      "name": "Garnet Pendulum",
+      "flavour": "A clock's pendulum with a garnet for its bob, swinging steadier than the hand that holds it."
+    },
+    {
+      "id": "item.rustmoor.brass_skullcap",
+      "name": "Brass Skullcap",
+      "flavour": "A brass skullcap beaten round on a bollard, close enough to a hat in poor light."
+    },
+    {
+      "id": "item.rustmoor.iron_pot_helm",
+      "name": "Iron Pot Helm",
+      "flavour": "An iron pot helm that could pass for a cooking pot, and has."
+    },
+    {
+      "id": "item.rustmoor.steel_sallet",
+      "name": "Steel Sallet",
+      "flavour": "A steel sallet with a long tail at the back for whatever falls off the crane."
+    },
+    {
+      "id": "item.rustmoor.visored_sallet",
+      "name": "Visored Sallet",
+      "flavour": "A steel sallet whose visor is beaten from Gaugehill's odd spoons, crests still showing."
+    },
+    {
+      "id": "item.rustmoor.brass_knuckle_guards",
+      "name": "Brass Knuckle-Guards",
+      "flavour": "Brass plates strapped over the knuckles, for the hand that does the arguing."
+    },
+    {
+      "id": "item.rustmoor.iron_gauntlets",
+      "name": "Iron Gauntlets",
+      "flavour": "Iron gauntlets with jointed fingers that pinch only for the first week."
+    },
+    {
+      "id": "item.rustmoor.steel_gauntlets",
+      "name": "Steel Gauntlets",
+      "flavour": "Steel gauntlets fine enough in the fingers to turn a key in the dark."
+    },
+    {
+      "id": "item.rustmoor.geared_gauntlets",
+      "name": "Geared Gauntlets",
+      "flavour": "Steel gauntlets with a clock's brass works in the knuckles, so the grip closes tooth by tooth."
+    },
+    {
+      "id": "item.rustmoor.brass_toecaps",
+      "name": "Brass Toecaps",
+      "flavour": "Brass caps riveted over the toes of your own boots, for kicking things that bite."
+    },
+    {
+      "id": "item.rustmoor.iron_sabatons",
+      "name": "Iron Sabatons",
+      "flavour": "Iron foot-plates that strap over a boot and announce you three yards ahead."
+    },
+    {
+      "id": "item.rustmoor.steel_sabatons",
+      "name": "Steel Sabatons",
+      "flavour": "Jointed steel sabatons that keep their shape when the tip shifts underfoot."
+    },
+    {
+      "id": "item.rustmoor.hobnailed_sabatons",
+      "name": "Hobnailed Sabatons",
+      "flavour": "Steel sabatons soled with the tip's own bent nails, straightened once and driven in head-out."
+    },
+    {
+      "id": "item.rustmoor.brass_pick",
+      "name": "Brass Pick",
+      "flavour": "A brass pick too soft for real rock, which is fine, since Rustmoor's seams are mostly old saucepans."
+    },
+    {
+      "id": "item.rustmoor.iron_pick",
+      "name": "Iron Pick",
+      "flavour": "An iron pick of the kind every picker at the tip swears by, and at."
+    },
+    {
+      "id": "item.rustmoor.steel_pick",
+      "name": "Steel Pick",
+      "flavour": "A tempered steel pick that bites into the packed layers instead of bouncing off them."
+    },
+    {
+      "id": "item.rustmoor.garnet_pick",
+      "name": "Garnet-Tipped Pick",
+      "flavour": "A steel pick with crushed garnet fused to its point, which grinds where plain steel would skid."
+    },
+    {
+      "id": "item.rustmoor.brass_tongs",
+      "name": "Brass Tongs",
+      "flavour": "Brass forge tongs that warm up faster than you would like."
+    },
+    {
+      "id": "item.rustmoor.iron_tongs",
+      "name": "Iron Tongs",
+      "flavour": "Iron tongs with long reins, so the hot end and your hand stay on speaking terms."
+    },
+    {
+      "id": "item.rustmoor.steel_tongs",
+      "name": "Steel Tongs",
+      "flavour": "Steel tongs with jaws ground to an ingot's width, which never drop the same one twice."
+    },
+    {
+      "id": "item.rustmoor.spring_tongs",
+      "name": "Spring Tongs",
+      "flavour": "Steel tongs sprung open by an umbrella rib, so they let go the moment you do."
+    },
+    {
+      "id": "item.rustmoor.brass_driver_roll",
+      "name": "Brass Driver Roll",
+      "flavour": "A roll of brass drivers, soft enough to strip a screw and honest enough to bend first."
+    },
+    {
+      "id": "item.rustmoor.iron_driver_roll",
+      "name": "Iron Driver Roll",
+      "flavour": "Iron drivers and a feeler gauge in a roll, each with its own pocket and none in it."
+    },
+    {
+      "id": "item.rustmoor.steel_driver_roll",
+      "name": "Steel Driver Roll",
+      "flavour": "Hardened steel drivers and a set of gauges, ground to fit the Polytechnic's screws."
+    },
+    {
+      "id": "item.rustmoor.watchmakers_roll",
+      "name": "Watchmaker's Roll",
+      "flavour": "Drivers no thicker than a pin, filed from a clock's own arbors, for work done holding your breath."
+    },
+    {
+      "id": "item.rustmoor.brass_ladle",
+      "name": "Brass Ladle",
+      "flavour": "A brass ladle hammered deep enough to serve one Ration a scoop."
+    },
+    {
+      "id": "item.rustmoor.iron_ladle",
+      "name": "Iron Ladle",
+      "flavour": "An iron ladle with a hooked handle that hangs on the pot's rim and stays out of the stew."
+    },
+    {
+      "id": "item.rustmoor.steel_ladle",
+      "name": "Steel Ladle",
+      "flavour": "A steel ladle with a pouring lip, so the stew goes in the tin and not on the bench."
+    },
+    {
+      "id": "item.rustmoor.crested_ladle",
+      "name": "Crested Ladle",
+      "flavour": "A steel ladle with a crested Gaugehill spoon riveted on for a lip, so supper comes in somebody's family silver."
+    },
+    {
+      "id": "item.rustmoor.brass_salvage_hook",
+      "name": "Brass Salvage Hook",
+      "flavour": "A brass hook on a broom handle, for lifting things off the tip that you would rather not touch."
+    },
+    {
+      "id": "item.rustmoor.iron_salvage_hook",
+      "name": "Iron Salvage Hook",
+      "flavour": "An iron hook with a barb filed into it, so what it lifts stays lifted."
+    },
+    {
+      "id": "item.rustmoor.steel_salvage_hook",
+      "name": "Steel Salvage Hook",
+      "flavour": "A long steel hook that reaches under the loose top without the loose top reaching back."
+    },
+    {
+      "id": "item.rustmoor.clockwork_grapnel",
+      "name": "Clockwork Grapnel",
+      "flavour": "A steel grapnel sprung by a clock's works, which snaps shut on whatever it touches first."
     }
   ]
 }

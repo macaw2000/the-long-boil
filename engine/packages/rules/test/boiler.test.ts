@@ -31,7 +31,7 @@ describe("the action queue", () => {
     const start = setQueue(freshTinker({ "item.rustmoor.brass_ingot": 50 }), [{ actionId: SPANNER, remaining: 50 }]);
     const { state, events } = resolve(start, content, 50 * 54_000);
     expect(state.inventory).toEqual({ "item.rustmoor.brass_spanner": 50 });
-    expect(state.skillXp.tinkering).toBe(450);
+    expect(state.skillXp.tinkering).toBe(400);
     expect(state.queue).toEqual([]);
     expect(count(events, "action_completed")).toBe(50);
     expect(count(events, "queue_entry_finished")).toBe(1);

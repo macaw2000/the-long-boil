@@ -28,6 +28,47 @@
 //   SIM_DAYS=21 node scripts/sim/walk-act1.mjs   # a longer horizon
 //   SIM_BOSS_MIN=0.4 node scripts/sim/walk-act1.mjs   # the boss threshold (default 0.4)
 //   SIM_VERBOSE=1 node scripts/sim/walk-act1.mjs 3   # every sitting, line by line
+//   SIM_CONTENT=/abs/dir node scripts/sim/walk-act1.mjs   # walk a content directory other than content/
+//   SIM_BOSS_WEAPON=riveting_hammer   # queue Scrapjaw only while this melee weapon or a stronger one is
+//     wielded. Default: combat.json boss.reference_weapon for Scrapjaw (the Riveting Hammer), so the walk forges
+//     the weapon the fight is tuned to before attacking. SIM_BOSS_WEAPON=any attacks with whatever it wields.
+//   SIM_GEAR_PLACE=production|fight   # where gear goes with two queue slots (default production; see below)
+//   SIM_GEAR_SHARE=0.25   # the share of each interval given to gear and tools (default 0.25; 0 makes none)
+//
+// Work order 031 part 1 (the assayer, 30 October 2026): the walk now makes and wears gear.
+// - Gear share (superseded by "Gear placement" below for two slots): a queue entry sized to SIM_GEAR_SHARE of the interval
+//   (default 0.25, work order 030's held-hour model) works toward it, taken out of the production half, so
+//   production gets 0.25, gear 0.25 and fighting 0.5. With nothing to make, production keeps the whole half.
+// - What to make: in each of the six combat-level slots and each skill's tool slot, the best piece the walk
+//   could wear now (combat level for a piece, the skill's level for a tool) whose whole chain its skills can
+//   make now, when it beats what is worn. Of those, the one with the least labour (queue seconds over the
+//   whole chain) first. The target is kept until made. Its materials are reserved: training does not eat
+//   them and the collectors are not sold them.
+// - "Make it" (30 October 2026): gear and weapons are queued as the finished item and the engine runs the
+//   chain inside that entry; the walk no longer works a gear chain step by step.
+// - Gear placement, two slots (the assayer, 30 October 2026; SIM_GEAR_PLACE=balanced, the default): a reachable
+//   piece goes first in slot 1, as one whole-chain go, and whichever of production and fighting is behind on planned
+//   time so far follows it and fills the interval (low Rations always follow). The Boiler never idles behind a piece,
+//   and the two halves stay level, as the GDD's balanced player splits the queue. Scrapjaw and a whole-chain go (a
+//   weapon in reach) keep slot 1 and the piece waits a sitting. Gear's chain time, net of stores, is capped at
+//   SIM_GEAR_SHARE of queue time so far (a cap; at 0.25 it never binds, since the chains take 1 to 3%).
+//   Why: with two slots, a piece's sitting costs the half-interval of whichever entry it displaces, not its chain
+//   time. The two placements below each charge that to one side, and the walk shows each fails item 1 or 2:
+// - SIM_GEAR_PLACE=production: the piece takes slot 1 and the fight follows, each turn charged a production half
+//   against a SIM_GEAR_SHARE bank; Scrapjaw, low Rations and the weapon's turn keep slot 1. Starves the gates
+//   (tinkering 6 never met at 2 a day) and melee races to 24-29 before the hammer, so Scrapjaw is won at 76-97%.
+//   A first try that let gear take the weapon's turn as well never forged the hammer in 21 days.
+// - SIM_GEAR_PLACE=fight (the orchestrator, 30 October 2026; a policy, not a settled rule): gear never takes a
+//   gate's or the weapon's turn. A reachable piece goes first ahead of the fight, replacing a rotation entry; after a
+//   gate, the weapon, Rations or Scrapjaw it takes the fight's slot unless replacing a gate loses less. Gear's
+//   chain time is capped at SIM_GEAR_SHARE of queue time so far (a cap, not a target). With nothing queued after
+//   the piece, the Boiler idled 20% of the walk at 3 a day (62 to 110 hours at 4 and 2), and melee 20 slipped to d17.
+// - Wearing: every sitting, the best held piece per slot and the best held tool per skill, through
+//   PUT /tinkers/:id/gear.
+// - Training: a skill is trained on the action with the least labour per XP of that skill over its whole
+//   chain (was: the highest-level action whose inputs were held, which picked the 23-ingot Plumb Bob).
+// - cook() makes Rations only from recipes whose every input the grocer sells (was NaN on the ladles).
+// - The walk's own fight choice (bestFight) now counts worn pieces and armour, as the engine does.
 //
 // The database (SIM_DB, default long_boil_sim) is dropped and rebuilt from the
 // migrations before each cadence. It refuses long_boil_dev and long_boil_test.
@@ -82,10 +123,11 @@
 //   spanner is melee); the ordinary monster with the best melee XP an hour by
 //   the engine's own planKill with the Rations held.
 
+import { readFileSync } from "node:fs";
 import { buildApi } from "../../engine/packages/server/dist/api.js";
 import { loadContent } from "../../engine/packages/server/dist/content-loader.js";
 import { connect, migrate } from "../../engine/packages/server/dist/db.js";
-import { fighterFor, levelFor, planBoss, planKill } from "../../engine/packages/rules/dist/index.js";
+import { fighterFor, levelFor, planKill } from "../../engine/packages/rules/dist/index.js";
 
 const DB_NAME = process.env.SIM_DB ?? "long_boil_sim";
 if (["long_boil_dev", "long_boil_test"].includes(DB_NAME)) throw new Error(`refusing to use ${DB_NAME}`);
@@ -151,7 +193,16 @@ const RATION = I("rustmoor_ration");
 const SCRAPJAW = M("scrapjaw");
 const PAGE = I("ledger_page_1");
 
-const content = loadContent();
+const content = loadContent(process.env.SIM_CONTENT || undefined);
+const GEAR_SHARE = Number(process.env.SIM_GEAR_SHARE ?? 0.25);
+// Where gear goes with two queue slots: "production" (default) or "fight" (the orchestrator's earlier placement).
+const GEAR_PLACE = process.env.SIM_GEAR_PLACE ?? "balanced";
+if (!["balanced", "production", "fight"].includes(GEAR_PLACE)) throw new Error(`SIM_GEAR_PLACE must be balanced, production or fight, not ${GEAR_PLACE}`);
+// Scrapjaw waits for its reference weapon (combat.json boss.reference_weapon, work order 025) or a stronger
+// melee weapon: the walk forges the Riveting Hammer for the fight (work order 031 part 1, item 2). SIM_BOSS_WEAPON=any
+// lifts the wait (the walk then fights with whatever it wields once the win chance reaches SIM_BOSS_MIN).
+const COMBAT_FILE = JSON.parse(readFileSync(new URL(`${process.env.SIM_CONTENT ? `file://${process.env.SIM_CONTENT}/` : "../../content/"}tuning/combat.json`, import.meta.url), "utf8"));
+const BOSS_WEAPON = process.env.SIM_BOSS_WEAPON === "any" ? null : process.env.SIM_BOSS_WEAPON ? `item.rustmoor.${process.env.SIM_BOSS_WEAPON}` : COMBAT_FILE.boss.reference_weapon["monster.rustmoor.scrapjaw"].item;
 const R = content.rules;
 
 const BEATS = [
@@ -176,8 +227,34 @@ const GATES = [
 ];
 const WEAPONS = [I("iron_crowbar"), I("riveting_hammer"), I("steel_blade")]; // melee, in order
 const GROCER = { [I("barley_meal")]: 2, [I("salt_pork")]: 4 };
+const GROCER_ITEMS = GROCER;
 
 // Spine scenes move a progress quality; every other storylet is a repeatable district scene.
+const PIECES = [...R.pieces.values()];
+const TOOLS = [...R.tools.values()];
+const GEAR_ITEMS = new Set([...PIECES.map((p) => p.item), ...TOOLS.map((x) => x.item)]);
+const statOf = (item) => {
+  const p = R.pieces.get(item);
+  if (p) return p.armour + p.accuracy;
+  return R.tools.get(item)?.speed ?? 0;
+};
+const producerOf = (item) => [...R.actions.values()].find((a) => a.outputs.some((o) => o.item === item));
+// Labour: queue seconds over an action's whole chain, per go (grocer inputs cost Crowns, not time).
+const labourMemo = new Map();
+function labour(a) {
+  if (labourMemo.has(a.id)) return labourMemo.get(a.id);
+  labourMemo.set(a.id, Infinity);
+  let s = a.seconds;
+  for (const i of a.inputs) {
+    if (i.item in GROCER_ITEMS) continue;
+    const p = producerOf(i.item);
+    const per = p ? labour(p) / p.outputs.find((o) => o.item === i.item).qty : Infinity;
+    s += i.qty * per;
+  }
+  labourMemo.set(a.id, s);
+  return s;
+}
+
 const SPINE = new Set(
   [...R.storylets.values()].filter((s) => s.options.some((o) => [o.success, o.failure].some((x) => x && Object.keys(x.changes).some((k) => k === "act1.progress" || k === "prologue.progress" || k.startsWith("ambition."))))).map((s) => s.id),
 );
@@ -220,6 +297,8 @@ async function runCadence(perDay) {
   const scenes = []; // { at, id, kind, option, success, odds, nerve }
   const seenOpen = {}; // storylet id -> first sitting it showed as open
   const bossChecks = []; // { at, win, rations, weapon, melee }
+  const boilerUse = {}; // slot-1 planned seconds by kind, and the queue's total
+  const bossQueued = []; // { at, win, melee, combat, loadout } each sitting Scrapjaw was queued
   const sittings = []; // { at, nerveBefore, nerveAfter }
   const stalls = [];
   const refusals = [];
@@ -348,9 +427,9 @@ async function runCadence(perDay) {
     const market = await ok("GET", `/tinkers/${id}/market`);
     let t = (await ok("GET", `/tinkers/${id}`)).tinker;
     let earned = 0;
-    const keepOne = new Set([SPANNER, ...WEAPONS]);
+    const keepOne = new Set([SPANNER, ...WEAPONS, ...Object.values(t.worn ?? {}), ...Object.values(t.tools ?? {})]);
     for (const [item, left] of Object.entries(market.collectorLeft)) {
-      const qty = Math.min(left, heldUnbound(t, item) - (keepOne.has(item) ? 1 : 0));
+      const qty = Math.min(left, heldUnbound(t, item) - (keepOne.has(item) ? 1 : 0) - (reserved[item] ?? 0));
       if (qty <= 0) continue;
       t = (await ok("POST", `/tinkers/${id}/collector`, { item, qty })).tinker;
       earned += qty * economy[item].collectorPrice;
@@ -375,10 +454,78 @@ async function runCadence(perDay) {
     return t;
   }
 
-  // The ordinary monster with the best melee XP an hour, by the engine's own kill plan.
+  // ---------- gear and tools (work order 031) ----------
+  let reserved = {}; // item -> qty held back for the gear target
+  let gearTarget = null; // item id
+  let gearBank = 0; // seconds of queue time gear may still use
+  const gearPlaced = {}; // where the piece went: "replaced rotation", "fight slot", "nothing"
+  const gearLog = []; // { at, item, slot }
+  const gearMade = []; // { at, item } first sitting it was held
+  const combatLvl = (t) => Math.max(lvl(t, "melee"), lvl(t, "marksmanship"), lvl(t, "aetherics"));
+  const slotOf = (item) => R.pieces.get(item)?.slot ?? `tool:${R.tools.get(item)?.skill}`;
+  const wornIn = (t, slot) => (slot.startsWith("tool:") ? t.tools?.[slot.slice(5)] : t.worn?.[slot]) ?? null;
+  const canWear = (t, item) => {
+    const p = R.pieces.get(item);
+    if (p) return combatLvl(t) >= p.level_required;
+    const x = R.tools.get(item);
+    return !!x && lvl(t, x.skill) >= x.level_required;
+  };
+  // `qty` of an item can be had now: from stores first (as the engine's chain does), and the rest by a chain
+  // whose every step is within the walk's levels (grocer items count as reachable).
+  function reachable(t, item, qty = 1, depth = 0) {
+    if (item in GROCER) return true;
+    const short = qty - held(t, item);
+    if (short <= 0) return true;
+    if (depth > 6) return false;
+    const a = producerOf(item);
+    if (!a || lvl(t, a.skill) < a.level_required) return false;
+    const runs = Math.ceil(short / a.outputs.find((o) => o.item === item).qty);
+    return a.inputs.every((i) => reachable(t, i.item, runs * i.qty, depth + 1));
+  }
+  // What a held-back target still needs, down its chain, net of what is held.
+  function reserveFor(t, item, need, out = {}, depth = 0) {
+    out[item] = (out[item] ?? 0) + need;
+    const short = Math.max(0, need - held(t, item));
+    const a = producerOf(item);
+    if (!a || short === 0 || depth > 6) return out;
+    const per = a.outputs.find((o) => o.item === item).qty;
+    for (const i of a.inputs) reserveFor(t, i.item, Math.ceil(short / per) * i.qty, out, depth + 1);
+    return out;
+  }
+  function pickGear(t) {
+    const slots = [...new Set([...PIECES.map((p) => p.slot), ...TOOLS.map((x) => `tool:${x.skill}`)])];
+    const cands = [];
+    for (const slot of slots) {
+      const items = [...PIECES, ...TOOLS].filter((g) => slotOf(g.item) === slot && canWear(t, g.item) && reachable(t, g.item));
+      const best = items.sort((a, b) => statOf(b.item) - statOf(a.item))[0];
+      if (!best || held(t, best.item) > 0) continue;
+      const cur = wornIn(t, slot);
+      if (cur && statOf(cur) >= statOf(best.item)) continue;
+      cands.push({ item: best.item, labour: labour(producerOf(best.item)) });
+    }
+    return cands.sort((a, b) => a.labour - b.labour)[0]?.item ?? null;
+  }
+  async function wearBest(id, t) {
+    const slots = new Set([...PIECES.map((p) => p.slot), ...TOOLS.map((x) => `tool:${x.skill}`)]);
+    for (const slot of slots) {
+      const best = [...GEAR_ITEMS].filter((g) => slotOf(g) === slot && held(t, g) > 0 && canWear(t, g)).sort((a, b) => statOf(b) - statOf(a))[0];
+      if (!best || best === wornIn(t, slot)) continue;
+      t = (await ok("PUT", `/tinkers/${id}/gear`, { item: best })).tinker;
+      gearLog.push({ at: clock, item: best, slot });
+      note(`wore ${best.split(".").pop()} in ${slot} (combat ${combatLvl(t)})`);
+    }
+    return t;
+  }
+  const loadout = (t) => ({
+    weapon: t.weapon,
+    ...Object.fromEntries(["off_hand", "head", "body", "hands", "feet", "charm"].map((s) => [s, t.worn?.[s] ?? null])),
+    tools: { ...(t.tools ?? {}) },
+  });
+
+  // The ordinary monster with the best melee XP an hour, by the engine's own kill plan, with what is worn.
   function bestFight(t) {
     const w = R.weapons.get(t.weapon);
-    const f = fighterFor(xpOf(t), w, R);
+    const f = fighterFor(xpOf(t), w, R, t.armour ? R.armours.get(t.armour) : undefined, Object.values(t.worn ?? {}).map((x) => R.pieces.get(x)).filter(Boolean));
     const rations = held(t, RATION) > 0;
     let best = null;
     for (const m of R.monsters.values()) {
@@ -396,13 +543,6 @@ async function runCadence(perDay) {
     return f && f.ready ? { win: f.winChance, rations: f.rations } : { win: 0, rations: 0 };
   }
 
-  function bossChance(t) {
-    const w = R.weapons.get(t.weapon);
-    const f = fighterFor(xpOf(t), w, R);
-    const rations = Math.min(R.combat.BOSS_RATION_CAP_PER_ATTEMPT, held(t, RATION));
-    return { ...planBoss(R.combat, f, R.monsters.get(SCRAPJAW), R.ration.heal, rations), rations };
-  }
-
   const actionsBySkill = (skill) => [...R.actions.values()].filter((a) => a.skill === skill);
   const producer = (item) => [...R.actions.values()].find((a) => a.outputs.some((o) => o.item === item));
 
@@ -414,7 +554,8 @@ async function runCadence(perDay) {
   // Slot-1 builders. Each returns { actionId, remaining, why } or null.
   async function cook(id, t, secs, why) {
     const level = lvl(t, "cooking");
-    const recipes = actionsBySkill("cooking").filter((a) => a.level_required <= level).sort((a, b) => b.level_required - a.level_required);
+    // Rations only: a recipe whose every input the grocer sells (the ladles' ingots made per NaN, work order 030 question 8).
+    const recipes = actionsBySkill("cooking").filter((a) => a.level_required <= level && a.inputs.length > 0 && a.inputs.every((i) => i.item in GROCER) && a.outputs.some((o) => o.item === RATION)).sort((a, b) => b.level_required - a.level_required);
     for (const a of recipes) {
       const per = a.inputs.reduce((n, i) => n + i.qty * GROCER[i.item], 0);
       const want = Math.min(Math.floor(secs / a.seconds), Math.floor((t.crowns - 50) / per));
@@ -432,40 +573,73 @@ async function runCadence(perDay) {
   }
 
   // Obtains `qty` of an item by working its chain backwards, one step per sitting.
-  async function obtain(id, t, item, qty, secs, why, depth = 0) {
+  // "Make it" runs the whole chain (Jeremy, 30 October 2026; engine boiler.ts supplyAction): an action that makes
+  // gear (a weapon, piece, tool or armour) makes its missing inputs inside the same queue entry, from stores
+  // first. So gear and weapons are queued as the finished item, one go, once every step is within the walk's
+  // levels; only a skill gate is still worked separately (obtain trains it).
+  // Queue seconds to make `qty` of an item now, net of stores (base seconds, before tool speed).
+  function netLabour(t, item, qty = 1, depth = 0) {
+    if (item in GROCER || depth > 6) return 0;
+    const short = qty - held(t, item);
+    if (short <= 0) return 0;
+    const a = producerOf(item);
+    if (!a) return Infinity;
+    const runs = Math.ceil(short / a.outputs.find((o) => o.item === item).qty);
+    return runs * a.seconds + a.inputs.reduce((n, i) => n + netLabour(t, i.item, runs * i.qty, depth + 1), 0);
+  }
+  function makeIt(t, item, why) {
+    if (!reachable(t, item)) return null;
+    const a = producerOf(item);
+    return { actionId: a.id, remaining: 1, why: `${why}: ${a.id.split(".").pop()} (whole chain)` };
+  }
+
+  // free: count only stock above what the gear target holds back (every chain but the gear target's own).
+  // batch: an intermediate step (a smelt) fills the time it is given, not just the quantity asked (gear chains).
+  async function obtain(id, t, item, qty, secs, why, depth = 0, free = true, batch = false) {
     const a = producer(item);
     if (!a || depth > 4) return null;
+    const have = (x) => held(t, x) - (free ? reserved[x] ?? 0 : 0);
     if (lvl(t, a.skill) < a.level_required) return train(id, t, a.skill, secs, `${why}: ${a.skill} ${a.level_required} for ${a.id.split(".").pop()}`, depth + 1);
     for (const input of a.inputs) {
-      if (held(t, input.item) < input.qty * qty) return obtain(id, t, input.item, input.qty * qty - held(t, input.item), secs, why, depth + 1);
+      if (have(input.item) < input.qty * qty) return obtain(id, t, input.item, input.qty * qty - have(input.item), secs, why, depth + 1, free, batch);
     }
-    const n = a.inputs.length ? qty : Math.max(qty, Math.floor(secs / a.seconds));
+    const canMake = a.inputs.length ? Math.min(...a.inputs.map((i) => Math.floor(have(i.item) / i.qty))) : Infinity;
+    const n = a.inputs.length ? (batch && depth > 0 ? Math.max(qty, Math.min(canMake, Math.floor(secs / a.seconds))) : qty) : Math.max(qty, Math.floor(secs / a.seconds));
     return { actionId: a.id, remaining: Math.max(1, Math.min(n, Math.floor(secs / a.seconds) || 1)), why: `${why}: ${a.id.split(".").pop()}` };
   }
 
+  // Trains a skill on the action with the least labour per XP over its whole chain, among those its levels
+  // reach; uses held inputs above what the gear target holds back, else works the chain one step.
   async function train(id, t, skill, secs, why, depth = 0) {
     if (skill === "scavenging" || skill === "prospecting") return gather(skill, t, secs, why);
     if (skill === "cooking") return cook(id, t, secs, why);
     const level = lvl(t, skill);
-    // Smithing: the best smelt whose inputs are held, else prospect for the best smelt reachable.
-    // Tinkering: the best brass or iron good whose inputs are held, else make brass ingots.
-    const pool = skill === "smithing"
-      ? actionsBySkill("smithing").filter((a) => a.id.includes("smelt"))
-      : actionsBySkill("tinkering").filter((a) => a.inputs.length === 1 && [I("brass_ingot"), I("copper")].includes(a.inputs[0].item));
-    const cands = pool.filter((a) => a.level_required <= level).sort((a, b) => b.level_required - a.level_required);
-    for (const a of cands) {
-      const can = Math.min(...a.inputs.map((i) => Math.floor(held(t, i.item) / i.qty)));
-      if (can >= 1) return { actionId: a.id, remaining: Math.max(1, Math.min(can, Math.floor(secs / a.seconds))), why: `${why}: ${a.id.split(".").pop()}` };
-    }
-    if (depth > 3) return null;
-    for (const a of cands) {
-      const missing = a.inputs.find((i) => held(t, i.item) < i.qty);
-      const p = producer(missing.item);
-      if (p && lvl(t, p.skill) >= p.level_required && p.inputs.every((i) => held(t, i.item) >= i.qty)) {
-        return obtain(id, t, missing.item, Math.floor(secs / p.seconds), secs, `${why} (inputs)`, depth + 1);
+    const free = (item) => held(t, item) - (reserved[item] ?? 0);
+    // Labour per XP for the gos that fit, counting free held inputs as already paid for (their labour is spent).
+    const perXp = (a) => {
+      const n = Math.max(1, Math.floor(secs / a.seconds));
+      let s = n * a.seconds;
+      for (const i of a.inputs) {
+        if (i.item in GROCER) continue;
+        const p = producerOf(i.item);
+        const short = Math.max(0, n * i.qty - Math.max(0, free(i.item)));
+        s += short * (p ? labour(p) / p.outputs.find((o) => o.item === i.item).qty : Infinity);
       }
-    }
-    return gather("prospecting", t, secs, `${why} (copper)`);
+      return s / (n * a.xp);
+    };
+    const cands = actionsBySkill(skill)
+      .filter((a) => a.level_required <= level && a.inputs.length > 0 && a.inputs.every((i) => reachable(t, i.item)))
+      .map((a) => ({ a, lpx: perXp(a) }))
+      .sort((x, y) => x.lpx - y.lpx);
+    const a = cands[0]?.a;
+    if (!a) return null;
+    const fit = Math.max(1, Math.floor(secs / a.seconds));
+    const can = Math.min(...a.inputs.map((i) => Math.floor(free(i.item) / i.qty)));
+    const lpx = cands[0].lpx.toFixed(1);
+    if (can >= 1) return { actionId: a.id, remaining: Math.min(can, fit), why: `${why}: ${a.id.split(".").pop()} (${lpx} s/XP)` };
+    if (depth > 3) return null;
+    const missing = a.inputs.find((i) => free(i.item) < i.qty);
+    return obtain(id, t, missing.item, fit * missing.qty, secs, `${why} (${a.id.split(".").pop()} at ${lpx} s/XP, inputs)`, depth + 1);
   }
 
   // ---------- the Cog Shop ----------
@@ -563,6 +737,8 @@ async function runCadence(perDay) {
       t = (await ok("GET", `/tinkers/${main}`)).tinker;
     }
     t = await equipBest(main, t);
+    t = await wearBest(main, t);
+    for (const g of [...GEAR_ITEMS, ...WEAPONS]) if (held(t, g) > 0 && !gearMade.some((x) => x.item === g)) gearMade.push({ at: clock, item: g });
     const view = await playStory(main);
     {
       const tt = (await ok("GET", `/tinkers/${main}`)).tinker;
@@ -580,36 +756,66 @@ async function runCadence(perDay) {
 
     t = (await ok("GET", `/tinkers/${main}`)).tinker;
     const interval = Math.min(times[k + 1] - at, boilerHours * HOUR);
-    const half = (interval / 2 / 1000) * (boosted ? 1 + R.shop.boost.percent / 100 : 1);
+    const half0 = (interval / 2 / 1000) * (boosted ? 1 + R.shop.boost.percent / 100 : 1);
+    // Gear: keep the target until it is held, then pick the next; reserve what it still needs.
+    if (gearTarget && held(t, gearTarget) > 0) gearTarget = null;
+    if (gearTarget && !reachable(t, gearTarget)) gearTarget = null;
+    gearTarget ??= GEAR_SHARE > 0 ? pickGear(t) : null;
+    reserved = gearTarget ? reserveFor(t, gearTarget, 1) : {};
+    // Gear's cap (the orchestrator, 30 October 2026, after the gate stall): gear's chain time, summed over the walk,
+    // never passes GEAR_SHARE of the queue time so far. A bank of GEAR_SHARE x interval accrues every sitting and a
+    // piece is queued only when its chain time (net of stores) fits in it. With a third slot bought, gear gets its
+    // own entry sized to GEAR_SHARE of the interval, out of the production half.
+    const threeSlots = SHOP.includes("slot");
+    gearBank += (GEAR_SHARE * interval) / 1000;
+    const gearSecs = gearTarget ? (threeSlots ? (interval / 1000) * GEAR_SHARE * (boosted ? 1 + R.shop.boost.percent / 100 : 1) : half0) : 0;
+    const half = threeSlots ? Math.max(60, half0 - gearSecs) : half0;
     const progress = view.qualities["act1.progress"] ?? 0;
 
     let slot = null;
     const boss = await bossShown(main);
     if (!t.bossesBeaten.includes(SCRAPJAW)) bossChecks.push({ at: clock, win: boss.win, rations: boss.rations, weapon: t.weapon, melee: lvl(t, "melee") });
     const fight = bestFight(t);
-    if (!t.bossesBeaten.includes(SCRAPJAW) && boss.win >= BOSS_MIN && boss.rations === 3 && held(t, RATION) >= 9) {
+    const bossArmed = !BOSS_WEAPON || (R.weapons.get(t.weapon)?.power ?? 0) >= R.weapons.get(BOSS_WEAPON).power;
+    if (!t.bossesBeaten.includes(SCRAPJAW) && bossArmed && boss.win >= BOSS_MIN && boss.rations === 3 && held(t, RATION) >= 9) {
       slot = { actionId: SCRAPJAW, remaining: 3, why: `Scrapjaw at ${Math.round(boss.win * 100)}% with ${t.weapon.split(".").pop()}, melee ${lvl(t, "melee")}` };
+      bossQueued.push({ at: clock, win: boss.win, melee: lvl(t, "melee"), combat: combatLvl(t), loadout: loadout(t) });
     }
-    if (!slot) {
-      const eat = fight ? (fight.plan.rations * (interval / 1000)) / fight.plan.seconds : 0;
-      if (held(t, RATION) < eat + 23) slot = await cook(main, t, half, `Rations low (${held(t, RATION)} held, next interval eats about ${Math.round(eat)})`);
-    }
-    if (!slot) {
-      const gate = GATES.find((g) => progress < g.before && lvl(t, g.skill) < g.level);
-      const melee = lvl(t, "melee");
-      const nextWeapon = WEAPONS.find((w) => held(t, w) === 0 && R.weapons.get(w).level_required <= melee + 3 && R.weapons.get(w).power > (R.weapons.get(t.weapon)?.power ?? 0));
-      const wants = [];
-      if (gate) wants.push(() => train(main, t, gate.skill, half, `gate ${gate.skill} ${gate.level}`));
-      if (nextWeapon) wants.push(() => obtain(main, t, nextWeapon, 1, half, `weapon ${nextWeapon.split(".").pop()}`));
-      if (wants.length) {
-        const order = alt++ % 2 === 0 ? wants : [...wants].reverse();
-        for (const w of order) if ((slot = await w())) break;
+    // Slot 1's production entry (everything but Scrapjaw), sized to `half` seconds of work.
+    const buildProd = async (t, half) => {
+      let slot = null;
+      if (!slot) {
+        const eat = fight ? (fight.plan.rations * (interval / 1000)) / fight.plan.seconds : 0;
+        if (held(t, RATION) < eat + 23) slot = await cook(main, t, half, `Rations low (${held(t, RATION)} held, next interval eats about ${Math.round(eat)})`);
       }
-    }
-    if (!slot) {
-      const skills = ["scavenging", "prospecting", "smithing", "cooking", "tinkering"];
-      for (let i = 0; i < skills.length && !slot; i++) slot = await train(main, t, skills[rot++ % skills.length], half, "rotation");
-    }
+      // The next melee weapon comes before gear: once its whole chain is in reach, it takes slot 1 and any stock.
+      const meleeNow = lvl(t, "melee");
+      const weaponNext = WEAPONS.find((w) => held(t, w) === 0 && R.weapons.get(w).level_required <= meleeNow + 3 && R.weapons.get(w).power > (R.weapons.get(t.weapon)?.power ?? 0));
+      if (!slot && weaponNext && reachable(t, weaponNext)) slot = makeIt(t, weaponNext, `weapon ${weaponNext.split(".").pop()} (in reach, before gear)`);
+      if (!slot) {
+        const gate = GATES.find((g) => progress < g.before && lvl(t, g.skill) < g.level);
+        const melee = lvl(t, "melee");
+        const nextWeapon = WEAPONS.find((w) => held(t, w) === 0 && R.weapons.get(w).level_required <= melee + 3 && R.weapons.get(w).power > (R.weapons.get(t.weapon)?.power ?? 0));
+        const wants = [];
+        // Gate and weapon alternate as before; gear never takes either's turn.
+        if (gate) wants.push(() => train(main, t, gate.skill, half, `gate ${gate.skill} ${gate.level}`));
+        if (nextWeapon) wants.push(async () => makeIt(t, nextWeapon, `weapon ${nextWeapon.split(".").pop()}`) ?? obtain(main, t, nextWeapon, 1, half, `weapon ${nextWeapon.split(".").pop()}`, 0, false));
+        if (wants.length) {
+          const order = alt++ % 2 === 0 ? wants : [...wants].reverse();
+          for (const w of order) if ((slot = await w())) break;
+        }
+      }
+      if (!slot) {
+        const skills = ["scavenging", "prospecting", "smithing", "cooking", "tinkering"];
+        for (let i = 0; i < skills.length && !slot; i++) slot = await train(main, t, skills[rot++ % skills.length], half, "rotation");
+      }
+      return slot;
+    };
+    const altAt = alt;
+    const rotAt = rot;
+    if (!slot) slot = await buildProd(t, half);
+    let gearEntry = null;
+    let followProd = null;
     t = (await ok("GET", `/tinkers/${main}`)).tinker;
     const f2 = bestFight(t);
     let second = { actionId: f2.m.id, remaining: 10_000 };
@@ -628,9 +834,120 @@ async function runCadence(perDay) {
         }
       }
     }
-    const queue = [{ actionId: slot.actionId, remaining: slot.remaining }, second];
+    if (threeSlots && gearTarget) gearEntry = makeIt(t, gearTarget, `gear ${gearTarget.split(".").pop()}`);
+    const kindOf = (e) => (e.actionId === SCRAPJAW ? "scrapjaw" : e.why.startsWith("gear") ? "gear" : e.why.startsWith("weapon") ? "weapon" : e.why.startsWith("gate") ? "gate" : e.why.startsWith("Rations") ? "rations" : "rotation");
+    // Planned seconds of an entry: a whole-chain entry at its chain time net of stores; Scrapjaw at 3 x 270 s.
+    const plannedSecs = (e) => {
+      const a = R.actions.get(e.actionId);
+      if (e.actionId === SCRAPJAW) return e.remaining * R.monsters.get(SCRAPJAW).seconds_per_kill;
+      if (!a) return 0;
+      return Math.min(interval / 1000, e.why.includes("(whole chain)") ? netLabour(t, a.outputs[0].item) : e.remaining * a.seconds);
+    };
+    // Two queue slots: a reachable piece goes first ahead of the fight. It replaces a rotation entry outright
+    // (the fight then starts once the piece is made). Over a gate, the weapon, Rations or Scrapjaw it never takes
+    // that entry's place; it takes the fight's (the entry, then the piece, then the queue idles), unless replacing
+    // a gate would lose less: fight's loss = interval - entry - chain, the gate's loss = the gate entry's time.
+    if (!threeSlots && gearTarget && GEAR_PLACE === "balanced") {
+      // Default (the assayer, 30 October 2026): the piece goes first in slot 1, and whichever of production and
+      // fighting is behind on planned time so far follows it and fills the interval, so the Boiler never idles and
+      // the two halves stay level. Gear's chain time is capped at SIM_GEAR_SHARE of queue time so far.
+      // Scrapjaw and a whole-chain go (a weapon in reach) keep slot 1 and the piece waits; low Rations always follow.
+      const g = makeIt(t, gearTarget, `gear ${gearTarget.split(".").pop()}`);
+      const chain = netLabour(t, gearTarget);
+      const k1 = kindOf(slot);
+      if (!g) gearPlaced["not reachable"] = (gearPlaced["not reachable"] ?? 0) + 1;
+      else if (k1 === "scrapjaw" || slot.why.includes("(whole chain)")) gearPlaced[`waited for ${k1}`] = (gearPlaced[`waited for ${k1}`] ?? 0) + 1;
+      else if (chain > gearBank) gearPlaced["over the cap"] = (gearPlaced["over the cap"] ?? 0) + 1;
+      else {
+        const prodBehind = k1 === "rations" || (boilerUse.production ?? 0) < (boilerUse.fight ?? 0);
+        gearBank -= chain;
+        gearEntry = g;
+        if (prodBehind) {
+          // Production follows: rebuilt to fill the interval after the piece, the fight waits a sitting.
+          alt = altAt;
+          rot = rotAt;
+          const fill = Math.max(60, interval / 1000 - chain) * (boosted ? 1 + R.shop.boost.percent / 100 : 1);
+          const tt = (await ok("GET", `/tinkers/${main}`)).tinker;
+          const p = (await buildProd(tt, fill)) ?? slot;
+          gearPlaced[`then ${kindOf(p)}, no fight`] = (gearPlaced[`then ${kindOf(p)}, no fight`] ?? 0) + 1;
+          second = { actionId: p.actionId, remaining: p.remaining };
+          secondWhy = `${p.remaining} x ${p.actionId.split(".").pop()} (${p.why}; after the piece, no fight this interval)`;
+          slot = g;
+          followProd = p;
+        } else {
+          gearPlaced[`then fight, ${k1} waits`] = (gearPlaced[`then fight, ${k1} waits`] ?? 0) + 1;
+          slot = g;
+        }
+      }
+    }
+    if (!threeSlots && gearTarget && GEAR_PLACE === "production") {
+      // Default (the assayer, 30 October 2026): gear comes out of the production half, never the fight's. The piece
+      // takes slot 1 and the fight follows it, so the Boiler never idles. A turn costs the production half it
+      // displaces, counted against the bank, so gear holds at most SIM_GEAR_SHARE of queue time in slot-1 turns.
+      // Scrapjaw, low Rations and the weapon's turn keep slot 1: gear takes a gate's or the rotation's turn.
+      const g = makeIt(t, gearTarget, `gear ${gearTarget.split(".").pop()}`);
+      const k1 = kindOf(slot);
+      const keeps = k1 === "scrapjaw" || k1 === "rations" || k1 === "weapon";
+      if (!g) gearPlaced["not reachable"] = (gearPlaced["not reachable"] ?? 0) + 1;
+      else if (keeps) gearPlaced[`waited for ${k1}`] = (gearPlaced[`waited for ${k1}`] ?? 0) + 1;
+      else if (half > gearBank) gearPlaced["over the share"] = (gearPlaced["over the share"] ?? 0) + 1;
+      else {
+        gearPlaced[`replaced ${k1}`] = (gearPlaced[`replaced ${k1}`] ?? 0) + 1;
+        boilerUse["production half given to gear"] = (boilerUse["production half given to gear"] ?? 0) + half;
+        slot = g;
+        gearBank -= half;
+      }
+    }
+    if (!threeSlots && gearTarget && GEAR_PLACE === "fight") {
+      const g = makeIt(t, gearTarget, `gear ${gearTarget.split(".").pop()}`);
+      const chain = netLabour(t, gearTarget);
+      if (!g) gearPlaced["not reachable"] = (gearPlaced["not reachable"] ?? 0) + 1;
+      else if (chain > gearBank) gearPlaced["over the cap"] = (gearPlaced["over the cap"] ?? 0) + 1;
+      else {
+        const k1 = kindOf(slot);
+        const s1 = plannedSecs(slot);
+        const fightLoss = Math.max(0, interval / 1000 - s1 - chain);
+        if (k1 === "rotation" || (k1 === "gate" && s1 < fightLoss)) {
+          gearPlaced[`replaced ${k1}`] = (gearPlaced[`replaced ${k1}`] ?? 0) + 1;
+          slot = g;
+        } else {
+          gearPlaced[`fight slot after ${k1}`] = (gearPlaced[`fight slot after ${k1}`] ?? 0) + 1;
+          second = { actionId: g.actionId, remaining: 1 };
+          secondWhy = `${g.actionId.split(".").pop()} (${g.why}; no fight this interval, about ${Math.round(fightLoss / 60)} min lost)`;
+          gearEntry = g;
+        }
+        gearBank -= chain;
+      }
+    }
+    const extra = threeSlots && gearEntry ? [{ actionId: gearEntry.actionId, remaining: gearEntry.remaining }] : [];
+    {
+      const kind = kindOf(slot);
+      const secs1 = plannedSecs(slot);
+      boilerUse[kind] = (boilerUse[kind] ?? 0) + secs1;
+      const total = interval / 1000;
+      let gearS = kind === "gear" ? secs1 : 0;
+      if (!threeSlots && gearEntry && second.actionId === gearEntry.actionId) {
+        gearS = Math.min(total - secs1, netLabour(t, gearTarget));
+        boilerUse.gear = (boilerUse.gear ?? 0) + gearS;
+      }
+      let prodS = kind === "gear" || kind === "scrapjaw" ? 0 : secs1;
+      let fightS = total - secs1 - (kind === "gear" ? 0 : gearS);
+      if (kind === "scrapjaw") fightS += secs1; // Scrapjaw is fighting
+      if (followProd) {
+        const ps = Math.min(total - secs1, plannedSecs(followProd));
+        boilerUse[kindOf(followProd)] = (boilerUse[kindOf(followProd)] ?? 0) + ps;
+        prodS += ps;
+        fightS = 0;
+      } else if (!threeSlots && gearEntry && second.actionId === gearEntry.actionId) fightS = 0;
+      const idleS = Math.max(0, total - prodS - gearS - fightS - (kind === "scrapjaw" ? 0 : 0));
+      boilerUse.production = (boilerUse.production ?? 0) + prodS;
+      boilerUse.fight = (boilerUse.fight ?? 0) + Math.max(0, fightS);
+      boilerUse.idle = (boilerUse.idle ?? 0) + idleS;
+      boilerUse.total = (boilerUse.total ?? 0) + total;
+    }
+    const queue = [{ actionId: slot.actionId, remaining: slot.remaining }, ...extra, second];
     await ok("PUT", `/tinkers/${main}/queue`, { queue });
-    note(`queued ${slot.remaining} x ${slot.actionId.split(".").pop()} (${slot.why}), then ${second.remaining === 10_000 ? "" : `${second.remaining} x `}${secondWhy}; ${t.crowns} Crowns, ${held(t, RATION)} Rations`);
+    note(`queued ${slot.remaining} x ${slot.actionId.split(".").pop()} (${slot.why}), ${extra.length ? `${gearEntry.remaining} x ${gearEntry.actionId.split(".").pop()} (${gearEntry.why}), ` : ""}then ${second.remaining === 10_000 ? "" : `${second.remaining} x `}${secondWhy}; ${t.crowns} Crowns, ${held(t, RATION)} Rations`);
   }
 
   // ---------- measurements ----------
@@ -664,7 +981,7 @@ async function runCadence(perDay) {
   const killsBefore = (t) => ev.filter((e) => e.type === "monster_killed" && new Date(e.at).getTime() <= t).length;
   await app.close();
   await db.end();
-  return { killsBefore, firstSession, guideTrail, forcedLocked, pagesHeld, ledgerEnd, lettersArrived, pageDrops, perDay, meleeAt, totalXp, crownFlow, shopBought, notes, refusals, districtSeen, needleTrack, scenes, seenOpen, gateMet, bossChecks, bossEv, sittings, horizon, foundryAt, end, kills, stalls };
+  return { gearPlaced, boilerUse, bossQueued, gearLog, gearMade, endLoadout: loadout(end), killsBefore, firstSession, guideTrail, forcedLocked, pagesHeld, ledgerEnd, lettersArrived, pageDrops, perDay, meleeAt, totalXp, crownFlow, shopBought, notes, refusals, districtSeen, needleTrack, scenes, seenOpen, gateMet, bossChecks, bossEv, sittings, horizon, foundryAt, end, kills, stalls };
 }
 
 const wanted = process.argv.slice(2).length ? process.argv.slice(2).map(Number) : [2, 3, 4];
@@ -673,7 +990,7 @@ for (const perDay of wanted) results.push(await runCadence(perDay));
 
 const lvlOf = (end, skill) => end.skills.find((s) => s.skill === skill)?.level ?? 1;
 for (const r of results) {
-  console.log(`\n=============== ${r.perDay} check-ins a day, ${DAYS}-day horizon, boss threshold ${BOSS_MIN}, policy ${POLICY}, district ${DISTRICT_MODE} ===============`);
+  console.log(`\n=============== ${r.perDay} check-ins a day, ${DAYS}-day horizon, boss threshold ${BOSS_MIN}, policy ${POLICY}, district ${DISTRICT_MODE}, gear share ${GEAR_SHARE} placed ${GEAR_PLACE}${BOSS_WEAPON ? `, Scrapjaw only with ${BOSS_WEAPON.split(".").pop()} or better` : ""} ===============`);
   if (VERBOSE) for (const n of r.notes) console.log(n);
   console.log("-- Act I beats (measured; day = days since the first session, Thursday 18:00)");
   for (const [id, gate] of BEATS) {
@@ -708,6 +1025,27 @@ for (const r of results) {
   const peak = bc.reduce((b, c) => (c.win > (b?.win ?? -1) ? c : b), null);
   console.log(`   win chance by day: ${bc.filter((_, i) => i % 2 === 0).map((c) => `d${dayOf(c.at)} ${(c.win * 100).toFixed(1)}% (${c.weapon.split(".").pop()}, melee ${c.melee})`).join("; ")}`);
   if (peak) console.log(`   best pre-win chance ${(peak.win * 100).toFixed(1)}% at d${dayOf(peak.at)}`);
+  {
+    const bq = r.bossQueued[0];
+    const short = (x) => (x ? x.split(".").pop() : "empty");
+    if (bq) {
+      const L = bq.loadout;
+      console.log(`-- gear at the first Scrapjaw attempt (measured; queued d${dayOf(bq.at)}, shown ${(bq.win * 100).toFixed(1)}%, melee ${bq.melee}, combat level ${bq.combat}):`);
+      console.log(`   weapon ${short(L.weapon)}; off_hand ${short(L.off_hand)}, head ${short(L.head)}, body ${short(L.body)}, hands ${short(L.hands)}, feet ${short(L.feet)}, charm ${short(L.charm)}`);
+      console.log(`   tools ${["prospecting", "scavenging", "smithing", "tinkering", "cooking"].map((k) => `${k} ${short(L.tools[k])}`).join(", ")}`);
+    } else console.log("-- gear at the first Scrapjaw attempt: Scrapjaw never queued");
+    const fw = r.bossEv.find((e) => e.payload.won);
+    console.log(`   first win: ${fw ? `d${dayOf(new Date(fw.at).getTime())} at ${(fw.payload.winChance * 100).toFixed(1)}%` : "none in the horizon"}; per attempt: ${r.bossEv.map((e) => `${(e.payload.winChance * 100).toFixed(1)}% ${e.payload.won ? "won" : "lost"}`).join(", ") || "none"}`);
+    const bu = r.boilerUse;
+    const SPLIT = ["production", "fight", "idle", "total"];
+    console.log(`   planned share of all Boiler time (estimated: queued counts x base seconds, whole-chain entries at chain labour net of stores, before tool speed): production ${((100 * (bu.production ?? 0)) / bu.total).toFixed(1)}%, gear ${((100 * (bu.gear ?? 0)) / bu.total).toFixed(1)}%, fighting ${((100 * (bu.fight ?? 0)) / bu.total).toFixed(1)}%, idle ${((100 * (bu.idle ?? 0)) / bu.total).toFixed(1)}%`);
+    console.log(`   production and gear by kind: ${Object.entries(bu).filter(([k]) => !SPLIT.includes(k)).map(([k, v]) => `${k} ${((100 * v) / bu.total).toFixed(1)}%`).join(", ")}`);
+    console.log(`   gear placement by sitting (measured): ${JSON.stringify(r.gearPlaced)}`);
+    console.log(`   melee weapons first held: ${WEAPONS.map((w) => `${short(w)} ${r.gearMade.find((x) => x.item === w) ? `d${dayOf(r.gearMade.find((x) => x.item === w).at)}` : "never"}`).join(", ")}`);
+    console.log(`   gear worn (measured, day put on): ${r.gearLog.map((g) => `${short(g.item)}@d${dayOf(g.at)}`).join(", ") || "none"}`);
+    const EL = r.endLoadout;
+    console.log(`   at the end: off_hand ${short(EL.off_hand)}, head ${short(EL.head)}, body ${short(EL.body)}, hands ${short(EL.hands)}, feet ${short(EL.feet)}, charm ${short(EL.charm)}; tools ${JSON.stringify(Object.fromEntries(Object.entries(EL.tools).map(([k, v]) => [k, short(v)])))}`);
+  }
   console.log(`-- end (d${days.toFixed(2)}): skills ${JSON.stringify(Object.fromEntries(r.end.skills.map((s) => [s.skill, s.level])))}; weapon ${r.end.weapon}; ${r.end.crowns} Crowns; ${r.kills} ordinary kills; debts ${JSON.stringify(r.end.story.debts)}`);
   console.log(`   story refusals: ${JSON.stringify(r.refusals.map((x) => `${x.id.split(".").pop()}@d${dayOf(x.at)}`))}`);
   console.log(`-- Cog Shop: ${SHOP.length ? `bought d${dayOf(r.shopBought.at)}: ${r.shopBought.crates} crates, ${r.shopBought.cogs} Cogs, ${JSON.stringify(r.shopBought.buys)}` : "nothing bought"}${HOURS ? `; sittings at ${HOURS.join(",")}h` : ""}`);

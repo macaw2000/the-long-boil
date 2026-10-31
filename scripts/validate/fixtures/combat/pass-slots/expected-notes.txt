@@ -1,5 +1,5 @@
 NOTE combat : 1 gear file(s); 3 weapon(s), 1 armour piece(s) (legacy slot), 1 off_hand, 2 head, 2 body, 1 hands, 1 feet, 1 charm, 1 tool(s) keep the gear rules, any zone
-NOTE combat : 3 monster(s) on monster/2, 0 monster/1 file(s) skipped; model content/tuning/combat.json, curve content/tuning/curve.json, RATION_HEAL_HP 250
+NOTE combat : 4 monster(s) on monster/2, 0 monster/1 file(s) skipped; model content/tuning/combat.json, curve content/tuning/curve.json, RATION_HEAL_HP 250
 NOTE combat : monster.global.fixture_slot_rat: matched, Rations stocked: computed 120.0 s, floored 120.0 s against seconds_per_kill 120 (off by +0.0%); reference player main aetherics 10, other six 5, max_hp 750, item.global.fixture_coil, legacy armour item.global.fixture_coat, off_hand item.global.fixture_slot_guard, head item.global.fixture_slot_cap, body item.global.fixture_slot_vest, hands item.global.fixture_slot_gloves, feet item.global.fixture_slot_boots, charm item.global.fixture_slot_locket; armour points 28, charm accuracy 3
 NOTE combat : monster.global.fixture_slot_rat: unmatched (melee), Rations stocked with item.global.fixture_spanner: computed 178.3 s, floored 178.3 s
 NOTE combat : monster.global.fixture_slot_rat: unmatched (marksmanship), Rations stocked with item.global.fixture_rifle: computed 169.7 s, floored 169.7 s
@@ -14,3 +14,8 @@ NOTE combat : monster.global.fixture_jaw_king: matched, 2 Rations: win chance 0.
 NOTE combat : monster.global.fixture_jaw_king: unmatched (melee), Rations stocked with item.global.fixture_spanner: win chance 0.001
 NOTE combat : monster.global.fixture_jaw_king: unmatched (aetherics), Rations stocked with item.global.fixture_coil: win chance 0.000
 NOTE combat : monster.global.fixture_jaw_king: matched, without Rations: win chance 0.009
+NOTE combat : monster.global.fixture_slot_king: matched, 2 Rations: win chance 0.488 against BOSS_TARGET_WIN_CHANCE 0.5 (off by -0.012); won attempt computed 200.0 s, floored 200.0 s against seconds_per_kill 200; reference player main marksmanship 15, other six 7, max_hp 850, item.global.fixture_rifle (boss.reference_weapon), legacy armour item.global.fixture_coat, off_hand item.global.fixture_slot_guard, head item.global.fixture_slot_cap, body item.global.fixture_slot_vest, hands item.global.fixture_slot_gloves, charm item.global.fixture_slot_locket (empty: feet); armour points 26, charm accuracy 3
+NOTE combat : monster.global.fixture_slot_king: unmatched (melee), Rations stocked with item.global.fixture_spanner: win chance 0.001
+NOTE combat : monster.global.fixture_slot_king: unmatched (aetherics), Rations stocked with item.global.fixture_coil: win chance 0.000
+NOTE combat : monster.global.fixture_slot_king: matched with the best weapon (gear.reference_gear), Rations stocked with item.global.fixture_rifle: win chance 0.488
+NOTE combat : monster.global.fixture_slot_king: matched, without Rations: win chance 0.009

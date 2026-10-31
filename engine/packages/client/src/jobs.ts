@@ -91,6 +91,9 @@ export function usePlanner(content: Content, tinker: Tinker, name: (id: string) 
       if ((levels.get(action.skill) ?? 1) < action.level_required) return `needs ${titleCase(action.skill)} ${action.level_required}`;
       const missing = action.inputs.filter((input) => (held.get(input.item) ?? 0) < input.qty).map((input) => name(input.item));
       if (missing.length === 0) return null;
+      // A piece of gear makes what it lacks first, inside its one queue entry (the Boiler's gear chain).
+      const gear = [...content.weapons, ...content.armours, ...content.pieces, ...content.tools].map((piece) => piece.item);
+      if (action.outputs.some((output) => gear.includes(output.item))) return `it makes the ${missing.join(" and ")} it needs first, from what it can gather`;
       const ahead = tinker.queue.length > 0 ? " unless the job ahead of it makes some first" : "";
       return `you hold no ${missing.join(" or ")}, so it will be taken off the queue${ahead}`;
     }

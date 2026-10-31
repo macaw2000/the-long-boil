@@ -6,7 +6,7 @@
       "skill": "prospecting",
       "level_required": 20,
       "seconds": 270,
-      "xp": 160,
+      "xp": 139,
       "inputs": [],
       "outputs": [
         {
@@ -20,7 +20,7 @@
       "skill": "prospecting",
       "level_required": 25,
       "seconds": 324,
-      "xp": 198,
+      "xp": 172,
       "inputs": [],
       "outputs": [
         {
@@ -34,7 +34,7 @@
       "skill": "prospecting",
       "level_required": 30,
       "seconds": 378,
-      "xp": 238,
+      "xp": 206,
       "inputs": [],
       "outputs": [
         {
@@ -48,7 +48,7 @@
       "skill": "prospecting",
       "level_required": 35,
       "seconds": 432,
-      "xp": 280,
+      "xp": 243,
       "inputs": [],
       "outputs": [
         {
@@ -62,7 +62,7 @@
       "skill": "prospecting",
       "level_required": 40,
       "seconds": 486,
-      "xp": 324,
+      "xp": 281,
       "inputs": [],
       "outputs": [
         {
@@ -76,7 +76,7 @@
       "skill": "scavenging",
       "level_required": 20,
       "seconds": 270,
-      "xp": 160,
+      "xp": 139,
       "inputs": [],
       "outputs": [
         {
@@ -90,7 +90,7 @@
       "skill": "scavenging",
       "level_required": 25,
       "seconds": 324,
-      "xp": 198,
+      "xp": 172,
       "inputs": [],
       "outputs": [
         {
@@ -104,7 +104,7 @@
       "skill": "scavenging",
       "level_required": 30,
       "seconds": 378,
-      "xp": 238,
+      "xp": 206,
       "inputs": [],
       "outputs": [
         {
@@ -118,7 +118,7 @@
       "skill": "scavenging",
       "level_required": 35,
       "seconds": 432,
-      "xp": 280,
+      "xp": 243,
       "inputs": [],
       "outputs": [
         {
@@ -132,7 +132,7 @@
       "skill": "scavenging",
       "level_required": 40,
       "seconds": 486,
-      "xp": 324,
+      "xp": 281,
       "inputs": [],
       "outputs": [
         {
@@ -146,7 +146,7 @@
       "skill": "smithing",
       "level_required": 20,
       "seconds": 270,
-      "xp": 160,
+      "xp": 139,
       "inputs": [
         {
           "item": "item.cinderworks.tin_ore",
@@ -169,7 +169,7 @@
       "skill": "smithing",
       "level_required": 25,
       "seconds": 324,
-      "xp": 198,
+      "xp": 172,
       "inputs": [
         {
           "item": "item.cinderworks.nickel_ore",
@@ -192,7 +192,7 @@
       "skill": "smithing",
       "level_required": 30,
       "seconds": 378,
-      "xp": 238,
+      "xp": 206,
       "inputs": [
         {
           "item": "item.cinderworks.nickel_steel_ingot",
@@ -215,7 +215,7 @@
       "skill": "smithing",
       "level_required": 35,
       "seconds": 432,
-      "xp": 280,
+      "xp": 243,
       "inputs": [
         {
           "item": "item.cinderworks.manganese_ore",
@@ -238,7 +238,7 @@
       "skill": "smithing",
       "level_required": 40,
       "seconds": 486,
-      "xp": 324,
+      "xp": 281,
       "inputs": [
         {
           "item": "item.cinderworks.manganese_steel_ingot",
@@ -261,7 +261,7 @@
       "skill": "tinkering",
       "level_required": 20,
       "seconds": 270,
-      "xp": 160,
+      "xp": 139,
       "inputs": [
         {
           "item": "item.cinderworks.bronze_ingot",
@@ -280,7 +280,7 @@
       "skill": "tinkering",
       "level_required": 25,
       "seconds": 324,
-      "xp": 198,
+      "xp": 172,
       "inputs": [
         {
           "item": "item.cinderworks.nickel_steel_ingot",
@@ -299,7 +299,7 @@
       "skill": "tinkering",
       "level_required": 30,
       "seconds": 378,
-      "xp": 238,
+      "xp": 206,
       "inputs": [
         {
           "item": "item.cinderworks.bronze_ingot",
@@ -322,7 +322,7 @@
       "skill": "tinkering",
       "level_required": 35,
       "seconds": 432,
-      "xp": 280,
+      "xp": 243,
       "inputs": [
         {
           "item": "item.cinderworks.bronze_valve",
@@ -345,7 +345,7 @@
       "skill": "tinkering",
       "level_required": 40,
       "seconds": 486,
-      "xp": 324,
+      "xp": 281,
       "inputs": [
         {
           "item": "item.cinderworks.fire_opal",

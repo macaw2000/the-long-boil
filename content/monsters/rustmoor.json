@@ -11,7 +11,7 @@
       "xp": 9,
       "seconds_per_kill": 54,
       "hp": 148,
-      "max_hit": 42,
+      "max_hit": 45,
       "hit_chance": 0.75,
       "attack_interval_s": 3.0,
       "evasion": 2
@@ -25,8 +25,8 @@
       "weakness": "marksmanship",
       "xp": 19,
       "seconds_per_kill": 108,
-      "hp": 1612,
-      "max_hit": 44,
+      "hp": 1659,
+      "max_hit": 52,
       "hit_chance": 0.75,
       "attack_interval_s": 6.0,
       "evasion": 7
@@ -40,8 +40,8 @@
       "weakness": "aetherics",
       "xp": 30,
       "seconds_per_kill": 162,
-      "hp": 5067,
-      "max_hit": 52,
+      "hp": 5250,
+      "max_hit": 63,
       "hit_chance": 0.75,
       "attack_interval_s": 9.0,
       "evasion": 14
@@ -55,8 +55,8 @@
       "weakness": "melee",
       "xp": 42,
       "seconds_per_kill": 216,
-      "hp": 10378,
-      "max_hit": 56,
+      "hp": 10821,
+      "max_hit": 71,
       "hit_chance": 0.75,
       "attack_interval_s": 12.0,
       "evasion": 20
@@ -70,8 +70,8 @@
       "weakness": "melee",
       "xp": 52,
       "seconds_per_kill": 270,
-      "hp": 12860,
-      "max_hit": 530,
+      "hp": 13238,
+      "max_hit": 649,
       "hit_chance": 0.75,
       "attack_interval_s": 15.0,
       "evasion": 26

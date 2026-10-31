@@ -280,6 +280,22 @@ SHEET_D = ["tin_ore", "nickel_ore", "steam_coal", "manganese_ore", "fire_opal", 
 SHEET_E = ["bronze_valve", "valve_key", "pressure_gauge", "steam_injector", "opal_pyrometer", "gauze_goggles", "slag_wool_coat",
            "smoked_lens", "furnace_goggles", "slag_felt", "studded_felt_coat", "bronze_eyecups", "founders_goggles"]
 SHEET_E_REST = ["skill_tailoring", "ui_empty_armour", "ui_empty_weapon"]
+# Rustmoor's gear and tools (art request 14): one item a row, brass, iron, steel, then the fourth tier.
+GEAR = {
+    "gear-f.jpeg": (4, 4, ["brass_breastplate", "iron_cuirass", "steel_cuirass", "ribbed_cuirass",
+                           "brass_skullcap", "iron_pot_helm", "steel_sallet", "visored_sallet",
+                           "brass_knuckle_guards", "iron_gauntlets", "steel_gauntlets", "geared_gauntlets",
+                           "brass_toecaps", "iron_sabatons", "steel_sabatons", "hobnailed_sabatons"]),
+    "gear-g.jpeg": (4, 4, ["brass_buckler", "iron_targe", "steel_shield", "garnet_boss_shield",
+                           "brass_plumb_bob", "iron_dividers", "steel_vernier", "garnet_pendulum",
+                           "brass_pick", "iron_pick", "steel_pick", "garnet_pick",
+                           "brass_tongs", "iron_tongs", "steel_tongs", "spring_tongs"]),
+    # The redraw came back 4 by 4 with the ladle row drawn twice; the second is skipped.
+    "gear-h.jpeg": (4, 4, ["brass_driver_roll", "iron_driver_roll", "steel_driver_roll", "watchmakers_roll",
+                           "brass_ladle", "iron_ladle", "steel_ladle", "crested_ladle",
+                           None, None, None, None,
+                           "brass_salvage_hook", "iron_salvage_hook", "steel_salvage_hook", "clockwork_grapnel"]),
+}
 LEDGER_PAGES = ["ledger_page_1", "ledger_page_drop_1", "ledger_page_drop_2", "ledger_page_drop_3", "ledger_page_drop_4"]
 
 RATS = ["rust_rat_runt", "rust_rat_scrounger", "rust_rat_tinplate", "rust_rat_gaffer"]
@@ -332,6 +348,13 @@ def main() -> None:
     # Sheet E's Tailoring icon crossed two needles into an X that read as "no coats"; it was redrawn alone.
     redrawn = keyed(sheet("skill-tailoring.jpeg"))
     save(fit_icon(redrawn.crop(content_box(redrawn))), "skill_tailoring")
+
+    for file, (cols, rows, items) in GEAR.items():
+        for item, cell in zip(items, cells(without_gridlines(keyed(sheet(file))), cols, rows)):
+            if item is None:
+                continue
+            save(fit_icon(cell), f"icon_{item}")
+            written += 1
 
     # Icons redrawn alone replace their sheet's cell: Sheet B's Brass Catapult came out a siege engine,
     # not the slingshot the Tinker holds (docs/art-requests.md, 12).

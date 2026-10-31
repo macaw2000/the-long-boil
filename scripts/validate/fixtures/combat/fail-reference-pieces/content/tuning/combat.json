@@ -1,0 +1,213 @@
+{
+ "schema": "tuning.combat/1",
+ "id": "tuning.global.fixture_combat",
+ "revision": 1,
+ "source": "Validator fixture. Not game content.",
+ "applies_to": "Validator fixture.",
+ "basis_key": {
+  "proposal": "fixture"
+ },
+ "units": {
+  "HP_DAMAGE_SCALE": 10,
+  "basis": "proposal"
+ },
+ "constants": {
+  "PLAYER_ATTACK_INTERVAL_S": {
+   "value": 2.5,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "BETWEEN_KILLS_S": {
+   "value": 5,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "KNOCKOUT_RESPAWN_S": {
+   "value": 30,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "REFERENCE_RATION_TRIGGER_HP_FRACTION": {
+   "value": 0.5,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "HP_BASE": {
+   "value": 500,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "HP_PER_VITALITY": {
+   "value": 50,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "DAMAGE_PER_STYLE_LEVEL": {
+   "value": 8,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "PRESSURE_DAMAGE_PER_LEVEL": {
+   "value": 0.02,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "HIT_CHANCE_BASE": {
+   "value": 0.7,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "HIT_CHANCE_PER_POINT": {
+   "value": 0.03,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "HIT_CHANCE_MIN": {
+   "value": 0.1,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "HIT_CHANCE_MAX": {
+   "value": 0.9,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "CRIT_CHANCE_PER_PRECISION": {
+   "value": 0.01,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "CRIT_CHANCE_CAP": {
+   "value": 0.4,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "CRIT_MULTIPLIER": {
+   "value": 2.0,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "ARMOUR_HALF_POINT": {
+   "value": 50,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "WEAKNESS_MULTIPLIER": {
+   "value": 1.5,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "REFERENCE_DAMAGE_SHARE_PER_KILL": {
+   "value": 0.3,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "BOSS_TARGET_WIN_CHANCE": {
+   "value": 0.5,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "BOSS_RATION_CAP_PER_ATTEMPT": {
+   "value": 2,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "MAIN_COMBAT_SKILL_SHARE": {
+   "value": 0.4,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "OTHER_COMBAT_SKILLS_SHARE_EACH": {
+   "value": 0.1,
+   "basis": "proposal",
+   "note": "Fixture value."
+  },
+  "CALIBRATION_STEP": {
+   "value": null,
+   "basis": "open",
+   "note": "Fixture value."
+  },
+  "RATION_HEAL_HP": {
+   "value": 250,
+   "basis": "proposal",
+   "note": "Fixture value."
+  }
+ },
+ "skills": {
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
+ },
+ "player_formulas": {
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
+ },
+ "gear": {
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
+ },
+ "monster_stats_shape": {
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
+ },
+ "reference_player": {
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
+ },
+ "weakness": {
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
+ },
+ "kill_time": {
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes.",
+  "floor": {
+   "KILL_TIME_CAP_FRACTION": {
+    "value": 0.8,
+    "basis": "proposal"
+   }
+  }
+ },
+ "rations": {
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
+ },
+ "boss": {
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes.",
+  "reference_weapon": {
+   "_note": "Fixture.",
+   "monster.global.fixture_slotless_king": {
+    "item": "item.global.fixture_rifle",
+    "pieces": {
+     "head": "item.global.fixture_slot_gloves"
+    }
+   },
+   "monster.global.fixture_far_king": {
+    "item": "item.global.fixture_rifle",
+    "pieces": {
+     "head": "item.thunderhead.fixture_far_helm"
+    }
+   },
+   "monster.global.fixture_own_king": {
+    "item": "item.global.fixture_rifle",
+    "pieces": {
+     "head": "item.global.fixture_own_cap"
+    }
+   },
+   "monster.global.fixture_late_king": {
+    "item": "item.global.fixture_rifle",
+    "pieces": {
+     "head": "item.global.fixture_late_cap"
+    }
+   },
+   "monster.global.fixture_necked_king": {
+    "item": "item.global.fixture_rifle",
+    "pieces": {
+     "neck": "item.global.fixture_slot_cap"
+    }
+   },
+   "monster.global.fixture_listy_king": {
+    "item": "item.global.fixture_rifle",
+    "pieces": [
+     "item.global.fixture_slot_cap"
+    ]
+   }
+  }
+ },
+ "combat_xp_split": {
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
+ },
+ "settled_points": [],
+ "open_questions": []
+}

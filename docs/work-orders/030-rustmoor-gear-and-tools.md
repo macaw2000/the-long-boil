@@ -1,7 +1,7 @@
 # Work order 030: Rustmoor's gear and tool ladder
 
 **Agent:** `draftsman`
-**Status:** ready to run
+**Status:** done (30 October 2026). 44 pieces and tools in `content/gear/rustmoor-pieces.json`: four tiers in each of the six slots and the five tools, brass, iron, steel and a fourth tier. Jeremy settled the hours of materials per piece, Smithing's salvage hook, and that the walk wears gear with Scrapjaw re-solved to it; the retune is work order 031. Icons are art request 14.
 **Blocks:** work order 031 (retuning the rats and Scrapjaw for the floors, and re-solving the band rates for tools), the Loadout's new slots in the client, and the art for every new piece (art request 14).
 
 ## Why this one

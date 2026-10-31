@@ -116,3 +116,30 @@ describe("tools", () => {
     expect(after.state.headTool).toBe(0);
   });
 });
+
+describe("a queued piece runs its whole chain (Jeremy, 30 October 2026)", () => {
+  const BREASTPLATE = "action.rustmoor.forge_brass_breastplate";
+
+  it("prospects and smelts what it lacks inside the one entry, and counts only the piece", () => {
+    const state = newTinker({}, 0, 0, 7);
+    const queued = setQueue(state, [{ actionId: BREASTPLATE, remaining: 1 }]);
+    // 23 Brass Ingots, each a 54 s prospect and a 54 s smelt, then a 54 s forge: 47 goes.
+    const early = resolve(queued, real, 46 * 54_000);
+    expect(early.state.inventory["item.rustmoor.brass_breastplate"] ?? 0).toBe(0);
+    expect(early.state.queue[0]?.remaining).toBe(1);
+    const done = resolve(queued, real, 47 * 54_000);
+    expect(done.state.inventory["item.rustmoor.brass_breastplate"]).toBe(1);
+    expect(done.state.inventory["item.rustmoor.brass_ingot"] ?? 0).toBe(0);
+    expect(done.state.queue).toEqual([]);
+    const made = done.events.filter((event) => event.type === "action_completed").map((event) => (event as { actionId: string }).actionId);
+    expect(made.filter((id) => id === "action.rustmoor.prospect_copper")).toHaveLength(23);
+    expect(made.filter((id) => id === "action.rustmoor.smelt_brass_ingot")).toHaveLength(23);
+  });
+
+  it("uses what is in stores first, and leaves non-gear work to stall on missing inputs", () => {
+    const stocked = setQueue(newTinker({ "item.rustmoor.brass_ingot": 23 }, 0, 0, 7), [{ actionId: BREASTPLATE, remaining: 1 }]);
+    expect(resolve(stocked, real, 54_000).state.inventory["item.rustmoor.brass_breastplate"]).toBe(1);
+    const smelt = setQueue(newTinker({}, 0, 0, 7), [{ actionId: "action.rustmoor.smelt_brass_ingot", remaining: 1 }]);
+    expect(resolve(smelt, real, 54_000).events[0]).toMatchObject({ type: "queue_stalled", reason: "inputs" });
+  });
+});

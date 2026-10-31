@@ -17,7 +17,7 @@ describe("the While You Were Away ledger", () => {
         id: SPANNER,
         count: 50,
         won: 0,
-        xp: { tinkering: 450 },
+        xp: { tinkering: 400 },
         crowns: 0,
         consumed: { "item.rustmoor.brass_ingot": 50 },
         produced: { "item.rustmoor.brass_spanner": 50 },

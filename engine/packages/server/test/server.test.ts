@@ -56,7 +56,7 @@ describe("a Tinker's first session", () => {
     expect(spanners.qty).toBe(50);
     const copper = body.tinker.inventory.find((stack: { item: string }) => stack.item === "item.rustmoor.copper");
     expect(copper.qty).toBe(Math.floor((6 * 3600 - 50 * 54) / 54));
-    expect(body.tinker.skills.find((skill: { skill: string }) => skill.skill === "tinkering")).toMatchObject({ xp: 450, level: 3 });
+    expect(body.tinker.skills.find((skill: { skill: string }) => skill.skill === "tinkering")).toMatchObject({ xp: 400, level: 3 });
     expect(new Date(body.tinker.steamUntil).getTime()).toBe(clock + 12 * HOUR);
   });
 

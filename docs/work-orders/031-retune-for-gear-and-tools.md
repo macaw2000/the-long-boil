@@ -1,7 +1,7 @@
 # Work order 031: retune for gear and tools
 
 **Agents:** `assayer` for the walk, then `draftsman` for the numbers
-**Status:** ready to run
+**Status:** done (30 October 2026). The walk crafts and wears gear (about 4% of the Boiler), still forges the Riveting Hammer and trains Tinkering 6 by labour per XP; `cook()` no longer returns NaN. The band rates were re-solved for tools (Rustmoor 1 to 20 at 13.96 days, the Cinderworks 20 to 45 at 13.83, F = 1.15 from Rustmoor's level-15 tools). The rats hold their kill times and the 0.25 damage share against the reference pieces. Scrapjaw is recorded against the 3-a-day walk's set at its first attempt (Steel Shield, Iron Pot Helm, Steel Cuirass, Iron Gauntlets, Iron Sabatons, Brass Plumb Bob) and re-solved to 0.500 at melee 20 (max hit 649, hp 13,238; `combat.json` revision 12). First wins at 3 a day fall on d14.54 to d14.80 for seeds 2 to 5 and d15.54 for seed 1, because the walk attacks only at 40% and melee 19 shows 39.8%; Jeremy accepted that on 30 October 2026 rather than lower the walk's threshold or move the solve. Open: at 4 a day the Foundry Pass comes at 8.47 days, above work order 023's 6 to 8; the walk never makes the Iron Dividers or steel head, hands or feet in Act I.
 **Blocks:** committing work order 030's Rustmoor gear and tools, which fail pacing without it.
 
 ## Why this one

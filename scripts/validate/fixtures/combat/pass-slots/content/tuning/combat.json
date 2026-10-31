@@ -164,7 +164,21 @@
   "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
  },
  "boss": {
-  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."
+  "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes.",
+  "reference_weapon": {
+   "_note": "Fixture.",
+   "monster.global.fixture_slot_king": {
+    "item": "item.global.fixture_rifle",
+    "basis": "proposal",
+    "pieces": {
+     "off_hand": "item.global.fixture_slot_guard",
+     "head": "item.global.fixture_slot_cap",
+     "body": "item.global.fixture_slot_vest",
+     "hands": "item.global.fixture_slot_gloves",
+     "charm": "item.global.fixture_slot_locket"
+    }
+   }
+  }
  },
  "combat_xp_split": {
   "_note": "Fixture; the formulas are the ones tuning.combat/1 fixes."

@@ -1,8 +1,8 @@
 {
  "schema": "tuning.tools/1",
  "id": "tuning.global.tools",
- "revision": 1,
- "source": "docs/work-orders/029-gear-model.md ('Settled before you start', scope 3 and 4, and Jeremy's answers to the first draft, 30 October 2026); docs/gdd.md section 6 (Skills table, Gear and tools, amended 30 October 2026) and section 8 (the Boiler Boost); docs/build-plan.md milestone 13; content/tuning/cog-shop.json (boiler_boost); content/tuning/xp-curve.json; content/actions/rustmoor.json and cinderworks.json (the band rates the pacing check reads); engine/packages/rules/src/boiler.ts and shop.ts (how the Boost is fixed at a go's start)",
+ "revision": 2,
+ "source": "docs/work-orders/029-gear-model.md ('Settled before you start', scope 3 and 4, and Jeremy's answers to the first draft, 30 October 2026); docs/gdd.md section 6 (Skills table, Gear and tools, amended 30 October 2026) and section 8 (the Boiler Boost); docs/build-plan.md milestone 13; content/tuning/cog-shop.json (boiler_boost); content/tuning/xp-curve.json; content/actions/rustmoor.json and cinderworks.json (the band rates the pacing check reads); engine/packages/rules/src/boiler.ts and shop.ts (how the Boost is fixed at a go's start); docs/work-orders/030-rustmoor-gear-and-tools.md (Jeremy's answers, 30 October 2026: Scavenging's tool is a salvage hook forged by Smithing, revision 2)",
  "applies_to": "every go of the eight gathering and production skills; no combat skill and not Calibrating",
  "basis_key": {
   "settled": "Jeremy has decided it (work order 029: 'Settled before you start', or his answers to the first draft, 30 October 2026); where the GDD records it, the line is quoted",
@@ -118,14 +118,20 @@
     "band_45_to_70": "about 5.10 (estimate; no actions yet)",
     "ladder": "All three figures (about 0.91x, 2.58x and 5.1x) are on the tiers ladder: a tool at every action tier (1, 5, 10, 15; 20, 25, 30, 35, 40), and for 45 to 70 an estimate with a tool every 5 levels from 45, with F 1.1013, 1.3104 and about 1.564. On a dense ladder (a tool at every level) the first two would be 0.8909 and 2.5395."
    },
-   "not_yet": "Not applied: xp-curve.json's values and every action are unchanged. check_pacing.py now has the tool factor, so the band days it reports are the with-tool figures. No tool is drafted yet, so the factor is 1 and the bands still read 13.96 and 13.80 days; once work order 030's tools exist they fall under 14 (about 12.7 and 10.5 on the tiers ladder). What still waits is the re-solve of the band rates to resolve_must_hit, in later work orders."
+   "not_yet": "Applied for Rustmoor 1 to 20 and the Cinderworks 20 to 45 by work order 031 (resolve_must_hit.applied)."
   },
   "resolve_must_hit": {
    "factor": "F(band) = band hours with no tool / band hours with the reference tool ladder, both by check_pacing.py's method (best action at each level, the curve's cost_to_next, 8.4 band-skill hours a day), the with-tool hours dividing each level's best XP per hour by 1 + speed_percent(0) / 100 of the best tool with level_required <= that level. F is measured on the tool ladder work order 030 (and its Cinderworks and Thunderhead successors) actually drafts, not on the tiers or dense assumptions here; the figures in settled_intent are on the tiers ladder only.",
    "target": "After the re-solve, the pacing check with the tool factor must give each gathering and production band 14 days within 2, and no further than today's figures from 14: 13.96 days for 1 to 20 and 13.80 for 20 to 45, 0.04 and 0.20 under. Equivalently each band's tool-free effective rate is band_xp_rate_targets / F: 0.9081x and 2.5794x on the tiers ladder.",
    "how": "Scale every action's XP per go in the band by 1 / F, keeping its seconds and tier, so the in-band climb (section 6: first actions slightly under, later ones slightly over) keeps its shape. Whole-number XP rounding must leave the band inside the target above. Rustmoor's tiers would go from 9, 19, 30, 42 XP to about 8.2, 17.3, 27.2, 38.1 before rounding at F 1.1013.",
    "unaffected": "The main combat skill band (no tool; 13.96 days), the curve's table, and the day-2 check, which reads the reference rate rather than the actions and stays at 55.",
-   "target_basis": "proposal: the settled intent is 14 days a band with tools held; holding each band no further from 14 than today is this draft's reading of it."
+   "target_basis": "proposal: the settled intent is 14 days a band with tools held; holding each band no further from 14 than today is this draft's reading of it.",
+   "applied": {
+    "work_order": "031, Part 2 item 1 (draftsman, 30 October 2026)",
+    "factor": "Measured on work order 030's drafted ladder (a tool at 1, 5, 10 and 15 in Prospecting, Scavenging, Smithing, Tinkering and Cooking): F(1 to 20) = 13.9624 / 12.6786 = 1.10125. F(20 to 45) = 1.15 exactly, from Rustmoor's level-15 tools, the best tool at every level of the band until the Cinderworks has its own; Tailoring has no tool, F = 1, unchanged.",
+    "xp_per_go": "Rustmoor tiers 9, 19, 30, 42 become 8, 17, 27, 39 (exact 8.17, 17.25, 27.24, 38.14); Cinderworks tiers 160, 198, 238, 280, 324 become 139, 172, 206, 243, 281 (exact 139.13, 172.17, 206.96, 243.48, 281.74). Seconds unchanged. Rounding chosen among floor/ceil per tier as the combination nearest 14 days that keeps the climb: 1 to 20 at 13.96 days (13.9605), 20 to 45 at 13.83. Every other combination at 1 to 20 lands further than 0.04 from 14 or stops climbing; the clean 0.05 step (8, 17, 27, 38) gives 14.09.",
+    "not_yet": "When the Cinderworks gets its own tools, F(20 to 45) rises (about 1.31 on a tiers ladder) and its band must be re-solved again."
+   }
   }
  },
  "settled_points": [
@@ -135,18 +141,18 @@
   "A go keeps the speed it started with, as the Boost does (go_start)",
   "Tool speed is 1% per level required at +0 (constants.TOOL_SPEED_PERCENT_PER_LEVEL; Jeremy, 30 October 2026)",
   "The 14 days per zone assume the reference player holds tools; the band rates are re-tuned to that later (pacing.settled_intent; Jeremy, 30 October 2026)",
-  "Smithing makes the pick and tongs, Tinkering the fine instruments, Tailoring the needle case and aprons, Cooking its own ladle (makers; Jeremy, 30 October 2026)",
+  "Smithing makes the pick, the tongs and Scavenging's salvage hook, Tinkering the fine instruments, Tailoring the needle case, Cooking its own ladle (makers; Jeremy, 30 October 2026, work orders 029 and 030)",
   "A worn tool cannot be sold while worn (go_start.selling; an engine rule)"
  ],
  "open_questions": [
-  "Standing defaults, not objected to (30 October 2026), still proposals: tool and Boost multiply (composition); the axe from Smithing, the apron as Scavenging's tool, the tea scale from Tinkering (makers); resolve_must_hit.target.",
-  "The re-solve of the band rates (resolve_must_hit) is still waiting. check_pacing.py's tool factor is in; once tools are drafted, the with-tool band days it reports fall under 14 until the actions are re-solved in later work orders.",
+  "Standing defaults, not objected to (30 October 2026), still proposals: tool and Boost multiply (composition); the axe from Smithing and the tea scale from Tinkering (makers); the apron is no longer a tool (work order 030); resolve_must_hit.target.",
+  "The band rates were re-solved for tools in work order 031 (resolve_must_hit.applied). Re-solve them again whenever a band's best tools change, including when the Cinderworks gets its own tools.",
   "What Lumbering's and Tea Blending's tools are worth before either skill has actions.",
   "The economy: a tool raises inputs eaten and items made per hour by F (about 10% across Rustmoor and 31% across the Cinderworks) until the re-solve brings XP back; after it, items per hour stay higher by F while XP per hour returns to target, which the economy work orders' sinks and collectors must count."
  ],
  "makers": {
   "_note": "Which skill makes each skill's tool. The tool descriptions are kinds, not item names; work order 030 names the items. A maker's own tool (tongs, fine instruments, a needle case, a ladle) is made at the maker's level 1, so no skill waits on another to start.",
-  "settled": "Jeremy, 30 October 2026 (work order 029): 'Tools are spread across crafts: Smithing makes picks and tongs, Tinkering the fine instruments, Tailoring needle cases and aprons'; and 'Cooking makes its own ladle.' Only the pick, the tongs, the fine instruments, the needle case, Tailoring's aprons and Cooking's ladle rest on Jeremy's words; the axe, the apron's going to Scavenging and the tea scale are proposals.",
+  "settled": "Jeremy, 30 October 2026 (work order 029): 'Tools are spread across crafts: Smithing makes picks and tongs, Tinkering the fine instruments, Tailoring needle cases and aprons'; and 'Cooking makes its own ladle.' Jeremy, 30 October 2026 (work order 030): Scavenging's tool is a salvage hook (or magnet) forged by Smithing, makeable in Rustmoor now; the Tailoring apron may come later as a Cinderworks piece in another slot. Only the axe and the tea scale remain proposals.",
   "by_skill": {
    "prospecting": {
     "tool": "pick",
@@ -174,9 +180,10 @@
     "basis": "settled (Jeremy, 30 October 2026 (work order 029): 'Cooking makes its own ladle.')"
    },
    "scavenging": {
-    "tool": "apron, with salvage pockets",
-    "made_by": "tailoring",
-    "basis": "proposal: that Tailoring makes aprons is settled (Jeremy, 30 October 2026 (work order 029)); that the apron is Scavenging's tool is a proposal, Scavenging, which picks over loose salvage, being the skill left without one."
+    "tool": "salvage hook (or magnet)",
+    "made_by": "smithing",
+    "basis": "settled (Jeremy, 30 October 2026 (work order 030): Scavenging's tool is a salvage hook forged by Smithing, makeable in Rustmoor now)",
+    "replaces": "Revision 1's proposal, an apron with salvage pockets made by Tailoring; Tailoring has no Rustmoor actions and Rustmoor no cloth (work order 030's first draft). The apron may come later as a Cinderworks piece in another slot, not as a tool."
    },
    "lumbering": {
     "tool": "axe",
@@ -189,6 +196,6 @@
     "basis": "proposal: a fine instrument, which Jeremy gives to Tinkering."
    }
   },
-  "spread": "Smithing makes 3 tools (pick, tongs, axe), Tinkering 2 (fine instruments, tea scale), Tailoring 2 (needle case, apron), Cooking 1 (ladle)."
+  "spread": "Smithing makes 4 tools (pick, tongs, salvage hook, axe), Tinkering 2 (fine instruments, tea scale), Tailoring 1 (needle case), Cooking 1 (ladle)."
  }
 }

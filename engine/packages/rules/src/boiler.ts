@@ -133,7 +133,15 @@ export function cloneState(state: TinkerState): TinkerState {
 
 type Step =
   | { kind: "stall"; reason: Extract<GameEvent, { type: "queue_stalled" }>["reason"] }
-  | { kind: "run"; ms: number; complete: (at: number) => GameEvent[] };
+  | {
+      kind: "run";
+      ms: number;
+      complete: (at: number) => GameEvent[];
+      /** The skill whose tool speeds this go; none for a fight. */
+      skill?: string;
+      /** A step a gear chain runs to make an input: it counts nothing off the queued entry. */
+      supplies?: boolean;
+    };
 
 function random(state: TinkerState): number {
   const [value, next] = nextRandom(state.rng);
@@ -200,13 +208,59 @@ function eat(state: TinkerState, content: Content, rations: number): Record<stri
   return eaten > 0 ? { [item]: eaten } : {};
 }
 
+/** Whether an action makes something worn: a weapon, a piece, a tool or legacy armour. */
+function makesGear(content: Content, action: Action): boolean {
+  return action.outputs.some(
+    (output) => content.weapons.has(output.item) || content.pieces.has(output.item) || content.tools.has(output.item) || content.armours.has(output.item),
+  );
+}
+
+/** The highest-level action the Tinker can do that makes an item, ties to the lower id; undefined if none. */
+function maker(state: TinkerState, content: Content, item: string): Action | undefined {
+  let found: Action | undefined;
+  for (const action of content.actions.values()) {
+    if (!action.outputs.some((output) => output.item === item)) continue;
+    if (levelFor(state.skillXp[action.skill] ?? 0, content) < action.level_required) continue;
+    if (!found || action.level_required > found.level_required || (action.level_required === found.level_required && action.id < found.id)) found = action;
+  }
+  return found;
+}
+
+/**
+ * The next go a gear chain needs (Jeremy, 30 October 2026: "make it" runs the
+ * whole chain): when a piece lacks an input, the queue makes that input first,
+ * from what is in stores, down the chain as far as it must, inside the same
+ * queue entry. Deterministic from the state, so a go resumed after a check-in
+ * is the same go. Undefined when some input has no maker the Tinker can do.
+ */
+function supplyAction(state: TinkerState, content: Content, action: Action, seen: Set<string> = new Set()): Action | undefined {
+  if (seen.has(action.id) || seen.size > 8) return undefined;
+  seen.add(action.id);
+  for (const input of action.inputs) {
+    if ((state.inventory[input.item] ?? 0) >= input.qty) continue;
+    const source = maker(state, content, input.item);
+    if (!source) return undefined;
+    const ready = source.inputs.every((need) => (state.inventory[need.item] ?? 0) >= need.qty);
+    return ready ? source : supplyAction(state, content, source, seen);
+  }
+  return undefined;
+}
+
 function actionStep(state: TinkerState, content: Content, action: Action): Step {
   if (levelFor(state.skillXp[action.skill] ?? 0, content) < action.level_required) return { kind: "stall", reason: "level" };
-  for (const input of action.inputs) {
-    if ((state.inventory[input.item] ?? 0) < input.qty) return { kind: "stall", reason: "inputs" };
+  if (action.inputs.some((input) => (state.inventory[input.item] ?? 0) < input.qty)) {
+    const source = makesGear(content, action) ? supplyAction(state, content, action) : undefined;
+    if (!source) return { kind: "stall", reason: "inputs" };
+    return { ...goOf(state, content, source), supplies: true };
   }
+  return goOf(state, content, action);
+}
+
+/** One go of an action whose inputs are in stores. */
+function goOf(state: TinkerState, content: Content, action: Action): Extract<Step, { kind: "run" }> {
   return {
     kind: "run",
+    skill: action.skill,
     ms: action.seconds * 1000,
     complete: (at) => {
       const events: GameEvent[] = [];
@@ -310,9 +364,8 @@ function paced(ms: number, boosted: boolean, tool: number, content: Content): nu
   return Math.floor((ms * 20000 + d) / (2 * d));
 }
 
-/** The speed, in percent, of the tool held for this queue entry's skill; 0 for a fight or no tool. */
-function toolSpeed(state: TinkerState, content: Content, actionId: string): number {
-  const skill = content.actions.get(actionId)?.skill;
+/** The speed, in percent, of the tool held for a go's skill; 0 for a fight or no tool. */
+function toolSpeed(state: TinkerState, content: Content, skill: string | undefined): number {
   const tool = skill ? held(state, content.tools.get(state.tools[skill] ?? "")) : undefined;
   return tool && levelFor(state.skillXp[tool.skill] ?? 0, content) >= tool.level_required ? tool.speed : 0;
 }
@@ -335,7 +388,7 @@ export function headMs(state: TinkerState, content: Content): number | null {
   if (step.kind !== "run") return null;
   return state.progressMs > 0
     ? paced(step.ms, state.headBoosted, state.headTool, content)
-    : paced(step.ms, boostedAt(state, state.resolvedTo), toolSpeed(state, content, head.actionId), content);
+    : paced(step.ms, boostedAt(state, state.resolvedTo), toolSpeed(state, content, step.skill), content);
 }
 
 export type FightOutlook =
@@ -385,7 +438,7 @@ export function resolve(previous: TinkerState, content: Content, now: number): R
 
     if (state.progressMs === 0) {
       state.headBoosted = boostedAt(state, t);
-      state.headTool = toolSpeed(state, content, head.actionId);
+      state.headTool = toolSpeed(state, content, step.skill);
     }
     const needed = paced(step.ms, state.headBoosted, state.headTool, content) - state.progressMs;
     if (t + needed > workEnd) {
@@ -397,6 +450,8 @@ export function resolve(previous: TinkerState, content: Content, now: number): R
     t += needed;
     state.progressMs = 0;
     events.push(...step.complete(t));
+    // A go that made an input for the queued piece counts nothing off the entry.
+    if (step.supplies) continue;
     head.remaining -= 1;
     if (head.remaining <= 0) {
       events.push({ type: "queue_entry_finished", at: t, actionId: head.actionId });

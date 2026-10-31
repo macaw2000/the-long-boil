@@ -6,7 +6,7 @@
       "skill": "prospecting",
       "level_required": 1,
       "seconds": 54,
-      "xp": 9,
+      "xp": 8,
       "inputs": [],
       "outputs": [
         {
@@ -20,7 +20,7 @@
       "skill": "prospecting",
       "level_required": 5,
       "seconds": 108,
-      "xp": 19,
+      "xp": 17,
       "inputs": [],
       "outputs": [
         {
@@ -34,7 +34,7 @@
       "skill": "prospecting",
       "level_required": 10,
       "seconds": 162,
-      "xp": 30,
+      "xp": 27,
       "inputs": [],
       "outputs": [
         {
@@ -48,7 +48,7 @@
       "skill": "prospecting",
       "level_required": 15,
       "seconds": 216,
-      "xp": 42,
+      "xp": 39,
       "inputs": [],
       "outputs": [
         {
@@ -62,7 +62,7 @@
       "skill": "smithing",
       "level_required": 1,
       "seconds": 54,
-      "xp": 9,
+      "xp": 8,
       "inputs": [
         {
           "item": "item.rustmoor.copper",
@@ -81,7 +81,7 @@
       "skill": "smithing",
       "level_required": 5,
       "seconds": 108,
-      "xp": 19,
+      "xp": 17,
       "inputs": [
         {
           "item": "item.rustmoor.iron_ore",
@@ -100,7 +100,7 @@
       "skill": "smithing",
       "level_required": 10,
       "seconds": 162,
-      "xp": 30,
+      "xp": 27,
       "inputs": [
         {
           "item": "item.rustmoor.iron_ingot",
@@ -123,7 +123,7 @@
       "skill": "smithing",
       "level_required": 15,
       "seconds": 216,
-      "xp": 42,
+      "xp": 39,
       "inputs": [
         {
           "item": "item.rustmoor.steel_ingot",
@@ -142,7 +142,7 @@
       "skill": "tinkering",
       "level_required": 1,
       "seconds": 54,
-      "xp": 9,
+      "xp": 8,
       "inputs": [
         {
           "item": "item.rustmoor.brass_ingot",
@@ -161,7 +161,7 @@
       "skill": "tinkering",
       "level_required": 5,
       "seconds": 108,
-      "xp": 19,
+      "xp": 17,
       "inputs": [
         {
           "item": "item.rustmoor.brass_ingot",
@@ -180,7 +180,7 @@
       "skill": "tinkering",
       "level_required": 10,
       "seconds": 162,
-      "xp": 30,
+      "xp": 27,
       "inputs": [
         {
           "item": "item.rustmoor.iron_ingot",
@@ -199,7 +199,7 @@
       "skill": "tinkering",
       "level_required": 15,
       "seconds": 216,
-      "xp": 42,
+      "xp": 39,
       "inputs": [
         {
           "item": "item.rustmoor.steel_ingot",
@@ -222,7 +222,7 @@
       "skill": "tinkering",
       "level_required": 5,
       "seconds": 108,
-      "xp": 19,
+      "xp": 17,
       "inputs": [
         {
           "item": "item.rustmoor.iron_ingot",
@@ -241,7 +241,7 @@
       "skill": "tinkering",
       "level_required": 10,
       "seconds": 162,
-      "xp": 30,
+      "xp": 27,
       "inputs": [
         {
           "item": "item.rustmoor.iron_ingot",
@@ -264,7 +264,7 @@
       "skill": "tinkering",
       "level_required": 15,
       "seconds": 216,
-      "xp": 42,
+      "xp": 39,
       "inputs": [
         {
           "item": "item.rustmoor.iron_rifle",
@@ -287,7 +287,7 @@
       "skill": "tinkering",
       "level_required": 1,
       "seconds": 54,
-      "xp": 9,
+      "xp": 8,
       "inputs": [
         {
           "item": "item.rustmoor.brass_ingot",
@@ -306,7 +306,7 @@
       "skill": "tinkering",
       "level_required": 1,
       "seconds": 54,
-      "xp": 9,
+      "xp": 8,
       "inputs": [
         {
           "item": "item.rustmoor.copper",
@@ -325,7 +325,7 @@
       "skill": "smithing",
       "level_required": 5,
       "seconds": 108,
-      "xp": 19,
+      "xp": 17,
       "inputs": [
         {
           "item": "item.rustmoor.iron_ingot",
@@ -344,7 +344,7 @@
       "skill": "tinkering",
       "level_required": 5,
       "seconds": 108,
-      "xp": 19,
+      "xp": 17,
       "inputs": [
         {
           "item": "item.rustmoor.brass_ingot",
@@ -363,7 +363,7 @@
       "skill": "smithing",
       "level_required": 10,
       "seconds": 162,
-      "xp": 30,
+      "xp": 27,
       "inputs": [
         {
           "item": "item.rustmoor.steel_ingot",
@@ -382,7 +382,7 @@
       "skill": "tinkering",
       "level_required": 10,
       "seconds": 162,
-      "xp": 30,
+      "xp": 27,
       "inputs": [
         {
           "item": "item.rustmoor.steel_ingot",
@@ -401,7 +401,7 @@
       "skill": "tinkering",
       "level_required": 15,
       "seconds": 216,
-      "xp": 42,
+      "xp": 39,
       "inputs": [
         {
           "item": "item.rustmoor.spark_rod",
@@ -424,7 +424,7 @@
       "skill": "cooking",
       "level_required": 1,
       "seconds": 54,
-      "xp": 9,
+      "xp": 8,
       "inputs": [
         {
           "item": "item.rustmoor.barley_meal",
@@ -443,7 +443,7 @@
       "skill": "cooking",
       "level_required": 5,
       "seconds": 108,
-      "xp": 19,
+      "xp": 17,
       "inputs": [
         {
           "item": "item.rustmoor.salt_pork",
@@ -462,7 +462,7 @@
       "skill": "cooking",
       "level_required": 10,
       "seconds": 162,
-      "xp": 30,
+      "xp": 27,
       "inputs": [
         {
           "item": "item.rustmoor.barley_meal",
@@ -485,7 +485,7 @@
       "skill": "cooking",
       "level_required": 15,
       "seconds": 216,
-      "xp": 42,
+      "xp": 39,
       "inputs": [
         {
           "item": "item.rustmoor.barley_meal",
@@ -508,7 +508,7 @@
       "skill": "scavenging",
       "level_required": 1,
       "seconds": 54,
-      "xp": 9,
+      "xp": 8,
       "inputs": [],
       "outputs": [
         {
@@ -522,7 +522,7 @@
       "skill": "scavenging",
       "level_required": 5,
       "seconds": 108,
-      "xp": 19,
+      "xp": 17,
       "inputs": [],
       "outputs": [
         {
@@ -536,7 +536,7 @@
       "skill": "scavenging",
       "level_required": 10,
       "seconds": 162,
-      "xp": 30,
+      "xp": 27,
       "inputs": [],
       "outputs": [
         {
@@ -550,11 +550,891 @@
       "skill": "scavenging",
       "level_required": 15,
       "seconds": 216,
-      "xp": 42,
+      "xp": 39,
       "inputs": [],
       "outputs": [
         {
           "item": "item.rustmoor.clock_movement",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_brass_breastplate",
+      "skill": "smithing",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 23
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_breastplate",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_iron_cuirass",
+      "skill": "smithing",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 18
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_cuirass",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_steel_cuirass",
+      "skill": "smithing",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_cuirass",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_ribbed_cuirass",
+      "skill": "smithing",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 6
+        },
+        {
+          "item": "item.rustmoor.umbrella_ribs",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.ribbed_cuirass",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_brass_buckler",
+      "skill": "smithing",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 23
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_buckler",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_iron_targe",
+      "skill": "smithing",
+      "level_required": 6,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 18
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_targe",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_steel_shield",
+      "skill": "smithing",
+      "level_required": 11,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_shield",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_garnet_boss_shield",
+      "skill": "smithing",
+      "level_required": 16,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 5
+        },
+        {
+          "item": "item.rustmoor.garnet",
+          "qty": 5
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.garnet_boss_shield",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_brass_plumb_bob",
+      "skill": "tinkering",
+      "level_required": 2,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 23
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_plumb_bob",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_iron_dividers",
+      "skill": "tinkering",
+      "level_required": 7,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 18
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_dividers",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_steel_vernier",
+      "skill": "tinkering",
+      "level_required": 12,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_vernier",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_garnet_pendulum",
+      "skill": "tinkering",
+      "level_required": 17,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.clock_movement",
+          "qty": 10
+        },
+        {
+          "item": "item.rustmoor.garnet",
+          "qty": 10
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.garnet_pendulum",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_brass_skullcap",
+      "skill": "smithing",
+      "level_required": 2,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 23
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_skullcap",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_iron_pot_helm",
+      "skill": "smithing",
+      "level_required": 8,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 18
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_pot_helm",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_steel_sallet",
+      "skill": "smithing",
+      "level_required": 13,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_sallet",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_visored_sallet",
+      "skill": "smithing",
+      "level_required": 18,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 6
+        },
+        {
+          "item": "item.rustmoor.odd_spoons",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.visored_sallet",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_brass_knuckle_guards",
+      "skill": "smithing",
+      "level_required": 3,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 23
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_knuckle_guards",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_iron_gauntlets",
+      "skill": "smithing",
+      "level_required": 9,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 18
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_gauntlets",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_steel_gauntlets",
+      "skill": "smithing",
+      "level_required": 14,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_gauntlets",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_geared_gauntlets",
+      "skill": "smithing",
+      "level_required": 19,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 5
+        },
+        {
+          "item": "item.rustmoor.clock_movement",
+          "qty": 5
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.geared_gauntlets",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_brass_toecaps",
+      "skill": "smithing",
+      "level_required": 4,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 23
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_toecaps",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_iron_sabatons",
+      "skill": "smithing",
+      "level_required": 9,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 18
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_sabatons",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_steel_sabatons",
+      "skill": "smithing",
+      "level_required": 14,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_sabatons",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_hobnailed_sabatons",
+      "skill": "smithing",
+      "level_required": 19,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 7
+        },
+        {
+          "item": "item.rustmoor.bent_nails",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.hobnailed_sabatons",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_brass_pick",
+      "skill": "smithing",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 23
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_pick",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_iron_pick",
+      "skill": "smithing",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 18
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_pick",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_steel_pick",
+      "skill": "smithing",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_pick",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_garnet_pick",
+      "skill": "smithing",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 5
+        },
+        {
+          "item": "item.rustmoor.garnet",
+          "qty": 5
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.garnet_pick",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_brass_tongs",
+      "skill": "smithing",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 23
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_tongs",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_iron_tongs",
+      "skill": "smithing",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 18
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_tongs",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_steel_tongs",
+      "skill": "smithing",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_tongs",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_spring_tongs",
+      "skill": "smithing",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 6
+        },
+        {
+          "item": "item.rustmoor.umbrella_ribs",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.spring_tongs",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_brass_driver_roll",
+      "skill": "tinkering",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 23
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_driver_roll",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_iron_driver_roll",
+      "skill": "tinkering",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 18
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_driver_roll",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_steel_driver_roll",
+      "skill": "tinkering",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_driver_roll",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tinker_watchmakers_roll",
+      "skill": "tinkering",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 5
+        },
+        {
+          "item": "item.rustmoor.clock_movement",
+          "qty": 5
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.watchmakers_roll",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.make_brass_ladle",
+      "skill": "cooking",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 23
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_ladle",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.make_iron_ladle",
+      "skill": "cooking",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 18
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_ladle",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.make_steel_ladle",
+      "skill": "cooking",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_ladle",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.make_crested_ladle",
+      "skill": "cooking",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 6
+        },
+        {
+          "item": "item.rustmoor.odd_spoons",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.crested_ladle",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_brass_salvage_hook",
+      "skill": "smithing",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 23
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_salvage_hook",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_iron_salvage_hook",
+      "skill": "smithing",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 18
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_salvage_hook",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_steel_salvage_hook",
+      "skill": "smithing",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_salvage_hook",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.forge_clockwork_grapnel",
+      "skill": "smithing",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 5
+        },
+        {
+          "item": "item.rustmoor.clock_movement",
+          "qty": 5
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.clockwork_grapnel",
           "qty": 1
         }
       ]

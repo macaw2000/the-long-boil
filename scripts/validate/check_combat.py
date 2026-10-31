@@ -51,8 +51,15 @@ player at the monster's level L (combat.json reference_player):
   (gear.combat_level.reference). Ties go to the lower item id. A slot with
   no such piece is empty and gives 0; one WARN per monster (empty-slots)
   names the empty slots. A boss's six are what work order 025's Act I walk
-  holds (boss.reference_weapon._non_weapon_slots); none are listed yet, so
-  they are empty, with an empty-slots WARN saying so;
+  holds (boss.reference_weapon._non_weapon_slots), listed as the boss
+  entry's "pieces" (work order 031), worn as listed whatever their stats; an
+  unlisted slot is empty (empty-slots WARN). A listed piece that is not a +0
+  piece in its slot (reference-piece-slot), is from another zone
+  (reference-piece-zone), is the boss's own drop (reference-piece-own-drop)
+  or needs more than the reference player's combat level
+  (reference-piece-level) is a FAIL and the boss's win chance is not
+  computed; a "pieces" that is not {slot: item id} is a FAIL
+  (reference-pieces-shape). With no "pieces" all six are empty;
 - the legacy armour slot (gear.legacy_armour_slot, until the Cinderworks
   armour moves into slots): of that gear, the +0 armour piece with the most
   armour whose level_required is at or below the player's Fortitude, S, as
@@ -349,6 +356,29 @@ def load_reference_weapons(report, path, data, monsters):
     return out
 
 
+def load_reference_pieces(report, path, data, reference_weapons):
+    """{boss id: {slot: item id}} from each boss.reference_weapon entry's
+    "pieces" (work order 031): what the Act I walk holds in the six
+    combat-level slots at its first attempt. Only bosses load_reference_weapons
+    kept are read. A "pieces" that is not {slot: item id} over COMBAT_LEVEL_SLOTS
+    is a FAIL (reference-pieces-shape) and the boss's slots stay empty."""
+    listed = data["boss"]["reference_weapon"] if reference_weapons else {}
+    out = {}
+    for ident in sorted(reference_weapons):
+        pieces = listed[ident].get("pieces")
+        if pieces is None:
+            continue
+        if (not isinstance(pieces, dict)
+                or any(s not in COMBAT_LEVEL_SLOTS or not isinstance(i, str)
+                       for s, i in pieces.items())):
+            report.fail("reference-pieces-shape", path,
+                        "boss.reference_weapon[%r].pieces must be an object of {slot: item "
+                        "id} over %s" % (ident, ", ".join(COMBAT_LEVEL_SLOTS)), ident)
+            continue
+        out[ident] = dict(pieces)
+    return out
+
+
 def load_model_file(report, root, schemas):
     """Returns (path, data) for the one valid model file, or (None, None)
     after reporting why."""
@@ -579,8 +609,9 @@ class Reference:
     weakness-style weapon qualifies, or when the boss's listed reference
     weapon breaks a rule (listed_problems, [(rule, text)]); armour is the
     legacy armour piece, or None. loadout holds every non-weapon slot; a
-    boss's six slots worn by combat level are empty (boss_slots_empty) until
-    work order 030 records what work order 025's Act I walk holds.
+    boss's six slots worn by combat level hold its listed pieces
+    (reference_pieces, {boss id: {slot: item id}}), and are all empty
+    (boss_slots_empty) when none are listed.
     best_weapon is the gear.reference_gear weapon, which is the weapon unless
     the boss is in reference_weapons ({boss id: item id}, combat.json
     boss.reference_weapon); listed is that item, or None.
@@ -594,7 +625,8 @@ class Reference:
     piece, Rations stocked (kill_time.floor.gear_ratio.T_ref and .pool). None
     for a boss, or when no style's loadout can be computed."""
 
-    def __init__(self, c, sec_of, gearset, boss_drops, m, reference_weapons=None):
+    def __init__(self, c, sec_of, gearset, boss_drops, m, reference_weapons=None,
+                 reference_pieces=None):
         ident, level = m["id"], m["level"]
         self.zone = zone_of(ident)
         self.banned = boss_drops.get(ident, set()) if m["boss"] else set()
@@ -606,7 +638,8 @@ class Reference:
         self.armour = self.weapon = self.player = self.best_weapon = None
         self.loadout = None
         self.reference_time = None
-        self.boss_slots_empty = bool(m["boss"])
+        self.listed_pieces = (reference_pieces or {}).get(ident, {}) if m["boss"] else {}
+        self.boss_slots_empty = bool(m["boss"]) and not self.listed_pieces
         self.listed = (reference_weapons or {}).get(ident) if m["boss"] else None
         self.listed_problems = []
         if not self.level_ok:
@@ -617,7 +650,7 @@ class Reference:
         self.combat_level = max(level, self.sec)
         pieces = gearset.pieces
         if m["boss"]:
-            pieces = dict((s, []) for s in COMBAT_LEVEL_SLOTS)
+            pieces = self._listed_pieces(gearset.pieces)
         self.loadout = _loadout(gearset.legacy, pieces, self.sec, self.combat_level, keep)
         self.armour = self.loadout.legacy
         self.armour_points = self.loadout.armour_points
@@ -633,6 +666,44 @@ class Reference:
                                  self.charm)
         if not m["boss"] and c[RATION_KEY] is not None:
             self.reference_time = self._reference_time(c, gearset, m)
+
+    def _listed_pieces(self, all_pieces):
+        """{slot: [the listed +0 piece]} for a boss, every unlisted slot empty.
+        A listed piece that is not a +0 piece in its slot, is from another
+        zone, is the boss's own drop or needs more than the combat level is a
+        listed_problem and that slot stays empty."""
+        out = dict((s, []) for s in COMBAT_LEVEL_SLOTS)
+        for slot in COMBAT_LEVEL_SLOTS:
+            item = self.listed_pieces.get(slot)
+            if item is None:
+                continue
+            rows = [p for p in all_pieces[slot] if p[0] == item]
+            if not rows:
+                self.listed_problems.append((
+                    "reference-piece-slot",
+                    "boss.reference_weapon pieces lists %s in %s, which is not a +0 %s "
+                    "piece" % (item, slot, slot)))
+                continue
+            if zone_of(item) != self.zone:
+                self.listed_problems.append((
+                    "reference-piece-zone",
+                    "boss.reference_weapon pieces lists %s, from zone %s; the boss is in %s"
+                    % (item, zone_of(item), self.zone)))
+                continue
+            if item in self.banned:
+                self.listed_problems.append((
+                    "reference-piece-own-drop",
+                    "boss.reference_weapon pieces lists %s, which is in this boss's own "
+                    "drop table" % item))
+                continue
+            if rows[0][1] > self.combat_level:
+                self.listed_problems.append((
+                    "reference-piece-level",
+                    "boss.reference_weapon pieces lists %s, which needs combat level %d; "
+                    "the reference player's is %d" % (item, rows[0][1], self.combat_level)))
+                continue
+            out[slot] = rows
+        return out
 
     def _reference_time(self, c, gearset, m):
         level, sec = m["level"], self.sec
@@ -692,9 +763,9 @@ class Reference:
 
 
 def check_monster(report, c, sec_of, gearset, boss_drops, path, m,
-                  reference_weapons=None, cap=None):
+                  reference_weapons=None, cap=None, reference_pieces=None):
     ident, level, style = m["id"], m["level"], m["weakness"]
-    ref = Reference(c, sec_of, gearset, boss_drops, m, reference_weapons)
+    ref = Reference(c, sec_of, gearset, boss_drops, m, reference_weapons, reference_pieces)
     zone, banned, weapons = ref.zone, ref.banned, ref.weapons
     target = m["seconds_per_kill"]
     heal = c[RATION_KEY]
@@ -704,11 +775,16 @@ def check_monster(report, c, sec_of, gearset, boss_drops, path, m,
         return
     sec, loadout = ref.sec, ref.loadout
     empty = loadout.empty()
-    if m["boss"]:
+    if ref.boss_slots_empty:
         report.warn("empty-slots", path,
                     "a boss's %s are what work order 025's Act I walk holds "
                     "(boss.reference_weapon._non_weapon_slots), and none are listed yet "
                     "(work order 030); they are empty and give 0" % ", ".join(empty), ident)
+    elif m["boss"] and empty:
+        report.warn("empty-slots", path,
+                    "boss.reference_weapon pieces lists nothing wearable in %s; %s 0"
+                    % (", ".join(empty), "it gives" if len(empty) == 1 else "they give"),
+                    ident)
     elif empty:
         report.warn("empty-slots", path,
                     "no +0 %s piece with level_required <= %d (the reference player's "
@@ -908,6 +984,7 @@ def run(root):
     c = dict((k, v["value"]) for k, v in model["constants"].items())
     cap = load_cap(report, model_path, model)
     reference_weapons = load_reference_weapons(report, model_path, model, monsters)
+    reference_pieces = load_reference_pieces(report, model_path, model, reference_weapons)
     sec_of = secondary_levels(curve, c)
     report.note("%d monster(s) on %s, %d monster/1 file(s) skipped; model %s, curve %s, "
                 "%s %s" % (len(monsters), COMBAT_MONSTER_SCHEMA, old_files, model_path,
@@ -916,7 +993,7 @@ def run(root):
     boss_drops = load_boss_drops(root)
     for path, m in monsters:
         check_monster(report, c, sec_of, gearset, boss_drops, path, m,
-                      reference_weapons, cap)
+                      reference_weapons, cap, reference_pieces)
     return report
 
 

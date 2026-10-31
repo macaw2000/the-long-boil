@@ -4,6 +4,7 @@
 
 import { describe, expect, it } from "vitest";
 import {
+  combatLevel,
   equip,
   fighterFor,
   headMs,
@@ -13,6 +14,7 @@ import {
   resolve,
   setQueue,
   type GameEvent,
+  type Piece,
   type TinkerState,
   damageTaken,
   wear,
@@ -40,17 +42,30 @@ function reference(style: string, level: number, secondary: number, weapon: stri
   return equip(state, content, weapon);
 }
 
+/** The reference player's pieces (combat.json gear.reference_gear): the best +0 piece per slot at or below their combat level. */
+function referencePieces(state: TinkerState) {
+  const level = combatLevel(state.skillXp, content);
+  const best = new Map<string, Piece>();
+  for (const piece of content.pieces.values()) {
+    if (piece.level_required > level) continue;
+    const score = (p: Piece) => (p.slot === "charm" ? p.accuracy : p.armour);
+    const held = best.get(piece.slot);
+    if (!held || score(piece) > score(held) || (score(piece) === score(held) && piece.item < held.item)) best.set(piece.slot, piece);
+  }
+  return [...best.values()];
+}
+
 function plan(state: TinkerState, monsterId: string, withRations: boolean) {
   const weapon = content.weapons.get(state.weapon!)!;
-  return planKill(c, fighterFor(state.skillXp, weapon, content), content.monsters.get(monsterId)!, content.ration.heal, withRations)!;
+  return planKill(c, fighterFor(state.skillXp, weapon, content, undefined, referencePieces(state)), content.monsters.get(monsterId)!, content.ration.heal, withRations)!;
 }
 
 describe("kill time matches the combat check", () => {
   it.each([
-    ["melee", 1, 1, "item.rustmoor.brass_spanner", RUNT, 54, 73.0],
-    ["marksmanship", 5, 2, "item.rustmoor.iron_rifle", "monster.rustmoor.rust_rat_scrounger", 108, 133.9],
-    ["aetherics", 10, 4, "item.rustmoor.spark_rod", "monster.rustmoor.rust_rat_tinplate", 162, 194.3],
-    ["melee", 15, 5, "item.rustmoor.steel_blade", "monster.rustmoor.rust_rat_gaffer", 216, 254.9],
+    ["melee", 1, 1, "item.rustmoor.brass_spanner", RUNT, 54, 73.2],
+    ["marksmanship", 5, 2, "item.rustmoor.iron_rifle", "monster.rustmoor.rust_rat_scrounger", 108, 134.0],
+    ["aetherics", 10, 4, "item.rustmoor.spark_rod", "monster.rustmoor.rust_rat_tinplate", 162, 194.1],
+    ["melee", 15, 5, "item.rustmoor.steel_blade", "monster.rustmoor.rust_rat_gaffer", 216, 255.1],
   ])("%s %i against %s", (style, level, secondary, weapon, monster, stocked, unstocked) => {
     const state = reference(style as string, level as number, secondary as number, weapon as string, 10);
     expect(plan(state, monster as string, true).seconds).toBeCloseTo(stocked as number, 1);
@@ -65,21 +80,24 @@ describe("kill time matches the combat check", () => {
 
 describe("Scrapjaw", () => {
   const scrapjaw = content.monsters.get("monster.rustmoor.scrapjaw")!;
+  // What the Act I walk wears at its first attempt (combat.json boss.reference_weapon pieces, work order 031).
+  const pieces = ["steel_shield", "iron_pot_helm", "steel_cuirass", "iron_gauntlets", "iron_sabatons", "brass_plumb_bob"]
+    .map((name) => content.pieces.get(`item.rustmoor.${name}`)!);
   function win(level: number, weapon: string, style: string, rations: number) {
     const state = reference(style, level, 6, weapon, rations);
-    return planBoss(c, fighterFor(state.skillXp, content.weapons.get(weapon)!, content), scrapjaw, content.ration.heal, rations).win;
+    return planBoss(c, fighterFor(state.skillXp, content.weapons.get(weapon)!, content, undefined, pieces), scrapjaw, content.ration.heal, rations).win;
   }
 
-  // Tuned to the riveting hammer, the weapon a player holds near day 14 (work order 025).
+  // Tuned to the riveting hammer, the weapon a player holds near day 14 (work order 025), and the walk's pieces.
   it("is won half the time at level 20 with 3 Rations, the riveting hammer and the right style", () => {
-    expect(win(20, "item.rustmoor.riveting_hammer", "melee", 3)).toBeCloseTo(0.5, 2);
-    expect(win(19, "item.rustmoor.riveting_hammer", "melee", 3)).toBeCloseTo(0.397, 2);
+    expect(win(20, "item.rustmoor.riveting_hammer", "melee", 3)).toBeCloseTo(0.501, 2);
+    expect(win(19, "item.rustmoor.riveting_hammer", "melee", 3)).toBeCloseTo(0.399, 2);
     expect(win(21, "item.rustmoor.riveting_hammer", "melee", 3)).toBeCloseTo(0.596, 2);
-    expect(win(20, "item.rustmoor.steel_blade", "melee", 3)).toBeCloseTo(0.728, 2);
+    expect(win(20, "item.rustmoor.steel_blade", "melee", 3)).toBeCloseTo(0.73, 2);
   });
 
   it("punishes the wrong style and a fight without Rations", () => {
-    expect(win(20, "item.rustmoor.steel_carbine", "marksmanship", 3)).toBeCloseTo(0.152, 2);
+    expect(win(20, "item.rustmoor.steel_carbine", "marksmanship", 3)).toBeCloseTo(0.151, 2);
     expect(win(20, "item.rustmoor.garnet_rifle", "marksmanship", 3)).toBeCloseTo(0.383, 2);
     expect(win(20, "item.rustmoor.riveting_hammer", "melee", 0)).toBeLessThan(0.01);
   });
@@ -109,10 +127,10 @@ describe("drops and Rations", () => {
     expect(kills.every((kill) => kill.crowns >= 5 && kill.crowns <= 9)).toBe(true);
     expect(after.crowns).toBe(kills.reduce((sum, kill) => sum + kill.crowns, 0));
     expect(after.inventory["item.rustmoor.rat_scrap"]).toBe(100);
-    expect(after.skillXp.melee! - state.skillXp.melee!).toBeCloseTo(100 * 9 * 0.7, 6);
-    // At the reference a kill eats 0.416 Rations (combat.json rations.reference_use);
+    expect(after.skillXp.melee! - state.skillXp.melee!).toBeCloseTo(100 * content.monsters.get(RUNT)!.xp * 0.7, 6);
+    // At the reference, in its Rustmoor pieces (work order 031), a kill eats 0.419 Rations;
     // Ada levels up as she fights, so later kills are shorter and eat less.
-    expect(plan(state, RUNT, true).rations).toBeCloseTo(0.416, 3);
+    expect(plan(state, RUNT, true).rations).toBeCloseTo(0.419, 3);
     const eaten = 342 - (after.inventory[RATION] ?? 0);
     expect(eaten).toBeGreaterThan(0);
     expect(eaten).toBeLessThan(42);
