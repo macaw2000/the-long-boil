@@ -157,6 +157,8 @@ export interface Tinker {
     openScenes: number;
     qualities: Record<string, number>;
     inInfirmary: boolean;
+    /** During a stay, when a ward scene can next be played; null when not held or none will open. */
+    wardOpensAt: string | null;
   };
   /** Work Orders waiting on the desk. */
   workOrders: number;
@@ -233,6 +235,8 @@ export interface StoryView {
   backRent: number;
   debts: { id: string; label: string; crowns: number }[];
   inInfirmary: boolean;
+  /** During a stay, when a ward scene can next be played; null when not held or none will open. */
+  wardOpensAt: string | null;
 }
 
 export type FightOutlook =

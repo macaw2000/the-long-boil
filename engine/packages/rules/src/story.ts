@@ -367,6 +367,21 @@ export function availableStorylets(tinker: TinkerState, story: StoryState, conte
   );
 }
 
+/**
+ * During a stay at St. Pinion's, when the Tinker can next play a ward scene:
+ * now if one is open and Nerve covers it, else the earliest moment one is off
+ * its cooldown with the Nerve for it. Null when not held, or when no ward
+ * scene will open without something else changing.
+ */
+export function wardOpensAt(tinker: TinkerState, story: StoryState, content: Content, now: number): number | null {
+  if (!heldAtInfirmary(story)) return null;
+  const nerveFor = (need: number) => (story.nerve >= need ? now : story.nerveAt + (need - story.nerve) * NERVE_MS);
+  const times = [...content.storylets.values()]
+    .filter((scene) => scene.location === INFIRMARY && unmet(scene.requires, tinker, story, content).length === 0)
+    .map((scene) => Math.max(now, coolsUntil(scene, story, now) ?? now, nerveFor(scene.nerve)));
+  return times.length > 0 ? Math.min(...times) : null;
+}
+
 /** Storylets open but for their cooldown, with when each opens again. */
 export function coolingStorylets(tinker: TinkerState, story: StoryState, content: Content, now: number): { id: string; location: string; opensAt: number }[] {
   return [...content.storylets.values()].flatMap((scene) => {

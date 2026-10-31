@@ -38,6 +38,8 @@ export interface StoryView {
   debts: { id: string; label: string; crowns: number }[];
   /** A stay at St. Pinion's (work order 020). */
   inInfirmary: boolean;
+  /** During a stay, when a ward scene can next be played; null when not held or none will open. */
+  wardOpensAt: string | null;
 }
 
 function sceneView(scene: Scene, kind: "storylet" | "letter", tinker: TinkerState, story: StoryState, content: GameContent): SceneView {
@@ -72,6 +74,7 @@ function storyView(tinker: TinkerState, story: StoryState, content: GameContent,
     backRent: rules.backRentOwed(story),
     debts: rules.debtsOwed(story).map(({ id, label, crowns }) => ({ id, label, crowns })),
     inInfirmary: rules.heldAtInfirmary(story),
+    wardOpensAt: ((at) => (at === null ? null : new Date(at).toISOString()))(rules.wardOpensAt(tinker, story, content.rules, now)),
   };
 }
 

@@ -61,6 +61,8 @@ export interface StorySummary {
   openScenes: number;
   /** A stay at St. Pinion's: only its scenes are open, and Scald holds (work order 020). */
   inInfirmary: boolean;
+  /** During a stay, when a ward scene can next be played (now or later); null when not held or none will open. */
+  wardOpensAt: string | null;
   /** Every story quality above 0, for the first-session guide. */
   qualities: Record<string, number>;
 }
@@ -279,6 +281,7 @@ function summarizeStory(story: StoryState, tinker: TinkerState, content: GameCon
     debts: rules.debtsOwed(story).map(({ id, label, crowns }) => ({ id, label, crowns })),
     openScenes: rules.availableStorylets(tinker, story, content.rules, now).length,
     inInfirmary: rules.heldAtInfirmary(story),
+    wardOpensAt: ((at) => (at === null ? null : new Date(at).toISOString()))(rules.wardOpensAt(tinker, story, content.rules, now)),
     qualities: Object.fromEntries(Object.entries(story.qualities).filter(([, value]) => value > 0)),
   };
 }

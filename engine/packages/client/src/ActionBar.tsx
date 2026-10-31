@@ -195,11 +195,23 @@ export function ActionBar({
             </Stat>
           </Term>
         ))}
-        {tinker.story.inInfirmary && (
-          <Pressable onPress={onInfirmary} accessibilityRole="button" accessibilityLabel="In the Infirmary of St. Pinion; open the Story to mend">
-            <Badge count={1} label="St. Pinion's" tone={colors.scald} />
-          </Pressable>
-        )}
+        {/* The badge calls for a click only when a ward scene can be played; otherwise it says when one opens. */}
+        {tinker.story.inInfirmary && (() => {
+          const opensIn = tinker.story.wardOpensAt === null ? null : new Date(tinker.story.wardOpensAt).getTime() - now;
+          return opensIn !== null && opensIn <= 0 ? (
+            <Pressable onPress={onInfirmary} accessibilityRole="button" accessibilityLabel="In the Infirmary of St. Pinion; a ward scene is open in Story">
+              <Badge count={1} label="St. Pinion's" tone={colors.scald} />
+            </Pressable>
+          ) : (
+            <Pressable onPress={onInfirmary} accessibilityRole="button" accessibilityLabel="In the Infirmary of St. Pinion, mending">
+              <Stat label="St. Pinion's">
+                <Text style={[ui.muted, { fontSize: 12, color: colors.scald }]}>
+                  {opensIn === null ? "mending" : `mending, ${duration(opensIn)}`}
+                </Text>
+              </Stat>
+            </Pressable>
+          );
+        })()}
         <Pressable onPress={onLeave} accessibilityRole="button" accessibilityLabel={`Leave ${tinker.name}'s workshop`}>
           <Text style={[ui.muted, { fontSize: 12 }]}>{tinker.name} · leave</Text>
         </Pressable>

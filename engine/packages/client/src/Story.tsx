@@ -130,8 +130,15 @@ export function Story({
         <View style={[ui.panel, { borderColor: colors.scald }]}>
           <Text style={[ui.heading, { color: colors.scald }]}>At the Infirmary of St. Pinion</Text>
           <Text style={ui.muted}>
-            Scald redlined. Until you are discharged, the story waits here and Scald will not ease on its own. Play the ward's scenes below to bring it down; at 4 or under, the sisters will discharge you. Your workshop carries on.
+            Scald redlined. Until you are discharged, the story waits here and Scald will not ease on its own. Play the ward's scenes to bring it down; at 4 or under, the sisters will discharge you. Your workshop carries on.
           </Text>
+          {view.storylets.length === 0 && (
+            <Text style={[ui.text, { color: colors.scald }]}>
+              {view.wardOpensAt === null
+                ? "The sisters have nothing more for you just now."
+                : `The sisters have nothing more for you until ${new Date(view.wardOpensAt).toLocaleString([], { weekday: "short", hour: "2-digit", minute: "2-digit" })}. Rest, and let the bench work.`}
+            </Text>
+          )}
         </View>
       )}
       {view.debts.map((debt) => (

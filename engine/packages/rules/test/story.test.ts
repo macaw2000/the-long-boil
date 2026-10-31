@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  NERVE_MS,
+  wardOpensAt,
   NERVE_CAP,
   backRentOwed,
   countCheckIn,
@@ -164,6 +166,21 @@ describe("a stay at St. Pinion's", () => {
     expect(availableStorylets(tinker, discharged, rigged, 72 * HOUR).map((s) => s.id)).toContain(street.id);
     expect(refreshStory(discharged, tinker, rigged, 95 * HOUR).story.qualities["needle.scald"]).toBe(4);
     expect(refreshStory(discharged, tinker, rigged, 96 * HOUR).story.qualities["needle.scald"]).toBe(3);
+  });
+
+  it("says when a ward scene can next be played: now, after its cooldown, or once Nerve returns", () => {
+    const tinker = newTinker({}, 0, 0, 1);
+    const rest = { ...scene("act1.infirmary.rest", "infirmary", { "flag.in_st_pinion": "==1" }, { "needle.scald": "-1" }), cooldown_hours: 6 };
+    const ward2 = { ...content, storylets: new Map([ward, rest, street].map((s) => [s.id, s])) };
+    const admitted = { ...newStory(0), qualities: { "needle.scald": 8, "flag.in_st_pinion": 1 }, needleAt: { "needle.scald": 0 } };
+    expect(wardOpensAt(tinker, newStory(0), ward2, HOUR)).toBeNull();
+    expect(wardOpensAt(tinker, admitted, ward2, HOUR)).toBe(HOUR);
+    const rested = playScene(admitted, tinker, ward2, "storylet", rest.id, 0, HOUR).story;
+    expect(wardOpensAt(tinker, rested, ward2, 2 * HOUR)).toBe(7 * HOUR);
+    const spent = { ...rested, nerve: 0, nerveAt: 6 * HOUR };
+    expect(wardOpensAt(tinker, spent, ward2, 2 * HOUR)).toBe(7 * HOUR);
+    const later = { ...rested, nerve: 0, nerveAt: 7 * HOUR };
+    expect(wardOpensAt(tinker, later, ward2, 2 * HOUR)).toBe(7 * HOUR + NERVE_MS);
   });
 });
 
