@@ -492,6 +492,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         onRemove={(slot) => setQueue(tinker.queue.filter((_, index) => index !== slot))}
         onAdd={() => setPlace(guidedPlace ?? (place.startsWith("skill:") ? place : workPlace))}
         onShop={() => setPlace("shop")}
+        onInfirmary={() => setPlace("story")}
         onLeave={onLeave}
       />
       {/* The dev tools: wherever the server runs a dev clock, for admins only (everyone under the dev login). */}

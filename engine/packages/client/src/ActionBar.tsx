@@ -31,6 +31,7 @@ export function ActionBar({
   onRemove,
   onAdd,
   onShop,
+  onInfirmary,
   onLeave,
 }: {
   content: Content;
@@ -50,6 +51,8 @@ export function ActionBar({
   onRemove: (slot: number) => void;
   onAdd: () => void;
   onShop: () => void;
+  /** Opens the Story page, where the Infirmary's scenes are. */
+  onInfirmary: () => void;
   onLeave: () => void;
 }) {
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
@@ -192,7 +195,11 @@ export function ActionBar({
             </Stat>
           </Term>
         ))}
-        {tinker.story.inInfirmary && <Badge count={1} label="St. Pinion's" tone={colors.scald} />}
+        {tinker.story.inInfirmary && (
+          <Pressable onPress={onInfirmary} accessibilityRole="button" accessibilityLabel="In the Infirmary of St. Pinion; open the Story to mend">
+            <Badge count={1} label="St. Pinion's" tone={colors.scald} />
+          </Pressable>
+        )}
         <Pressable onPress={onLeave} accessibilityRole="button" accessibilityLabel={`Leave ${tinker.name}'s workshop`}>
           <Text style={[ui.muted, { fontSize: 12 }]}>{tinker.name} · leave</Text>
         </Pressable>
