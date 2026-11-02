@@ -40,6 +40,7 @@ import tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 CANON = os.path.join(REPO, "docs", "canon")
+GDD = os.path.join(REPO, "docs", "gdd.md")
 AGENTS = os.path.join(REPO, ".claude", "agents")
 VALIDATE = os.path.join(REPO, "scripts", "validate", "run.py")
 
@@ -72,6 +73,10 @@ INSPECTOR_OUT = {
     "type": "object",
     "properties": {
         "verdict": {"type": "string", "enum": ["pass", "pass with notes", "fail"]},
+        "reveal_clear": {
+            "type": "boolean",
+            "description": "False if any line states or hints at anything above the cleared reveal layer, however faintly.",
+        },
         "reveal_risks": {"type": "array", "items": {"type": "string"}},
         "economy_risks": {"type": "array", "items": {"type": "string"}},
         "findings": {
@@ -88,7 +93,7 @@ INSPECTOR_OUT = {
             },
         },
     },
-    "required": ["verdict", "reveal_risks", "economy_risks", "findings"],
+    "required": ["verdict", "reveal_clear", "reveal_risks", "economy_risks", "findings"],
     "additionalProperties": False,
 }
 
@@ -134,20 +139,39 @@ def reveals_to(layer):
     return "\n".join(out)
 
 
+ROMAN = {1: "I", 2: "II", 3: "III"}
+
+
+def gdd_sections(act):
+    """The GDD sections a storylet is written against: the house voice, this
+    act's storyline and nothing past it, and the storylet rules with the odds
+    formula. Section 4's opening, which lists every reveal layer, is never sent."""
+    wanted = ("### Tone and voice", f"### Act {ROMAN[act]}:", "### Storylets")
+    out, keep = [], False
+    for line in read(GDD).splitlines():
+        if line.startswith("## ") or line.startswith("### "):
+            keep = line.startswith(wanted)
+        if keep:
+            out.append(line)
+    return "\n".join(out)
+
+
 def canon_bundle(act, layer):
-    """The Act slice and the files it says to attach. Never locked.md."""
+    """The GDD sections, the Act slice and the files it says to attach. Never locked.md."""
     files = [f"slices/act{act}.md", "world.md", "characters.md", "style.md", "qualities.json"]
     assert LOCKED not in files
-    parts = [f"<file name=\"docs/canon/{f}\">\n{read(os.path.join(CANON, f))}\n</file>" for f in files]
+    parts = [f"<file name=\"docs/gdd.md\" sections=\"Tone and voice; Act {ROMAN[act]}; Storylets\">\n"
+             f"{gdd_sections(act)}\n</file>"]
+    parts += [f"<file name=\"docs/canon/{f}\">\n{read(os.path.join(CANON, f))}\n</file>" for f in files]
     parts.append(f"<file name=\"docs/canon/reveals.md\" truncated_at_layer=\"{layer}\">\n"
                  f"{reveals_to(layer)}\n</file>")
     return "\n\n".join(parts)
 
 
-def example_storylets(location, n=2):
+def example_storylets(act, location, n=2):
     """Neighbouring storylets, so the draft matches the shape and voice."""
     d = os.path.join(REPO, "content", "storylets")
-    names = sorted(f for f in os.listdir(d) if f.startswith(f"act1.{location}."))[:n]
+    names = sorted(f for f in os.listdir(d) if f.startswith(f"act{act}.{location}."))[:n]
     return "\n\n".join(f"<file name=\"content/storylets/{f}\">\n{read(os.path.join(d, f))}\n</file>"
                        for f in names)
 
@@ -254,7 +278,9 @@ class Crew:
     def inspector(self, brief, canon, storylet, checks):
         system = agent_prompt("inspector") + (
             "\n\n## In this crew\n\nYou review one storylet. Return one verdict for it. "
-            "A fail must name the exact field and the exact fix.")
+            "A fail must name the exact field and the exact fix. Set reveal_clear to false if any "
+            "line states or hints at anything above the cleared layer, however faintly; the crew "
+            "then sends the draft back whatever your verdict.")
         user = (f"<validators passed=\"{', '.join(checks)}\"/>\n\n<brief>\n{brief}\n</brief>\n\n"
                 f"<canon>\n{canon}\n</canon>\n\n<storylet>\n{json.dumps(storylet, indent=2)}\n</storylet>")
         return self.ask("inspector", system, user, INSPECTOR_OUT, "high")
@@ -334,7 +360,7 @@ def main():
     crew = Crew(client, log)
 
     canon = canon_bundle(meta["act"], meta["layer"])
-    examples = example_storylets(meta["location"])
+    examples = example_storylets(meta["act"], meta["location"])
     root = sandbox()
     events = [{"at": now(), "event": "brief", "path": os.path.relpath(brief_path, REPO)}]
     log(f"brief {os.path.relpath(brief_path, REPO)}: {sid}, act {meta['act']}, layer {meta['layer']}")
@@ -368,15 +394,22 @@ def main():
 
         verdict = crew.inspector(brief, canon, storylet, checks)
         log(f"[inspector] verdict: {verdict['verdict']}")
+        for f in verdict["findings"]:
+            log(f"[inspector]   {f['field']}: {f['finding']} Fix: {f['fix']}")
         events.append({"at": now(), "event": "reviewed", "by": "inspector", "verdict": verdict})
-        if verdict["verdict"] != "fail":
+        if verdict["verdict"] != "fail" and verdict["reveal_clear"]:
             break
-        feedback = "The inspector failed the draft:\n" + "\n".join(
-            f"- {f['field']}: {f['finding']} Fix: {f['fix']}" for f in verdict["findings"])
+        if verdict["verdict"] != "fail":
+            # Hinting counts (docs/canon/reveals.md): a reveal risk sends the draft back
+            # even when the inspector would pass it on everything else.
+            log("[gate] the inspector found a reveal risk; back to the scrivener")
+        feedback = "The inspector sent the draft back:\n" + "\n".join(
+            [f"- Reveal risk: {r}" for r in verdict["reveal_risks"]]
+            + [f"- {f['field']}: {f['finding']} Fix: {f['fix']}" for f in verdict["findings"]])
         verdict = None
     else:
         log(f"gave up after {MAX_ROUNDS} rounds; nothing to register")
-        write_run(run_dir, log_lines, storylet, draft, verdict, None)
+        write_run(run_dir, log_lines, storylet, draft, verdict, None, events)
         return 1
 
     reg = json.loads(read(os.path.join(REPO, "content", "provenance.json")))
@@ -396,10 +429,10 @@ def main():
         log(f"[registrar] row rejected: {errors}")
     else:
         log("registrar could not write a valid row")
-        write_run(run_dir, log_lines, storylet, draft, verdict, None)
+        write_run(run_dir, log_lines, storylet, draft, verdict, None, events)
         return 1
 
-    write_run(run_dir, log_lines, storylet, draft, verdict, row)
+    write_run(run_dir, log_lines, storylet, draft, verdict, row, events)
     if args.apply:
         dest = os.path.join(REPO, "content", "storylets", f"{sid}.json")
         shutil.copy(os.path.join(run_dir, f"{sid}.json"), dest)
@@ -413,7 +446,7 @@ def main():
     return 0
 
 
-def write_run(run_dir, log_lines, storylet, draft, verdict, row):
+def write_run(run_dir, log_lines, storylet, draft, verdict, row, events):
     if storylet:
         with open(os.path.join(run_dir, f"{storylet.get('id', 'draft')}.json"), "w") as f:
             json.dump(storylet, f, indent=2)
@@ -423,6 +456,7 @@ def write_run(run_dir, log_lines, storylet, draft, verdict, row):
         "open_questions": draft and draft["open_questions"],
         "inspector": verdict,
         "register_row": row,
+        "events": events,
     }
     with open(os.path.join(run_dir, "report.json"), "w") as f:
         json.dump(report, f, indent=2)

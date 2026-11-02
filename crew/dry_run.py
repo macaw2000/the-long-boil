@@ -29,9 +29,9 @@ class _Messages:
     def create(self, *, system, messages, **_):
         user = messages[-1]["content"]
         if system.startswith("# Scrivener"):
-            return _reply(self.scrivener())
+            return _reply(self.scrivener(user))
         if system.startswith("# Inspector"):
-            return _reply({"verdict": "pass with notes", "reveal_risks": [], "economy_risks": [],
+            return _reply({"verdict": "pass with notes", "reveal_clear": True, "reveal_risks": [], "economy_risks": [],
                            "findings": [{"field": "description",
                                          "finding": "Dorrit is a new name, not in characters.md.",
                                          "fix": "Keep her unnamed, or canonise her."}]})
@@ -39,10 +39,13 @@ class _Messages:
             return _reply(self.registrar(user))
         raise ValueError("unknown agent")
 
-    def scrivener(self):
+    def scrivener(self, user):
         self.drafts += 1
         with open(os.path.join(HERE, "fixtures", "dry_run_storylet.json")) as f:
             storylet = json.load(f)
+        # Whatever the brief, answer with the canned scene under the brief's id.
+        sid = re.search(r"\*\*Storylet id:\*\*\s*`([^`]+)`", user).group(1)
+        storylet["id"], storylet["location"] = sid, sid.split(".")[1]
         if self.drafts == 1:
             storylet["description"] = storylet["description"].replace(
                 "She looks at", "There is a sense of hope as she looks at")
@@ -57,7 +60,7 @@ class _Messages:
         review = [e for e in events if e["event"] == "reviewed"][-1]
         row = {
             "id": sid, "type": "storylet", "path": f"content/storylets/{sid}.json", "pointer": None,
-            "revision": None, "work_order": "crew/briefs/rustmoor-silk-storylet.md",
+            "revision": None, "work_order": "crew/briefs/dry-run",
             "status": "reviewed", "drafted_by": "scrivener", "model": "claude-opus-5-5", "patch": None,
             "validators": {"result": "pass", "run": passed["at"], "checks": passed["checks"], "waiver": None},
             "review": {"by": "inspector",

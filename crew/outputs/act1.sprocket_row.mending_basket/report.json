@@ -1,0 +1,203 @@
+{
+  "invented": [
+    "invented: true. Pip carries the Row's mending basket to No. 9. Canon has Pip carrying messages along the Row for Rations. Carrying a parcel is a small step beyond that.",
+    "invented: true. The contents of the basket: a pea coat with worn elbows, three shirts short of buttons, a torn pinafore, and Sunday trousers with a 'by Sunday' note.",
+    "invented: true. A mantel clock on the bench, promised to a neighbour two doors down for yesterday. This uses canon's 'the Row brings its broken kettles and clocks'.",
+    "invented: true. Pressing with a flatiron heated on the workshop stove, and a button jar kept for clockwork.",
+    "invented: true. Option 3 reads a fall in needle.arrears as being one job less behind on promised work. It does not name a creditor or a rent."
+  ],
+  "open_questions": [
+    "Difficulty 9 on tailoring comes from the GDD formula: 0.6 x skill / 9 gives 33% at Tailoring 5, 50% at 7.5 and 67% at 10, so a Tinker in the 5 to 10 band passes about half the time. The brief asked me to choose it, but difficulty is close to the draftsman's numbers. Should the draftsman confirm it?",
+    "What exactly does needle.arrears measure (back rent, debt to the Counting-House, overdue work)? My slice does not say, so option 3 keeps it vague as 'a job less behind'. If arrears is strictly rent, that outcome may need rewording.",
+    "Should Pip's courier role on the Row cover parcels and baskets as well as messages? Please canonise or cut.",
+    "I tagged reveal_layer as 1 to match the sibling Act I storylets. The scene uses only Layer 0 material. Should content with no reveal be tagged 0 instead?",
+    "Can the neighbours' garments, the mantel clock's owner two doors down, and the 'do you do curtains' note be canonised as Row texture, or should they be cut?",
+    "No new qualities are introduced. The scene reads act1.progress and tailoring and sets item.rustmoor.rustmoor_ration, needle.scald and needle.arrears, all of which exist.",
+    "Nothing was left unwritten for want of an uncleared fact."
+  ],
+  "inspector": {
+    "verdict": "pass with notes",
+    "reveal_clear": true,
+    "reveal_risks": [],
+    "economy_risks": [
+      "Rations faucet: at most 2 item.rustmoor.rustmoor_ration per day per player, within the brief's cap. Option 2 pays 1 Ration for no risk to any player with Tailoring 3. Option 1 becomes a certain 2 Rations at Tailoring 15, because 0.6 x 15 / 9 = 1.0, and stays certain for the rest of the game. Since Rations are already the Row's and Pip's currency, Exchange pressure looks negligible. Jeremy may want to confirm against the Ration price band.",
+      "The choice is weak at the low end of the target band. At Tailoring 7.5, option 1 is a 50% chance, so its expected Rations (1.0) equal option 2's certain 1, plus a 50% chance of needle.scald +1. Option 2 therefore weakly dominates option 1 at the brief's midpoint, and clearly dominates it at Tailoring 5 (33%, an expected 0.67 Rations). The risk is mild, because needle.scald falls 1 per 24h and the cooldown is 24h. This is the shape the brief's reward cap forces, so it is noted, not failed."
+    ],
+    "findings": [
+      {
+        "field": "options[0].challenge.difficulty",
+        "finding": "Difficulty 9 meets the brief: P = 0.33 at Tailoring 5, 0.50 at 7.5 and 0.67 at 10 under the GDD formula. This is a defensible reading of 'about half the time' across the 5 to 10 band.",
+        "fix": "None required."
+      },
+      {
+        "field": "options[1] (relative to options[0])",
+        "finding": "Option 2's certain +1 Ration weakly dominates option 1's challenge in the lower half of the target band. style.md says: 'If one option is obviously correct, it is not a choice and the scene needs rewriting.' It is not obviously correct here: option 3 pays in a different currency, and option 1 wins above Tailoring 7.5. The edge is still thin. This is a taste call for Jeremy, not a fail.",
+        "fix": "Optional, if Jeremy wants a sharper choice: make option 2 a challenge on tailoring at a low difficulty (for example 4) whose failure raises needle.arrears by 1, so the safe option is not quite free. Otherwise leave as is."
+      },
+      {
+        "field": "options[1].success.text",
+        "finding": "'with the crossword already done' gives the Brass Gazette a crossword. That is a design fact the GDD does not state, and arguably post-Victorian against the rule 'Victorian register without pastiche'. The style rules do not settle it, so this is an open question rather than a fail.",
+        "fix": "If Jeremy declines the crossword, replace it with a period detail such as 'with the shipping column already read' or 'with the Gauge Reading torn out'. Otherwise raise it for canonising."
+      },
+      {
+        "field": "description; options[0].label; options[1].success.text",
+        "finding": "The scene assumes a weekly calendar with Sunday and Saturday ('Sunday trousers', 'by Sunday', 'go back on Saturday'). The GDD and world.md do not state Kettleport's calendar. This is minor and consistent with a Chapel-going city, but it is not canon.",
+        "fix": "Raise as an open question for Jeremy; no change required unless he rules otherwise."
+      },
+      {
+        "field": "options[0].failure.changes",
+        "finding": "needle.scald +1 comes from a dry burn (the flatiron handle). The brief permits it and the GDD example uses needle.scald for steam injury, so this is consistent enough. Jeremy may feel the ruined Sunday wool reads more naturally as needle.arrears, a debt to a neighbour. That is a taste call I am declining to make.",
+        "fix": "None required; flag for Jeremy."
+      },
+      {
+        "field": "description; options[1].success.text",
+        "finding": "Pip's broken-off sentence ('in whatever's in the... well.' and 'very particular about... well, about trousers') uses the same construction twice in one storylet. The voice matches characters.md ('Never finishes a sentence when a better one is available'), but the repetition dulls it.",
+        "fix": "Optional: vary the second instance, for example 'the Tinker is very particular about, as it turns out, trousers.'"
+      },
+      {
+        "field": "all",
+        "finding": "No reveal hinting found. The text has no gauges, Board, Whistle, Haze, Downpipe or heat language, and the only lamp is a mending lamp, with no Gauger boots. The voice is second person and present tense, there are no banned phrases, and the description runs about 90 words. Pip's role carrying for Rations and the Row paying in kind wrapped in the Gazette both match world.md. The requirements, Nerve, cooldown and quality names all match the brief and qualities.json. The id is consistent with the act1.<location>.<slug> pattern.",
+        "fix": "None."
+      }
+    ]
+  },
+  "register_row": {
+    "id": "act1.sprocket_row.mending_basket",
+    "type": "storylet",
+    "path": "content/storylets/act1.sprocket_row.mending_basket.json",
+    "pointer": null,
+    "revision": null,
+    "work_order": null,
+    "status": "reviewed",
+    "drafted_by": "scrivener",
+    "model": null,
+    "patch": null,
+    "validators": {
+      "result": "pass",
+      "run": "2026-11-02T16:49:19Z",
+      "checks": [
+        "schema",
+        "xp_curve",
+        "references",
+        "pacing",
+        "drops",
+        "combat",
+        "start",
+        "qualities",
+        "story_graph",
+        "reveal",
+        "style",
+        "work_orders"
+      ],
+      "waiver": null
+    },
+    "review": {
+      "by": "inspector",
+      "verdict": "pass",
+      "notes": "Pass with notes, round 1, 2026-11-02T16:50:07Z. Reveal clear, no reveal risks. Open for Jeremy: (1) the Ration faucet is within the brief cap, but option 1 becomes certain at Tailoring 15; confirm against the Ration price band. (2) Option 2 weakly dominates option 1 below Tailoring 7.5; optional fix is to make option 2 a low-difficulty tailoring challenge with needle.arrears +1 on failure. (3) Brass Gazette 'crossword' is uncanonised and possibly post-Victorian; alternatives are offered. (4) A Sunday/Saturday weekly calendar is assumed and is not canon. (5) needle.scald versus needle.arrears for the option 1 failure is a taste call. (6) Pip's repeated broken-off sentence; an optional variation is offered."
+    },
+    "approved_by": null,
+    "approved_at": null,
+    "history": [
+      {
+        "at": "2026-11-02T16:49:19Z",
+        "status": "drafted",
+        "by": "scrivener"
+      },
+      {
+        "at": "2026-11-02T16:49:19Z",
+        "status": "validated",
+        "by": "validators"
+      },
+      {
+        "at": "2026-11-02T16:50:07Z",
+        "status": "reviewed",
+        "by": "inspector"
+      }
+    ],
+    "retirement": null
+  },
+  "events": [
+    {
+      "at": "2026-11-02T16:47:53Z",
+      "event": "brief",
+      "path": "crew/briefs/sprocket-row-mending-storylet.md"
+    },
+    {
+      "at": "2026-11-02T16:49:19Z",
+      "event": "drafted",
+      "by": "scrivener",
+      "round": 1
+    },
+    {
+      "at": "2026-11-02T16:49:19Z",
+      "event": "validators",
+      "result": "pass",
+      "checks": [
+        "schema",
+        "xp_curve",
+        "references",
+        "pacing",
+        "drops",
+        "combat",
+        "start",
+        "qualities",
+        "story_graph",
+        "reveal",
+        "style",
+        "work_orders"
+      ]
+    },
+    {
+      "at": "2026-11-02T16:50:07Z",
+      "event": "reviewed",
+      "by": "inspector",
+      "verdict": {
+        "verdict": "pass with notes",
+        "reveal_clear": true,
+        "reveal_risks": [],
+        "economy_risks": [
+          "Rations faucet: at most 2 item.rustmoor.rustmoor_ration per day per player, within the brief's cap. Option 2 pays 1 Ration for no risk to any player with Tailoring 3. Option 1 becomes a certain 2 Rations at Tailoring 15, because 0.6 x 15 / 9 = 1.0, and stays certain for the rest of the game. Since Rations are already the Row's and Pip's currency, Exchange pressure looks negligible. Jeremy may want to confirm against the Ration price band.",
+          "The choice is weak at the low end of the target band. At Tailoring 7.5, option 1 is a 50% chance, so its expected Rations (1.0) equal option 2's certain 1, plus a 50% chance of needle.scald +1. Option 2 therefore weakly dominates option 1 at the brief's midpoint, and clearly dominates it at Tailoring 5 (33%, an expected 0.67 Rations). The risk is mild, because needle.scald falls 1 per 24h and the cooldown is 24h. This is the shape the brief's reward cap forces, so it is noted, not failed."
+        ],
+        "findings": [
+          {
+            "field": "options[0].challenge.difficulty",
+            "finding": "Difficulty 9 meets the brief: P = 0.33 at Tailoring 5, 0.50 at 7.5 and 0.67 at 10 under the GDD formula. This is a defensible reading of 'about half the time' across the 5 to 10 band.",
+            "fix": "None required."
+          },
+          {
+            "field": "options[1] (relative to options[0])",
+            "finding": "Option 2's certain +1 Ration weakly dominates option 1's challenge in the lower half of the target band. style.md says: 'If one option is obviously correct, it is not a choice and the scene needs rewriting.' It is not obviously correct here: option 3 pays in a different currency, and option 1 wins above Tailoring 7.5. The edge is still thin. This is a taste call for Jeremy, not a fail.",
+            "fix": "Optional, if Jeremy wants a sharper choice: make option 2 a challenge on tailoring at a low difficulty (for example 4) whose failure raises needle.arrears by 1, so the safe option is not quite free. Otherwise leave as is."
+          },
+          {
+            "field": "options[1].success.text",
+            "finding": "'with the crossword already done' gives the Brass Gazette a crossword. That is a design fact the GDD does not state, and arguably post-Victorian against the rule 'Victorian register without pastiche'. The style rules do not settle it, so this is an open question rather than a fail.",
+            "fix": "If Jeremy declines the crossword, replace it with a period detail such as 'with the shipping column already read' or 'with the Gauge Reading torn out'. Otherwise raise it for canonising."
+          },
+          {
+            "field": "description; options[0].label; options[1].success.text",
+            "finding": "The scene assumes a weekly calendar with Sunday and Saturday ('Sunday trousers', 'by Sunday', 'go back on Saturday'). The GDD and world.md do not state Kettleport's calendar. This is minor and consistent with a Chapel-going city, but it is not canon.",
+            "fix": "Raise as an open question for Jeremy; no change required unless he rules otherwise."
+          },
+          {
+            "field": "options[0].failure.changes",
+            "finding": "needle.scald +1 comes from a dry burn (the flatiron handle). The brief permits it and the GDD example uses needle.scald for steam injury, so this is consistent enough. Jeremy may feel the ruined Sunday wool reads more naturally as needle.arrears, a debt to a neighbour. That is a taste call I am declining to make.",
+            "fix": "None required; flag for Jeremy."
+          },
+          {
+            "field": "description; options[1].success.text",
+            "finding": "Pip's broken-off sentence ('in whatever's in the... well.' and 'very particular about... well, about trousers') uses the same construction twice in one storylet. The voice matches characters.md ('Never finishes a sentence when a better one is available'), but the repetition dulls it.",
+            "fix": "Optional: vary the second instance, for example 'the Tinker is very particular about, as it turns out, trousers.'"
+          },
+          {
+            "field": "all",
+            "finding": "No reveal hinting found. The text has no gauges, Board, Whistle, Haze, Downpipe or heat language, and the only lamp is a mending lamp, with no Gauger boots. The voice is second person and present tense, there are no banned phrases, and the description runs about 90 words. Pip's role carrying for Rations and the Row paying in kind wrapped in the Gazette both match world.md. The requirements, Nerve, cooldown and quality names all match the brief and qualities.json. The id is consistent with the act1.<location>.<slug> pattern.",
+            "fix": "None."
+          }
+        ]
+      }
+    }
+  ]
+}

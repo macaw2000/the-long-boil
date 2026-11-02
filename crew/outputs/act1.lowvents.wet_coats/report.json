@@ -1,0 +1,178 @@
+{
+  "invented": [
+    "invented: true. The Fellowship hall has a row of pegs on its back wall where Stokers hang their work coats.",
+    "invented: true. Somebody has chalked COATS on Mother Ash's slate. Canon says the slate is for split pipes and that anyone may chalk it. Its use for a non-pipe complaint is my extension.",
+    "invented: true. Mother Ash answers a slate entry by chalking the giver's name in its place. This is a habit not stated in canon.",
+    "invented: true. An unnamed Stoker coat-owner, identified only by one eyebrow shorter than the other. She is a walk-on and needs no canonising unless she recurs.",
+    "invented: true. Umbrella silk is counted in 'panels' in the prose. The item quality is a plain integer, so this is flavour only.",
+    "invented: true. Tailoring challenge difficulty of 10. It mirrors the existing vent scene, but this number belongs to the draftsman."
+  ],
+  "open_questions": [
+    "Draftsman: the tailoring difficulty (currently 10) is a placeholder copied from act1.lowvents.bottom_rim's smithing check. Please set the real value; I have not tuned it.",
+    "Should the silk be spent on a failed tailoring check? I spend it, so that failure costs something beyond the Scald needle. If the design prefers failure to refund materials, change the failure's silk to 0.",
+    "Confirm the exact item id from work order 032 is item.rustmoor.umbrella_silk. The brief names it, but the copy of qualities.json I was given lists no item ids.",
+    "Canonise or cut: COATS chalked on Mother Ash's slate, and her habit of answering a gift by chalking the giver's name. Both extend the canon slate, which is described only as being for split pipes.",
+    "Canonise or cut: the Fellowship hall's coat pegs on the back wall.",
+    "Silk costs: the certain option spends 5 and the challenge option spends 3, so that certainty is paid for in silk and neither option is obviously correct. The brief allowed 3 to 5. Flagging this in case the draftsman wants a different spread.",
+    "Nothing in this brief needed a fact above Layer 1. The fog's warmth is described only as canon world.md has it ('hot fog'), with no cause given."
+  ],
+  "inspector": {
+    "verdict": "pass with notes",
+    "reveal_clear": true,
+    "reveal_risks": [],
+    "economy_risks": [
+      "Repeatable favour: with a 24-hour cooldown and +1 favour.stokers on either silk option, a player can raise Stokers favour from 0 to its cap of 7 in seven days (qualities.json: favour range [0, 7]). That opens every Stokers-gated scene, such as the GDD example vent, which requires favour.stokers >=1. It may also make the Stokers' token the cheapest road to the Foundry Pass. The brief allows +1 per outcome and the 24h cooldown, so this is not a fail. Jeremy should decide whether this scene grants favour only once, or caps it (for example, favour only while favour.stokers is below 2).",
+      "Silk converts to favour: if umbrella silk trades on the Brass Exchange, this scene turns Crowns into Stokers favour at 3 to 5 silk a day. characters.md says favour 'never buys power on the Exchange'. Strictly that line governs what favour buys, not what buys favour, so this is an open question, not a breach.",
+      "Silk demand: a standing daily sink of 3 to 5 silk per player, landing just after work order 032 made silk a Tailoring material, may raise the silk price more than the brief's 'a sink in the story' intends. Check against drop rates before shipping.",
+      "Coal: +2 item.rustmoor.coal per day is within the brief and negligible."
+    ],
+    "findings": [
+      {
+        "field": "options[0].challenge.difficulty",
+        "finding": "The choice holds at low skill but collapses at high skill. By the GDD formula, tailoring 17 or more makes option 1 certain. It then strictly dominates option 2: the same +1 favour.stokers for 3 silk instead of 5, with no risk. style.md: 'If one option is obviously correct, it is not a choice.' This is not a fail: at Act I skill levels the trade-off of risk against cost is real, and skill outgrowing a check is normal. It is a taste call for Jeremy.",
+        "fix": "Optional, at Jeremy's call: raise difficulty to around 15 so certainty arrives later. Alternatively, give option 2 something option 1 lacks while staying within the brief's reward limits, without adding a reward."
+      },
+      {
+        "field": "options[0].failure.changes",
+        "finding": "needle.scald +1 is driven by a stove fender burning your wrist, not by the Scald or a vent. The brief permits a failure to raise needle.scald by 1, and the GDD vent example raises it on a failed repair. However, the slice does not say what needle.scald measures, so whether a hall stove burn should move it is unsettled.",
+        "fix": "Open question for Jeremy, not a required change. If needle.scald is meant to track exposure to the Scald specifically, rewrite the failure so the cost comes from the doorway fog rather than the fender."
+      },
+      {
+        "field": "options[2].success.text",
+        "finding": "The line 'The stair pays a Tinker in coal' reuses canonised district detail from world.md. In canon that payment is for Tinker work, while drying coats on a fender is a favour. The line is accurate to canon but slightly stretches what the stair is paying for. Voice, tense and register are otherwise clean, with no banned phrases.",
+        "fix": "None required. Optionally change it to 'The stair pays in coal' so it does not imply the coat-drying counts as Tinker work."
+      },
+      {
+        "field": "all text fields",
+        "finding": "Voice checks clean: second person, present tense, specific details (a coat 'as heavy as a wet dog', the Stoker with one eyebrow shorter than the other, the seams lapped downhill). There are no banned phrases and no self-explaining joke. The description runs 101 words. The scene touches no Ledger Page, Rook, Notice, Gauge Reading or own reading. The fog, the sweating windows and the warm fog in the failure outcome are all Layer 0 (world.md: 'hot fog'). Nothing points at the Scald's heat source or its rise. Mother Ash's slate and the arm-wrestling bench match canonised district detail.",
+        "fix": "None."
+      }
+    ]
+  },
+  "register_row": {
+    "id": "act1.lowvents.wet_coats",
+    "type": "storylet",
+    "path": "content/storylets/act1.lowvents.wet_coats.json",
+    "pointer": null,
+    "revision": null,
+    "work_order": null,
+    "status": "reviewed",
+    "drafted_by": "scrivener",
+    "model": null,
+    "patch": null,
+    "validators": {
+      "result": "pass",
+      "run": "2026-11-02T16:48:49Z",
+      "checks": [
+        "schema",
+        "xp_curve",
+        "references",
+        "pacing",
+        "drops",
+        "combat",
+        "start",
+        "qualities",
+        "story_graph",
+        "reveal",
+        "style",
+        "work_orders"
+      ],
+      "waiver": null
+    },
+    "review": {
+      "by": "inspector",
+      "verdict": "pass",
+      "notes": "Pass with notes: inspector review passed 2026-11-02T16:49:31Z on the round 1 draft. Reveal clear. Open questions for Jeremy: (1) the repeatable +1 favour.stokers on a 24h cooldown reaches the cap of 7 in seven days, so decide on once-only or a cap such as below 2; (2) silk may convert Crowns into favour via the Brass Exchange; (3) the daily silk sink of 3 to 5 may raise the silk price after work order 032, so check against drop rates; (4) option 1 dominates option 2 at tailoring 17 or more, with an optional fix of difficulty around 15; (5) the needle.scald failure comes from a stove burn, not the Scald. Optional text tweak: 'The stair pays in coal'."
+    },
+    "approved_by": null,
+    "approved_at": null,
+    "history": [
+      {
+        "at": "2026-11-02T16:48:48Z",
+        "status": "drafted",
+        "by": "scrivener"
+      },
+      {
+        "at": "2026-11-02T16:48:49Z",
+        "status": "validated",
+        "by": "validators"
+      },
+      {
+        "at": "2026-11-02T16:49:31Z",
+        "status": "reviewed",
+        "by": "inspector"
+      }
+    ],
+    "retirement": null
+  },
+  "events": [
+    {
+      "at": "2026-11-02T16:47:54Z",
+      "event": "brief",
+      "path": "crew/briefs/lowvents-oilcloth-storylet.md"
+    },
+    {
+      "at": "2026-11-02T16:48:48Z",
+      "event": "drafted",
+      "by": "scrivener",
+      "round": 1
+    },
+    {
+      "at": "2026-11-02T16:48:49Z",
+      "event": "validators",
+      "result": "pass",
+      "checks": [
+        "schema",
+        "xp_curve",
+        "references",
+        "pacing",
+        "drops",
+        "combat",
+        "start",
+        "qualities",
+        "story_graph",
+        "reveal",
+        "style",
+        "work_orders"
+      ]
+    },
+    {
+      "at": "2026-11-02T16:49:31Z",
+      "event": "reviewed",
+      "by": "inspector",
+      "verdict": {
+        "verdict": "pass with notes",
+        "reveal_clear": true,
+        "reveal_risks": [],
+        "economy_risks": [
+          "Repeatable favour: with a 24-hour cooldown and +1 favour.stokers on either silk option, a player can raise Stokers favour from 0 to its cap of 7 in seven days (qualities.json: favour range [0, 7]). That opens every Stokers-gated scene, such as the GDD example vent, which requires favour.stokers >=1. It may also make the Stokers' token the cheapest road to the Foundry Pass. The brief allows +1 per outcome and the 24h cooldown, so this is not a fail. Jeremy should decide whether this scene grants favour only once, or caps it (for example, favour only while favour.stokers is below 2).",
+          "Silk converts to favour: if umbrella silk trades on the Brass Exchange, this scene turns Crowns into Stokers favour at 3 to 5 silk a day. characters.md says favour 'never buys power on the Exchange'. Strictly that line governs what favour buys, not what buys favour, so this is an open question, not a breach.",
+          "Silk demand: a standing daily sink of 3 to 5 silk per player, landing just after work order 032 made silk a Tailoring material, may raise the silk price more than the brief's 'a sink in the story' intends. Check against drop rates before shipping.",
+          "Coal: +2 item.rustmoor.coal per day is within the brief and negligible."
+        ],
+        "findings": [
+          {
+            "field": "options[0].challenge.difficulty",
+            "finding": "The choice holds at low skill but collapses at high skill. By the GDD formula, tailoring 17 or more makes option 1 certain. It then strictly dominates option 2: the same +1 favour.stokers for 3 silk instead of 5, with no risk. style.md: 'If one option is obviously correct, it is not a choice.' This is not a fail: at Act I skill levels the trade-off of risk against cost is real, and skill outgrowing a check is normal. It is a taste call for Jeremy.",
+            "fix": "Optional, at Jeremy's call: raise difficulty to around 15 so certainty arrives later. Alternatively, give option 2 something option 1 lacks while staying within the brief's reward limits, without adding a reward."
+          },
+          {
+            "field": "options[0].failure.changes",
+            "finding": "needle.scald +1 is driven by a stove fender burning your wrist, not by the Scald or a vent. The brief permits a failure to raise needle.scald by 1, and the GDD vent example raises it on a failed repair. However, the slice does not say what needle.scald measures, so whether a hall stove burn should move it is unsettled.",
+            "fix": "Open question for Jeremy, not a required change. If needle.scald is meant to track exposure to the Scald specifically, rewrite the failure so the cost comes from the doorway fog rather than the fender."
+          },
+          {
+            "field": "options[2].success.text",
+            "finding": "The line 'The stair pays a Tinker in coal' reuses canonised district detail from world.md. In canon that payment is for Tinker work, while drying coats on a fender is a favour. The line is accurate to canon but slightly stretches what the stair is paying for. Voice, tense and register are otherwise clean, with no banned phrases.",
+            "fix": "None required. Optionally change it to 'The stair pays in coal' so it does not imply the coat-drying counts as Tinker work."
+          },
+          {
+            "field": "all text fields",
+            "finding": "Voice checks clean: second person, present tense, specific details (a coat 'as heavy as a wet dog', the Stoker with one eyebrow shorter than the other, the seams lapped downhill). There are no banned phrases and no self-explaining joke. The description runs 101 words. The scene touches no Ledger Page, Rook, Notice, Gauge Reading or own reading. The fog, the sweating windows and the warm fog in the failure outcome are all Layer 0 (world.md: 'hot fog'). Nothing points at the Scald's heat source or its rise. Mother Ash's slate and the arm-wrestling bench match canonised district detail.",
+            "fix": "None."
+          }
+        ]
+      }
+    }
+  ]
+}

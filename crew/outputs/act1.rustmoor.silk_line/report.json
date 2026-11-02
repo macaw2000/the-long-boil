@@ -1,0 +1,182 @@
+{
+  "invented": [
+    "INVENTED: The pickers strip silk from Gaugehill's discarded umbrellas, wash it in a tin bath, and peg it to dry on a line strung from the crane to a bedstead.",
+    "INVENTED: The pickers use umbrella silk to patch their own coats and keep out the wind.",
+    "INVENTED: Rust Rats raid the pickers' drying line for nest lining, leaving furrows in the heaps.",
+    "INVENTED: Gaugehill throws umbrellas out 'at the first bent rib'.",
+    "INVENTED: An unnamed picker who mends with a darning needle. No name, rank or voice is given, and none is assumed to recur."
+  ],
+  "open_questions": [
+    "Canonise or cut: the pickers' silk drying line between the crane and a bedstead, and the tin bath they wash it in.",
+    "Canonise or cut: pickers wear and patch with umbrella silk. The brief asks that the silk be tied to the people who live on the tip, and canon only says the Rust Rats carry it.",
+    "Please confirm that item.rustmoor.quilted_silk exists in the item registry. The brief names it, but qualities.json does not list item ids individually, so I could not check it.",
+    "Challenge difficulties (tailoring 6, scavenging 8) are placeholders matched to the existing Rustmoor storylets at similar progress, common_pot (6) and gate_brazier (8). If difficulty belongs to the draftsman, please have them set it.",
+    "No new qualities are introduced. Every change uses needle.scald, item.rustmoor.umbrella_silk or item.rustmoor.quilted_silk, and no flag or progress is set.",
+    "Nothing was withheld for clearance. The scene does not touch the gauge charts in the rat nests (beat 3) or anything else at Layer 1. The rat nest appears only as a place lined with silk."
+  ],
+  "inspector": {
+    "verdict": "pass with notes",
+    "reveal_clear": true,
+    "reveal_risks": [],
+    "economy_risks": [
+      "options[0].success grants 1 item.rustmoor.quilted_silk at tailoring difficulty 6 and consumes nothing. By the GDD formula the roll is certain at Tailoring 10, so this is a daily, risk-free quilted silk for most of Act I. If the Tailoring recipe for quilted silk consumes umbrella silk, this route undercuts the recipe and the Exchange price. The brief allows the reward, but I cannot see the recipe or the price board, so I cannot judge the effect. Registrar or Jeremy should check the recipe input before this ships.",
+      "options[1].success grants 3 item.rustmoor.umbrella_silk, the brief's ceiling, at scavenging difficulty 8, which is certain at Scavenging 14. Together with the Rust Rats' drop, this may lower umbrella silk prices early. Worth a glance at the pacing sheet; not a fail."
+    ],
+    "findings": [
+      {
+        "field": "options[0].success.text",
+        "finding": "Time of day is inconsistent. The description sets the scene 'Tonight' and this outcome says the silk is 'sewn by lamplight', yet it also says 'By the time the crane's shadow has gone'. A shadow that goes reads as dusk passing, not a night scene.",
+        "fix": "Replace 'By the time the crane's shadow has gone' with a night marker, e.g. 'By the time the lamp wants trimming'."
+      },
+      {
+        "field": "options[2].success.text",
+        "finding": "'gives you one length for your evening' sits oddly in a scene already set at night. The closing sentence ('There are coats on the tip with holes in them, and the rats are not the only ones who feel the wind') states the picker's motive outright. It edges toward explaining the beat rather than leaving it in the aftermath. The style guide's ban is on explaining a joke, so this is a taste call, not a breach.",
+        "fix": "Optional: change 'for your evening' to 'for your trouble'. Consider cutting the final sentence or trimming it to 'There are coats on the tip with holes in them.' Leave it if Jeremy prefers the warmth."
+      },
+      {
+        "field": "options[0].success.text / options[0].failure.text",
+        "finding": "Both outcomes reuse the simile 'like something with somewhere better to be'. A repeat player sees both, and the second reading weakens the line.",
+        "fix": "Keep the simile in one outcome and replace it in the other. For example, failure could open: 'Umbrella silk was never meant for a darning needle, and the darning needle agrees.'"
+      },
+      {
+        "field": "options (choice structure)",
+        "finding": "Open question, not a fail. On day one the choice is real: a certain 1 silk against a riskier 1 quilted or 3 silk. But the storylet repeats across Act I (levels 1 to 20), and the GDD formula makes option 0 certain at Tailoring 10 and option 1 certain at Scavenging 14. Past that point option 2 is dominated, and style.md says 'If one option is obviously correct, it is not a choice.' Neither the GDD nor the brief says whether a repeatable storylet must stay a choice at higher skill.",
+        "fix": "Raise with Jeremy. One option: give option 2 a non-item benefit the brief allows. Another: accept that the scene is a low-level one. No change is required from the scrivener until that is decided."
+      },
+      {
+        "field": "options[0].failure.changes / options[1].failure.changes",
+        "finding": "Taste call I am declining to make. A pricked thumb and a rat bite each raise needle.scald by 1. The brief explicitly permits this, but the GDD's only example ties Scald to scalding at a vent. Whether Scald is a general hurt meter or specifically steam exposure is not settled in the canon slice.",
+        "fix": "No change required under the brief. Flag for Jeremy whether needle.scald should cover non-steam injuries."
+      }
+    ]
+  },
+  "register_row": {
+    "id": "act1.rustmoor.silk_line",
+    "type": "storylet",
+    "path": "content/storylets/act1.rustmoor.silk_line.json",
+    "pointer": null,
+    "revision": null,
+    "work_order": "crew/briefs/rustmoor-silk-storylet.md",
+    "status": "reviewed",
+    "drafted_by": "scrivener",
+    "model": null,
+    "patch": null,
+    "validators": {
+      "result": "pass",
+      "run": "2026-11-02T16:48:49Z",
+      "checks": [
+        "schema",
+        "xp_curve",
+        "references",
+        "pacing",
+        "drops",
+        "combat",
+        "start",
+        "qualities",
+        "story_graph",
+        "reveal",
+        "style",
+        "work_orders"
+      ],
+      "waiver": null
+    },
+    "review": {
+      "by": "inspector",
+      "verdict": "pass",
+      "notes": "Pass with notes, 2026-11-02T16:49:29Z, round 1. Reveal clear. Economy risks: options[0] grants a risk-free quilted silk (certain at Tailoring 10) and may undercut the quilted silk recipe and Exchange price if that recipe consumes umbrella silk; check the recipe input before shipping. options[1] grants 3 umbrella silk (certain at Scavenging 14) and may depress early silk prices; check the pacing sheet. Text fixes suggested: night-time marker in options[0].success, the repeated simile across options[0] success and failure, and an optional trim of options[2].success. Open questions for Jeremy: option 2 becomes dominated at higher skill on a repeatable storylet, and whether needle.scald covers non-steam injuries."
+    },
+    "approved_by": null,
+    "approved_at": null,
+    "history": [
+      {
+        "at": "2026-11-02T16:48:49Z",
+        "status": "drafted",
+        "by": "scrivener"
+      },
+      {
+        "at": "2026-11-02T16:48:49Z",
+        "status": "validated",
+        "by": "validators"
+      },
+      {
+        "at": "2026-11-02T16:49:29Z",
+        "status": "reviewed",
+        "by": "inspector"
+      }
+    ],
+    "retirement": null
+  },
+  "events": [
+    {
+      "at": "2026-11-02T16:47:52Z",
+      "event": "brief",
+      "path": "crew/briefs/rustmoor-silk-storylet.md"
+    },
+    {
+      "at": "2026-11-02T16:48:49Z",
+      "event": "drafted",
+      "by": "scrivener",
+      "round": 1
+    },
+    {
+      "at": "2026-11-02T16:48:49Z",
+      "event": "validators",
+      "result": "pass",
+      "checks": [
+        "schema",
+        "xp_curve",
+        "references",
+        "pacing",
+        "drops",
+        "combat",
+        "start",
+        "qualities",
+        "story_graph",
+        "reveal",
+        "style",
+        "work_orders"
+      ]
+    },
+    {
+      "at": "2026-11-02T16:49:29Z",
+      "event": "reviewed",
+      "by": "inspector",
+      "verdict": {
+        "verdict": "pass with notes",
+        "reveal_clear": true,
+        "reveal_risks": [],
+        "economy_risks": [
+          "options[0].success grants 1 item.rustmoor.quilted_silk at tailoring difficulty 6 and consumes nothing. By the GDD formula the roll is certain at Tailoring 10, so this is a daily, risk-free quilted silk for most of Act I. If the Tailoring recipe for quilted silk consumes umbrella silk, this route undercuts the recipe and the Exchange price. The brief allows the reward, but I cannot see the recipe or the price board, so I cannot judge the effect. Registrar or Jeremy should check the recipe input before this ships.",
+          "options[1].success grants 3 item.rustmoor.umbrella_silk, the brief's ceiling, at scavenging difficulty 8, which is certain at Scavenging 14. Together with the Rust Rats' drop, this may lower umbrella silk prices early. Worth a glance at the pacing sheet; not a fail."
+        ],
+        "findings": [
+          {
+            "field": "options[0].success.text",
+            "finding": "Time of day is inconsistent. The description sets the scene 'Tonight' and this outcome says the silk is 'sewn by lamplight', yet it also says 'By the time the crane's shadow has gone'. A shadow that goes reads as dusk passing, not a night scene.",
+            "fix": "Replace 'By the time the crane's shadow has gone' with a night marker, e.g. 'By the time the lamp wants trimming'."
+          },
+          {
+            "field": "options[2].success.text",
+            "finding": "'gives you one length for your evening' sits oddly in a scene already set at night. The closing sentence ('There are coats on the tip with holes in them, and the rats are not the only ones who feel the wind') states the picker's motive outright. It edges toward explaining the beat rather than leaving it in the aftermath. The style guide's ban is on explaining a joke, so this is a taste call, not a breach.",
+            "fix": "Optional: change 'for your evening' to 'for your trouble'. Consider cutting the final sentence or trimming it to 'There are coats on the tip with holes in them.' Leave it if Jeremy prefers the warmth."
+          },
+          {
+            "field": "options[0].success.text / options[0].failure.text",
+            "finding": "Both outcomes reuse the simile 'like something with somewhere better to be'. A repeat player sees both, and the second reading weakens the line.",
+            "fix": "Keep the simile in one outcome and replace it in the other. For example, failure could open: 'Umbrella silk was never meant for a darning needle, and the darning needle agrees.'"
+          },
+          {
+            "field": "options (choice structure)",
+            "finding": "Open question, not a fail. On day one the choice is real: a certain 1 silk against a riskier 1 quilted or 3 silk. But the storylet repeats across Act I (levels 1 to 20), and the GDD formula makes option 0 certain at Tailoring 10 and option 1 certain at Scavenging 14. Past that point option 2 is dominated, and style.md says 'If one option is obviously correct, it is not a choice.' Neither the GDD nor the brief says whether a repeatable storylet must stay a choice at higher skill.",
+            "fix": "Raise with Jeremy. One option: give option 2 a non-item benefit the brief allows. Another: accept that the scene is a low-level one. No change is required from the scrivener until that is decided."
+          },
+          {
+            "field": "options[0].failure.changes / options[1].failure.changes",
+            "finding": "Taste call I am declining to make. A pricked thumb and a rat bite each raise needle.scald by 1. The brief explicitly permits this, but the GDD's only example ties Scald to scalding at a vent. Whether Scald is a general hurt meter or specifically steam exposure is not settled in the canon slice.",
+            "fix": "No change required under the brief. Flag for Jeremy whether needle.scald should cover non-steam injuries."
+          }
+        ]
+      }
+    }
+  ]
+}

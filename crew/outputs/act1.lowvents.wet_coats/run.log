@@ -1,0 +1,15 @@
+08:47:54 brief crew/briefs/lowvents-oilcloth-storylet.md: act1.lowvents.wet_coats, act 1, layer 1
+08:47:54 -- round 1
+08:47:54 [scrivener] thinking (high effort)
+08:48:48 [scrivener] done: 12909 in, 5301 out
+08:48:49 [gate] validators pass (12 checks)
+08:48:49 [inspector] thinking (high effort)
+08:49:31 [inspector] done: 12437 in, 4103 out
+08:49:31 [inspector] verdict: pass with notes
+08:49:31 [inspector]   options[0].challenge.difficulty: The choice holds at low skill but collapses at high skill. By the GDD formula, tailoring 17 or more makes option 1 certain. It then strictly dominates option 2: the same +1 favour.stokers for 3 silk instead of 5, with no risk. style.md: 'If one option is obviously correct, it is not a choice.' This is not a fail: at Act I skill levels the trade-off of risk against cost is real, and skill outgrowing a check is normal. It is a taste call for Jeremy. Fix: Optional, at Jeremy's call: raise difficulty to around 15 so certainty arrives later. Alternatively, give option 2 something option 1 lacks while staying within the brief's reward limits, without adding a reward.
+08:49:31 [inspector]   options[0].failure.changes: needle.scald +1 is driven by a stove fender burning your wrist, not by the Scald or a vent. The brief permits a failure to raise needle.scald by 1, and the GDD vent example raises it on a failed repair. However, the slice does not say what needle.scald measures, so whether a hall stove burn should move it is unsettled. Fix: Open question for Jeremy, not a required change. If needle.scald is meant to track exposure to the Scald specifically, rewrite the failure so the cost comes from the doorway fog rather than the fender.
+08:49:31 [inspector]   options[2].success.text: The line 'The stair pays a Tinker in coal' reuses canonised district detail from world.md. In canon that payment is for Tinker work, while drying coats on a fender is a favour. The line is accurate to canon but slightly stretches what the stair is paying for. Voice, tense and register are otherwise clean, with no banned phrases. Fix: None required. Optionally change it to 'The stair pays in coal' so it does not imply the coat-drying counts as Tinker work.
+08:49:31 [inspector]   all text fields: Voice checks clean: second person, present tense, specific details (a coat 'as heavy as a wet dog', the Stoker with one eyebrow shorter than the other, the seams lapped downhill). There are no banned phrases and no self-explaining joke. The description runs 101 words. The scene touches no Ledger Page, Rook, Notice, Gauge Reading or own reading. The fog, the sweating windows and the warm fog in the failure outcome are all Layer 0 (world.md: 'hot fog'). Nothing points at the Scald's heat source or its rise. Mother Ash's slate and the arm-wrestling bench match canonised district detail. Fix: None.
+08:49:31 [registrar] thinking (low effort)
+08:49:43 [registrar] done: 4596 in, 1308 out
+08:49:43 [registrar] row written at status reviewed; provenance check passes

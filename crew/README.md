@@ -9,10 +9,10 @@ Give the crew a **brief** and it returns one **storylet** as a `storylet/1` JSON
 The output is game-ready because the crew doesn't stop until:
 
 - every one of the game's own validators passes on it: schema, quality references, story-graph reachability, the reveal guard, house style and word limits, and the provenance check;
-- the Inspector agent has given it a verdict other than fail;
+- the Inspector agent has given it a verdict other than fail, and found nothing that states or hints at a fact above the brief's reveal layer;
 - the Registrar agent has written a register row that the provenance schema accepts.
 
-The sample brief, `briefs/rustmoor-silk-storylet.md`, asks for a Rustmoor scene that ties the Rust Rats' umbrella silk to the new Tailoring skill (the game's work order 032).
+Three storylets made with it, and what the Inspector caught along the way, are in [`outputs/`](outputs/README.md). The sample brief, `briefs/rustmoor-silk-storylet.md`, asks for a Rustmoor scene that ties the Rust Rats' umbrella silk to the new Tailoring skill (the game's work order 032).
 
 ## The agents
 
@@ -25,7 +25,7 @@ The sample brief, `briefs/rustmoor-silk-storylet.md`, asks for a Rustmoor scene 
 
 Each agent's system prompt is its definition in `../.claude/agents/`. The same six agent definitions run the game's build crew inside Claude Code, so this crew is the storylet slice of that pipeline, rebuilt as standalone orchestration code.
 
-**Clearance.** An agent gets only the canon its act is cleared for: the Act I slice, `world.md`, `characters.md`, `style.md`, `qualities.json`, and `reveals.md` truncated at the brief's layer. `docs/canon/locked.md` (the late-game twist) is excluded in code and is never copied into the sandbox.
+**What the agents read.** Before drafting, every agent reads the game's design document, `docs/gdd.md`, but only three sections of it: Tone and voice, its own act's storyline, and the Storylet rules with the challenge-odds formula. It also reads the canon bible drawn from the GDD. An agent gets only the canon its act is cleared for: the Act I slice, `world.md`, `characters.md`, `style.md`, `qualities.json`, and `reveals.md` truncated at the brief's layer. `docs/canon/locked.md` (the late-game twist) is excluded in code and is never copied into the sandbox, and the GDD's own list of every reveal layer is never sent.
 
 **Hard guards in code.** The orchestrator rejects any register row that names the wrong id, sets `approved_by`, or goes past `reviewed`. Approval belongs to the designer, after playing the build.
 
@@ -34,7 +34,7 @@ Each agent's system prompt is its definition in `../.claude/agents/`. The same s
 ```mermaid
 flowchart TD
     Brief[/"Brief<br/>act, location, reveal layer, storylet id"/]
-    Canon[("Canon, filtered by clearance<br/>Act I slice, world, characters, style,<br/>qualities, reveals to layer 1<br/>(locked.md never sent)")]
+    Canon[("Game docs, filtered by clearance<br/>docs/gdd.md: tone, this act's storyline, storylet rules<br/>canon: Act I slice, world, characters, style,<br/>qualities, reveals to layer 1<br/>(locked.md never sent)")]
     Agents[(".claude/agents/*.md<br/>system prompts")]
 
     Brief --> Orchestrator
@@ -52,8 +52,8 @@ flowchart TD
     Gate -- "all checks pass" --> Inspector
 
     Inspector["Inspector agent<br/>voice, lore, reveal hints, real choice"]
-    Inspector -- "fail: field + fix" --> Feedback
-    Inspector -- "pass / pass with notes" --> Registrar
+    Inspector -- "fail, or reveal_clear false:<br/>field + fix" --> Feedback
+    Inspector -- "pass / pass with notes,<br/>reveal_clear true" --> Registrar
 
     Feedback(["Feedback<br/>max 3 rounds"]) --> Scrivener
 
@@ -66,7 +66,7 @@ flowchart TD
     Out[/"runs/&lt;time&gt;/<br/>storylet JSON, report.json, run.log<br/>--apply: content/storylets/ + content/provenance.json"/]
 ```
 
-Data flow, in words: the orchestrator hands each agent only what that agent needs. The Scrivener's draft goes through deterministic validation before any model reviews it, so the Inspector spends its attention only on what code can't decide. Failures from either step go back to the Scrivener as specific feedback, for at most three rounds. The Registrar sees only the event log (who drafted, which checks passed, the Inspector's verdict), and its row is itself checked by the register's schema before the run counts as done.
+Data flow, in words: the orchestrator hands each agent only what that agent needs. The Scrivener's draft goes through deterministic validation before any model reviews it, so the Inspector spends its attention only on what code can't decide. Failures from either step go back to the Scrivener as specific feedback, for at most three rounds. A reveal risk sends the draft back even when the Inspector would otherwise pass it, because in this game a hint at a later reveal counts as a leak. The Registrar sees only the event log (who drafted, which checks passed, the Inspector's verdict), and its row is itself checked by the register's schema before the run counts as done.
 
 ## Run it
 

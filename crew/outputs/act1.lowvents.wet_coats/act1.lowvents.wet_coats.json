@@ -1,0 +1,61 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.lowvents.wet_coats",
+  "act": 1,
+  "location": "lowvents",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=20"
+  },
+  "nerve": 1,
+  "cooldown_hours": 24,
+  "description": "The pegs along the Fellowship hall's back wall hold a row of Stokers' work coats, each as heavy as a wet dog and rather more fragrant. Nothing in the Lowvents dries. The fog comes in under the door, the windows sweat, and a coat hung by the stove at night goes back on in the morning exactly as damp as it came off. Under the split pipes on Mother Ash's slate, somebody has chalked COATS and underlined it twice. Umbrella silk is made to shed water. Yours came home from the Rust Rats, who have never once used it for that.",
+  "options": [
+    {
+      "label": "Line the worst coat on the pegs with three panels of umbrella silk, at the stove bench, with the hall watching.",
+      "requires": {
+        "item.rustmoor.umbrella_silk": ">=3"
+      },
+      "challenge": {
+        "quality": "tailoring",
+        "difficulty": 10
+      },
+      "success": {
+        "text": "The old lining comes away in your hands like wet bread. You set the silk in its place, seams lapped downhill so the fog runs off rather than in, and the hall watches the way it watches arm-wrestling. When the coat's owner comes off shift, a Stoker with one eyebrow shorter than the other, she shrugs it on, stands in the doorway fog for a full minute, and comes back dry at the shoulders. She says nothing. Within the hour there are four more coats folded on the bench beside you, and nobody admits to putting them there.",
+        "changes": {
+          "item.rustmoor.umbrella_silk": "-3",
+          "favour.stokers": "+1"
+        }
+      },
+      "failure": {
+        "text": "The silk is slippery and the wool is not, and the two will not agree. You lap the seams the wrong way, and by the time you notice, the lining is a gutter: it gathers the fog and delivers it, warm, straight down the wearer's back. The coat's owner tries it on in the doorway and comes back with an expression you will remember. You spend an hour unpicking your own work by the stove, the fender takes a strip off your wrist when you reach past it, and the silk is fit only for the rag-bag after.",
+        "changes": {
+          "item.rustmoor.umbrella_silk": "-3",
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Leave five panels of silk folded on the bench under the slate, and let the Stokers do their own stitching.",
+      "requires": {
+        "item.rustmoor.umbrella_silk": ">=5"
+      },
+      "success": {
+        "text": "You fold the silk on the bench under the slate and go. Mother Ash reads everything on that slate, including who wrote it, and by morning COATS has been rubbed out and your name chalked in its place, with nothing after it. That is the whole of the thanks. Over the following week you see your silk up and down the stair, stitched in with coarse thread and knots meant for something else, seams running every which way. Some of the coats are dry. The Stokers wear all of them as if they were.",
+        "changes": {
+          "item.rustmoor.umbrella_silk": "-5",
+          "favour.stokers": "+1"
+        }
+      }
+    },
+    {
+      "label": "Keep your silk, and spend the evening turning the coats by the stove for whatever the stair pays.",
+      "success": {
+        "text": "You take the coats down two at a time and hang them over the fender, turning them like toast, and the hall fills with the smell of steamed wool and other people's shifts. By midnight the first of them are nearly dry. By the time they are back on their pegs, the fog under the door has found them again, as it finds everything. The stair pays a Tinker in coal, and a Stoker on her way up drops two lumps into your pocket without breaking step.",
+        "changes": {
+          "item.rustmoor.coal": "+2"
+        }
+      }
+    }
+  ]
+}

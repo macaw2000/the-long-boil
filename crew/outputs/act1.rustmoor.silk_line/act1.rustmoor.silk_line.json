@@ -1,0 +1,62 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.rustmoor.silk_line",
+  "act": 1,
+  "location": "rustmoor",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=15"
+  },
+  "nerve": 1,
+  "cooldown_hours": 24,
+  "description": "Gaugehill throws out its umbrellas at the first bent rib, and Rustmoor takes them in. The pickers strip the silk, wash the soot out of it in a tin bath and peg it along a line strung from the crane to a bedstead, where it flaps all day like the flags of a very small and very damp nation. The Rust Rats want it too. They line their nests with it, and they do not wait for it to dry. Tonight the line is down at one end, half the silk has gone into the heaps in determined little furrows, and a picker with a darning needle sits on the bath, looking at what is left.",
+  "options": [
+    {
+      "label": "Take the darning needle and quilt what is left into something worth a rat's envy.",
+      "challenge": {
+        "quality": "tailoring",
+        "difficulty": 6
+      },
+      "success": {
+        "text": "Umbrella silk is made to keep rain off a gentleman, not to be sewn by lamplight, and it slides under the needle like something with somewhere better to be. You lay three layers, run the quilting in diamonds a finger apart, and keep the stitches small enough that the picker stops watching your hands and starts watching the heaps. By the time the crane's shadow has gone there is a square of quilted silk on the bath that would keep the wind off a rat or a Tinker, whichever asks first. The picker folds it and hands it to you. The rest of the scraps, it is made clear, are spoken for.",
+        "changes": {
+          "item.rustmoor.quilted_silk": "+1"
+        }
+      },
+      "failure": {
+        "text": "Umbrella silk slides under a needle like something with somewhere better to be, and the darning needle is a blunt instrument of the old school. You pucker one layer, sew another to your own cuff, and put the needle a good way into the ball of your thumb. The picker takes the work back without a word, unpicks your half-hour in about a minute, and passes you a rag for the thumb. The rag is umbrella silk.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Follow the furrows into the heaps and take the silk back from the nests.",
+      "challenge": {
+        "quality": "scavenging",
+        "difficulty": 8
+      },
+      "success": {
+        "text": "The furrows run under a collapsed wardrobe and into a hollow where something has been very busy. The rats are out, which is the best thing anyone can say about a rat. Their nest is lined in silk of every colour Gaugehill thinks becoming: black, mostly, and one panel of a pink that somebody must have regretted at a wedding. You pull back three good lengths, leave the pink, and come out before the owners do. The picker counts the lengths, hands them back to you, and re-pegs the line a foot higher.",
+        "changes": {
+          "item.rustmoor.umbrella_silk": "+3"
+        }
+      },
+      "failure": {
+        "text": "The furrows run under a collapsed wardrobe and into a hollow where the rats are not out. You learn this at arm's length. You come back with your sleeve in ribbons, two neat punctures above the wrist and no silk at all, and the picker considers the sleeve with professional interest, as if wondering whether it would peg.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Restring the line, then sit with the picker and keep the rats off until the silk is dry.",
+      "success": {
+        "text": "You restring the line from the crane to the bedstead, a foot higher and twice as tight, and sit on the bath with the picker while the silk dries. Neither of you says much. Twice something moves at the foot of the heap, and the picker throws a boot at it without looking, and fetches the boot back later. When the silk is dry enough to fold, the picker gives you one length for your evening and keeps the rest. There are coats on the tip with holes in them, and the rats are not the only ones who feel the wind.",
+        "changes": {
+          "item.rustmoor.umbrella_silk": "+1"
+        }
+      }
+    }
+  ]
+}
