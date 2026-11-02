@@ -19536,7 +19536,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-02T16:31:24Z",
+        "run": "2026-11-02T17:10:22Z",
         "checks": [
           "fixtures",
           "schema",
@@ -19626,6 +19626,16 @@
         },
         {
           "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-02T17:10:22Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T17:10:22Z",
           "status": "validated",
           "by": "validators"
         }
@@ -20522,7 +20532,7 @@
       "type": "tuning",
       "path": "content/tuning/combat.json",
       "pointer": null,
-      "revision": 13,
+      "revision": 14,
       "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
       "status": "validated",
       "drafted_by": "draftsman",
@@ -20530,7 +20540,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-02T16:31:24Z",
+        "run": "2026-11-02T17:10:22Z",
         "checks": [
           "fixtures",
           "schema",
@@ -20680,6 +20690,16 @@
         },
         {
           "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-02T17:10:22Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T17:10:22Z",
           "status": "validated",
           "by": "validators"
         }

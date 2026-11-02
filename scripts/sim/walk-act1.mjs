@@ -83,7 +83,7 @@
 //   smaller of half the interval and what is left of the training bank, placed as a piece is (first in slot 1, the
 //   behind half follows), and counted as gear time against the same SIM_GEAR_SHARE cap. Under 10 minutes of bank,
 //   it waits. Smithing and Tinkering keep their own training (the weapon chain and the gates), as in 031.
-//   Revised (Jeremy, 31 October 2026): training draws on its own bank, SIM_TRAIN_SHARE (default 0.10) of queue
+//   Revised (Jeremy, 31 October 2026): training draws on its own bank, SIM_TRAIN_SHARE (default 0.10; 0.025 from 2 November 2026) of queue
 //   time so far, not on the gear bank; the 25% gear cap covers making pieces and tools only.
 // - Drops cost no labour: Umbrella Silk and rat scrap come with the fighting the walk does anyway, so labour()
 //   counts them at 0 queue seconds (as the grocer's goods); a piece or a training go can use only silk held.
@@ -265,7 +265,9 @@ const TRAIN_SKILLS = GEAR_TRAIN === "none" ? [] : GEAR_TRAIN === "all" ? ["tailo
 const FIRST_TAILOR = (process.env.SIM_FIRST_TAILOR ?? "1") === "1";
 // Training's own cap (Jeremy, 31 October 2026): training gos never pass SIM_TRAIN_SHARE of queue time so far
 // (planned share), separately from the gear cap, which now covers making pieces and tools only.
-const TRAIN_SHARE = Number(process.env.SIM_TRAIN_SHARE ?? 0.1);
+// Lowered from 0.10 to 0.025 (Jeremy, 2 November 2026): at 0.10 the first Scrapjaw win at 3 a day fell on d17.1 to
+// d17.6 (seeds 1 to 5); at 0.025 it falls on d16.1 to d16.6 and Tailoring still reaches about 13 by day 6.
+const TRAIN_SHARE = Number(process.env.SIM_TRAIN_SHARE ?? 0.025);
 const SILK = "item.rustmoor.umbrella_silk";
 const statOf = (item) => {
   const p = R.pieces.get(item);

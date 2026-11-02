@@ -80,8 +80,8 @@ describe("kill time matches the combat check", () => {
 
 describe("Scrapjaw", () => {
   const scrapjaw = content.monsters.get("monster.rustmoor.scrapjaw")!;
-  // What the Act I walk wears at its first attempt (combat.json boss.reference_weapon pieces, work order 032).
-  const pieces = ["steel_shield", "iron_pot_helm", "steel_cuirass", "iron_gauntlets", "iron_sabatons", "quilted_pincushion"]
+  // What the Act I walk wears at its first attempt (combat.json boss.reference_weapon pieces, work order 032 and the 2.5% Tailoring share).
+  const pieces = ["steel_shield", "iron_pot_helm", "steel_cuirass", "iron_gauntlets", "iron_sabatons", "silk_favour"]
     .map((name) => content.pieces.get(`item.rustmoor.${name}`)!);
   function win(level: number, weapon: string, style: string, rations: number) {
     const state = reference(style, level, 6, weapon, rations);
