@@ -33,7 +33,7 @@ What the assayer measures against. Every number here is quoted from `docs/gdd.md
 | Exchange sales tax | 2% | §6, The Brass Exchange |
 | Price step | 2 to 5% | §6, The Brass Exchange |
 | Order expiry | 30 days | §6, The Brass Exchange |
-| Cog Crate tax on the Exchange | 15% | §8 |
+| Cog Crate tax on the Exchange | none: crates are bound and never sell (30 October 2026) | §8 |
 | Trading and Work Orders unlock | Total level 50 | §6, Guilds |
 
 An illustrative tolerance, from the worked patch example in §9: a change that would add **6% more Crowns per week than the sink target allows** was treated as a failure and sent back for a 20% cut to the reward. Treat that as the shape of the call, not a committed threshold.

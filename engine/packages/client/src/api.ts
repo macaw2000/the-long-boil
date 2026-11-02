@@ -110,8 +110,8 @@ export interface Content {
   tools: Tool[];
   items: Item[];
   totalXp: number[];
-  /** The Cog Shop's terms; the crate's own Exchange tax is the one the Exchange shows for it. */
-  shop: { crate: { item: string; exchangeTax: number } } | null;
+  /** The Cog Shop's terms. */
+  shop: { crate: { item: string } } | null;
   /** Whether crates are sold for money here (Stripe Checkout), and in test mode; null when they are not. */
   payments: { testMode: boolean } | null;
   /** The food a fight eats, and how many a boss attempt may. */
@@ -295,7 +295,7 @@ export type Purchase = "queue_slot" | "boiler_upgrade" | "night_lamp" | "boiler_
 /** The Cog Shop as one Tinker sees it (packages/server/src/shop.ts). */
 export interface ShopView {
   cogs: number;
-  crate: { item: string; cogs: number; priceCents: number; lockHours: number; exchangeTax: number };
+  crate: { item: string; cogs: number; priceCents: number; lockHours: number };
   crates: number;
   arriving: { qty: number; unlocksAt: string }[];
   /** Each upgrade's price in Cogs, or null once it is at its most. */

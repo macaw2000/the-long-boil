@@ -14,7 +14,7 @@ const HOUR_MS = 3_600_000;
 
 export interface ShopView {
   cogs: number;
-  crate: { item: string; cogs: number; priceCents: number; lockHours: number; exchangeTax: number };
+  crate: { item: string; cogs: number; priceCents: number; lockHours: number };
   /** Unbound crates held, which can be opened. */
   crates: number;
   /** Crates still locked, soonest first. */

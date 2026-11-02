@@ -6,6 +6,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Image, Pressable, Text, TextInput, View } from "react-native";
+import { zoneOpen } from "@long-boil/rules";
 import type { Content, QueueEntry, Tinker } from "./api";
 import { duration, levelProgress, seconds, titleCase } from "./format";
 import { FIGHT, SPANS, BOILER_SECONDS, DEFAULT_SECONDS, jobTitle, notReadyText, usePlanner, type Planner } from "./jobs";
@@ -117,7 +118,10 @@ export function SkillView({
           {fight
             ? monsters.map((monster) => {
                 const outlook = planner.fights.get(monster.id);
-                const line = !outlook
+                const closed = !zoneOpen(monster.id, tinker.story.qualities);
+                const line = closed
+                  ? "Opens with the Foundry Pass"
+                  : !outlook
                   ? `Level ${monster.level}`
                   : !outlook.ready
                     ? notReadyText(outlook.reason)
@@ -129,7 +133,7 @@ export function SkillView({
                     key={monster.id}
                     guided={guided(monster.id)}
                     selected={chosen === monster.id}
-                    locked={false}
+                    locked={closed}
                     onPress={() => choose(monster.id)}
                     picture={<MonsterPicture id={monster.id} size={64} />}
                     title={monster.name}
@@ -139,7 +143,8 @@ export function SkillView({
                 );
               })
             : actions.map((action) => {
-                const locked = level < action.level_required;
+                const closed = !zoneOpen(action.id, tinker.story.qualities);
+                const locked = closed || level < action.level_required;
                 return (
                   <Tile
                     key={action.id}
@@ -149,7 +154,7 @@ export function SkillView({
                     onPress={() => choose(action.id)}
                     picture={<ItemIcon item={action.outputs[0]?.item ?? "item.fallback"} size={40} />}
                     title={jobTitle(content, action.id, name)}
-                    line={locked ? `Level ${action.level_required}` : seconds(action.seconds)}
+                    line={closed ? "Opens with the Foundry Pass" : locked ? `Level ${action.level_required}` : seconds(action.seconds)}
                   />
                 );
               })}

@@ -20501,7 +20501,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-02T17:27:50Z",
+        "run": "2026-11-02T18:41:18Z",
         "checks": [
           "fixtures",
           "schema",
@@ -20541,6 +20541,16 @@
         },
         {
           "at": "2026-11-02T17:27:50Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-02T18:41:18Z",
+          "status": "drafted",
+          "by": "orchestrator"
+        },
+        {
+          "at": "2026-11-02T18:41:18Z",
           "status": "validated",
           "by": "validators"
         }

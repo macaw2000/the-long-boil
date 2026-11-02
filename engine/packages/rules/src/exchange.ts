@@ -51,7 +51,7 @@ export function ladderFloor(price: number): number {
   return Math.max(1, Math.floor(price / step) * step);
 }
 
-/** The seller's tax on one fill, rounded half up like the economy's prices; a Cog Crate pays the Cog Shop's own rate. */
+/** The seller's tax on one fill, rounded half up like the economy's prices. */
 export function salesTax(proceeds: number, rate = SALES_TAX): number {
   return Math.round(proceeds * rate);
 }

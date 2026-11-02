@@ -265,7 +265,7 @@ function Floor({ content, tinker, market, name, act }: { content: Content; tinke
           <BookSide title="Asks" levels={book?.asks ?? []} color={colors.copper} onPick={(p) => setPrice(p)} />
         </View>
         <Text style={ui.muted}>
-          You hold {held} unbound. {item === content.shop?.crate.item ? Math.round(content.shop.crate.exchangeTax * 100) : 2}% tax on every sale; orders last 30
+          You hold {held} unbound. 2% tax on every sale; orders last 30
           days.
         </Text>
         <View style={{ flexDirection: "row", gap: 8, alignItems: "center", flexWrap: "wrap" }}>

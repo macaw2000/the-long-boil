@@ -421,7 +421,7 @@ The draft named this as its open gap: the overall Crown faucet and sink budget n
 | --- | --- |
 | Monster drops | Calibrating attempts |
 | Work Order and Guild Contract rewards | Exchange sales tax (2%) |
-| NPC collectors buying Curios, scrap and crafted goods, capped weekly | Tax on Cog Crate sales (15%) |
+| NPC collectors buying Curios, scrap and crafted goods, capped weekly | (Tax on Cog Crate sales, retired 30 October 2026: crates are bound and never sell) |
 | Story rewards, small and capped | Paying off Arrears |
 |  | Guild founding (500,000 Crowns) and Workshop upgrades |
 |  | Cooking ingredients from the grocer's counter |

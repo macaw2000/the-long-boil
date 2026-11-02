@@ -604,12 +604,12 @@ export async function setQueue(db: Db, content: GameContent, tinkerId: number, q
     tinkerId,
     now,
     (state, loaded) => {
-      // Work already queued keeps running; only new work must be in an open skill.
+      // Work already queued keeps running; only new work must be in an open skill and an open zone.
       for (const entry of queue) {
+        if (state.queue.some((queued) => queued.actionId === entry.actionId)) continue;
         const skill = content.rules.actions.get(entry.actionId)?.skill;
-        if (skill && !rules.skillOpen(skill, qualities) && !state.queue.some((queued) => queued.actionId === entry.actionId)) {
-          throw new Error(rules.SKILL_GATES[skill]!.reason);
-        }
+        if (skill && !rules.skillOpen(skill, qualities)) throw new Error(rules.SKILL_GATES[skill]!.reason);
+        if (!rules.zoneOpen(entry.actionId, qualities)) throw new Error(rules.zoneGate(entry.actionId)!.reason);
       }
       return rules.setQueue(state, queue, loaded.queueSlots);
     },

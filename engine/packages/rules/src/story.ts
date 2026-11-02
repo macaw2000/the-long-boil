@@ -78,6 +78,28 @@ export const FOUNDRY_PASS_DEBT = 600;
  */
 export const SKILL_GATES: Readonly<Record<string, { quality: string; at: number; reason: string }>> = {};
 
+/**
+ * Zones that open with the story, by the zone in an id's second part
+ * (GDD section 6: "Entering a new zone needs the level and a pass from the
+ * previous act, and every road through the act provides one"). Every road
+ * through Act I's act1.brass_exchange.foundry_pass sets act1.progress to 80
+ * (work order 033).
+ */
+export const ZONE_GATES: Readonly<Record<string, { quality: string; at: number; reason: string }>> = {
+  cinderworks: { quality: "act1.progress", at: 80, reason: "The Cinderworks opens with the Foundry Pass" },
+};
+
+/** The gate on the zone an action, monster or item id belongs to, if it has one. */
+export function zoneGate(id: string): { quality: string; at: number; reason: string } | null {
+  return ZONE_GATES[id.split(".")[1] ?? ""] ?? null;
+}
+
+/** Whether the zone an action or monster id belongs to is open to a Tinker with these story qualities. */
+export function zoneOpen(id: string, qualities: Readonly<Record<string, number>>): boolean {
+  const gate = zoneGate(id);
+  return !gate || (qualities[gate.quality] ?? 0) >= gate.at;
+}
+
 /** Whether a skill is open to a Tinker with these story qualities. */
 export function skillOpen(skill: string, qualities: Readonly<Record<string, number>>): boolean {
   const gate = SKILL_GATES[skill];

@@ -329,10 +329,31 @@ describe("starting a Tinker over", () => {
 });
 
 describe("Tailoring opens on day one", () => {
-  const goggles = { actionId: "action.cinderworks.tailor_gauze_goggles", remaining: 1 };
+  const wraps = { actionId: "action.rustmoor.tailor_silk_hand_wraps", remaining: 1 };
 
   it("takes Tailoring from a new Tinker, before Act I hands over the pass (work order 032)", async () => {
     const id = (await call("POST", "/tinkers", { login: "tailor@example.com", name: "Moth" })).body.tinker.id;
+    expect((await call("PUT", `/tinkers/${id}/queue`, { queue: [wraps] })).status).toBe(200);
+  });
+});
+
+describe("the Cinderworks opens with the Foundry Pass (work order 033)", () => {
+  const goggles = { actionId: "action.cinderworks.tailor_gauze_goggles", remaining: 1 };
+
+  it("refuses Cinderworks work below act1.progress 80, and takes it at 80", async () => {
+    const id = (await call("POST", "/tinkers", { login: "foundry@example.com", name: "Furnace" })).body.tinker.id;
+    const refused = await call("PUT", `/tinkers/${id}/queue`, { queue: [goggles] });
+    expect(refused.status).toBe(400);
+    expect(refused.body.error).toBe("The Cinderworks opens with the Foundry Pass");
+    await db.query("INSERT INTO qualities (tinker_id, name, value) VALUES ($1, 'act1.progress', 80)", [id]);
     expect((await call("PUT", `/tinkers/${id}/queue`, { queue: [goggles] })).status).toBe(200);
+  });
+
+  it("leaves Cinderworks work already queued alone if the pass is lost", async () => {
+    const id = (await call("POST", "/tinkers", { login: "kept@example.com", name: "Kept" })).body.tinker.id;
+    await db.query("INSERT INTO qualities (tinker_id, name, value) VALUES ($1, 'act1.progress', 80)", [id]);
+    expect((await call("PUT", `/tinkers/${id}/queue`, { queue: [goggles] })).status).toBe(200);
+    await db.query("UPDATE qualities SET value = 70 WHERE tinker_id = $1 AND name = 'act1.progress'", [id]);
+    expect((await call("PUT", `/tinkers/${id}/queue`, { queue: [goggles, goggles] })).status).toBe(200);
   });
 });

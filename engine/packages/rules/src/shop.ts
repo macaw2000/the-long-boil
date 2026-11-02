@@ -8,7 +8,7 @@ const HOUR_MS = 3_600_000;
 
 export interface CogShop {
   /** The crate item, the Cogs inside, its price in US cents, how long a bought one stays locked, and its Exchange tax. */
-  crate: { item: string; cogs: number; priceCents: number; lockHours: number; exchangeTax: number };
+  crate: { item: string; cogs: number; priceCents: number; lockHours: number };
   /** One more queue slot, up to `slots`. */
   queueSlot: { cogs: number; slots: number };
   /** `hours` more of the Boiler, up to `maxHours`. */
@@ -82,7 +82,6 @@ export function readCogShop(file: any): CogShop {
       cogs: file.crate.cogs,
       priceCents: file.crate.price_usd_cents,
       lockHours: file.crate.lock_hours,
-      exchangeTax: file.crate.exchange_tax,
     },
     queueSlot: { cogs: file.queue_slot.cogs, slots: file.queue_slot.slots },
     boilerUpgrade: { cogs: file.boiler_upgrade.cogs, hours: file.boiler_upgrade.hours, maxHours: file.boiler_upgrade.max_hours },
