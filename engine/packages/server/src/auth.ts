@@ -13,6 +13,9 @@ export interface Identity {
   login: string;
   /** May use the dev tools and skips the trading gate (Jeremy, 24 October 2026). */
   admin: boolean;
+  /** The email the account signed in with, and through which provider, kept for the admin console (milestone 14). */
+  email?: string | null;
+  provider?: string | null;
 }
 
 export interface Auth {
@@ -47,9 +50,16 @@ export function cognitoAuth({
       } catch {
         throw new Unauthorized("sign in again");
       }
-      return { login: `cognito:${claims.sub}`, admin: isAdmin(claims, admins) };
+      return { login: `cognito:${claims.sub}`, admin: isAdmin(claims, admins), ...whoIs(claims) };
     },
   };
+}
+
+/** The email and provider a token names: Google or Discord through Cognito's "identities", or Cognito itself. */
+export function whoIs(claims: Record<string, unknown>): { email: string | null; provider: string | null } {
+  const email = typeof claims.email === "string" && claims.email ? claims.email.toLowerCase() : null;
+  const identities = Array.isArray(claims.identities) ? (claims.identities as { providerName?: string }[]) : [];
+  return { email, provider: identities[0]?.providerName ?? (email ? "Cognito" : null) };
 }
 
 /** A verified Google email on the admin list; Cognito names the provider in "identities". */

@@ -23,6 +23,7 @@ import { Ledger, STALL_REASONS } from "./Ledger";
 import { useLive } from "./live";
 import { Loadout } from "./Loadout";
 import { NewGear } from "./NewGear";
+import { Admin } from "./Admin";
 import { BottomBar, SideNav, SkillStrip, type Place, type PlaceBadge } from "./SideNav";
 import { Shop, takeCheckoutReturn } from "./Shop";
 import { SkillView } from "./SkillView";
@@ -454,6 +455,8 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         onQueue={(entry) => setQueue([...tinker.queue, entry].slice(0, tinker.upgrades.queueSlots))}
         onGrocer={() => setPlace("exchange")}
       />
+    ) : place === "admin" && admin ? (
+      <Admin />
     ) : place === "shop" ? (
       <Shop content={content} tinker={tinker} now={now} returned={checkoutReturn} onOutcome={apply} />
     ) : place === "story" ? (
@@ -572,7 +575,17 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       <View style={{ flex: 1, flexDirection: "row" }}>
         {wide && (
           <View style={{ borderRightWidth: 1, borderRightColor: colors.panelEdge, backgroundColor: "rgba(20, 16, 12, 0.6)" }}>
-            <SideNav content={content} tinker={tinker} place={place} onPlace={setPlace} badges={badges} lit={litPlaces} guided={guidedPlace} shown={shown} />
+            <SideNav
+              content={content}
+              tinker={tinker}
+              place={place}
+              onPlace={setPlace}
+              badges={badges}
+              lit={litPlaces}
+              guided={guidedPlace}
+              shown={shown}
+              admin={admin}
+            />
             <CanisterDrop drops={canisters} />
           </View>
         )}

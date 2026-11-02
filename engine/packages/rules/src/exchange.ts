@@ -128,7 +128,8 @@ export interface TradingGate {
 /** Why a Tinker may not yet trade on the Exchange, or null when it may. */
 export function tradingRefusal(gate: TradingGate, rules = { level: TRADING_TOTAL_LEVEL, days: TRADING_ACCOUNT_DAYS }): string | null {
   if (gate.totalLevel < rules.level) return `trading opens at total level ${rules.level} (now ${gate.totalLevel})`;
-  if (gate.accountAgeMs < rules.days * DAY_MS) return `trading opens once the account is ${rules.days} days old`;
+  // A gate of 0 days never refuses, even when clocks put an account's creation a little ahead of now.
+  if (rules.days > 0 && gate.accountAgeMs < rules.days * DAY_MS) return `trading opens once the account is ${rules.days} days old`;
   return null;
 }
 

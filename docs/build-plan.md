@@ -93,6 +93,15 @@ Milestones 1 to 6 are built. The GDD makes Kettleport a shared city (sections 6 
     - **Cog Crates are bound** and never sell for Crowns: Crowns are earned in play, Cogs are bought with money (done 30 October 2026).
     - **Order of work:** work order 029, the gear model (slots, stats, tool speed, the combat-level gate, and how pacing counts tools); the engine and Loadout for the new slots; work order 030, Rustmoor's gear and tool ladder, with the monsters and Scrapjaw retuned; Cinderworks armour (work order 028) moved into slots; the assayer measuring upgrades per session before any change to XP or action tiers; then the art.
 
+14. **The admin console** (Jeremy, 2 November 2026, before friends and family playtest: "I have no idea who is playing, buying, logging in, able to ban people"). Built 2 November 2026:
+    - An **Admin** entry at the foot of the side navigation, for admins only (the ADMIN_EMAILS check from milestone 11). Every `/admin/` route refuses anyone else.
+    - **Overview:** accounts and Tinkers, Tinkers online now (open live connections), accounts active today and this week, new accounts a day for 14 days, revenue from Stripe crates (refunds shown apart), and a story funnel (started, finished the Prologue, Act I under way, beat Scrapjaw, Foundry Pass, Ambition). All counted from the game's own tables; no analytics service.
+    - **Players:** every account by last visit, searchable by email, Tinker name or login, with provider, join date, money spent, and each Tinker's total level and Act I progress. One player shows their recent events, purchases and chat.
+    - **Purchases:** every Stripe purchase, newest first, refunds struck through.
+    - **Accounts now keep** the email and provider they sign in with and when they were last seen (wall clock, at most once a minute), shown only to admins. The privacy page says so (Jeremy chose to store emails, 2 November 2026).
+    - **Bans, chosen per ban** (Jeremy, 2 November 2026): a **chat ban** stops posting and hides the account's messages from everyone, and it plays on; a **full ban** also refuses every route but `/me`, which says why, and cancels the account's open Exchange orders, returning goods and Crowns. Lifting either restores everything; nothing is deleted. An admin can also remove one chat message.
+    - Not yet: the console on phones (desktop only), live updates (it refreshes on demand), and an audit log of admin actions.
+
 ## Prerequisites on this machine
 
 Not installed yet: Node.js 22 LTS and Docker. With Homebrew:

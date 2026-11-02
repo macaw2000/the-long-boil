@@ -14,7 +14,7 @@ import { SkillIcon } from "./SkillView";
 import { UiIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
-export type Place = "story" | "exchange" | "guild" | "shop" | "stores" | "chat" | `skill:${string}`;
+export type Place = "story" | "exchange" | "guild" | "shop" | "stores" | "chat" | "admin" | `skill:${string}`;
 
 export interface PlaceBadge {
   count: number;
@@ -41,6 +41,7 @@ export function SideNav({
   lit,
   guided,
   shown,
+  admin = false,
 }: {
   content: Content;
   tinker: Tinker;
@@ -52,6 +53,8 @@ export function SideNav({
   guided: Place | null;
   /** Whether the guide has opened a place yet. */
   shown: (place: Place) => boolean;
+  /** Admins also get the admin console, at the foot of the list. */
+  admin?: boolean;
 }) {
   const working = tinker.queue[0]?.actionId;
   const skills = skillsOf(content).filter((skill) => shown(`skill:${skill}`));
@@ -94,6 +97,14 @@ export function SideNav({
           </NavRow>
         );
       })}
+      {admin && (
+        <>
+          <Text style={[ui.muted, { fontSize: 10, letterSpacing: 1, paddingHorizontal: 14, paddingTop: 14, paddingBottom: 4 }]}>ADMIN</Text>
+          <NavRow active={place === "admin"} lit={false} guided={false} onPress={() => onPlace("admin")}>
+            <Text style={[ui.text, { fontSize: 15, color: place === "admin" ? colors.brass : colors.ink }]}>Players and sales</Text>
+          </NavRow>
+        </>
+      )}
     </ScrollView>
   );
 }

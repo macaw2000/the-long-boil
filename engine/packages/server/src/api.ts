@@ -11,6 +11,7 @@ import { PURCHASES, type Purchase } from "@long-boil/rules";
 import websocket from "@fastify/websocket";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import Fastify, { type FastifyInstance } from "fastify";
+import { liftBan, overview, player, players, purchases, removeMessage, setBan, touchAccount, type Ban, type BanKind } from "./admin.js";
 import { Unauthorized, tokenOf, type Auth } from "./auth.js";
 import { mutedAccounts, recentChat, say, setMute, whisperInbox, whisperTo } from "./chat.js";
 import type { GameContent } from "./content-loader.js";
@@ -82,6 +83,8 @@ declare module "fastify" {
     login: string | null;
     /** An admin's request, or any request under the dev login, which has no one to tell apart. */
     admin: boolean;
+    /** The signed-in account's ban, if it has one (milestone 14). */
+    ban: Ban | null;
   }
 }
 
@@ -170,6 +173,9 @@ export function buildApi({
 
   app.decorateRequest("login", null);
   app.decorateRequest("admin", !auth);
+  app.decorateRequest("ban", null);
+  // Open live connections by Tinker, for the admin console's "online now".
+  const online = new Map<number, number>();
   if (auth) {
     // Runs before the WebSocket upgrade too, so a bad token never opens a live connection.
     app.addHook("preHandler", async (request) => {
@@ -179,7 +185,13 @@ export function buildApi({
       const identity = await auth.verify(token);
       request.login = identity.login;
       request.admin = identity.admin;
-      if (request.routeOptions.url?.startsWith("/dev/") && !identity.admin) throw new Refused("admins only");
+      // Who the account is and when it was last here, for the admin console; and its ban, if any.
+      request.ban = await touchAccount(db, identity.login, { email: identity.email ?? null, provider: identity.provider ?? null }, now());
+      if (request.ban?.kind === "full" && !identity.admin && request.routeOptions.url !== "/me") {
+        throw new Refused(`this account is suspended${request.ban.reason ? `: ${request.ban.reason}` : ""}`);
+      }
+      const url = request.routeOptions.url ?? "";
+      if ((url.startsWith("/dev/") || url.startsWith("/admin/")) && !identity.admin) throw new Refused("admins only");
       const id = Number((request.params as { id?: string }).id);
       if (Number.isInteger(id) && id > 0 && !(await ownsTinker(request.login, id))) throw new Refused("that is not your Tinker");
       const login = (request.params as { login?: string }).login ?? (request.body as { login?: unknown } | undefined)?.login;
@@ -213,7 +225,7 @@ export function buildApi({
   app.get("/health", async () => ({ ok: true }));
 
   // Who the token speaks for, so the client can list and open its own Tinkers (null under the dev login), and whether to show the dev tools.
-  app.get("/me", async (request) => ({ login: request.login, admin: request.admin }));
+  app.get("/me", async (request) => ({ login: request.login, admin: request.admin, ban: request.ban }));
 
   app.get("/content", async () => ({
     version: content.rules.version,
@@ -598,6 +610,27 @@ export function buildApi({
   type ChannelName = "city" | "trade" | "help" | "guild" | "whisper";
   const CHANNEL_NAMES = ["city", "trade", "help", "guild", "whisper"];
 
+  // The admin console (milestone 14). Admins only: the preHandler refuses anyone else under sign-in,
+  // and the dev login, which has no one to tell apart, is everyone's admin.
+  app.get("/admin/overview", async () => overview(db, content, online.size));
+  app.get<{ Querystring: { q?: string } }>("/admin/players", async (request) => ({ players: await players(db, content, request.query.q ?? "") }));
+  app.get<{ Params: { account: string } }>("/admin/players/:account", async (request) => player(db, content, Number(request.params.account)));
+  app.get("/admin/purchases", async () => ({ purchases: await purchases(db, content) }));
+  app.put<{ Params: { account: string }; Body: { kind: BanKind; reason?: string } }>(
+    "/admin/players/:account/ban",
+    {
+      schema: {
+        body: { type: "object", required: ["kind"], properties: { kind: { enum: ["chat", "full"] }, reason: { type: "string", maxLength: 500 } } },
+      },
+    },
+    async (request) => ({ ban: await setBan(db, content, Number(request.params.account), request.body.kind, request.body.reason ?? "", now()) }),
+  );
+  app.delete<{ Params: { account: string } }>("/admin/players/:account/ban", async (request) => {
+    await liftBan(db, Number(request.params.account));
+    return { ban: null };
+  });
+  app.delete<{ Params: { message: string } }>("/admin/chat/:message", async (request) => removeMessage(db, Number(request.params.message), Date.now()));
+
   /** Which chat a request means: a public channel, this Tinker's guild, or a whisper to one other Tinker. */
   const channelFor = async (id: number, channel: string | undefined, to: number | undefined) => {
     if (channel === "guild") {
@@ -662,6 +695,12 @@ export function buildApi({
   app.register(async (live) => {
     live.get<{ Params: { id: string } }>("/live/:id", { websocket: true }, async (socket, request) => {
       const id = Number(request.params.id);
+      online.set(id, (online.get(id) ?? 0) + 1);
+      socket.on("close", () => {
+        const left = (online.get(id) ?? 1) - 1;
+        if (left > 0) online.set(id, left);
+        else online.delete(id);
+      });
       const send = (notice: Notice) => {
         if (socket.readyState !== socket.OPEN) return;
         if (notice.type === "chat") {

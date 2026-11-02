@@ -56,7 +56,7 @@ describe("signing in with Cognito", () => {
     expect((await call("GET", "/api/me")).status).toBe(401);
     const forged = await app.inject({ method: "GET", url: "/api/me", headers: { authorization: "Bearer forged" } });
     expect(forged.statusCode).toBe(401);
-    expect((await call("GET", "/api/me", "cognito:ada")).body).toEqual({ login: "cognito:ada", admin: false });
+    expect((await call("GET", "/api/me", "cognito:ada")).body).toEqual({ login: "cognito:ada", admin: false, ban: null });
   });
 
   it("makes Tinkers only on the token's own account", async () => {
@@ -147,7 +147,7 @@ describe("the dev login", () => {
   it("still trusts the login it is given, and says no one is signed in", async () => {
     const dev = buildApi({ db, content, now: () => clock });
     const me = await dev.inject({ method: "GET", url: "/me" });
-    expect(me.json()).toEqual({ login: null, admin: true });
+    expect(me.json()).toEqual({ login: null, admin: true, ban: null });
     const made = await dev.inject({ method: "POST", url: "/tinkers", payload: { login: "dev-cara", name: "Cara" } });
     expect(made.statusCode).toBe(201);
     await dev.close();

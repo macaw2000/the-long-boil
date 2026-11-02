@@ -373,6 +373,53 @@ export async function liveUrl(tinkerId: number): Promise<string> {
   return `${BASE.replace(/^http/, "ws")}/live/${tinkerId}${token ? `?token=${encodeURIComponent(token)}` : ""}`;
 }
 
+// The admin console (build plan milestone 14), as the server's admin.ts returns it.
+export interface AdminBan {
+  kind: "chat" | "full";
+  reason: string | null;
+  at: string;
+}
+
+export interface AdminOverview {
+  accounts: number;
+  tinkers: number;
+  newAccounts: { day: string; count: number }[];
+  active: { day: number; week: number };
+  online: number;
+  revenue: { cents: number; crates: number; buyers: number; refunded: number };
+  funnel: { label: string; tinkers: number }[];
+}
+
+export interface AdminPlayer {
+  account: number;
+  login: string;
+  email: string | null;
+  provider: string | null;
+  createdAt: string;
+  lastSeenAt: string | null;
+  ban: AdminBan | null;
+  spentCents: number;
+  tinkers: { id: number; name: string; totalLevel: number; act1: number; crowns: number; cogs: number }[];
+}
+
+export interface AdminPurchase {
+  id: number;
+  tinkerId: number;
+  tinker: string;
+  email: string | null;
+  crates: number;
+  cents: number;
+  reference: string | null;
+  at: string;
+  refunded: boolean;
+}
+
+export interface AdminPlayerDetail extends AdminPlayer {
+  events: { tinker: string; type: string; at: string }[];
+  purchases: AdminPurchase[];
+  chat: { id: number; tinker: string; channel: string; text: string; at: string; removed: boolean }[];
+}
+
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
   const token = await bearerToken();
   const response = await fetch(`${BASE}${path}`, {
@@ -391,7 +438,17 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 
 export const api = {
   content: () => request<Content>("GET", "/content"),
-  me: () => request<{ login: string | null; admin: boolean }>("GET", "/me"),
+  me: () => request<{ login: string | null; admin: boolean; ban: AdminBan | null }>("GET", "/me"),
+  admin: {
+    overview: () => request<AdminOverview>("GET", "/admin/overview"),
+    players: (q = "") => request<{ players: AdminPlayer[] }>("GET", `/admin/players?q=${encodeURIComponent(q)}`),
+    player: (account: number) => request<AdminPlayerDetail>("GET", `/admin/players/${account}`),
+    purchases: () => request<{ purchases: AdminPurchase[] }>("GET", "/admin/purchases"),
+    ban: (account: number, kind: "chat" | "full", reason: string) =>
+      request<{ ban: AdminBan }>("PUT", `/admin/players/${account}/ban`, { kind, reason }),
+    unban: (account: number) => request<{ ban: null }>("DELETE", `/admin/players/${account}/ban`),
+    removeMessage: (message: number) => request<{ channel: string }>("DELETE", `/admin/chat/${message}`),
+  },
   pages: (id: number) => request<{ pages: LedgerPage[] }>("GET", `/tinkers/${id}/pages`),
   listTinkers: (login: string) =>
     request<{ tinkers: { id: number; name: string }[] }>("GET", `/accounts/${encodeURIComponent(login)}/tinkers`),

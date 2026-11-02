@@ -1,6 +1,7 @@
 // City chat (build plan milestone 8): plain text, at most 280 characters,
 // one message every 3 seconds per account. A mute hides a sender's account
-// from the muting account only; nothing is deleted.
+// from the muting account only; nothing is deleted. A banned account's
+// messages, and any an admin removed, are hidden from everyone (milestone 14).
 
 import type { Db } from "./db.js";
 import { CITY, whisperChannel, type ChatMessage } from "./live.js";
@@ -35,6 +36,7 @@ export async function recentChat(db: Db, tinkerId: number, channel = CITY): Prom
     await db.query(
       `SELECT m.id, m.channel, m.tinker_id, t.name, m.body, m.at FROM chat_messages m JOIN tinkers t ON t.id = m.tinker_id
        WHERE m.channel = $1 AND m.account_id NOT IN (SELECT muted_account_id FROM chat_mutes WHERE account_id = $2)
+         AND m.removed_at IS NULL AND m.account_id NOT IN (SELECT id FROM accounts WHERE ban IS NOT NULL)
        ORDER BY m.id DESC LIMIT $3`,
       [channel, accountId, CHAT_HISTORY],
     )
@@ -55,6 +57,10 @@ export async function say(db: Db, tinkerId: number, text: string, now: number, c
   if (!body) throw new BadRequest("say something first");
   if ([...body].length > CHAT_MAX_CHARS) throw new BadRequest(`a message is at most ${CHAT_MAX_CHARS} characters`);
   const { accountId } = await accountOf(db, tinkerId);
+  // Any ban, chat or full, stops posting (milestone 14).
+  if ((await db.query("SELECT 1 FROM accounts WHERE id = $1 AND ban IS NOT NULL", [accountId])).rowCount) {
+    throw new Refused("this account cannot post in chat");
+  }
   const last = (await db.query("SELECT max(at) AS at FROM chat_messages WHERE account_id = $1", [accountId])).rows[0].at as Date | null;
   if (last && now - last.getTime() < CHAT_EVERY_MS) throw new Refused("one message every 3 seconds");
   const row = (
@@ -92,6 +98,7 @@ export async function whisperInbox(db: Db, tinkerId: number): Promise<{ with: { 
        WHERE m.channel LIKE 'chat:dm:%'
          AND (split_part(m.channel, ':', 3)::bigint = $1 OR split_part(m.channel, ':', 4)::bigint = $1)
          AND m.account_id NOT IN (SELECT muted_account_id FROM chat_mutes WHERE account_id = $2)
+         AND m.removed_at IS NULL AND m.account_id NOT IN (SELECT id FROM accounts WHERE ban IS NOT NULL)
        ORDER BY m.channel, m.id DESC`,
       [tinkerId, accountId],
     )
