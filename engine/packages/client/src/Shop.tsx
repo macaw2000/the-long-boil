@@ -116,6 +116,10 @@ export function Shop({
     },
   ];
 
+  // Bought crates wait out their lock; say how many and when the first opens, rather than showing 0.
+  const arriving = shop.arriving.reduce((total, delivery) => total + delivery.qty, 0);
+  const untilNext = shop.arriving.length ? Math.max(0, new Date(shop.arriving[0].unlocksAt).getTime() - now) : 0;
+
   return (
     <View style={{ gap: 12 }}>
       <View style={[ui.panel, { gap: 10 }]}>
@@ -134,21 +138,30 @@ export function Shop({
           <ItemIcon item={shop.crate.item} size={40} />
           <View style={{ flex: 1, minWidth: 180, gap: 2 }}>
             <Text style={ui.text}>
-              {shop.crates.toLocaleString()} Cog {shop.crates === 1 ? "Crate" : "Crates"} · {shop.crate.cogs} Cogs each
+              {shop.crates > 0 || !arriving
+                ? `${shop.crates.toLocaleString()} Cog ${shop.crates === 1 ? "Crate" : "Crates"} to open`
+                : `${arriving.toLocaleString()} Cog ${arriving === 1 ? "Crate" : "Crates"} on the way`}{" "}
+              · {shop.crate.cogs} Cogs each
             </Text>
+            {arriving > 0 && (
+              <Text style={ui.text}>
+                {shop.crates > 0
+                  ? `${arriving.toLocaleString()} more on the way; the first opens in ${duration(untilNext)}.`
+                  : `${arriving === 1 ? "It" : "The first"} opens in ${duration(untilNext)}.`}
+              </Text>
+            )}
             <Text style={[ui.muted, { fontSize: 12 }]}>
+              {arriving > 0 ? `A bought crate is held ${shop.crate.lockHours} hours before it opens, to guard against card fraud. ` : ""}
               Cogs are bought with money only, and a crate is yours alone: it opens, but never sells for Crowns.
             </Text>
           </View>
-          <Button label="Open one" disabled={busy || shop.crates < 1} onPress={() => take(api.openCrates(tinkerId, 1))} />
+          {shop.crates > 0 ? (
+            <Button label="Open one" disabled={busy} onPress={() => take(api.openCrates(tinkerId, 1))} />
+          ) : (
+            arriving > 0 && <Button label={`Opens in ${duration(untilNext)}`} disabled onPress={() => undefined} />
+          )}
           {shop.crates > 1 && <Button label="Open all" disabled={busy} onPress={() => take(api.openCrates(tinkerId, shop.crates))} />}
         </View>
-        {shop.arriving.map((delivery, index) => (
-          <Text key={index} style={[ui.muted, { fontSize: 12 }]}>
-            {delivery.qty} {delivery.qty === 1 ? "crate" : "crates"} unlock in {duration(Math.max(0, new Date(delivery.unlocksAt).getTime() - now))}. A bought crate is held{" "}
-            {shop.crate.lockHours} hours before it can be opened or sold.
-          </Text>
-        ))}
         {returned === "paid" && (
           <Text style={[ui.text, { color: colors.verdigris }]}>
             Paid, thank you. Your crates are on their way and unlock in {shop.crate.lockHours} hours; they show below as soon as Stripe confirms.

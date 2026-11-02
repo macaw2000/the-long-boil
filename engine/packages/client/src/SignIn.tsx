@@ -555,7 +555,7 @@ function Showcase({ wide, still }: { wide: boolean; still: boolean }) {
         SHOWCASE.filter((tile) => !tile.clip).map((tile) => <ShowcaseTile key={tile.image} tile={tile} still={still} style={{ flexDirection: "row" }} />)}
       <View style={[ui.panel, { alignItems: "center", gap: 6, paddingVertical: 18, borderColor: colors.panelEdge }]}>
         <Text style={[ui.text, { fontSize: 15, textAlign: "center", color: colors.steam }]}>
-          Free to play in your browser. No story is ever sold, and nothing in the shop can't also be bought with Crowns earned in the game.
+          Free to play in your browser, and no story is ever sold. Crowns are earned in play; Gilded Cogs, bought in Cog Crates, buy only time and looks. Every piece of gear, every page and every ending can be earned without paying.
         </Text>
         <Text style={[ui.muted, { fontSize: 14, textAlign: "center" }]}>
           Signing in only keeps your workshop yours: we never see your password, never post anything, and show no ads.

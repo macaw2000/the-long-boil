@@ -31,7 +31,7 @@ It adds two things the draft lacked: a real story, told through storylets in the
 2. **Every skill opens a door.** The 16 skills double as the story's challenge stats, so grinding Smithing is how you earn the right to argue with a foundry.
 3. **A city with a secret, told slowly.** The mystery comes apart in layers across acts and seasons. The answer to "why does the sea boil" is not in Act I, or Act II.
 4. **A real economy.** Drops, fights, and trades stay deterministic and replayable. Story rewards are mostly bound to the player, so the narrative never floods the market.
-5. **Fair to free players.** Anything Cogs buy can be bought from other players with Crowns.
+5. **Fair to free players.** Money buys only time and looks. A player who never pays can own every piece of gear, every page and every ending a paying player can (amended 30 October 2026: Cog Crates are bound, so Cogs and Crowns never trade).
 
 | At a glance |  |
 | --- | --- |
@@ -859,7 +859,7 @@ The Chronicler writes this from game data and the canon. Only the Board's Gauge 
 | Crowns | The city's brass coin and the game's main currency |
 | Curio | A tradable story item that NPC collectors buy, in capped amounts |
 | Favour | Standing with one of eight factions, 0 to 7 |
-| Gilded Cogs | The premium currency, sold in tradable Cog Crates |
+| Gilded Cogs | The premium currency, bought with money in Cog Crates that are bound to the buyer (amended 30 October 2026) |
 | Keepsake | A story item bound to the player |
 | Ledger Pages | Pages of Hester Vane's notebook; 24 in the capstone |
 | Needles | Scald, Arrears, Notice, and Haze: the story's four risks, 0 to 8 each |
