@@ -1,0 +1,53 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.rustmoor.silk_line",
+  "act": 1,
+  "location": "rustmoor",
+  "reveal_layer": 0,
+  "requires": {
+    "act1.progress": ">=15"
+  },
+  "nerve": 1,
+  "cooldown_hours": 24,
+  "description": "Between two hulks on the tip a picker called Dorrit has strung a washing line, and on it hang thirty umbrellas with their ribs pulled out. She buys the silk off anyone who brings it and sells it to anyone who sews, and the difference keeps her in tea. Today the line sags. The rats have had the good silk first, she says, and what is left is torn to ribbons. She looks at your hands as though they might be useful.",
+  "options": [
+    {
+      "label": "Offer to stitch the ribbons back into sheets she can sell.",
+      "challenge": {
+        "quality": "tailoring",
+        "difficulty": 3
+      },
+      "success": {
+        "text": "You sit on an upturned bath and join the strips with a running stitch, small and even, the way the Polytechnic's needle drill taught you. By dusk there are three sheets on the line that look almost like umbrellas again. Dorrit pays you in the only coin she trusts, which is silk.",
+        "changes": {
+          "item.rustmoor.umbrella_silk": "+3"
+        }
+      },
+      "failure": {
+        "text": "The silk is older than it looks and splits along every seam you give it. Dorrit watches three ribbons become six. She takes the needle back without unkindness, and you walk home with your fingers pricked and the smell of the tip in your sleeves.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Go into the hulks after the rats' cache of good silk.",
+      "challenge": {
+        "quality": "scavenging",
+        "difficulty": 4
+      },
+      "success": {
+        "text": "The nest is under a boiler with no bottom, lined with silk folded as neatly as a draper's shelf. The rats are out. You take the top of the pile and leave the rest, which seems fair, and Dorrit is delighted enough to give you a share back.",
+        "changes": {
+          "item.rustmoor.umbrella_silk": "+2"
+        }
+      },
+      "failure": {
+        "text": "The rats are in. You leave faster than you arrived, by a route that involves a drainpipe and most of your dignity. Dorrit says nothing, which on the tip is a kindness.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    }
+  ]
+}

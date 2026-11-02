@@ -1,0 +1,62 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.rustmoor.silk_line",
+  "act": 1,
+  "location": "rustmoor",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=15"
+  },
+  "nerve": 1,
+  "cooldown_hours": 24,
+  "description": "Gaugehill throws out its umbrellas at the first bent rib, and the tip is the better for it. Between the crane and the fresh heap the pickers have strung a line, and on it hangs a week of black silk, pegged out to lose the smell of the rat nests it was taken back from. The Rust Rats line their nests with it. The pickers line their coats with it. Most nights it changes hands. Tonight a picker with a darning needle stuck through her hat is cutting coat panels on an upturned crate, badly, and up on the heap the rats are watching the line.",
+  "options": [
+    {
+      "label": "Take the needle, recut the panels, and quilt them tight enough to stop the wind.",
+      "challenge": {
+        "quality": "tailoring",
+        "difficulty": 7
+      },
+      "success": {
+        "text": "The panels are cut across the grain, which is why they gape, so you unpick them and cut again while she watches with her arms folded. Two layers of silk, a fill of horsehair pulled from a Gaugehill sofa, and a running stitch in diamonds close enough that the wind has to go round. By full dark she has the back and both fronts of a coat. She keeps the coat. She gives you the last panel, quilted and folded small, and tells you it will line a pair of gloves if you are not greedy about the fingers.",
+        "changes": {
+          "item.rustmoor.quilted_silk": "+1"
+        }
+      },
+      "failure": {
+        "text": "Umbrella silk is made to shed water, and it sheds thread just as willingly. The fill bunches, the diamonds wander, and on the third row you put the needle through the ball of your thumb and into the panel underneath, so that for a moment you and the coat are one garment. The picker takes her needle back without a word. She unpicks your three rows by what is left of the light while you hold your thumb up out of the wind.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Climb the heap to the rats' nest and bring back what came off the line last night.",
+      "challenge": {
+        "quality": "scavenging",
+        "difficulty": 6
+      },
+      "success": {
+        "text": "The rats have dragged last night's silk into the boiler of a scrapped donkey-engine three heaps over, and lined it as neatly as any Gaugehill nursery. You go in by the firebox door with a sack over your arm and come out with an armful of black silk, smelling of the nest and nothing worse. The pickers take back what they can spare a peg for. The rest goes into your sack, because on the tip whoever goes in keeps what they carry out.",
+        "changes": {
+          "item.rustmoor.umbrella_silk": "+3"
+        }
+      },
+      "failure": {
+        "text": "The nest is in the boiler of a scrapped donkey-engine, and the rats are at home. You find this out by reaching in. You come back down the heap with one sleeve torn to the elbow and a row of small, tidy punctures across your knuckles. The pickers look at the sleeve, then at the line, and tell you the sleeve will do for a patch.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Take up a shovel and stand watch over the line until the silk is dry.",
+      "success": {
+        "text": "Nothing comes off the heap while you stand there with a shovel, though several things consider it. You stand until your feet go and the silk stops smelling of rats and starts smelling of the wind, which on the tip counts as clean. When it is taken in, folded and divided, the picker with the needle counts one panel more than she has use for and drops it on your boots.",
+        "changes": {
+          "item.rustmoor.umbrella_silk": "+1"
+        }
+      }
+    }
+  ]
+}

@@ -14,6 +14,7 @@ Capstone project for ELVTR's Multi-Agent AI for Game Development course.
 - `art/concepts/`: generated concept art, each saved with its prompt.
 - `content/`: game content as data. `content/provenance.json` is the register: one row per item, written only by the registrar agent.
 - `.claude/agents/`: the build crew. Six subagents, each owning files nobody else writes.
+- `crew/`: the storylet crew as standalone code. The scrivener, the inspector and the registrar, run through the Anthropic API with the validators as a gate. See `crew/README.md`.
 
 ## The crew
 
