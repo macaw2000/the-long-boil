@@ -6,7 +6,7 @@
     "skill": { "range": [1, 100], "set_by": "the idle loop, never by a storylet" },
     "item": { "range": [0, null], "set_by": "drops, crafting, storylets" },
     "favour": { "range": [0, 7], "set_by": "Work Orders, storylets, Guild Contracts" },
-    "needle": { "range": [0, 8], "set_by": "failed or risky storylets; falls 1 per 24h" },
+    "needle": { "range": [0, 8], "set_by": "failed or risky storylets; falls 1 per 24h", "scald_means": "needle.scald is the general hurt meter: burns, bites, cuts, falls and steam, not only harm from the Scald itself (Jeremy, 2 November 2026; GDD section 5: it rises when you fail physical risks)" },
     "progress": { "range": [0, 100], "set_by": "storylets" },
     "lore": { "range": [0, 24], "set_by": "storylets, boss first-kills, rare drops" },
     "flag": { "range": [0, 1], "set_by": "choices" },

@@ -20012,7 +20012,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
@@ -20037,7 +20037,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: first_armour line reviewed 2026-11-02; no reveal or economy risks; optional: cut the first sentence, capitalise Umbrella Silk and Silk Hand-Wraps."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -20115,6 +20119,11 @@
           "at": "2026-11-02T16:32:22Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-02T18:34:44Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null

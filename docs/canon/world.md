@@ -27,6 +27,8 @@ The Brass Gazette prints the day's Gauge Reading on its front page. It is always
 
 Runs on tea; water is the one thing the city has too much of, every corner has a public urn, and a good Tea Blender is treated like a minor saint. Time is kept by the Great Whistle, which sounds the hours from the Kettle-heart. Nobody admits that it sometimes sounds a note that is not on the hour.
 
+The week has seven days and a Sunday, and Kettleport keeps its Sunday best (Jeremy, 2 November 2026).
+
 Money is the Crown, a heavy brass coin stamped with a gauge needle. Gilded Cogs are Counting-House certificates that most citizens hold and few understand. Fog rises from the Scald; storms roll down from the Thunderhead.
 
 ## Places
