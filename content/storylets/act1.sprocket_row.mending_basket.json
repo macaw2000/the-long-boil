@@ -1,0 +1,53 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.sprocket_row.mending_basket",
+  "act": 1,
+  "location": "sprocket_row",
+  "reveal_layer": 1,
+  "requires": {
+    "act1.progress": ">=5",
+    "tailoring": ">=3"
+  },
+  "nerve": 1,
+  "cooldown_hours": 24,
+  "description": "Word that the Tinker at No. 9 can sew has gone the length of Sprocket Row, and the Row has answered with a basket. Pip sets it on your step: a pea coat with the elbows out, three shirts short of buttons, a pinafore torn at the hem, and a pair of Sunday trousers folded round a note reading \"by Sunday\". \"They'll pay in kind,\" says Pip, \"which is to say in whatever's in the... well. Rations, mostly.\" On your bench a mantel clock waits with its back off, promised to its owner for yesterday.",
+  "options": [
+    {
+      "label": "Take in the whole basket and sew through it by lamplight.",
+      "challenge": {
+        "quality": "tailoring",
+        "difficulty": 9
+      },
+      "success": {
+        "text": "You push the clock to one end of the bench and sew until the lamp wants filling twice. The pea coat gets leather elbows cut from an old apron, the shirts get buttons from the jar you keep for clockwork, and the pinafore's hem comes out straighter than it went in. The Sunday trousers you press last, under a damp cloth, with the flatiron hot off the stove. In the morning the basket goes back up the Row. By noon it comes back with two Rations in it, wrapped in yesterday's Gazette, and a note in a different hand asking whether you do curtains.",
+        "changes": {
+          "item.rustmoor.rustmoor_ration": "+2"
+        }
+      },
+      "failure": {
+        "text": "The buttons go on, more or less. The pinafore's hem comes out a finger shorter on one side, which you decide is the fashion. It is the Sunday trousers that undo you: you press them with the flatiron hot off the stove, forget the damp cloth, and lift away a neat brown iron shape and the smell of somebody's best wool. A moment later you find the iron's handle with your palm. The basket goes back up the Row in the morning with an apology pinned to the trousers. It comes back empty, and the Row, which has opinions, has a new one.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Mend only the Sunday trousers, since they have a day on them, and send the rest back with Pip.",
+      "success": {
+        "text": "You take out the trousers and hand Pip the basket. Pip regards the pea coat's elbows with some sympathy and carries the rest back up the Row, explaining as Pip goes that the Tinker is very particular about... well, about trousers. You let the seat out a quarter inch, which the note did not ask for and plainly wanted, and press them under a damp cloth. They go back on Saturday. On Sunday a Ration comes back, wrapped in the Gazette, with the crossword already done.",
+        "changes": {
+          "item.rustmoor.rustmoor_ration": "+1"
+        }
+      }
+    },
+    {
+      "label": "Send the whole basket back with Pip and finish the mantel clock you promised for yesterday.",
+      "success": {
+        "text": "Pip takes the basket back up the Row with your regrets and, from the sound of it, several regrets you did not send. You have the back on the mantel clock by mid-afternoon, set it going, and carry it two doors down to an owner who had begun to wonder aloud. You are a job less behind than you were this morning. On the walk home a curtain twitches at every window that sent mending, and the pea coat is already out on a line, elbows showing.",
+        "changes": {
+          "needle.arrears": "-1"
+        }
+      }
+    }
+  ]
+}

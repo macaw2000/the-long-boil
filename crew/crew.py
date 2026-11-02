@@ -218,7 +218,7 @@ def run_validators(root, storylet, row=None):
     if row is not None:
         reg["rows"].append(row)
     with open(reg_path, "w", encoding="utf-8") as f:
-        json.dump(reg, f, indent=2)
+        json.dump(reg, f, indent=2, ensure_ascii=False)
         f.write("\n")
 
     proc = subprocess.run([sys.executable, VALIDATE, "--root", root],
@@ -438,7 +438,7 @@ def main():
         shutil.copy(os.path.join(run_dir, f"{sid}.json"), dest)
         reg["rows"] = [r for r in reg["rows"] if r["id"] != sid] + [row]
         with open(os.path.join(REPO, "content", "provenance.json"), "w", encoding="utf-8") as f:
-            json.dump(reg, f, indent=2)
+            json.dump(reg, f, indent=2, ensure_ascii=False)
             f.write("\n")
         log(f"applied: {os.path.relpath(dest, REPO)} and its register row")
     log(f"done: {os.path.relpath(run_dir, REPO)}")
