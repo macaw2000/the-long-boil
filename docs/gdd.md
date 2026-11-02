@@ -483,7 +483,7 @@ She is waiting for Act IV the way Fallen London players wait for a new season: i
 
 ## 8. Monetization and Fairness
 
-The game is free, Gilded Cogs pay for time and looks, and the story is never for sale. Cogs come in Cog Crates of 10, bought through Stripe. A crate is bound to the account that bought it and is only opened, never sold, so Cogs and Crowns never trade (amended 30 October 2026): Crowns are the players' own currency, for the Exchange and everything earned in play, and Cogs are only bought with money. Crates lock for 72 hours after purchase to blunt card fraud.
+The game is free, Gilded Cogs pay for time and looks, and the story is never for sale. Cogs come in Cog Crates of 10, bought through Stripe. A crate is bound to the account that bought it and is only opened, never sold, so Cogs and Crowns never trade (amended 30 October 2026): Crowns are the players' own currency, for the Exchange and everything earned in play, and Cogs are only bought with money. A bought crate lands in the workshop as soon as the payment clears (amended 2 November 2026; it was held 72 hours against card fraud, which binding crates made unnecessary, and the wait made a poor first purchase).
 
 | Cogs buy | Starting price | Why it is fair |
 | --- | --- | --- |

@@ -87,7 +87,7 @@ export function stripePayments({ apiKey, webhookSecret, allowLive = false }: { a
             price_data: {
               currency: "usd",
               unit_amount: priceCents,
-              product_data: { name: "Cog Crate", description: `${cogsPerCrate} Gilded Cogs for The Long Boil. Held ${lockHours} hours, then delivered to your workshop.` },
+              product_data: { name: "Cog Crate", description: `${cogsPerCrate} Gilded Cogs for The Long Boil, delivered to your workshop${lockHours > 0 ? ` after ${lockHours} hours` : ""}.` },
             },
           },
         ],

@@ -151,7 +151,6 @@ export function Shop({
               </Text>
             )}
             <Text style={[ui.muted, { fontSize: 12 }]}>
-              {arriving > 0 ? `A bought crate is held ${shop.crate.lockHours} hours before it opens, to guard against card fraud. ` : ""}
               Cogs are bought with money only, and a crate is yours alone: it opens, but never sells for Crowns.
             </Text>
           </View>
@@ -164,7 +163,10 @@ export function Shop({
         </View>
         {returned === "paid" && (
           <Text style={[ui.text, { color: colors.verdigris }]}>
-            Paid, thank you. Your crates are on their way and unlock in {shop.crate.lockHours} hours; they show below as soon as Stripe confirms.
+            Paid, thank you.{" "}
+            {shop.crate.lockHours > 0
+              ? `Your crates are on their way and unlock in ${shop.crate.lockHours} hours; they show below as soon as Stripe confirms.`
+              : "Your crates land here as soon as Stripe confirms the payment, usually within a minute."}
           </Text>
         )}
         {returned === "cancelled" && <Text style={ui.muted}>Checkout cancelled; nothing was charged.</Text>}

@@ -8,7 +8,10 @@ import { connect, migrate } from "../src/db.js";
 import { grantCrates } from "../src/shop.js";
 
 const db = connect(process.env.PGDATABASE_TEST ?? "long_boil_test");
-const content = loadContent();
+// The shipped content holds a bought crate for 0 hours (Jeremy, 2 November 2026); the hold is still
+// a setting, so these tests keep it at 72 hours to cover it.
+const shipped = loadContent();
+const content = { ...shipped, rules: { ...shipped.rules, shop: { ...shipped.rules.shop!, crate: { ...shipped.rules.shop!.crate, lockHours: 72 } } } };
 const HOUR = 3_600_000;
 const CRATE = "item.global.cog_crate";
 let clock = Date.UTC(2026, 9, 27, 8, 0, 0);
@@ -63,6 +66,13 @@ describe("the Cog Shop", () => {
     const opened = await call("POST", `/tinkers/${id}/shop/open`, { qty: 1 });
     expect(opened.body.shop).toMatchObject({ cogs: 10, crates: 1 });
     expect((await call("POST", `/tinkers/${id}/shop/open`, { qty: 2 })).status).toBe(400);
+  });
+
+  it("delivers a bought crate at once with the shipped content", async () => {
+    const { tinker } = (await call("POST", "/tinkers", { login: "unheld", name: "Unheld" })).body;
+    const outcome = await grantCrates(db, shipped, tinker.id, 2, clock, { source: "stripe", reference: "evt_test_unheld" });
+    expect(outcome.shop.crates).toBe(2);
+    expect(outcome.shop.arriving).toEqual([]);
   });
 
   it("holds a locked crate for 72 hours, then delivers it", async () => {

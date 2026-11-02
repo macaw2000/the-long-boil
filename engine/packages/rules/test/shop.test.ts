@@ -28,7 +28,7 @@ function boosted(until: number, inventory: Record<string, number> = { "item.rust
 
 describe("the Cog Shop's purchases", () => {
   it("reads GDD section 8's starting prices", () => {
-    expect(shop.crate).toMatchObject({ item: "item.global.cog_crate", cogs: 10, priceCents: 499, lockHours: 72, exchangeTax: 0.15 });
+    expect(shop.crate).toMatchObject({ item: "item.global.cog_crate", cogs: 10, priceCents: 499, lockHours: 0, exchangeTax: 0.15 });
     expect(priceOf(shop, BASE, "queue_slot")).toBe(30);
     expect(priceOf(shop, BASE, "boiler_upgrade")).toBe(20);
     expect(priceOf(shop, BASE, "night_lamp")).toBe(40);

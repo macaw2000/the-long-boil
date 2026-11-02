@@ -12,7 +12,10 @@ import { connect, migrate } from "../src/db.js";
 import { stripePayments, type CheckoutRequest } from "../src/payments.js";
 
 const db = connect(process.env.PGDATABASE_TEST ?? "long_boil_test");
-const content = loadContent();
+// The shipped content holds a bought crate for 0 hours (Jeremy, 2 November 2026); the hold is still
+// a setting, so these tests keep it at 72 hours to cover it.
+const shipped = loadContent();
+const content = { ...shipped, rules: { ...shipped.rules, shop: { ...shipped.rules.shop!, crate: { ...shipped.rules.shop!.crate, lockHours: 72 } } } };
 const HOUR = 3_600_000;
 const CRATE = "item.global.cog_crate";
 const WEBHOOK_SECRET = "whsec_test_long_boil";
