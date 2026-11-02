@@ -1438,6 +1438,666 @@
           "qty": 1
         }
       ]
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_silk",
+      "skill": "tailoring",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.umbrella_silk",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_wire_quilted_silk",
+      "skill": "tailoring",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.umbrella_silk",
+          "qty": 2
+        },
+        {
+          "item": "item.rustmoor.rat_scrap",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 2
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_frame_quilted_silk",
+      "skill": "tailoring",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.umbrella_silk",
+          "qty": 3
+        },
+        {
+          "item": "item.rustmoor.rat_scrap",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 3
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_bolt_quilted_silk",
+      "skill": "tailoring",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.umbrella_silk",
+          "qty": 4
+        },
+        {
+          "item": "item.rustmoor.rat_scrap",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 4
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_headscarf",
+      "skill": "tailoring",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.umbrella_silk",
+          "qty": 10
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.silk_headscarf",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_coif",
+      "skill": "tailoring",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 35
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.quilted_coif",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_padded_arming_cap",
+      "skill": "tailoring",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 37
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.padded_arming_cap",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_spoon_scale_hood",
+      "skill": "tailoring",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 15
+        },
+        {
+          "item": "item.rustmoor.odd_spoons",
+          "qty": 15
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.spoon_scale_hood",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_hand_wraps",
+      "skill": "tailoring",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.umbrella_silk",
+          "qty": 10
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.silk_hand_wraps",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_mittens",
+      "skill": "tailoring",
+      "level_required": 6,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 35
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.quilted_mittens",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_padded_gloves",
+      "skill": "tailoring",
+      "level_required": 11,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 37
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.padded_gloves",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_studded_gloves",
+      "skill": "tailoring",
+      "level_required": 16,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 26
+        },
+        {
+          "item": "item.rustmoor.bent_nails",
+          "qty": 26
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.studded_gloves",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_puttees",
+      "skill": "tailoring",
+      "level_required": 2,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.umbrella_silk",
+          "qty": 10
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.silk_puttees",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_gaiters",
+      "skill": "tailoring",
+      "level_required": 7,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 35
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.quilted_gaiters",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_padded_overshoes",
+      "skill": "tailoring",
+      "level_required": 12,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 37
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.padded_overshoes",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_sprung_gaiters",
+      "skill": "tailoring",
+      "level_required": 17,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 13
+        },
+        {
+          "item": "item.rustmoor.clock_movement",
+          "qty": 13
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.sprung_gaiters",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_waistcoat",
+      "skill": "tailoring",
+      "level_required": 3,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.umbrella_silk",
+          "qty": 10
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.silk_waistcoat",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_jacket",
+      "skill": "tailoring",
+      "level_required": 7,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 35
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.quilted_jacket",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_padded_jack",
+      "skill": "tailoring",
+      "level_required": 12,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 37
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.padded_jack",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_boned_silk_coat",
+      "skill": "tailoring",
+      "level_required": 17,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 19
+        },
+        {
+          "item": "item.rustmoor.umbrella_ribs",
+          "qty": 19
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.boned_silk_coat",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_arm_wrap",
+      "skill": "tailoring",
+      "level_required": 3,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.umbrella_silk",
+          "qty": 10
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.silk_arm_wrap",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_parrying_cloak",
+      "skill": "tailoring",
+      "level_required": 8,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 35
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.quilted_parrying_cloak",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_bolster_shield",
+      "skill": "tailoring",
+      "level_required": 13,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 37
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.bolster_shield",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_fighting_umbrella",
+      "skill": "tailoring",
+      "level_required": 18,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 19
+        },
+        {
+          "item": "item.rustmoor.umbrella_ribs",
+          "qty": 19
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.fighting_umbrella",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_favour",
+      "skill": "tailoring",
+      "level_required": 4,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.umbrella_silk",
+          "qty": 10
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.silk_favour",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_pincushion",
+      "skill": "tailoring",
+      "level_required": 9,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 35
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.quilted_pincushion",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_tape_measure",
+      "skill": "tailoring",
+      "level_required": 14,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 37
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.silk_tape_measure",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_garnet_rosette",
+      "skill": "tailoring",
+      "level_required": 19,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 13
+        },
+        {
+          "item": "item.rustmoor.garnet",
+          "qty": 13
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.garnet_rosette",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_brass_needle_case",
+      "skill": "tailoring",
+      "level_required": 1,
+      "seconds": 54,
+      "xp": 8,
+      "inputs": [
+        {
+          "item": "item.rustmoor.brass_ingot",
+          "qty": 22
+        },
+        {
+          "item": "item.rustmoor.umbrella_silk",
+          "qty": 22
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.brass_needle_case",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_iron_needle_case",
+      "skill": "tailoring",
+      "level_required": 5,
+      "seconds": 108,
+      "xp": 17,
+      "inputs": [
+        {
+          "item": "item.rustmoor.iron_ingot",
+          "qty": 12
+        },
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 12
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.iron_needle_case",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_steel_needle_case",
+      "skill": "tailoring",
+      "level_required": 10,
+      "seconds": 162,
+      "xp": 27,
+      "inputs": [
+        {
+          "item": "item.rustmoor.steel_ingot",
+          "qty": 6
+        },
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.steel_needle_case",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.rustmoor.tailor_clockwork_needle_case",
+      "skill": "tailoring",
+      "level_required": 15,
+      "seconds": 216,
+      "xp": 39,
+      "inputs": [
+        {
+          "item": "item.rustmoor.quilted_silk",
+          "qty": 13
+        },
+        {
+          "item": "item.rustmoor.clock_movement",
+          "qty": 13
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.rustmoor.clockwork_needle_case",
+          "qty": 1
+        }
+      ]
     }
   ]
 }

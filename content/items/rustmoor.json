@@ -425,6 +425,156 @@
       "id": "item.rustmoor.clockwork_grapnel",
       "name": "Clockwork Grapnel",
       "flavour": "A steel grapnel sprung by a clock's works, which snaps shut on whatever it touches first."
+    },
+    {
+      "id": "item.rustmoor.umbrella_silk",
+      "name": "Umbrella Silk",
+      "flavour": "Black umbrella silk the Rust Rats strip off the ribs and carry home for the nest."
+    },
+    {
+      "id": "item.rustmoor.quilted_silk",
+      "name": "Quilted Silk",
+      "flavour": "Umbrella silk quilted in layers on a frame, ready for the shears and not much else."
+    },
+    {
+      "id": "item.rustmoor.silk_headscarf",
+      "name": "Silk Headscarf",
+      "flavour": "Umbrella silk knotted under the chin, which keeps off the drizzle and very little else."
+    },
+    {
+      "id": "item.rustmoor.quilted_coif",
+      "name": "Quilted Coif",
+      "flavour": "A quilted silk coif that fits close to the skull and smells faintly of rat."
+    },
+    {
+      "id": "item.rustmoor.padded_arming_cap",
+      "name": "Padded Arming Cap",
+      "flavour": "A thick padded cap, quilted in rings, that a falling bolt bounces off with a dull thud."
+    },
+    {
+      "id": "item.rustmoor.spoon_scale_hood",
+      "name": "Spoon-Scale Hood",
+      "flavour": "A silk hood scaled with Gaugehill's odd spoons, crests outward, so it chimes when you nod."
+    },
+    {
+      "id": "item.rustmoor.silk_hand_wraps",
+      "name": "Silk Hand-Wraps",
+      "flavour": "Strips of umbrella silk wound round the knuckles, as a boxer would, if a boxer were desperate."
+    },
+    {
+      "id": "item.rustmoor.quilted_mittens",
+      "name": "Quilted Mittens",
+      "flavour": "Quilted silk mittens, warm and thick, with the thumb sewn on almost where a thumb goes."
+    },
+    {
+      "id": "item.rustmoor.padded_gloves",
+      "name": "Padded Gloves",
+      "flavour": "Padded silk gloves with the fingers left free, so you can still feel for a bolt."
+    },
+    {
+      "id": "item.rustmoor.studded_gloves",
+      "name": "Studded Gloves",
+      "flavour": "Quilted gloves studded across the back with the tip's bent nails, hammered flat and turned in."
+    },
+    {
+      "id": "item.rustmoor.silk_puttees",
+      "name": "Silk Puttees",
+      "flavour": "Umbrella silk wound from ankle to knee, which keeps the rats' teeth out of your socks."
+    },
+    {
+      "id": "item.rustmoor.quilted_gaiters",
+      "name": "Quilted Gaiters",
+      "flavour": "Quilted silk gaiters buttoned over the boot, warm enough to stand the tip at dusk."
+    },
+    {
+      "id": "item.rustmoor.padded_overshoes",
+      "name": "Padded Overshoes",
+      "flavour": "Padded overshoes that let you cross a heap of loose tin without telling it you are there."
+    },
+    {
+      "id": "item.rustmoor.sprung_gaiters",
+      "name": "Sprung Gaiters",
+      "flavour": "Quilted gaiters with a clock's mainspring in each heel, which puts a bounce in a long shift."
+    },
+    {
+      "id": "item.rustmoor.silk_waistcoat",
+      "name": "Silk Waistcoat",
+      "flavour": "A waistcoat stitched from black umbrella silk, a gentleman's colour on a picker's budget."
+    },
+    {
+      "id": "item.rustmoor.quilted_jacket",
+      "name": "Quilted Jacket",
+      "flavour": "A quilted silk jacket, wire-stitched in diamonds, that turns a Scrounger's bolt more often than not."
+    },
+    {
+      "id": "item.rustmoor.padded_jack",
+      "name": "Padded Jack",
+      "flavour": "A padded jack of many layers, heavy as a wet blanket and about as easy to bite through."
+    },
+    {
+      "id": "item.rustmoor.boned_silk_coat",
+      "name": "Boned Silk Coat",
+      "flavour": "A long silk coat boned with umbrella ribs, so the cloth and the ribs are together again at last."
+    },
+    {
+      "id": "item.rustmoor.silk_arm_wrap",
+      "name": "Silk Arm-Wrap",
+      "flavour": "A length of umbrella silk wound round the free forearm, to be offered to the rat instead."
+    },
+    {
+      "id": "item.rustmoor.quilted_parrying_cloak",
+      "name": "Quilted Parrying Cloak",
+      "flavour": "A short quilted cloak worn over the free arm, for wrapping round whatever lunges first."
+    },
+    {
+      "id": "item.rustmoor.bolster_shield",
+      "name": "Bolster Shield",
+      "flavour": "A padded bolster strapped to the forearm, which no rat has yet bitten through at one go."
+    },
+    {
+      "id": "item.rustmoor.fighting_umbrella",
+      "name": "Fighting Umbrella",
+      "flavour": "An umbrella rebuilt in quilted silk on doubled ribs, which opens in a rat's face with a bang."
+    },
+    {
+      "id": "item.rustmoor.silk_favour",
+      "name": "Silk Favour",
+      "flavour": "A ribbon of umbrella silk tied at the wrist, which steadies the hand for reasons nobody can name."
+    },
+    {
+      "id": "item.rustmoor.quilted_pincushion",
+      "name": "Quilted Pincushion",
+      "flavour": "A quilted pincushion worn on the wrist, every pin in it pointing the same way."
+    },
+    {
+      "id": "item.rustmoor.silk_tape_measure",
+      "name": "Silk Tape Measure",
+      "flavour": "A tailor's tape of quilted silk, marked in inches, for a Tinker who measures twice and swings once."
+    },
+    {
+      "id": "item.rustmoor.garnet_rosette",
+      "name": "Garnet Rosette",
+      "flavour": "A quilted silk rosette with a garnet at its heart, worn where a medal would be if you had one."
+    },
+    {
+      "id": "item.rustmoor.brass_needle_case",
+      "name": "Brass Needle Case",
+      "flavour": "Brass needles in a roll of umbrella silk, blunt enough to need a firm hand."
+    },
+    {
+      "id": "item.rustmoor.iron_needle_case",
+      "name": "Iron Needle Case",
+      "flavour": "Iron needles in a quilted case, each one filed to an eye that the thread can actually find."
+    },
+    {
+      "id": "item.rustmoor.steel_needle_case",
+      "name": "Steel Needle Case",
+      "flavour": "Fine steel needles in a padded case, sharp enough to sew silk to tin without a thimble."
+    },
+    {
+      "id": "item.rustmoor.clockwork_needle_case",
+      "name": "Clockwork Needle Case",
+      "flavour": "A needle case wound by a clock's works, which threads the next needle while you use this one."
     }
   ]
 }

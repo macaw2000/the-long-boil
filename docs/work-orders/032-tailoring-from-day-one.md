@@ -1,7 +1,7 @@
 # Work order 032: Tailoring from day one
 
 **Agents:** `draftsman` for the ladder and the numbers, then `assayer` for the walk and the upgrade cadence; the orchestrator lifts the gate in the engine and amends the GDD
-**Status:** ready to run
+**Status:** done (2 November 2026). Tailoring opens on day one (`SKILL_GATES` is empty) with its own Rustmoor ladder: 24 cloth pieces across the six slots, the needle case at 1, 5, 10 and 15, and Umbrella Silk (a Rust Rat drop) and Quilted Silk; the icons are art request 15. A new Tinker wears the Silk Hand-Wraps in the first session, beside the Brass Breastplate and Skullcap. The four Cinderworks Tailoring actions below 20 moved to 20 (Jeremy, 30 October 2026). The walk trains Tailoring on at most 10% of the Boiler (Jeremy, 31 October 2026); its Scrapjaw set swaps the Brass Plumb Bob for the Quilted Pincushion, so Scrapjaw is re-solved to 0.500 at melee 20 (hp 13,358; `combat.json` revision 13) and the rats keep their targets. Measured on the walk (SIM_DAYS=21, seed 1) at 2, 3 and 4 check-ins a day: Riveting Hammer first held d14.04, d15.13, d14.54; first Scrapjaw win d16.04, d17.55, d16.97; Foundry Pass d16.54, d17.79, d17.17. Open: the first win at 3 a day is now about two days later than work order 031's d14.54 to d15.54, and past work order 025's day 14.
 **Blocks:** art request 15 (icons for the new pieces) and the guide's first-upgrade hint.
 
 ## Why this one
@@ -50,7 +50,7 @@ Attach only these:
 
 ## Not in this work order
 
-The Cinderworks' own gear and tool ladder; Calibrating; collector prices beyond a capped buyer for any new material; the art (art request 15 follows from this work order's item list); the guide's hint.
+The Cinderworks' own gear and tool ladder; Calibrating; collector prices beyond a capped buyer for any new material; the art (art request 15 follows from this work order's item list). The guide's hint was left out of the first draft and added once the ladder settled: Brassbuckle's `first_armour` line in `content/guide/first_session.json`, drafted by the orchestrator, not yet reviewed by the inspector.
 
 ## Constraints
 

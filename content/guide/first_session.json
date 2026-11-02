@@ -39,6 +39,11 @@
       "line": "The rats have paid you in Crowns, and Pip would like some. Short? Rat scrap is worth more than it smells."
     },
     {
+      "id": "first_armour",
+      "speaker": "Professor Brassbuckle",
+      "line": "The rats have been at your sleeves already. They carry umbrella silk home for their nests; take ten scraps off them and you have hand-wraps, which is more than you are wearing now."
+    },
+    {
       "id": "brass_plate",
       "speaker": "Professor Brassbuckle",
       "line": "That workbench drawer wants clearing before the day is out, and my knees are older than the Boiler."

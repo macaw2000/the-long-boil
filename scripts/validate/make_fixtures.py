@@ -1321,7 +1321,7 @@ put("style/fail-canon/" + STP + "door.json", GOOD_PROLOGUE)
 # unless it is there to be in the wrong place.
 GUIDE_ID = "prologue.sprocket_row.first_session_guide"
 GUIDE_STEPS = ("boiler", "queue_spanners", "first_spanner", "pips_bill", "equip", "rats",
-               "pay_bill", "brass_plate", "come_back")
+               "pay_bill", "first_armour", "brass_plate", "come_back")
 GUIDE_BUTTONS = ("boiler", "come_back")
 GDP = "content/guide/first_session.json"
 def gstep(ident, line="A fixture card says where to press.", button=None, speaker="A fixture professor"):
@@ -1338,7 +1338,7 @@ GOOD_GUIDE = guide()
 put("schema/pass/" + GDP, GOOD_GUIDE)
 # schema fail-guide: a wrong file id; a missing button (boiler); two steps out
 # of order; a button where none is allowed (equip); a blank speaker and a
-# blank line; a field the schema does not know; a missing line; a tenth step;
+# blank line; a field the schema does not know; a missing line; an eleventh step;
 # a guide/1 file under content/letters/ (and with no steps); a non-guide file
 # under content/guide/.
 GS = "schema/fail-guide/"
@@ -1349,6 +1349,7 @@ put(GS + GDP, guide([
     gstep("equip", button="Equip it"),
     gstep("rats", speaker=" "),
     gstep("pay_bill", line=""),
+    gstep("first_armour"),
     dict(gstep("brass_plate"), glow="workbench"),
     {"id": "come_back", "speaker": "A fixture professor", "button": "Fixture button"},
     gstep("fixture_extra")], ident="prologue.sprocket_row.fixture_guide"))

@@ -42,6 +42,17 @@ const BRASSBUCKLE = require("../assets/art/brassbuckle_portrait.png");
 const SPANNER = "item.rustmoor.brass_spanner";
 const SPANNER_ACTION = "action.rustmoor.tinker_brass_spanner";
 const RUNT = "monster.rustmoor.rust_rat_runt";
+// The first armour (work order 032): Silk Hand-Wraps from ten Runts' silk, or a
+// Brass Breastplate from the ingots left after the spanners. Quantities are the
+// actions' inputs in content/actions/rustmoor.json.
+const SILK = "item.rustmoor.umbrella_silk";
+const WRAPS = "item.rustmoor.silk_hand_wraps";
+const WRAPS_ACTION = "action.rustmoor.tailor_silk_hand_wraps";
+const WRAPS_SILK = 10;
+const INGOT = "item.rustmoor.brass_ingot";
+const PLATE = "item.rustmoor.brass_breastplate";
+const PLATE_ACTION = "action.rustmoor.forge_brass_breastplate";
+const PLATE_INGOTS = 23;
 
 function held(tinker: Tinker, item: string): number {
   return tinker.inventory.filter((stack) => stack.item === item).reduce((sum, stack) => sum + stack.qty, 0);
@@ -57,7 +68,8 @@ export interface Step {
   id: string;
   /** Words to fall back on until the scrivener's lines are in. */
   fallback: string;
-  done: (tinker: Tinker, acknowledged: boolean) => boolean;
+  /** `all` is every step pressed through, so a step added later stays done for a Tinker past the guide. */
+  done: (tinker: Tinker, acknowledged: boolean, all: readonly string[]) => boolean;
 }
 
 const STEPS: Step[] = [
@@ -97,6 +109,11 @@ const STEPS: Step[] = [
     done: billPaid,
   },
   {
+    id: "first_armour",
+    fallback: "A Tinker in nothing but an apron is a Tinker the rats take seriously. Make something to wear.",
+    done: (tinker, acknowledged, all) => Object.keys(tinker.worn).length > 0 || acknowledged || all.includes("come_back"),
+  },
+  {
     id: "brass_plate",
     fallback: "The Row has more to say before the day is out, and there is something in the workbench.",
     done: (tinker) => prologue(tinker) >= 100,
@@ -121,7 +138,7 @@ export type GuideState = GuideProgress;
 /** The step the guide is on, or null once it is done or skipped. */
 export function currentStep(tinker: Tinker, state: GuideState): Step | null {
   if (state.skipped) return null;
-  return STEPS.find((step) => !step.done(tinker, state.acknowledged.includes(step.id))) ?? null;
+  return STEPS.find((step) => !step.done(tinker, state.acknowledged.includes(step.id), state.acknowledged)) ?? null;
 }
 
 /** Parts of the screen that open as the guide reaches them. */
@@ -144,6 +161,8 @@ export function revealed(step: Step | null, state: GuideState): (feature: Featur
     [`skill:${FIGHT}`]: "equip",
     crowns: "rats",
     exchange: "pay_bill",
+    "skill:tailoring": "first_armour",
+    "skill:smithing": "first_armour",
   };
   // The last step asks for twelve hours of work, so every skill opens for it.
   for (const skill of SKILL_ORDER) from[`skill:${skill}`] ??= "come_back";
@@ -157,7 +176,10 @@ export function revealed(step: Step | null, state: GuideState): (feature: Featur
 export const GUIDE_START: Place = "skill:tinkering";
 
 /** A guide card's own button: press on through the step, or equip the weapon it names. */
-export type GuideAction = { label: string; kind: "acknowledge" } | { label: string; kind: "equip"; item: string };
+export type GuideAction =
+  | { label: string; kind: "acknowledge" }
+  | { label: string; kind: "equip"; item: string }
+  | { label: string; kind: "wear"; item: string };
 
 export interface Coaching {
   /** What to press, in plain words. */
@@ -166,8 +188,8 @@ export interface Coaching {
   at: Pointer;
   /** A button on the card itself, for steps the card can do. */
   action?: GuideAction;
-  /** A goal and how far along it is, such as Crowns toward Pip's bill. */
-  goal?: { label: string; have: number; need: number };
+  /** A goal and how far along it is, such as Crowns toward Pip's bill; the unit is Crowns unless named. */
+  goal?: { label: string; have: number; need: number; unit?: string };
 }
 
 export interface GuideContext {
@@ -229,6 +251,24 @@ export function coach(step: Step, tinker: Tinker, context: GuideContext): Coachi
       return context.place === "exchange"
         ? { hint: "Press Pay under Bills.", at: "pay", goal: rentGoal }
         : { hint: "You have the Crowns. Open the Exchange.", at: "place:exchange", goal: rentGoal };
+    case "first_armour": {
+      const made = [WRAPS, PLATE].find((item) => held(tinker, item) > 0);
+      if (made) {
+        const label = made === WRAPS ? "Silk Hand-Wraps" : "Brass Breastplate";
+        return { hint: `Put on your ${label}.`, at: "card", action: { label: `Put on ${label}`, kind: "wear", item: made } };
+      }
+      if (tinker.queue.some((entry) => entry.actionId === WRAPS_ACTION || entry.actionId === PLATE_ACTION)) {
+        return { hint: "Your first piece of armour is on the queue. Watch the bench at the top.", at: "bench" };
+      }
+      const silk = held(tinker, SILK);
+      if (silk >= WRAPS_SILK) return toJob(context, "skill:tailoring", "Tailoring", WRAPS_ACTION, "Silk Hand-Wraps");
+      if (held(tinker, INGOT) >= PLATE_INGOTS) return toJob(context, "skill:smithing", "Smithing", PLATE_ACTION, "Brass Breastplate");
+      // Neither yet: every Runt drops Umbrella Silk, so a few more fights pay for the wraps.
+      const goal = { label: "Toward Silk Hand-Wraps", have: silk, need: WRAPS_SILK, unit: "Umbrella Silk" };
+      return fighting
+        ? { hint: "Each Rust Rat Runt drops Umbrella Silk. Ten make a pair of Silk Hand-Wraps.", at: "bench", goal }
+        : { ...toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt"), goal };
+    }
     case "brass_plate":
       if (context.place !== "story") return { hint: "Open Story: the Row has more to tell you.", at: "place:story" };
       if (tinker.story.letters > 0) return { hint: "Answer the letter waiting here.", at: "letters" };
@@ -340,11 +380,11 @@ export function GuideCard({
   );
 }
 
-function GoalMeter({ label, have, need }: { label: string; have: number; need: number }) {
+function GoalMeter({ label, have, need, unit = "Crowns" }: { label: string; have: number; need: number; unit?: string }) {
   return (
     <View style={{ gap: 3 }}>
       <Text style={[ui.muted, { fontSize: 12 }]}>
-        {label}: <Text style={[ui.number, { color: have >= need ? colors.verdigris : colors.brass }]}>{have}</Text> / {need} Crowns
+        {label}: <Text style={[ui.number, { color: have >= need ? colors.verdigris : colors.brass }]}>{have}</Text> / {need} {unit}
       </Text>
       <View style={{ height: 6, borderRadius: 3, backgroundColor: colors.soot, overflow: "hidden" }}>
         <View style={{ width: `${Math.min(1, have / need) * 100}%`, height: "100%", backgroundColor: have >= need ? colors.verdigris : colors.brass }} />

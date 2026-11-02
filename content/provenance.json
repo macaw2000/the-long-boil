@@ -4198,15 +4198,16 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/27",
       "revision": null,
-      "work_order": "docs/work-orders/028-tailoring-and-first-armour.md",
-      "status": "reviewed",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-29T16:12:08Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -4223,11 +4224,7 @@
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": "Metalwork at the edge of Tailoring, and it triples Burnt Tuyere demand."
-      },
+      "review": null,
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -4245,6 +4242,16 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -4255,15 +4262,16 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/28",
       "revision": null,
-      "work_order": "docs/work-orders/028-tailoring-and-first-armour.md",
-      "status": "reviewed",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-29T16:12:08Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -4280,11 +4288,7 @@
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": ""
-      },
+      "review": null,
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -4302,6 +4306,16 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -4312,15 +4326,16 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/26",
       "revision": null,
-      "work_order": "docs/work-orders/028-tailoring-and-first-armour.md",
-      "status": "reviewed",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-29T16:12:08Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -4337,11 +4352,7 @@
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": ""
-      },
+      "review": null,
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -4359,6 +4370,16 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -4369,15 +4390,16 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/20",
       "revision": null,
-      "work_order": "docs/work-orders/028-tailoring-and-first-armour.md",
-      "status": "reviewed",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-29T16:12:08Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -4394,11 +4416,7 @@
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": ""
-      },
+      "review": null,
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -4416,6 +4434,16 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -4426,15 +4454,16 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/23",
       "revision": null,
-      "work_order": "docs/work-orders/028-tailoring-and-first-armour.md",
-      "status": "reviewed",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-29T16:12:08Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -4451,11 +4480,7 @@
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": ""
-      },
+      "review": null,
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -4473,6 +4498,16 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -4483,15 +4518,16 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/21",
       "revision": null,
-      "work_order": "docs/work-orders/028-tailoring-and-first-armour.md",
-      "status": "reviewed",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-29T16:12:08Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -4508,11 +4544,7 @@
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": ""
-      },
+      "review": null,
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -4530,6 +4562,16 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -4540,15 +4582,16 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/22",
       "revision": null,
-      "work_order": "docs/work-orders/028-tailoring-and-first-armour.md",
-      "status": "reviewed",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-29T16:12:08Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -4565,11 +4608,7 @@
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": ""
-      },
+      "review": null,
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -4587,6 +4626,16 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -4597,15 +4646,16 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/25",
       "revision": null,
-      "work_order": "docs/work-orders/028-tailoring-and-first-armour.md",
-      "status": "reviewed",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-29T16:12:08Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -4622,11 +4672,7 @@
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": "Lens work sits at the edge of Tailoring."
-      },
+      "review": null,
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -4644,6 +4690,16 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -4654,15 +4710,16 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/24",
       "revision": null,
-      "work_order": "docs/work-orders/028-tailoring-and-first-armour.md",
-      "status": "reviewed",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-29T16:12:08Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -4679,11 +4736,7 @@
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": ""
-      },
+      "review": null,
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -4701,6 +4754,16 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -8012,6 +8075,1574 @@
       "retirement": null
     },
     {
+      "id": "action.rustmoor.tailor_bolster_shield",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/96",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_bolt_quilted_silk",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/77",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_boned_silk_coat",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/93",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_brass_needle_case",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/102",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_clockwork_needle_case",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/105",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_fighting_umbrella",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/97",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_frame_quilted_silk",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/76",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_garnet_rosette",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/101",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_iron_needle_case",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/103",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_padded_arming_cap",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/80",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_padded_gloves",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/84",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_padded_jack",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/92",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_padded_overshoes",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/88",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_coif",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/79",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_gaiters",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/87",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_jacket",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/91",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_mittens",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/83",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_parrying_cloak",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/95",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_pincushion",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/99",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_quilted_silk",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/74",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_arm_wrap",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/94",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_favour",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/98",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_hand_wraps",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/82",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_headscarf",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/78",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_puttees",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/86",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_tape_measure",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/100",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_silk_waistcoat",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/90",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_spoon_scale_hood",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/81",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_sprung_gaiters",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/89",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_steel_needle_case",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/104",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_studded_gloves",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/85",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.rustmoor.tailor_wire_quilted_silk",
+      "type": "action",
+      "path": "content/actions/rustmoor.json",
+      "pointer": "/actions/75",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "action.rustmoor.tinker_brass_catapult",
       "type": "action",
       "path": "content/actions/rustmoor.json",
@@ -9237,31 +10868,35 @@
       "path": "content/drops/rustmoor.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "approved",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-22T14:47:04Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
           "references",
           "pacing",
-          "drops"
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": "Pass with notes: page roll rule and pity slack against the main-skill share need a ruling; Rat Scrap mostly unsold."
-      },
-      "approved_by": "jeremy",
-      "approved_at": "2026-10-22T14:49:32Z",
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
       "history": [
         {
           "at": "2026-10-22T00:51:03Z",
@@ -9282,6 +10917,16 @@
           "at": "2026-10-22T14:49:32Z",
           "status": "approved",
           "by": "jeremy"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -9349,14 +10994,14 @@
       "path": "content/gear/rustmoor-pieces.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/030-rustmoor-gear-and-tools.md",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
       "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
           "fixtures",
           "schema",
@@ -9386,6 +11031,16 @@
         },
         {
           "at": "2026-10-31T02:04:29Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
         }
@@ -11411,6 +13066,104 @@
       "retirement": null
     },
     {
+      "id": "item.rustmoor.bolster_shield",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/105",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.boned_silk_coat",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/102",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.rustmoor.brass_breastplate",
       "type": "item",
       "path": "content/items/rustmoor.json",
@@ -11813,6 +13566,55 @@
         },
         {
           "at": "2026-10-31T02:04:29Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.brass_needle_case",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/111",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
         }
@@ -12355,6 +14157,55 @@
       "retirement": null
     },
     {
+      "id": "item.rustmoor.clockwork_needle_case",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/114",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.rustmoor.coal",
       "type": "item",
       "path": "content/items/rustmoor.json",
@@ -12637,6 +14488,55 @@
         },
         {
           "at": "2026-10-31T02:04:29Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.fighting_umbrella",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/106",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
         }
@@ -13018,6 +14918,55 @@
           "at": "2026-10-22T16:03:01Z",
           "status": "approved",
           "by": "jeremy"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.garnet_rosette",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/110",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -13579,6 +15528,55 @@
           "at": "2026-10-22T00:21:09Z",
           "status": "approved",
           "by": "jeremy"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.iron_needle_case",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/112",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -14381,6 +16379,545 @@
       "retirement": null
     },
     {
+      "id": "item.rustmoor.padded_arming_cap",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/89",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.padded_gloves",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/93",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.padded_jack",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/101",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.padded_overshoes",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/97",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.quilted_coif",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/88",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.quilted_gaiters",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/96",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.quilted_jacket",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/100",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.quilted_mittens",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/92",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.quilted_parrying_cloak",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/104",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.quilted_pincushion",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/108",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.quilted_silk",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/86",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.rustmoor.rat_scrap",
       "type": "item",
       "path": "content/items/rustmoor.json",
@@ -14739,6 +17276,349 @@
       "retirement": null
     },
     {
+      "id": "item.rustmoor.silk_arm_wrap",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/103",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.silk_favour",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/107",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.silk_hand_wraps",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/91",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.silk_headscarf",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/87",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.silk_puttees",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/95",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.silk_tape_measure",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/109",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.silk_waistcoat",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/99",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.rustmoor.spark_rod",
       "type": "item",
       "path": "content/items/rustmoor.json",
@@ -14795,6 +17675,55 @@
       "retirement": null
     },
     {
+      "id": "item.rustmoor.spoon_scale_hood",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/90",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.rustmoor.spring_tongs",
       "type": "item",
       "path": "content/items/rustmoor.json",
@@ -14837,6 +17766,55 @@
         },
         {
           "at": "2026-10-31T02:04:29Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.sprung_gaiters",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/98",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
         }
@@ -15224,6 +18202,55 @@
       "retirement": null
     },
     {
+      "id": "item.rustmoor.steel_needle_case",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/113",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.rustmoor.steel_pick",
       "type": "item",
       "path": "content/items/rustmoor.json",
@@ -15567,6 +18594,55 @@
       "retirement": null
     },
     {
+      "id": "item.rustmoor.studded_gloves",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/94",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.rustmoor.umbrella_ribs",
       "type": "item",
       "path": "content/items/rustmoor.json",
@@ -15614,6 +18690,55 @@
           "at": "2026-10-23T01:18:42Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.rustmoor.umbrella_silk",
+      "type": "item",
+      "path": "content/items/rustmoor.json",
+      "pointer": "/items/85",
+      "revision": null,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:31:24Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -16008,14 +19133,14 @@
       "path": "content/monsters/rustmoor.json",
       "pointer": "/monsters/3",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
       "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
           "fixtures",
           "schema",
@@ -16085,6 +19210,16 @@
         },
         {
           "at": "2026-10-31T02:04:29Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
         }
@@ -16097,14 +19232,14 @@
       "path": "content/monsters/rustmoor.json",
       "pointer": "/monsters/0",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
       "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
           "fixtures",
           "schema",
@@ -16174,6 +19309,16 @@
         },
         {
           "at": "2026-10-31T02:04:29Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
         }
@@ -16186,14 +19331,14 @@
       "path": "content/monsters/rustmoor.json",
       "pointer": "/monsters/1",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
       "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
           "fixtures",
           "schema",
@@ -16263,6 +19408,16 @@
         },
         {
           "at": "2026-10-31T02:04:29Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
         }
@@ -16275,14 +19430,14 @@
       "path": "content/monsters/rustmoor.json",
       "pointer": "/monsters/2",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
       "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
           "fixtures",
           "schema",
@@ -16354,6 +19509,16 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -16364,14 +19529,14 @@
       "path": "content/monsters/rustmoor.json",
       "pointer": "/monsters/4",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
       "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
           "fixtures",
           "schema",
@@ -16451,6 +19616,16 @@
         },
         {
           "at": "2026-10-31T02:04:29Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
         }
@@ -16826,15 +20001,16 @@
       "path": "content/guide/first_session.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/026-guide-lines-in-character.md",
-      "status": "reviewed",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-29T02:15:54Z",
+        "run": "2026-11-02T16:32:22Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -16851,11 +20027,7 @@
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": "Work order 026 re-review of the patched file: pass with notes. brass_plate fail -> pass with notes; come_back pass; boiler, queue_spanners, first_spanner, equip, rats pass; pips_bill and pay_bill pass with notes (first-review verdicts kept). Reveal and economy risks: none. Taste calls for Jeremy: pips_bill's \"in person\", boiler's \"sleep tonight\" link, the client's pay_bill hint. Reviewed files as of the 2026-10-29T02:15:54Z validator run."
-      },
+      "review": null,
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -16923,6 +20095,16 @@
           "at": "2026-10-29T02:17:21Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-02T16:32:22Z",
+          "status": "drafted",
+          "by": "orchestrator"
+        },
+        {
+          "at": "2026-11-02T16:32:22Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -17340,15 +20522,15 @@
       "type": "tuning",
       "path": "content/tuning/combat.json",
       "pointer": null,
-      "revision": 12,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
+      "revision": 13,
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
       "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
           "fixtures",
           "schema",
@@ -17490,6 +20672,16 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -17548,14 +20740,14 @@
       "path": "content/tuning/tools.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
       "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
           "fixtures",
           "schema",
@@ -17610,6 +20802,16 @@
         },
         {
           "at": "2026-10-31T02:04:29Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
         }
@@ -17786,15 +20988,16 @@
       "path": "content/tuning/economy-rustmoor.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/020-act1-curios-and-the-infirmary.md",
-      "status": "reviewed",
+      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
+      "status": "validated",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-24T02:09:29Z",
+        "run": "2026-11-02T16:31:24Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -17806,15 +21009,12 @@
           "qualities",
           "story_graph",
           "reveal",
-          "style"
+          "style",
+          "work_orders"
         ],
         "waiver": null
       },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": "Reviewed files as of the 2026-10-24T02:09:29Z run."
-      },
+      "review": null,
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -17952,6 +21152,16 @@
           "at": "2026-10-24T02:43:19Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-02T16:31:17Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-02T16:31:24Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null

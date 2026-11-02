@@ -366,12 +366,16 @@
     {
       "id": "action.cinderworks.tailor_gauze_goggles",
       "skill": "tailoring",
-      "level_required": 1,
-      "seconds": 54,
-      "xp": 9,
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 139,
       "inputs": [
         {
           "item": "item.rustmoor.brass_ingot",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.cinders",
           "qty": 1
         }
       ],
@@ -385,9 +389,9 @@
     {
       "id": "action.cinderworks.tailor_slag_wool",
       "skill": "tailoring",
-      "level_required": 5,
-      "seconds": 108,
-      "xp": 19,
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 139,
       "inputs": [
         {
           "item": "item.cinderworks.cinders",
@@ -404,9 +408,9 @@
     {
       "id": "action.cinderworks.tailor_slag_wool_coat",
       "skill": "tailoring",
-      "level_required": 10,
-      "seconds": 162,
-      "xp": 30,
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 139,
       "inputs": [
         {
           "item": "item.cinderworks.slag_wool",
@@ -423,9 +427,9 @@
     {
       "id": "action.cinderworks.tailor_slag_felt",
       "skill": "tailoring",
-      "level_required": 15,
-      "seconds": 216,
-      "xp": 42,
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 139,
       "inputs": [
         {
           "item": "item.cinderworks.slag_wool",
@@ -444,7 +448,7 @@
       "skill": "tailoring",
       "level_required": 20,
       "seconds": 270,
-      "xp": 160,
+      "xp": 139,
       "inputs": [
         {
           "item": "item.cinderworks.slag_felt",
@@ -467,7 +471,7 @@
       "skill": "tailoring",
       "level_required": 25,
       "seconds": 324,
-      "xp": 198,
+      "xp": 172,
       "inputs": [
         {
           "item": "item.cinderworks.slag_glass",
@@ -490,7 +494,7 @@
       "skill": "tailoring",
       "level_required": 30,
       "seconds": 378,
-      "xp": 238,
+      "xp": 206,
       "inputs": [
         {
           "item": "item.cinderworks.smoked_lens",
@@ -513,7 +517,7 @@
       "skill": "tailoring",
       "level_required": 35,
       "seconds": 432,
-      "xp": 280,
+      "xp": 243,
       "inputs": [
         {
           "item": "item.cinderworks.burnt_tuyere",
@@ -532,7 +536,7 @@
       "skill": "tailoring",
       "level_required": 40,
       "seconds": 486,
-      "xp": 324,
+      "xp": 281,
       "inputs": [
         {
           "item": "item.cinderworks.bronze_eyecups",

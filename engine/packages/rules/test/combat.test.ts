@@ -62,10 +62,10 @@ function plan(state: TinkerState, monsterId: string, withRations: boolean) {
 
 describe("kill time matches the combat check", () => {
   it.each([
-    ["melee", 1, 1, "item.rustmoor.brass_spanner", RUNT, 54, 73.2],
-    ["marksmanship", 5, 2, "item.rustmoor.iron_rifle", "monster.rustmoor.rust_rat_scrounger", 108, 134.0],
-    ["aetherics", 10, 4, "item.rustmoor.spark_rod", "monster.rustmoor.rust_rat_tinplate", 162, 194.1],
-    ["melee", 15, 5, "item.rustmoor.steel_blade", "monster.rustmoor.rust_rat_gaffer", 216, 255.1],
+    ["melee", 1, 1, "item.rustmoor.brass_spanner", RUNT, 54, 72.9],
+    ["marksmanship", 5, 2, "item.rustmoor.iron_rifle", "monster.rustmoor.rust_rat_scrounger", 108, 133.8],
+    ["aetherics", 10, 4, "item.rustmoor.spark_rod", "monster.rustmoor.rust_rat_tinplate", 162, 194.4],
+    ["melee", 15, 5, "item.rustmoor.steel_blade", "monster.rustmoor.rust_rat_gaffer", 216, 254.9],
   ])("%s %i against %s", (style, level, secondary, weapon, monster, stocked, unstocked) => {
     const state = reference(style as string, level as number, secondary as number, weapon as string, 10);
     expect(plan(state, monster as string, true).seconds).toBeCloseTo(stocked as number, 1);
@@ -80,8 +80,8 @@ describe("kill time matches the combat check", () => {
 
 describe("Scrapjaw", () => {
   const scrapjaw = content.monsters.get("monster.rustmoor.scrapjaw")!;
-  // What the Act I walk wears at its first attempt (combat.json boss.reference_weapon pieces, work order 031).
-  const pieces = ["steel_shield", "iron_pot_helm", "steel_cuirass", "iron_gauntlets", "iron_sabatons", "brass_plumb_bob"]
+  // What the Act I walk wears at its first attempt (combat.json boss.reference_weapon pieces, work order 032).
+  const pieces = ["steel_shield", "iron_pot_helm", "steel_cuirass", "iron_gauntlets", "iron_sabatons", "quilted_pincushion"]
     .map((name) => content.pieces.get(`item.rustmoor.${name}`)!);
   function win(level: number, weapon: string, style: string, rations: number) {
     const state = reference(style, level, 6, weapon, rations);
@@ -128,9 +128,9 @@ describe("drops and Rations", () => {
     expect(after.crowns).toBe(kills.reduce((sum, kill) => sum + kill.crowns, 0));
     expect(after.inventory["item.rustmoor.rat_scrap"]).toBe(100);
     expect(after.skillXp.melee! - state.skillXp.melee!).toBeCloseTo(100 * content.monsters.get(RUNT)!.xp * 0.7, 6);
-    // At the reference, in its Rustmoor pieces (work order 031), a kill eats 0.419 Rations;
+    // At the reference, in its Rustmoor pieces (work order 032), a kill eats 0.413 Rations;
     // Ada levels up as she fights, so later kills are shorter and eat less.
-    expect(plan(state, RUNT, true).rations).toBeCloseTo(0.419, 3);
+    expect(plan(state, RUNT, true).rations).toBeCloseTo(0.413, 3);
     const eaten = 342 - (after.inventory[RATION] ?? 0);
     expect(eaten).toBeGreaterThan(0);
     expect(eaten).toBeLessThan(42);

@@ -40,15 +40,21 @@
    "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass"
   },
   {
-   "id": "brass_plate",
+   "id": "first_armour",
    "speaker": "A fixture professor",
    "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass"
+  },
+  {
+   "id": "brass_plate",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass",
+   "button": "Delve deeper"
   },
   {
    "id": "come_back",
    "speaker": "A fixture professor",
    "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass",
-   "button": "Delve deeper"
+   "button": "press press press press"
   }
  ]
 }

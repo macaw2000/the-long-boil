@@ -40,15 +40,21 @@
    "line": "brass brass brass"
   },
   {
-   "id": "brass_plate",
+   "id": "first_armour",
    "speaker": "A fixture professor",
    "line": "brass brass brass"
+  },
+  {
+   "id": "brass_plate",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass",
+   "button": "Answer the KNOCK"
   },
   {
    "id": "come_back",
    "speaker": "A fixture professor",
    "line": "brass brass brass",
-   "button": "Answer the KNOCK"
+   "button": "press press"
   }
  ]
 }

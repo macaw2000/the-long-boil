@@ -295,6 +295,15 @@ GEAR = {
                            "brass_ladle", "iron_ladle", "steel_ladle", "crested_ladle",
                            None, None, None, None,
                            "brass_salvage_hook", "iron_salvage_hook", "steel_salvage_hook", "clockwork_grapnel"]),
+    # Rustmoor's Tailoring (art request 15): plain, quilted, padded, then the fourth tier.
+    "gear-i.jpeg": (4, 4, ["silk_headscarf", "quilted_coif", "padded_arming_cap", "spoon_scale_hood",
+                           "silk_hand_wraps", "quilted_mittens", "padded_gloves", "studded_gloves",
+                           "silk_puttees", "quilted_gaiters", "padded_overshoes", "sprung_gaiters",
+                           "silk_waistcoat", "quilted_jacket", "padded_jack", "boned_silk_coat"]),
+    "gear-j.jpeg": (4, 4, ["silk_arm_wrap", "quilted_parrying_cloak", "bolster_shield", "fighting_umbrella",
+                           "silk_favour", "quilted_pincushion", "silk_tape_measure", "garnet_rosette",
+                           "brass_needle_case", "iron_needle_case", "steel_needle_case", "clockwork_needle_case",
+                           "umbrella_silk", "quilted_silk", None, None]),
 }
 LEDGER_PAGES = ["ledger_page_1", "ledger_page_drop_1", "ledger_page_drop_2", "ledger_page_drop_3", "ledger_page_drop_4"]
 

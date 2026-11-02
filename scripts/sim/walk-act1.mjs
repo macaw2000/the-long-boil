@@ -70,6 +70,30 @@
 // - cook() makes Rations only from recipes whose every input the grocer sells (was NaN on the ladles).
 // - The walk's own fight choice (bestFight) now counts worn pieces and armour, as the engine does.
 //
+// Work order 032 part 3 (the assayer, 31 October 2026): Tailoring is open from day one with its own Rustmoor ladder.
+// - Tailoring's pieces and needle cases are gear like any other: the same pick (best piece per slot, best tool per
+//   skill, least labour first), the same "make it" whole-chain go, the same balanced placement and 25% cap, and the
+//   same wearing through PUT /tinkers/:id/gear.
+// - Training Tailoring (SIM_GEAR_TRAIN, default "tailoring"; "none" turns it off, "all" lets Smithing and Tinkering
+//   train this way too): Tailoring has no gate, weapon or rotation turn that ever runs (in the 031 walk the rotation
+//   never fired at any cadence), so its training comes out of the gear share. When no piece is in reach and a
+//   Tailoring piece the walk could wear now (combat level) would beat both what is worn and the best piece in reach
+//   in that slot, and only its Tailoring level stands in the way, the gear turn trains Tailoring (least labour per
+//   XP, as train() does; with silk held that is quilting) toward the lowest such level. The entry is sized to the
+//   smaller of half the interval and what is left of the training bank, placed as a piece is (first in slot 1, the
+//   behind half follows), and counted as gear time against the same SIM_GEAR_SHARE cap. Under 10 minutes of bank,
+//   it waits. Smithing and Tinkering keep their own training (the weapon chain and the gates), as in 031.
+//   Revised (Jeremy, 31 October 2026): training draws on its own bank, SIM_TRAIN_SHARE (default 0.10) of queue
+//   time so far, not on the gear bank; the 25% gear cap covers making pieces and tools only.
+// - Drops cost no labour: Umbrella Silk and rat scrap come with the fighting the walk does anyway, so labour()
+//   counts them at 0 queue seconds (as the grocer's goods); a piece or a training go can use only silk held.
+// - First session (SIM_FIRST_TAILOR=1, default; 0 restores 031's first session): once the ten Runts are done, the
+//   quickest wearable upgrade whose whole chain is in stores within 5 minutes (a level-1 silk piece from the Runts'
+//   ten Umbrella Silk) is queued ahead of the night and worn a minute later, before the player leaves. The guide's
+//   first-upgrade hint does not exist yet; this models a player who sees the Tailoring tab and acts on it.
+// - Silk supply: the report sums silk dropped and silk eaten from the event log, and counts sittings where a
+//   Tailoring go or piece was wanted but the silk held could not cover it.
+//
 // The database (SIM_DB, default long_boil_sim) is dropped and rebuilt from the
 // migrations before each cadence. It refuses long_boil_dev and long_boil_test.
 //
@@ -233,6 +257,16 @@ const GROCER_ITEMS = GROCER;
 const PIECES = [...R.pieces.values()];
 const TOOLS = [...R.tools.values()];
 const GEAR_ITEMS = new Set([...PIECES.map((p) => p.item), ...TOOLS.map((x) => x.item)]);
+// Items that only drop from monsters (Umbrella Silk, rat scrap): no action makes them.
+const DROPS = new Set([...R.drops.values()].flatMap((tb) => tb.entries.map((e) => e.item)).filter((it) => ![...R.actions.values()].some((a) => a.outputs.some((o) => o.item === it))));
+const GEAR_TRAIN = process.env.SIM_GEAR_TRAIN ?? "tailoring";
+if (!["tailoring", "none", "all"].includes(GEAR_TRAIN)) throw new Error(`SIM_GEAR_TRAIN must be tailoring, none or all, not ${GEAR_TRAIN}`);
+const TRAIN_SKILLS = GEAR_TRAIN === "none" ? [] : GEAR_TRAIN === "all" ? ["tailoring", "smithing", "tinkering"] : ["tailoring"];
+const FIRST_TAILOR = (process.env.SIM_FIRST_TAILOR ?? "1") === "1";
+// Training's own cap (Jeremy, 31 October 2026): training gos never pass SIM_TRAIN_SHARE of queue time so far
+// (planned share), separately from the gear cap, which now covers making pieces and tools only.
+const TRAIN_SHARE = Number(process.env.SIM_TRAIN_SHARE ?? 0.1);
+const SILK = "item.rustmoor.umbrella_silk";
 const statOf = (item) => {
   const p = R.pieces.get(item);
   if (p) return p.armour + p.accuracy;
@@ -246,7 +280,7 @@ function labour(a) {
   labourMemo.set(a.id, Infinity);
   let s = a.seconds;
   for (const i of a.inputs) {
-    if (i.item in GROCER_ITEMS) continue;
+    if (i.item in GROCER_ITEMS || DROPS.has(i.item)) continue;
     const p = producerOf(i.item);
     const per = p ? labour(p) / p.outputs.find((o) => o.item === i.item).qty : Infinity;
     s += i.qty * per;
@@ -458,9 +492,13 @@ async function runCadence(perDay) {
   let reserved = {}; // item -> qty held back for the gear target
   let gearTarget = null; // item id
   let gearBank = 0; // seconds of queue time gear may still use
+  let trainBank = 0; // seconds of queue time training gos may still use (SIM_TRAIN_SHARE)
   const gearPlaced = {}; // where the piece went: "replaced rotation", "fight slot", "nothing"
   const gearLog = []; // { at, item, slot }
   const gearMade = []; // { at, item } first sitting it was held
+  const trainLog = []; // { at, skill, level, toward, secs } each gear turn given to training (work order 032)
+  const silkShort = []; // { at, why } a Tailoring go or piece wanted but the silk held could not cover it
+  const silkHeld = []; // { at, qty } silk held after selling, each sitting
   const combatLvl = (t) => Math.max(lvl(t, "melee"), lvl(t, "marksmanship"), lvl(t, "aetherics"));
   const slotOf = (item) => R.pieces.get(item)?.slot ?? `tool:${R.tools.get(item)?.skill}`;
   const wornIn = (t, slot) => (slot.startsWith("tool:") ? t.tools?.[slot.slice(5)] : t.worn?.[slot]) ?? null;
@@ -472,15 +510,36 @@ async function runCadence(perDay) {
   };
   // `qty` of an item can be had now: from stores first (as the engine's chain does), and the rest by a chain
   // whose every step is within the walk's levels (grocer items count as reachable).
-  function reachable(t, item, qty = 1, depth = 0) {
+  // over: { skill: level } reads those skills as at least that level (would this be in reach once trained?).
+  function reachable(t, item, qty = 1, depth = 0, over = null) {
     if (item in GROCER) return true;
     const short = qty - held(t, item);
     if (short <= 0) return true;
     if (depth > 6) return false;
     const a = producerOf(item);
-    if (!a || lvl(t, a.skill) < a.level_required) return false;
+    if (!a || Math.max(lvl(t, a.skill), over?.[a.skill] ?? 0) < a.level_required) return false;
     const runs = Math.ceil(short / a.outputs.find((o) => o.item === item).qty);
-    return a.inputs.every((i) => reachable(t, i.item, runs * i.qty, depth + 1));
+    return a.inputs.every((i) => reachable(t, i.item, runs * i.qty, depth + 1, over));
+  }
+  // Work order 032: the gear-making skill worth training now. A piece the walk could wear now that beats what is
+  // worn and the best piece in reach in its slot, held back only by its maker's level in TRAIN_SKILLS. The lowest
+  // such level wins (ties: the bigger stat). Null when there is none.
+  function pickTrain(t) {
+    const slots = [...new Set(PIECES.map((p) => p.slot))];
+    let best = null;
+    for (const slot of slots) {
+      const inSlot = PIECES.filter((g) => g.slot === slot && canWear(t, g.item));
+      const cur = wornIn(t, slot);
+      const floor = Math.max(cur ? statOf(cur) : -1, ...inSlot.filter((g) => held(t, g.item) > 0 || reachable(t, g.item)).map((g) => statOf(g.item)));
+      for (const g of inSlot) {
+        const a = producerOf(g.item);
+        if (!a || !TRAIN_SKILLS.includes(a.skill) || lvl(t, a.skill) >= a.level_required || statOf(g.item) <= floor) continue;
+        if (!reachable(t, g.item, 1, 0, { [a.skill]: a.level_required })) continue;
+        const c = { item: g.item, skill: a.skill, level: a.level_required, stat: statOf(g.item) };
+        if (!best || c.level < best.level || (c.level === best.level && c.stat > best.stat)) best = c;
+      }
+    }
+    return best;
   }
   // What a held-back target still needs, down its chain, net of what is held.
   function reserveFor(t, item, need, out = {}, depth = 0) {
@@ -623,6 +682,7 @@ async function runCadence(perDay) {
         if (i.item in GROCER) continue;
         const p = producerOf(i.item);
         const short = Math.max(0, n * i.qty - Math.max(0, free(i.item)));
+        if (short === 0) continue; // held stock is paid for (0 x Infinity was NaN for a drop held in full)
         s += short * (p ? labour(p) / p.outputs.find((o) => o.item === i.item).qty : Infinity);
       }
       return s / (n * a.xp);
@@ -703,7 +763,27 @@ async function runCadence(perDay) {
   await g("second story pass");
   clock += 3 * MIN;
   // SIM_FIRST_NIGHT=runts: the night is all Runts, as a player who follows the guide's "fill twelve hours" might queue it.
-  await ok("PUT", `/tinkers/${main}/queue`, { queue: process.env.SIM_FIRST_NIGHT === "runts" ? [{ actionId: M("rust_rat_runt"), remaining: 10_000 }] : [{ actionId: A("scavenge_bent_nails"), remaining: 67 }, { actionId: M("rust_rat_runt"), remaining: 10_000 }] });
+  const night = process.env.SIM_FIRST_NIGHT === "runts" ? [{ actionId: M("rust_rat_runt"), remaining: 10_000 }] : [{ actionId: A("scavenge_bent_nails"), remaining: 67 }, { actionId: M("rust_rat_runt"), remaining: 10_000 }];
+  // Work order 032: the wearable upgrades whose whole chain is in stores, quickest first, while they fit in 5 minutes.
+  let firstPiece = null;
+  let firstBudget = 300;
+  while (FIRST_TAILOR) {
+    const t = (await ok("GET", `/tinkers/${main}`)).tinker;
+    const cands = PIECES.filter((p) => canWear(t, p.item) && held(t, p.item) === 0 && reachable(t, p.item) && netLabour(t, p.item) <= firstBudget && statOf(p.item) > (wornIn(t, p.slot) ? statOf(wornIn(t, p.slot)) : -1));
+    firstPiece = cands.sort((a, b) => netLabour(t, a.item) - netLabour(t, b.item) || statOf(b.item) - statOf(a.item))[0] ?? null;
+    if (!firstPiece) {
+      note(`first session: no further upgrade in stores within ${firstBudget} s; silk held ${held(t, SILK)}`);
+      break;
+    }
+    // Two slots: the piece, then the night's first entry; a minute later the piece is worn.
+    const secs = netLabour(t, firstPiece.item);
+    await ok("PUT", `/tinkers/${main}/queue`, { queue: [{ actionId: producerOf(firstPiece.item).id, remaining: 1 }, night[0]] });
+    note(`first session: queued ${firstPiece.item.split(".").pop()} (${secs} s), the quickest of ${cands.map((c) => c.item.split(".").pop()).join(", ")}; silk held ${held(t, SILK)}`);
+    clock += Math.ceil(secs / 60) * MIN;
+    firstBudget -= Math.ceil(secs / 60) * 60;
+    await wearBest(main, (await ok("GET", `/tinkers/${main}`)).tinker);
+  }
+  await ok("PUT", `/tinkers/${main}/queue`, { queue: night });
   acked.push("come_back");
   await g("queued the night, Leave it running");
   {
@@ -762,12 +842,30 @@ async function runCadence(perDay) {
     if (gearTarget && !reachable(t, gearTarget)) gearTarget = null;
     gearTarget ??= GEAR_SHARE > 0 ? pickGear(t) : null;
     reserved = gearTarget ? reserveFor(t, gearTarget, 1) : {};
+    // Work order 032: with no piece in reach, a gear turn may train the skill that makes the next one.
+    const trainWant = !gearTarget && GEAR_SHARE > 0 ? pickTrain(t) : null;
+    silkHeld.push({ at: clock, qty: held(t, SILK) });
+    {
+      // A Tailoring piece the walk could wear and beat what is worn with, at its Tailoring level, but short of silk.
+      for (const p of PIECES) {
+        const a = producerOf(p.item);
+        if (a?.skill !== "tailoring" || !canWear(t, p.item) || lvl(t, "tailoring") < a.level_required || held(t, p.item) > 0) continue;
+        if (statOf(p.item) <= (wornIn(t, p.slot) ? statOf(wornIn(t, p.slot)) : -1)) continue;
+        if (reachable(t, p.item)) continue;
+        const withSilk = { ...t, inventory: [...t.inventory, { item: SILK, qty: 1e6, bound: false }] };
+        if (reachable(withSilk, p.item)) {
+          silkShort.push({ at: clock, why: `${p.item.split(".").pop()} (silk held ${held(t, SILK)})` });
+          break;
+        }
+      }
+    }
     // Gear's cap (the orchestrator, 30 October 2026, after the gate stall): gear's chain time, summed over the walk,
     // never passes GEAR_SHARE of the queue time so far. A bank of GEAR_SHARE x interval accrues every sitting and a
     // piece is queued only when its chain time (net of stores) fits in it. With a third slot bought, gear gets its
     // own entry sized to GEAR_SHARE of the interval, out of the production half.
     const threeSlots = SHOP.includes("slot");
     gearBank += (GEAR_SHARE * interval) / 1000;
+    trainBank += (TRAIN_SHARE * interval) / 1000;
     const gearSecs = gearTarget ? (threeSlots ? (interval / 1000) * GEAR_SHARE * (boosted ? 1 + R.shop.boost.percent / 100 : 1) : half0) : 0;
     const half = threeSlots ? Math.max(60, half0 - gearSecs) : half0;
     const progress = view.qualities["act1.progress"] ?? 0;
@@ -779,7 +877,7 @@ async function runCadence(perDay) {
     const bossArmed = !BOSS_WEAPON || (R.weapons.get(t.weapon)?.power ?? 0) >= R.weapons.get(BOSS_WEAPON).power;
     if (!t.bossesBeaten.includes(SCRAPJAW) && bossArmed && boss.win >= BOSS_MIN && boss.rations === 3 && held(t, RATION) >= 9) {
       slot = { actionId: SCRAPJAW, remaining: 3, why: `Scrapjaw at ${Math.round(boss.win * 100)}% with ${t.weapon.split(".").pop()}, melee ${lvl(t, "melee")}` };
-      bossQueued.push({ at: clock, win: boss.win, melee: lvl(t, "melee"), combat: combatLvl(t), loadout: loadout(t) });
+      bossQueued.push({ at: clock, win: boss.win, melee: lvl(t, "melee"), combat: combatLvl(t), loadout: loadout(t), skills: Object.fromEntries(["tailoring", "smithing", "tinkering", "scavenging", "prospecting", "cooking"].map((k) => [k, lvl(t, k)])) });
     }
     // Slot 1's production entry (everything but Scrapjaw), sized to `half` seconds of work.
     const buildProd = async (t, half) => {
@@ -806,7 +904,7 @@ async function runCadence(perDay) {
         }
       }
       if (!slot) {
-        const skills = ["scavenging", "prospecting", "smithing", "cooking", "tinkering"];
+        const skills = ["scavenging", "prospecting", "smithing", "cooking", "tinkering", "tailoring"];
         for (let i = 0; i < skills.length && !slot; i++) slot = await train(main, t, skills[rot++ % skills.length], half, "rotation");
       }
       return slot;
@@ -847,21 +945,42 @@ async function runCadence(perDay) {
     // (the fight then starts once the piece is made). Over a gate, the weapon, Rations or Scrapjaw it never takes
     // that entry's place; it takes the fight's (the entry, then the piece, then the queue idles), unless replacing
     // a gate would lose less: fight's loss = interval - entry - chain, the gate's loss = the gate entry's time.
-    if (!threeSlots && gearTarget && GEAR_PLACE === "balanced") {
+    if (!threeSlots && (gearTarget || trainWant) && GEAR_PLACE === "balanced") {
       // Default (the assayer, 30 October 2026): the piece goes first in slot 1, and whichever of production and
       // fighting is behind on planned time so far follows it and fills the interval, so the Boiler never idles and
       // the two halves stay level. Gear's chain time is capped at SIM_GEAR_SHARE of queue time so far.
       // Scrapjaw and a whole-chain go (a weapon in reach) keep slot 1 and the piece waits; low Rations always follow.
-      const g = makeIt(t, gearTarget, `gear ${gearTarget.split(".").pop()}`);
-      const chain = netLabour(t, gearTarget);
+      // Work order 032: with no piece but a training want, the training go stands in for the piece, sized to the
+      // smaller of half the interval and the bank left.
+      let g;
+      let chain;
+      if (gearTarget) {
+        g = makeIt(t, gearTarget, `gear ${gearTarget.split(".").pop()}`);
+        chain = netLabour(t, gearTarget);
+      } else {
+        const secs = Math.min(half0, trainBank);
+        g = secs >= 600 ? await train(main, t, trainWant.skill, secs, `gear: ${trainWant.skill} ${trainWant.level} for ${trainWant.item.split(".").pop()}`) : null;
+        if (g && !R.actions.get(g.actionId)?.skill?.includes(trainWant.skill)) g = null; // only that skill's own goes
+        chain = g ? g.remaining * R.actions.get(g.actionId).seconds : Infinity;
+        if (secs < 600) gearPlaced["training waits for the bank"] = (gearPlaced["training waits for the bank"] ?? 0) + 1;
+        else if (!g) {
+          gearPlaced["training: no inputs held"] = (gearPlaced["training: no inputs held"] ?? 0) + 1;
+          if (trainWant.skill === "tailoring") silkShort.push({ at: clock, why: `training toward ${trainWant.item.split(".").pop()} (silk held ${held(t, SILK)})` });
+        }
+      }
       const k1 = kindOf(slot);
-      if (!g) gearPlaced["not reachable"] = (gearPlaced["not reachable"] ?? 0) + 1;
+      if (!g) { if (gearTarget) gearPlaced["not reachable"] = (gearPlaced["not reachable"] ?? 0) + 1; }
       else if (k1 === "scrapjaw" || slot.why.includes("(whole chain)")) gearPlaced[`waited for ${k1}`] = (gearPlaced[`waited for ${k1}`] ?? 0) + 1;
-      else if (chain > gearBank) gearPlaced["over the cap"] = (gearPlaced["over the cap"] ?? 0) + 1;
+      else if (chain > (gearTarget ? gearBank : trainBank)) gearPlaced["over the cap"] = (gearPlaced["over the cap"] ?? 0) + 1;
       else {
         const prodBehind = k1 === "rations" || (boilerUse.production ?? 0) < (boilerUse.fight ?? 0);
-        gearBank -= chain;
+        if (gearTarget) gearBank -= chain;
+        else trainBank -= chain;
         gearEntry = g;
+        if (!gearTarget) {
+          trainLog.push({ at: clock, skill: trainWant.skill, level: lvl(t, trainWant.skill), toward: trainWant, secs: chain, action: g.actionId });
+          gearPlaced["(of which training)"] = (gearPlaced["(of which training)"] ?? 0) + 1;
+        }
         if (prodBehind) {
           // Production follows: rebuilt to fill the interval after the piece, the fight waits a sitting.
           alt = altAt;
@@ -981,7 +1100,19 @@ async function runCadence(perDay) {
   const killsBefore = (t) => ev.filter((e) => e.type === "monster_killed" && new Date(e.at).getTime() <= t).length;
   await app.close();
   await db.end();
-  return { gearPlaced, boilerUse, bossQueued, gearLog, gearMade, endLoadout: loadout(end), killsBefore, firstSession, guideTrail, forcedLocked, pagesHeld, ledgerEnd, lettersArrived, pageDrops, perDay, meleeAt, totalXp, crownFlow, shopBought, notes, refusals, districtSeen, needleTrack, scenes, seenOpen, gateMet, bossChecks, bossEv, sittings, horizon, foundryAt, end, kills, stalls };
+  const silkIn = ev.reduce((n, e) => n + (["monster_killed", "boss_attempted"].includes(e.type) ? Number(e.payload?.produced?.[SILK] ?? 0) : 0), 0);
+  const silkOut = ev.reduce((n, e) => n + (e.type === "action_completed" ? Number(e.payload?.consumed?.[SILK] ?? 0) : 0), 0);
+  const silkDay = {};
+  for (const e of ev) {
+    const d = Math.floor((new Date(e.at).getTime() - T0) / DAY);
+    silkDay[d] ??= [0, 0];
+    if (["monster_killed", "boss_attempted"].includes(e.type)) silkDay[d][0] += Number(e.payload?.produced?.[SILK] ?? 0);
+    if (e.type === "action_completed") silkDay[d][1] += Number(e.payload?.consumed?.[SILK] ?? 0);
+  }
+  const tailorAt = {};
+  for (const e of ev) if (e.type === "level_up" && e.payload.skill === "tailoring") tailorAt[e.payload.level] ??= new Date(e.at).getTime();
+  const tailorXp = ev.filter((e) => e.type === "action_completed" && e.payload.skill === "tailoring").reduce((n, e) => n + Number(e.payload.xp ?? 0), 0);
+  return { silkIn, silkOut, silkDay, tailorAt, tailorXp, trainLog, silkShort, silkHeld, gearPlaced, boilerUse, bossQueued, gearLog, gearMade, endLoadout: loadout(end), killsBefore, firstSession, guideTrail, forcedLocked, pagesHeld, ledgerEnd, lettersArrived, pageDrops, perDay, meleeAt, totalXp, crownFlow, shopBought, notes, refusals, districtSeen, needleTrack, scenes, seenOpen, gateMet, bossChecks, bossEv, sittings, horizon, foundryAt, end, kills, stalls };
 }
 
 const wanted = process.argv.slice(2).length ? process.argv.slice(2).map(Number) : [2, 3, 4];
@@ -990,7 +1121,7 @@ for (const perDay of wanted) results.push(await runCadence(perDay));
 
 const lvlOf = (end, skill) => end.skills.find((s) => s.skill === skill)?.level ?? 1;
 for (const r of results) {
-  console.log(`\n=============== ${r.perDay} check-ins a day, ${DAYS}-day horizon, boss threshold ${BOSS_MIN}, policy ${POLICY}, district ${DISTRICT_MODE}, gear share ${GEAR_SHARE} placed ${GEAR_PLACE}${BOSS_WEAPON ? `, Scrapjaw only with ${BOSS_WEAPON.split(".").pop()} or better` : ""} ===============`);
+  console.log(`\n=============== ${r.perDay} check-ins a day, ${DAYS}-day horizon, boss threshold ${BOSS_MIN}, policy ${POLICY}, district ${DISTRICT_MODE}, gear share ${GEAR_SHARE} placed ${GEAR_PLACE}, gear training ${GEAR_TRAIN} capped at ${TRAIN_SHARE}, first-session piece ${FIRST_TAILOR ? "on" : "off"}${BOSS_WEAPON ? `, Scrapjaw only with ${BOSS_WEAPON.split(".").pop()} or better` : ""} ===============`);
   if (VERBOSE) for (const n of r.notes) console.log(n);
   console.log("-- Act I beats (measured; day = days since the first session, Thursday 18:00)");
   for (const [id, gate] of BEATS) {
@@ -1032,7 +1163,8 @@ for (const r of results) {
       const L = bq.loadout;
       console.log(`-- gear at the first Scrapjaw attempt (measured; queued d${dayOf(bq.at)}, shown ${(bq.win * 100).toFixed(1)}%, melee ${bq.melee}, combat level ${bq.combat}):`);
       console.log(`   weapon ${short(L.weapon)}; off_hand ${short(L.off_hand)}, head ${short(L.head)}, body ${short(L.body)}, hands ${short(L.hands)}, feet ${short(L.feet)}, charm ${short(L.charm)}`);
-      console.log(`   tools ${["prospecting", "scavenging", "smithing", "tinkering", "cooking"].map((k) => `${k} ${short(L.tools[k])}`).join(", ")}`);
+      console.log(`   tools ${["prospecting", "scavenging", "smithing", "tinkering", "cooking", "tailoring"].map((k) => `${k} ${short(L.tools[k])}`).join(", ")}`);
+      console.log(`   skill levels then: ${JSON.stringify(bq.skills)}`);
     } else console.log("-- gear at the first Scrapjaw attempt: Scrapjaw never queued");
     const fw = r.bossEv.find((e) => e.payload.won);
     console.log(`   first win: ${fw ? `d${dayOf(new Date(fw.at).getTime())} at ${(fw.payload.winChance * 100).toFixed(1)}%` : "none in the horizon"}; per attempt: ${r.bossEv.map((e) => `${(e.payload.winChance * 100).toFixed(1)}% ${e.payload.won ? "won" : "lost"}`).join(", ") || "none"}`);
@@ -1043,6 +1175,15 @@ for (const r of results) {
     console.log(`   gear placement by sitting (measured): ${JSON.stringify(r.gearPlaced)}`);
     console.log(`   melee weapons first held: ${WEAPONS.map((w) => `${short(w)} ${r.gearMade.find((x) => x.item === w) ? `d${dayOf(r.gearMade.find((x) => x.item === w).at)}` : "never"}`).join(", ")}`);
     console.log(`   gear worn (measured, day put on): ${r.gearLog.map((g) => `${short(g.item)}@d${dayOf(g.at)}`).join(", ") || "none"}`);
+    const first24 = r.gearLog.filter((g) => g.at < T0 + DAY);
+    console.log(`   first 24 hours (measured, hours after the first session's start): ${first24.length} upgrades put on: ${first24.map((g) => `${short(g.item)} (${g.slot}) h${((g.at - T0) / HOUR).toFixed(1)}`).join(", ") || "none"}`);
+    const firstSessionWear = r.gearLog.filter((g) => g.at <= r.firstSession.end);
+    console.log(`   in the first session: ${firstSessionWear.map((g) => short(g.item)).join(", ") || "nothing worn"} (plus the Brass Spanner wielded)`);
+    const tail = r.gearLog.filter((g) => producerOf(g.item)?.skill === "tailoring");
+    console.log(`   Tailoring pieces and tools worn: ${tail.length} (${tail.map((g) => `${short(g.item)}@d${dayOf(g.at)}`).join(", ") || "none"})`);
+    console.log(`   Tailoring (measured): level reached by day ${JSON.stringify(Object.fromEntries(Object.entries(r.tailorAt).map(([l, at]) => [l, Number(dayOf(at))])))}; ${Math.round(r.tailorXp)} Tailoring XP from actions; ${r.trainLog.length} gear turns given to training, ${(r.trainLog.reduce((n, x) => n + x.secs, 0) / 3600).toFixed(1)} h planned (${((100 * r.trainLog.reduce((n, x) => n + x.secs, 0)) / r.boilerUse.total).toFixed(1)}% of Boiler time); actions ${JSON.stringify(r.trainLog.reduce((o, x) => ((o[x.action.split(".").pop()] = (o[x.action.split(".").pop()] ?? 0) + 1), o), {}))}`);
+    console.log(`   silk (measured, event log): ${r.silkIn} dropped, ${r.silkOut} eaten by actions; held at sittings min ${Math.min(...r.silkHeld.map((x) => x.qty))}, at the first Scrapjaw attempt ${r.silkHeld.filter((x) => r.bossQueued[0] && x.at <= r.bossQueued[0].at).at(-1)?.qty ?? "-"}; sittings short of silk ${r.silkShort.length}${r.silkShort.length ? `: ${r.silkShort.slice(0, 6).map((x) => `d${dayOf(x.at)} ${x.why}`).join("; ")}` : ""}`);
+    console.log(`   silk by day [dropped, eaten]: ${JSON.stringify(r.silkDay)}`);
     const EL = r.endLoadout;
     console.log(`   at the end: off_hand ${short(EL.off_hand)}, head ${short(EL.head)}, body ${short(EL.body)}, hands ${short(EL.hands)}, feet ${short(EL.feet)}, charm ${short(EL.charm)}; tools ${JSON.stringify(Object.fromEntries(Object.entries(EL.tools).map(([k, v]) => [k, short(v)])))}`);
   }

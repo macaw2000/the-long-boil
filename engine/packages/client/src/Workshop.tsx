@@ -331,7 +331,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const step = currentStep(tinker, guide);
   // While the guide runs, the screen shows only what it has reached; the place the player is on always shows.
   const opened = revealed(step, guide);
-  // A skill the story has not opened yet (Tailoring, with the Foundry Pass) stays hidden even after the guide.
+  // A skill the story has not opened yet (rules SKILL_GATES) stays hidden even after the guide.
   const shown = (feature: string) =>
     (!feature.startsWith("skill:") || skillOpen(feature.slice("skill:".length), tinker.story.qualities)) && (feature === place || opened(feature as Place));
 
@@ -377,6 +377,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
 
   const guideAction = (action: GuideAction) => {
     if (action.kind === "equip") equipWeapon(action.item);
+    else if (action.kind === "wear") run(api.wear(tinkerId, action.item));
     else if (step) setGuide({ ...guide, acknowledged: [...guide.acknowledged, step.id] });
   };
 

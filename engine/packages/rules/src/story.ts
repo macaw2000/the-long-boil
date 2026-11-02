@@ -72,15 +72,11 @@ function openDuringStay(scene: Scene, story: StoryState): boolean {
 export const FOUNDRY_PASS_DEBT = 600;
 
 /**
- * Skills that open with the story rather than on day one. GDD section 6:
- * "Rustmoor has no armour; armour arrives with Tailoring in the Cinderworks",
- * so Tailoring opens with the Foundry Pass, which every road through Act I
- * hands over at act1.progress 80 (act1.brass_exchange.foundry_pass). A sold
- * or traded pass does not close it again.
+ * Skills that open with the story rather than on day one. None today:
+ * Tailoring opened with the Foundry Pass until work order 032 gave it a
+ * Rustmoor ladder and opened it on day one (Jeremy, 30 October 2026).
  */
-export const SKILL_GATES: Readonly<Record<string, { quality: string; at: number; reason: string }>> = {
-  tailoring: { quality: "act1.progress", at: 80, reason: "Tailoring opens with the Foundry Pass" },
-};
+export const SKILL_GATES: Readonly<Record<string, { quality: string; at: number; reason: string }>> = {};
 
 /** Whether a skill is open to a Tinker with these story qualities. */
 export function skillOpen(skill: string, qualities: Readonly<Record<string, number>>): boolean {
