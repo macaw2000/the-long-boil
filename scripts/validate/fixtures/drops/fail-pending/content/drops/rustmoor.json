@@ -1,0 +1,27 @@
+{
+ "schema": "drops/1",
+ "id": "drops.rustmoor.fixture_pending",
+ "tables": [
+  {
+   "monster": "monster.rustmoor.fixture_pending_scrap",
+   "crowns": {
+    "min": 1,
+    "max": 2
+   },
+   "entries": [],
+   "first_kill": []
+  },
+  {
+   "monster": "monster.rustmoor.fixture_pending_king",
+   "crowns": {
+    "min": 9,
+    "max": 9
+   },
+   "entries": [],
+   "first_kill": [
+    "item.rustmoor.fixture_ledger_page_early"
+   ]
+  }
+ ],
+ "zone_pity": []
+}

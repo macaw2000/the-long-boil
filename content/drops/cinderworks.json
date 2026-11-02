@@ -1,0 +1,89 @@
+{
+  "schema": "drops/1",
+  "id": "drops.cinderworks.foundry",
+  "tables": [
+    {
+      "monster": "monster.cinderworks.soot_wraith_wisp",
+      "crowns": {
+        "min": 80,
+        "max": 160
+      },
+      "entries": [
+        {
+          "item": "item.cinderworks.cinders",
+          "chance": 1.0,
+          "qty_min": 1,
+          "qty_max": 1
+        }
+      ],
+      "first_kill": []
+    },
+    {
+      "monster": "monster.cinderworks.soot_wraith_drifter",
+      "crowns": {
+        "min": 99,
+        "max": 198
+      },
+      "entries": [
+        {
+          "item": "item.cinderworks.cinders",
+          "chance": 1.0,
+          "qty_min": 1,
+          "qty_max": 1
+        }
+      ],
+      "first_kill": []
+    },
+    {
+      "monster": "monster.cinderworks.soot_wraith_billow",
+      "crowns": {
+        "min": 119,
+        "max": 238
+      },
+      "entries": [
+        {
+          "item": "item.cinderworks.cinders",
+          "chance": 1.0,
+          "qty_min": 1,
+          "qty_max": 1
+        }
+      ],
+      "first_kill": []
+    },
+    {
+      "monster": "monster.cinderworks.soot_wraith_overman",
+      "crowns": {
+        "min": 140,
+        "max": 280
+      },
+      "entries": [
+        {
+          "item": "item.cinderworks.cinders",
+          "chance": 1.0,
+          "qty_min": 1,
+          "qty_max": 1
+        }
+      ],
+      "first_kill": []
+    },
+    {
+      "monster": "monster.cinderworks.old_bellows",
+      "crowns": {
+        "min": 175,
+        "max": 350
+      },
+      "entries": [
+        {
+          "item": "item.cinderworks.bellows_plate",
+          "chance": 0.02,
+          "qty_min": 1,
+          "qty_max": 1
+        }
+      ],
+      "first_kill": [
+        "item.cinderworks.bellows_plate"
+      ]
+    }
+  ],
+  "zone_pity": []
+}

@@ -553,6 +553,254 @@
           "qty": 1
         }
       ]
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_fire_rake",
+      "skill": "smithing",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 139,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_fire_rake",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_firebox_poker",
+      "skill": "smithing",
+      "level_required": 25,
+      "seconds": 324,
+      "xp": 172,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.firebox_poker",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_plate_sledge",
+      "skill": "smithing",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 206,
+      "inputs": [
+        {
+          "item": "item.cinderworks.boiler_plate",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.plate_sledge",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_tapping_bar",
+      "skill": "smithing",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 243,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.tapping_bar",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_bronze_blunderbuss",
+      "skill": "tinkering",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 139,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_blunderbuss",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_steam_rifle",
+      "skill": "tinkering",
+      "level_required": 25,
+      "seconds": 324,
+      "xp": 172,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.bronze_valve",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.steam_rifle",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_gauged_steam_rifle",
+      "skill": "tinkering",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 206,
+      "inputs": [
+        {
+          "item": "item.cinderworks.steam_rifle",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.pressure_gauge",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.gauged_steam_rifle",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_injector_rifle",
+      "skill": "tinkering",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 243,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.steam_injector",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.injector_rifle",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_bronze_arc_rod",
+      "skill": "tinkering",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 139,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_arc_rod",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_induction_coil",
+      "skill": "tinkering",
+      "level_required": 25,
+      "seconds": 324,
+      "xp": 172,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.induction_coil",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_leyden_rod",
+      "skill": "tinkering",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 206,
+      "inputs": [
+        {
+          "item": "item.cinderworks.induction_coil",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.slag_glass",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.leyden_rod",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_tuyere_lance",
+      "skill": "tinkering",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 243,
+      "inputs": [
+        {
+          "item": "item.cinderworks.leyden_rod",
+          "qty": 1
+        },
+        {
+          "item": "item.cinderworks.burnt_tuyere",
+          "qty": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.tuyere_lance",
+          "qty": 1
+        }
+      ]
     }
   ]
 }

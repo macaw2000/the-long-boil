@@ -58,6 +58,21 @@ every rule below.
   entries; no Ledger Page appears in more than one table (entries or
   first_kill); no Ledger Page appears in more than one zone's drops.
 
+Pages pending (work order 033: a zone's drops can be drafted before the
+scrivener writes its pages). The global economy file (zone "global") may
+carry LEDGER_PENDING_KEY, a list of zone names. For each listed zone the two
+count rules above, ledger-drop-count and ledger-boss-page, are skipped and a
+NOTE says its pages are pending. Every other rule still runs. Each of these
+fails:
+- ledger-pending-has-pages: a listed zone already has a Ledger Page drop (a
+  page in the entries or first_kill of a table whose monster is in the zone,
+  or a page of the zone's own id named anywhere in a drop file), so the
+  exemption cannot outlive the pages;
+- ledger-pending-unknown-zone: a listed name is not a zone with Ledger
+  Pages (ZONE_BAND's zones; "global" has no pages and is already exempt);
+- ledger-pending-misplaced: an economy file of any other zone carries the
+  list.
+
 Crown faucet (NOTE lines only, no thresholds). For each zone band the combat
 pacing check checks, at each level, the non-boss monster that check picks
 (highest combat XP per hour, ties to the lower id); its Crowns per hour from
@@ -139,6 +154,10 @@ LEDGER_PITY_MAX_KILLS = 1000
 LEDGER_BOSS_FIRST_KILL = 1
 # Jeremy, answer to work order 007 Q8: the Ledger Page rules skip this zone.
 LEDGER_EXEMPT_ZONES = ("global",)
+# Work order 033: zones whose Ledger Pages are pending, declared in data, in
+# the economy file of this zone, under this key.
+LEDGER_PENDING_KEY = "ledger_pages_pending"
+LEDGER_PENDING_HOME = "global"
 
 # GDD section 6, combat table: the band each zone covers. Used only to label
 # the collector figure; "global" has no band.
@@ -338,7 +357,32 @@ def _text(value):
 # --------------------------------------------------------------------------
 
 
+def pending_zones(report, economy_by_zone):
+    """{zone: path of the file that lists it} for every valid pending zone."""
+    pending = {}
+    for zone in sorted(economy_by_zone):
+        for path, data in economy_by_zone[zone]:
+            if LEDGER_PENDING_KEY not in data:
+                continue
+            if zone != LEDGER_PENDING_HOME:
+                report.fail("ledger-pending-misplaced", path,
+                            "zone %s: %s is listed here; only the %s economy file "
+                            "declares pending Ledger Pages"
+                            % (zone, LEDGER_PENDING_KEY, LEDGER_PENDING_HOME), data["id"])
+                continue
+            for name in data[LEDGER_PENDING_KEY]:
+                if name not in ZONE_BAND:
+                    report.fail("ledger-pending-unknown-zone", path,
+                                "%s names %s, which is not a zone with Ledger Pages "
+                                "(one of %s)" % (LEDGER_PENDING_KEY, name,
+                                                 ", ".join(sorted(ZONE_BAND))), data["id"])
+                    continue
+                pending.setdefault(name, path)
+    return pending
+
+
 def check_ledger(report, root, drop_files, tables, economy_by_zone, monsters):
+    pending = pending_zones(report, economy_by_zone)
     pages = {}  # page id -> where it was seen first
     for ident, path in item_ids(root).items():
         if is_ledger_page(ident):
@@ -424,6 +468,34 @@ def check_ledger(report, root, drop_files, tables, economy_by_zone, monsters):
                         "zones %s: Ledger Page %s drops in %d zones: %s; one only"
                         % (", ".join(zones), page, len(zones), where), page)
 
+    # Work order 033: a pending zone has no Ledger Page drop yet.
+    for zone in sorted(pending):
+        found = {}  # page -> set of "path#/pointer"
+        for path, data in drop_files:
+            for i, entry in enumerate(data["zone_pity"]):
+                if is_ledger_page(entry["item"]) and zone_of(entry["item"]) == zone:
+                    found.setdefault(entry["item"], set()).add("%s#/zone_pity/%d" % (path, i))
+            for index, table in enumerate(data["tables"]):
+                in_zone = zone_of(table["monster"]) == zone
+                for field in ("entries", "first_kill"):
+                    items = ([e["item"] for e in table["entries"]] if field == "entries"
+                             else table["first_kill"])
+                    for item in items:
+                        if is_ledger_page(item) and (in_zone or zone_of(item) == zone):
+                            found.setdefault(item, set()).add(
+                                "%s#/tables/%d/%s" % (path, index, field))
+        if found:
+            for page in sorted(found):
+                report.fail("ledger-pending-has-pages", pending[zone],
+                            "zone %s is listed in %s but Ledger Page %s already drops: "
+                            "%s; take the zone off the list"
+                            % (zone, LEDGER_PENDING_KEY, page, ", ".join(sorted(found[page]))),
+                            page)
+        else:
+            report.note("zone %s: Ledger Pages pending (%s in %s); ledger-drop-count and "
+                        "ledger-boss-page not checked"
+                        % (zone, LEDGER_PENDING_KEY, pending[zone]))
+
     for zone in sorted(by_zone):
         zone_tables = by_zone[zone]
         zone_paths = ", ".join(sorted(set(p for p, _, _ in zone_tables)))
@@ -448,6 +520,8 @@ def check_ledger(report, root, drop_files, tables, economy_by_zone, monsters):
                                 "zone %s: Ledger Page %s has zone_pity %s kills; at "
                                 "most %d" % (zone, page, max(kills),
                                              LEDGER_PITY_MAX_KILLS), page)
+        if zone in pending:
+            continue  # work order 033: noted, or failed, above
         if len(dropped) != LEDGER_DROPS_PER_ZONE:
             report.fail("ledger-drop-count", zone_paths,
                         "zone %s: %d Ledger Page(s) drop from non-boss monsters (%s); "

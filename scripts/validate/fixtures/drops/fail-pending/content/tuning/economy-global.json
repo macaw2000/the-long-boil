@@ -1,0 +1,15 @@
+{
+ "schema": "tuning.economy/2",
+ "id": "tuning.global.economy",
+ "zone": "global",
+ "items": {},
+ "anchors": {
+  "_note": "Fixture values, not game content."
+ },
+ "ledger_pages_pending": [
+  "cinderworks",
+  "rustmoor",
+  "foundry",
+  "global"
+ ]
+}

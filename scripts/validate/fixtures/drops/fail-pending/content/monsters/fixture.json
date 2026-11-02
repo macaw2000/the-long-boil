@@ -1,0 +1,45 @@
+{
+ "schema": "monster/1",
+ "monsters": [
+  {
+   "id": "monster.cinderworks.fixture_pending_soot",
+   "name": "Fixture Pending Soot",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 20,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 25,
+   "seconds_per_kill": 36
+  },
+  {
+   "id": "monster.cinderworks.fixture_pending_bellows",
+   "name": "Fixture Pending Bellows",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 40,
+   "boss": true,
+   "weakness": "melee",
+   "xp": 900,
+   "seconds_per_kill": 60
+  },
+  {
+   "id": "monster.rustmoor.fixture_pending_scrap",
+   "name": "Fixture Pending Scrap",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 2,
+   "boss": false,
+   "weakness": "melee",
+   "xp": 6,
+   "seconds_per_kill": 36
+  },
+  {
+   "id": "monster.rustmoor.fixture_pending_king",
+   "name": "Fixture Pending King",
+   "flavour": "Fixture monster, kept for a validator.",
+   "level": 15,
+   "boss": true,
+   "weakness": "melee",
+   "xp": 500,
+   "seconds_per_kill": 60
+  }
+ ]
+}

@@ -1,7 +1,7 @@
 # Work order 033: The Cinderworks' combat
 
 **Agents:** the orchestrator for the Foundry Pass gate; `draftsman` for the monsters, drops, boss and weapons; `assayer` for the measurements; `registrar` for the rows
-**Status:** ready to run
+**Status:** drafted and measured (2 November 2026). Parts 1 to 3 are done; the zone's Ledger Pages are listed as pending in `content/tuning/economy-global.json` (`ledger_pages_pending`) until the scrivener's work order. Open for Jeremy: Old Bellows solved against empty slots until 034 (real Tinkers win 0.80 to 0.95), the Bronze Fire Rake as its reference weapon, its melee weakness, the Cinderworks' Crown faucet (2.7x Rustmoor, sinks 0.8%), how `lore.whistle_notations` +1 is granted on the first kill, and whether the Bellows Plate trades.
 **Blocks:** work order 034 (the Cinderworks' armour and tool ladder), Act II's storylets, and the art for every new monster and weapon.
 
 ## Why this one

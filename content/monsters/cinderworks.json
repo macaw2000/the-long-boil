@@ -1,0 +1,80 @@
+{
+  "schema": "monster/2",
+  "monsters": [
+    {
+      "id": "monster.cinderworks.soot_wraith_wisp",
+      "name": "Soot Wraith Wisp",
+      "flavour": "A curl of smoke that has decided to have elbows, and to use them.",
+      "level": 20,
+      "boss": false,
+      "weakness": "melee",
+      "xp": 160,
+      "seconds_per_kill": 270,
+      "hp": 17627,
+      "max_hit": 70,
+      "hit_chance": 0.75,
+      "attack_interval_s": 15.0,
+      "evasion": 26
+    },
+    {
+      "id": "monster.cinderworks.soot_wraith_drifter",
+      "name": "Soot Wraith Drifter",
+      "flavour": "It drifts along the roof girders, well out of reach of anything you can swing.",
+      "level": 25,
+      "boss": false,
+      "weakness": "marksmanship",
+      "xp": 198,
+      "seconds_per_kill": 324,
+      "hp": 26572,
+      "max_hit": 70,
+      "hit_chance": 0.75,
+      "attack_interval_s": 18.0,
+      "evasion": 31
+    },
+    {
+      "id": "monster.cinderworks.soot_wraith_billow",
+      "name": "Soot Wraith Billow",
+      "flavour": "A thick grey billow that a blade passes straight through and a spark sets crackling.",
+      "level": 30,
+      "boss": false,
+      "weakness": "aetherics",
+      "xp": 238,
+      "seconds_per_kill": 378,
+      "hp": 37765,
+      "max_hit": 77,
+      "hit_chance": 0.75,
+      "attack_interval_s": 21.0,
+      "evasion": 37
+    },
+    {
+      "id": "monster.cinderworks.soot_wraith_overman",
+      "name": "Soot Wraith Overman",
+      "flavour": "It stands over the hottest furnace as if it ran the shift, and hits like it.",
+      "level": 35,
+      "boss": false,
+      "weakness": "melee",
+      "xp": 280,
+      "seconds_per_kill": 432,
+      "hp": 51072,
+      "max_hit": 84,
+      "hit_chance": 0.75,
+      "attack_interval_s": 24.0,
+      "evasion": 43
+    },
+    {
+      "id": "monster.cinderworks.old_bellows",
+      "name": "Old Bellows",
+      "flavour": "The Foundry's oldest bellows, patched with every century's leather, and still pumping when the shift has gone home.",
+      "level": 45,
+      "boss": true,
+      "weakness": "melee",
+      "xp": 350,
+      "seconds_per_kill": 540,
+      "hp": 60119,
+      "max_hit": 776,
+      "hit_chance": 0.75,
+      "attack_interval_s": 30.0,
+      "evasion": 55
+    }
+  ]
+}

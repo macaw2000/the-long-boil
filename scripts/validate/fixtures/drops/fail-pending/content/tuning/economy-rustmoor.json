@@ -1,0 +1,15 @@
+{
+ "schema": "tuning.economy/2",
+ "id": "tuning.rustmoor.economy",
+ "zone": "rustmoor",
+ "items": {
+  "item.rustmoor.fixture_ledger_page_early": {
+   "bound": true,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  }
+ },
+ "anchors": {
+  "_note": "Fixture values, not game content."
+ }
+}

@@ -11,5 +11,8 @@
   },
   "anchors": {
     "cog_crate": "GDD section 8 (amended 30 October 2026): a crate is bound to the account that bought it and is only opened, never sold, so Cogs and Crowns never trade. No collector buys one."
-  }
+  },
+  "ledger_pages_pending": [
+    "cinderworks"
+  ]
 }

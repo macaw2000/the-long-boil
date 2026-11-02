@@ -1,0 +1,15 @@
+{
+ "schema": "item/1",
+ "items": [
+  {
+   "id": "item.cinderworks.fixture_ledger_page_early",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  },
+  {
+   "id": "item.rustmoor.fixture_ledger_page_early",
+   "name": "Page",
+   "flavour": "Fixture page, torn for a validator."
+  }
+ ]
+}

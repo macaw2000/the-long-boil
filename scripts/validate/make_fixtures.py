@@ -964,12 +964,13 @@ MEAL, PORK, HERB, RATION = ("item.global.fixture_meal", "item.global.fixture_por
 
 # schema: tuning.economy/2 with grocer_price set, null and absent, beside
 # /1; start/1 at content/start.json.
-put("schema/pass/content/tuning/economy-cinderworks.json", econ2("cinderworks", [
+put("schema/pass/content/tuning/economy-cinderworks.json", dict(econ2("cinderworks", [
     (MEAL, False, None, None, 3), (PORK, False, 4, 10, 5), (HERB, False, None, None, None),
-    (RATION, False, None, None, ...)]))
+    (RATION, False, None, None, ...)]), ledger_pages_pending=["thunderhead"]))
 put("schema/pass/" + SP, start([(INGOT, 50, False), (RATION, 342, True)], crowns=0))
-put(S + "tuning/economy-grocer-bad.json", econ2("rustmoor", [
-    (MEAL, False, None, None, 0), (PORK, False, None, None, 2.5), (HERB, False, None, None, "3")]))
+put(S + "tuning/economy-grocer-bad.json", dict(econ2("rustmoor", [
+    (MEAL, False, None, None, 0), (PORK, False, None, None, 2.5), (HERB, False, None, None, "3")]),
+    ledger_pages_pending=["Cinder Works", 3]))  # work order 033: zone names only
 # grocer_price is not a tuning.economy/1 field.
 g1 = econ("thunderhead", [(MEAL, False, None, None)]); g1["items"][MEAL]["grocer_price"] = 3
 put(S + "tuning/economy-grocer-v1.json", g1)
@@ -1033,6 +1034,52 @@ put(FG + "content/tuning/economy-rustmoor.json", econ2("rustmoor", [
 put(FG + "content/tuning/economy-cinderworks.json", econ2("cinderworks", [(PORK, False, 7, 10, None)]))
 put(FG + TEP, econ2("thunderhead", [(MEAL, False, None, None, 0)]))
 put(FG + GEP, econ("global", [], schema="tuning.economy/3"))
+
+# ---- work order 033: Ledger Pages pending, declared in the global economy
+# file's ledger_pages_pending. Fixture names only.
+PB, PS, PK = ("monster.cinderworks.fixture_pending_bellows", "monster.cinderworks.fixture_pending_soot",
+              "monster.rustmoor.fixture_pending_king")
+PSCRAP = "monster.rustmoor.fixture_pending_scrap"
+PCPAGE, PRPAGE = "item.cinderworks.fixture_ledger_page_early", "item.rustmoor.fixture_ledger_page_early"
+def pending_econ(zones, rows=()):
+    e = econ2("global", list(rows)); e["ledger_pages_pending"] = list(zones)
+    return e
+
+# drops pass-pending: thunderhead keeps every page rule; cinderworks has a
+# non-boss and a boss table with no Ledger Page, and is listed as pending, so
+# ledger-drop-count and ledger-boss-page are skipped and a NOTE says so
+# (pinned in expected-notes.txt). Without the list it would fail both.
+PP = "drops/pass-pending/"
+put(PP + IP, LEDGER_ITEMS)
+put(PP + MP, monsters(*(LEDGER_MONSTER_LIST + [mon(PS, 20, 25, 36), mon(PB, 40, 900, 60, boss=True)])))
+put(PP + DP, LEDGER_DROPS)
+put(PP + "content/drops/cinderworks.json", drops("drops.cinderworks.fixture_pending",
+    table(PS, 1, 2, [(ORE, 0.5, 1, 1)]), table(PB, 9, 9, [(INGOT, 1.0, 1, 1)], first_kill=[INGOT])))
+put(PP + TEP, LEDGER_ECON)
+put(PP + GEP, pending_econ(["cinderworks"], [(ORE, False, 3, 50, 4)]))
+if not os.path.exists(os.path.join(F, PP + "expected-notes.txt")):
+    put(PP + "expected-notes.txt", "")
+
+# drops fail-pending: cinderworks is pending but a page already drops from a
+# non-boss table (with its pity entry); rustmoor is pending but its boss
+# gives a page on first kill; "foundry" is no zone and "global" has no
+# pages; and the thunderhead economy file carries the list, which only the
+# global file may. Every page is bound in its zone's economy file, so no
+# other page rule fails, and the two count rules stay skipped for both zones.
+FP = "drops/fail-pending/"
+put(FP + IP, items((PCPAGE, "Page", "Fixture page, torn for a validator."),
+                   (PRPAGE, "Page", "Fixture page, torn for a validator.")))
+put(FP + MP, monsters(mon(PS, 20, 25, 36), mon(PB, 40, 900, 60, boss=True),
+                      mon(PSCRAP, 2, 6, 36), mon(PK, 15, 500, 60, boss=True)))
+put(FP + "content/drops/cinderworks.json", drops("drops.cinderworks.fixture_pending",
+    table(PS, 1, 2, [(PCPAGE, 0.001, 1, 1)]), table(PB, 9, 9), pity=[(PCPAGE, 500)]))
+put(FP + "content/drops/rustmoor.json", drops("drops.rustmoor.fixture_pending",
+    table(PSCRAP, 1, 2), table(PK, 9, 9, first_kill=[PRPAGE])))
+put(FP + "content/tuning/economy-cinderworks.json", econ2("cinderworks", [(PCPAGE, True, None, None, ...)]))
+put(FP + "content/tuning/economy-rustmoor.json", econ2("rustmoor", [(PRPAGE, True, None, None, ...)]))
+th = econ2("thunderhead", []); th["ledger_pages_pending"] = ["thunderhead"]
+put(FP + TEP, th)
+put(FP + GEP, pending_econ(["cinderworks", "rustmoor", "foundry", "global"]))
 
 # start pass: 50 ingots and a bound crate of Rations; start fail: a Ledger
 # Page in the inventory, a start/0 file and a start/1 file that does not

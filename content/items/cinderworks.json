@@ -145,6 +145,71 @@
       "id": "item.cinderworks.founders_goggles",
       "name": "Founder's Goggles",
       "flavour": "Smoked lenses in tuyere-bronze eyecups, the kind the Foundry gives its casters and seldom anyone else."
+    },
+    {
+      "id": "item.cinderworks.bronze_fire_rake",
+      "name": "Bronze Fire Rake",
+      "flavour": "A stoker's rake with a bronze head, for dragging a fire about and anything else that gets in the way."
+    },
+    {
+      "id": "item.cinderworks.firebox_poker",
+      "name": "Firebox Poker",
+      "flavour": "A nickel steel poker that goes into a white-hot firebox and comes out merely annoyed."
+    },
+    {
+      "id": "item.cinderworks.plate_sledge",
+      "name": "Plate Sledge",
+      "flavour": "A sledgehammer with a head built up from riveted boiler plate, heavy enough to settle most disputes in one."
+    },
+    {
+      "id": "item.cinderworks.tapping_bar",
+      "name": "Tapping Bar",
+      "flavour": "A manganese steel bar for opening a furnace's taphole, which opens most other things as well."
+    },
+    {
+      "id": "item.cinderworks.bronze_blunderbuss",
+      "name": "Bronze Blunderbuss",
+      "flavour": "A bell-mouthed bronze gun that loads with whatever is on the floor and spends it all at once."
+    },
+    {
+      "id": "item.cinderworks.steam_rifle",
+      "name": "Steam Rifle",
+      "flavour": "A nickel steel barrel on a bronze valve, which fires on the Foundry's own steam and hisses about it after."
+    },
+    {
+      "id": "item.cinderworks.gauged_steam_rifle",
+      "name": "Gauged Steam Rifle",
+      "flavour": "A Steam Rifle with a Pressure Gauge fitted, so you know exactly how hard it is about to kick."
+    },
+    {
+      "id": "item.cinderworks.injector_rifle",
+      "name": "Injector Rifle",
+      "flavour": "A manganese steel rifle fed by a steam injector, which reloads itself faster than you can apologise."
+    },
+    {
+      "id": "item.cinderworks.bronze_arc_rod",
+      "name": "Bronze Arc Rod",
+      "flavour": "A bronze rod with a gap at the tip, where a fat blue arc lives and resents company."
+    },
+    {
+      "id": "item.cinderworks.induction_coil",
+      "name": "Induction Coil",
+      "flavour": "A nickel steel core under a mile of fine wire, which turns a small spark into a large opinion."
+    },
+    {
+      "id": "item.cinderworks.leyden_rod",
+      "name": "Leyden Rod",
+      "flavour": "An Induction Coil charging a slag-glass jar, which lets go all at once when it has had enough."
+    },
+    {
+      "id": "item.cinderworks.tuyere_lance",
+      "name": "Tuyere Lance",
+      "flavour": "A Leyden Rod fired through a tuyere's bronze cone, which narrows its spark to a needle."
+    },
+    {
+      "id": "item.cinderworks.bellows_plate",
+      "name": "Bellows Plate",
+      "flavour": "A curved plate of riveted iron prised off Old Bellows, patched and re-patched by every century that owned it."
     }
   ]
 }

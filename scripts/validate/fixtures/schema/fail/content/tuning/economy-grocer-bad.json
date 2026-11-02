@@ -24,5 +24,9 @@
  },
  "anchors": {
   "_note": "Fixture values, not game content."
- }
+ },
+ "ledger_pages_pending": [
+  "Cinder Works",
+  3
+ ]
 }

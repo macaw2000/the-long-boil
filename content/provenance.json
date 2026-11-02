@@ -1443,6 +1443,62 @@
       "retirement": null
     },
     {
+      "id": "act1.lowvents.wet_coats",
+      "type": "storylet",
+      "path": "content/storylets/act1.lowvents.wet_coats.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "crew/briefs/lowvents-oilcloth-storylet.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:48:49Z",
+        "checks": [
+          "schema",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: inspector review passed 2026-11-02T16:49:31Z on the round 1 draft. Reveal clear. Open questions for Jeremy: (1) the repeatable +1 favour.stokers on a 24h cooldown reaches the cap of 7 in seven days, so decide on once-only or a cap such as below 2; (2) silk may convert Crowns into favour via the Brass Exchange; (3) the daily silk sink of 3 to 5 may raise the silk price after work order 032, so check against drop rates; (4) option 1 dominates option 2 at tailoring 17 or more, with an optional fix of difficulty around 15; (5) the needle.scald failure comes from a stove burn, not the Scald. Optional text tweak: 'The stair pays in coal'."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:48:48Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-02T16:48:49Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-02T16:49:31Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "act1.lowvents.who_feeds_it",
       "type": "storylet",
       "path": "content/storylets/act1.lowvents.who_feeds_it.json",
@@ -2408,6 +2464,62 @@
       "retirement": null
     },
     {
+      "id": "act1.rustmoor.silk_line",
+      "type": "storylet",
+      "path": "content/storylets/act1.rustmoor.silk_line.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "crew/briefs/rustmoor-silk-storylet.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:48:49Z",
+        "checks": [
+          "schema",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes, 2026-11-02T16:49:29Z, round 1. Reveal clear. Economy risks: options[0] grants a risk-free quilted silk (certain at Tailoring 10) and may undercut the quilted silk recipe and Exchange price if that recipe consumes umbrella silk; check the recipe input before shipping. options[1] grants 3 umbrella silk (certain at Scavenging 14) and may depress early silk prices; check the pacing sheet. Text fixes suggested: night-time marker in options[0].success, the repeated simile across options[0] success and failure, and an optional trim of options[2].success. Open questions for Jeremy: option 2 becomes dominated at higher skill on a repeatable storylet, and whether needle.scald covers non-steam injuries."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:48:49Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-02T16:48:49Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-02T16:49:29Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "act1.rustmoor.tipping_hour",
       "type": "storylet",
       "path": "content/storylets/act1.rustmoor.tipping_hour.json",
@@ -2735,6 +2847,62 @@
         },
         {
           "at": "2026-10-23T14:59:33Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "act1.sprocket_row.mending_basket",
+      "type": "storylet",
+      "path": "content/storylets/act1.sprocket_row.mending_basket.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "crew/briefs/sprocket-row-mending-storylet.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-02T16:49:19Z",
+        "checks": [
+          "schema",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes, round 1, 2026-11-02T16:50:07Z. Reveal clear, no reveal risks. Open for Jeremy: (1) the Ration faucet is within the brief cap, but option 1 becomes certain at Tailoring 15; confirm against the Ration price band. (2) Option 2 weakly dominates option 1 below Tailoring 7.5; optional fix is to make option 2 a low-difficulty tailoring challenge with needle.arrears +1 on failure. (3) Brass Gazette 'crossword' is uncanonised and possibly post-Victorian; alternatives are offered. (4) A Sunday/Saturday weekly calendar is assumed and is not canon. (5) needle.scald versus needle.arrears for the option 1 failure is a taste call. (6) Pip's repeated broken-off sentence; an optional variation is offered."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T16:49:19Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-02T16:49:19Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-02T16:50:07Z",
           "status": "reviewed",
           "by": "inspector"
         }
@@ -3297,6 +3465,35 @@
       "retirement": null
     },
     {
+      "id": "action.cinderworks.forge_bronze_fire_rake",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/29",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "action.cinderworks.forge_clinker_bar",
       "type": "action",
       "path": "content/actions/cinderworks.json",
@@ -3356,6 +3553,93 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_firebox_poker",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/30",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_plate_sledge",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/31",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_tapping_bar",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/32",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4769,6 +5053,64 @@
       "retirement": null
     },
     {
+      "id": "action.cinderworks.tinker_bronze_arc_rod",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/37",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_bronze_blunderbuss",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/33",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "action.cinderworks.tinker_bronze_valve",
       "type": "action",
       "path": "content/actions/cinderworks.json",
@@ -4828,6 +5170,122 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_gauged_steam_rifle",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/35",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_induction_coil",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/38",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_injector_rifle",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/36",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_leyden_rod",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/39",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -5020,6 +5478,64 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_steam_rifle",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/34",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_tuyere_lance",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/40",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -10863,6 +11379,35 @@
       "retirement": null
     },
     {
+      "id": "drops.cinderworks.foundry",
+      "type": "drops",
+      "path": "content/drops/cinderworks.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "drops.rustmoor.scrapyards",
       "type": "drops",
       "path": "content/drops/rustmoor.json",
@@ -10937,8 +11482,8 @@
       "path": "content/gear/cinderworks.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/028-tailoring-and-first-armour.md",
-      "status": "reviewed",
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -10984,6 +11529,11 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -11104,6 +11654,35 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.bellows_plate",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/41",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.boiler_plate",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -11161,6 +11740,64 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.bronze_arc_rod",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/37",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_blunderbuss",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/33",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.bronze_eyecups",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -11213,6 +11850,35 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_fire_rake",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/29",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -11560,6 +12226,35 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.firebox_poker",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/30",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.founders_goggles",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -11674,6 +12369,35 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.gauged_steam_rifle",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/35",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.gauze_goggles",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -11726,6 +12450,93 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.induction_coil",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/38",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.injector_rifle",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/36",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.leyden_rod",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/39",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -12011,6 +12822,35 @@
           "at": "2026-10-29T03:54:32Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.plate_sledge",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/31",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -12586,6 +13426,35 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.steam_rifle",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/34",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.studded_felt_coat",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -12643,6 +13512,35 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.tapping_bar",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/32",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.tin_ore",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -12695,6 +13593,35 @@
           "at": "2026-10-29T03:54:32Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.tuyere_lance",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/40",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -19128,6 +20055,151 @@
       "retirement": null
     },
     {
+      "id": "monster.cinderworks.old_bellows",
+      "type": "monster",
+      "path": "content/monsters/cinderworks.json",
+      "pointer": "/monsters/4",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "monster.cinderworks.soot_wraith_billow",
+      "type": "monster",
+      "path": "content/monsters/cinderworks.json",
+      "pointer": "/monsters/2",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "monster.cinderworks.soot_wraith_drifter",
+      "type": "monster",
+      "path": "content/monsters/cinderworks.json",
+      "pointer": "/monsters/1",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "monster.cinderworks.soot_wraith_overman",
+      "type": "monster",
+      "path": "content/monsters/cinderworks.json",
+      "pointer": "/monsters/3",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "monster.cinderworks.soot_wraith_wisp",
+      "type": "monster",
+      "path": "content/monsters/cinderworks.json",
+      "pointer": "/monsters/0",
+      "revision": null,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "monster.rustmoor.rust_rat_gaffer",
       "type": "monster",
       "path": "content/monsters/rustmoor.json",
@@ -20562,9 +21634,9 @@
       "type": "tuning",
       "path": "content/tuning/combat.json",
       "pointer": null,
-      "revision": 14,
-      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
-      "status": "validated",
+      "revision": 15,
+      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
@@ -20732,6 +21804,11 @@
           "at": "2026-11-02T17:10:22Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -22209,174 +23286,6 @@
         },
         {
           "at": "2026-10-24T16:12:42Z",
-          "status": "reviewed",
-          "by": "inspector"
-        }
-      ],
-      "retirement": null
-    },
-    {
-      "id": "act1.lowvents.wet_coats",
-      "type": "storylet",
-      "path": "content/storylets/act1.lowvents.wet_coats.json",
-      "pointer": null,
-      "revision": null,
-      "work_order": "crew/briefs/lowvents-oilcloth-storylet.md",
-      "status": "reviewed",
-      "drafted_by": "scrivener",
-      "model": null,
-      "patch": null,
-      "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:48:49Z",
-        "checks": [
-          "schema",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
-        "waiver": null
-      },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": "Pass with notes: inspector review passed 2026-11-02T16:49:31Z on the round 1 draft. Reveal clear. Open questions for Jeremy: (1) the repeatable +1 favour.stokers on a 24h cooldown reaches the cap of 7 in seven days, so decide on once-only or a cap such as below 2; (2) silk may convert Crowns into favour via the Brass Exchange; (3) the daily silk sink of 3 to 5 may raise the silk price after work order 032, so check against drop rates; (4) option 1 dominates option 2 at tailoring 17 or more, with an optional fix of difficulty around 15; (5) the needle.scald failure comes from a stove burn, not the Scald. Optional text tweak: 'The stair pays in coal'."
-      },
-      "approved_by": null,
-      "approved_at": null,
-      "history": [
-        {
-          "at": "2026-11-02T16:48:48Z",
-          "status": "drafted",
-          "by": "scrivener"
-        },
-        {
-          "at": "2026-11-02T16:48:49Z",
-          "status": "validated",
-          "by": "validators"
-        },
-        {
-          "at": "2026-11-02T16:49:31Z",
-          "status": "reviewed",
-          "by": "inspector"
-        }
-      ],
-      "retirement": null
-    },
-    {
-      "id": "act1.rustmoor.silk_line",
-      "type": "storylet",
-      "path": "content/storylets/act1.rustmoor.silk_line.json",
-      "pointer": null,
-      "revision": null,
-      "work_order": "crew/briefs/rustmoor-silk-storylet.md",
-      "status": "reviewed",
-      "drafted_by": "scrivener",
-      "model": null,
-      "patch": null,
-      "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:48:49Z",
-        "checks": [
-          "schema",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
-        "waiver": null
-      },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": "Pass with notes, 2026-11-02T16:49:29Z, round 1. Reveal clear. Economy risks: options[0] grants a risk-free quilted silk (certain at Tailoring 10) and may undercut the quilted silk recipe and Exchange price if that recipe consumes umbrella silk; check the recipe input before shipping. options[1] grants 3 umbrella silk (certain at Scavenging 14) and may depress early silk prices; check the pacing sheet. Text fixes suggested: night-time marker in options[0].success, the repeated simile across options[0] success and failure, and an optional trim of options[2].success. Open questions for Jeremy: option 2 becomes dominated at higher skill on a repeatable storylet, and whether needle.scald covers non-steam injuries."
-      },
-      "approved_by": null,
-      "approved_at": null,
-      "history": [
-        {
-          "at": "2026-11-02T16:48:49Z",
-          "status": "drafted",
-          "by": "scrivener"
-        },
-        {
-          "at": "2026-11-02T16:48:49Z",
-          "status": "validated",
-          "by": "validators"
-        },
-        {
-          "at": "2026-11-02T16:49:29Z",
-          "status": "reviewed",
-          "by": "inspector"
-        }
-      ],
-      "retirement": null
-    },
-    {
-      "id": "act1.sprocket_row.mending_basket",
-      "type": "storylet",
-      "path": "content/storylets/act1.sprocket_row.mending_basket.json",
-      "pointer": null,
-      "revision": null,
-      "work_order": "crew/briefs/sprocket-row-mending-storylet.md",
-      "status": "reviewed",
-      "drafted_by": "scrivener",
-      "model": null,
-      "patch": null,
-      "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:49:19Z",
-        "checks": [
-          "schema",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
-        "waiver": null
-      },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": "Pass with notes, round 1, 2026-11-02T16:50:07Z. Reveal clear, no reveal risks. Open for Jeremy: (1) the Ration faucet is within the brief cap, but option 1 becomes certain at Tailoring 15; confirm against the Ration price band. (2) Option 2 weakly dominates option 1 below Tailoring 7.5; optional fix is to make option 2 a low-difficulty tailoring challenge with needle.arrears +1 on failure. (3) Brass Gazette 'crossword' is uncanonised and possibly post-Victorian; alternatives are offered. (4) A Sunday/Saturday weekly calendar is assumed and is not canon. (5) needle.scald versus needle.arrears for the option 1 failure is a taste call. (6) Pip's repeated broken-off sentence; an optional variation is offered."
-      },
-      "approved_by": null,
-      "approved_at": null,
-      "history": [
-        {
-          "at": "2026-11-02T16:49:19Z",
-          "status": "drafted",
-          "by": "scrivener"
-        },
-        {
-          "at": "2026-11-02T16:49:19Z",
-          "status": "validated",
-          "by": "validators"
-        },
-        {
-          "at": "2026-11-02T16:50:07Z",
           "status": "reviewed",
           "by": "inspector"
         }

@@ -105,6 +105,8 @@ FAIL schema/shape content/tuning/economy-bad.json id=tuning.foundry.economy : /z
 FAIL schema/shape content/tuning/economy-grocer-bad.json id=tuning.rustmoor.economy : /items/item.global.fixture_herb/grocer_price: expected integer or null, got string
 FAIL schema/shape content/tuning/economy-grocer-bad.json id=tuning.rustmoor.economy : /items/item.global.fixture_meal/grocer_price: below minimum 1
 FAIL schema/shape content/tuning/economy-grocer-bad.json id=tuning.rustmoor.economy : /items/item.global.fixture_pork/grocer_price: expected integer or null, got number
+FAIL schema/shape content/tuning/economy-grocer-bad.json id=tuning.rustmoor.economy : /ledger_pages_pending/0: does not match pattern ^[a-z][a-z0-9_]*$
+FAIL schema/shape content/tuning/economy-grocer-bad.json id=tuning.rustmoor.economy : /ledger_pages_pending/1: expected string, got number
 FAIL schema/shape content/tuning/economy-grocer-v1.json id=tuning.thunderhead.economy : /items/item.global.fixture_meal/grocer_price: field 'grocer_price' is not allowed by this schema
 FAIL schema/shape content/tuning/economy-no-id.json : /: missing required field 'id'
 FAIL schema/shape content/tuning/newline.json id=fixture.fail.newline\n : /id: does not match pattern ^[a-z0-9_]+(\.[a-z0-9_]+)+$

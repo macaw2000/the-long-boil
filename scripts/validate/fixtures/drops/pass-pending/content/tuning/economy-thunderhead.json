@@ -1,0 +1,50 @@
+{
+ "schema": "tuning.economy/1",
+ "id": "tuning.thunderhead.economy",
+ "zone": "thunderhead",
+ "items": {
+  "item.thunderhead.fixture_ledger_page_1": {
+   "bound": true,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.thunderhead.fixture_ledger_page_2": {
+   "bound": true,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.thunderhead.fixture_ledger_page_3": {
+   "bound": true,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.thunderhead.fixture_ledger_page_4": {
+   "bound": true,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.thunderhead.fixture_ledger_page_5": {
+   "bound": true,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.thunderhead.fixture_harpy_memo": {
+   "bound": false,
+   "collector_price": 40,
+   "collector_weekly_cap": 5
+  },
+  "item.global.fixture_copper_ore": {
+   "bound": false,
+   "collector_price": null,
+   "collector_weekly_cap": null
+  },
+  "item.global.fixture_brass_ingot": {
+   "bound": false,
+   "collector_price": 12,
+   "collector_weekly_cap": 10
+  }
+ },
+ "anchors": {
+  "_note": "Fixture values, not game content."
+ }
+}

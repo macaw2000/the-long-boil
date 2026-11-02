@@ -1,0 +1,12 @@
+NOTE drops : zone cinderworks: Ledger Pages pending (ledger_pages_pending in content/tuning/economy-global.json); ledger-drop-count and ledger-boss-page not checked
+NOTE drops : 2 checkable drop file(s), 6 drop table(s), 2 checkable economy file(s), 6 Ledger Page item(s)
+NOTE drops : Crown faucet: no valid curve with a positive assumptions.BAND_SKILL_QUEUE_HOURS_PER_DAY; Crowns per week not computed (see the pacing check)
+NOTE drops : Crown faucet band 1 to 20: monster.thunderhead.fixture_rat (levels 1-7): 3 Crowns a kill, 300.0 Crowns/h; monster.thunderhead.fixture_big_rat (levels 8-19): 5.5 Crowns a kill, 550.0 Crowns/h
+NOTE drops : Crown faucet band 20 to 45: monster.cinderworks.fixture_pending_soot (levels 20-29): 1.5 Crowns a kill, 150.0 Crowns/h; monster.thunderhead.fixture_moth (levels 30-44): no drop table, Crowns unknown
+NOTE drops : Crown faucet band 45 to 70: monster.thunderhead.fixture_moth (levels 45-69): no drop table, Crowns unknown
+NOTE drops : Crown faucet boss monster.cinderworks.fixture_pending_bellows (level 40): 9 Crowns per winning attempt (9 to 9); a separate queue item, not in the per-hour figures
+NOTE drops : Crown faucet boss monster.thunderhead.fixture_rat_king (level 1): 65 Crowns per winning attempt (50 to 80); a separate queue item, not in the per-hour figures
+NOTE drops : Crown faucet zone global (no zone band), content/tuning/economy-global.json: collectors pay at most 150 Crowns per player per week, from 1 item(s) with a collector price
+NOTE drops : Crown faucet zone thunderhead (band 45 to 70), content/tuning/economy-thunderhead.json: collectors pay at most 320 Crowns per player per week, from 2 item(s) with a collector price
+NOTE drops : Crown sink, grocer: 1 item(s) with a grocer_price (item.global.fixture_copper_ore 4)
+NOTE drops : Crown sink, grocer: no valid curve with the pacing assumptions; not computed (see the pacing check)

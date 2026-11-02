@@ -1,0 +1,12 @@
+{
+ "schema": "tuning.economy/2",
+ "id": "tuning.thunderhead.economy",
+ "zone": "thunderhead",
+ "items": {},
+ "anchors": {
+  "_note": "Fixture values, not game content."
+ },
+ "ledger_pages_pending": [
+  "thunderhead"
+ ]
+}
