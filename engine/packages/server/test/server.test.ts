@@ -344,7 +344,7 @@ describe("the Cinderworks opens with the Foundry Pass (work order 033)", () => {
     const id = (await call("POST", "/tinkers", { login: "foundry@example.com", name: "Furnace" })).body.tinker.id;
     const refused = await call("PUT", `/tinkers/${id}/queue`, { queue: [goggles] });
     expect(refused.status).toBe(400);
-    expect(refused.body.error).toBe("The Cinderworks opens with the Foundry Pass");
+    expect(refused.body.error).toBe("The Cinderworks opens with the Foundry Pass, earned in the story near the end of Act I");
     await db.query("INSERT INTO qualities (tinker_id, name, value) VALUES ($1, 'act1.progress', 80)", [id]);
     expect((await call("PUT", `/tinkers/${id}/queue`, { queue: [goggles] })).status).toBe(200);
   });

@@ -11,6 +11,7 @@ import type { Content, QueueEntry, Tinker } from "./api";
 import { duration, levelProgress, seconds, titleCase } from "./format";
 import { FIGHT, SPANS, BOILER_SECONDS, DEFAULT_SECONDS, jobTitle, notReadyText, usePlanner, type Planner } from "./jobs";
 import { Glow } from "./Glow";
+import { Term } from "./Term";
 import { ItemIcon, skillIconSource } from "./Sprite";
 import { characters } from "./sprites";
 import { colors, ui } from "./theme";
@@ -120,7 +121,7 @@ export function SkillView({
                 const outlook = planner.fights.get(monster.id);
                 const closed = !zoneOpen(monster.id, tinker.story.qualities);
                 const line = closed
-                  ? "Opens with the Foundry Pass"
+                  ? FOUNDRY_PASS_LINE
                   : !outlook
                   ? `Level ${monster.level}`
                   : !outlook.ready
@@ -138,6 +139,7 @@ export function SkillView({
                     picture={<MonsterPicture id={monster.id} size={64} />}
                     title={monster.name}
                     line={line}
+                    explain={closed ? (raise) => <FoundryPassNote onOpenChange={raise} /> : undefined}
                     accent={monster.boss ? colors.copper : undefined}
                   />
                 );
@@ -154,7 +156,8 @@ export function SkillView({
                     onPress={() => choose(action.id)}
                     picture={<ItemIcon item={action.outputs[0]?.item ?? "item.fallback"} size={40} />}
                     title={jobTitle(content, action.id, name)}
-                    line={closed ? "Opens with the Foundry Pass" : locked ? `Level ${action.level_required}` : seconds(action.seconds)}
+                    line={closed ? FOUNDRY_PASS_LINE : locked ? `Level ${action.level_required}` : seconds(action.seconds)}
+                    explain={closed ? (raise) => <FoundryPassNote onOpenChange={raise} /> : undefined}
                   />
                 );
               })}
@@ -186,10 +189,24 @@ export function SkillView({
   );
 }
 
+const FOUNDRY_PASS_LINE = "Opens with the Foundry Pass";
+
+/** A zone-locked tile's line, with what the Foundry Pass is and that it is earned, not sold. */
+function FoundryPassNote({ onOpenChange }: { onOpenChange?: (open: boolean) => void }) {
+  return (
+    <Term term="foundry_pass" onOpenChange={onOpenChange}>
+      <Text style={[ui.muted, { fontSize: 11, textAlign: "center", textDecorationLine: "underline", textDecorationStyle: "dotted" }]}>
+        {FOUNDRY_PASS_LINE} ⓘ
+      </Text>
+    </Term>
+  );
+}
+
 function Tile({
   picture,
   title,
   line,
+  explain,
   selected,
   locked,
   guided,
@@ -199,14 +216,17 @@ function Tile({
   picture: ReactNode;
   title: string;
   line: string;
+  /** Shown in place of line, undimmed, when the line explains itself (Term.tsx). */
+  explain?: (raise: (open: boolean) => void) => ReactNode;
   selected: boolean;
   locked: boolean;
   guided: boolean;
   accent?: string;
   onPress: () => void;
 }) {
+  const [raised, setRaised] = useState(false);
   return (
-    <Glow active={guided} guide>
+    <Glow active={guided} guide style={{ zIndex: raised ? 50 : 0 }}>
     <Pressable
       onPress={onPress}
       disabled={locked}
@@ -227,15 +247,16 @@ function Tile({
           borderWidth: selected ? 2 : 1,
           borderColor: selected ? colors.brass : (accent ?? (hovered && !locked ? colors.brassDim : colors.panelEdge)),
           backgroundColor: selected ? "#33291d" : hovered && !locked ? "#2c241c" : colors.panel,
-          opacity: locked ? 0.45 : 1,
         };
       }}
     >
-      {picture}
-      <Text style={[ui.text, { fontSize: 13, textAlign: "center" }]} numberOfLines={2}>
-        {title}
-      </Text>
-      <Text style={[ui.muted, { fontSize: 11, textAlign: "center" }]}>{line}</Text>
+      <View style={{ alignItems: "center", gap: 6, opacity: locked ? 0.45 : 1 }}>
+        {picture}
+        <Text style={[ui.text, { fontSize: 13, textAlign: "center" }]} numberOfLines={2}>
+          {title}
+        </Text>
+      </View>
+      {explain ? explain(setRaised) : <Text style={[ui.muted, { fontSize: 11, textAlign: "center", opacity: locked ? 0.45 : 1 }]}>{line}</Text>}
     </Pressable>
     </Glow>
   );

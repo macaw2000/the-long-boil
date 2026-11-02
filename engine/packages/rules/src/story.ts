@@ -86,7 +86,7 @@ export const SKILL_GATES: Readonly<Record<string, { quality: string; at: number;
  * (work order 033).
  */
 export const ZONE_GATES: Readonly<Record<string, { quality: string; at: number; reason: string }>> = {
-  cinderworks: { quality: "act1.progress", at: 80, reason: "The Cinderworks opens with the Foundry Pass" },
+  cinderworks: { quality: "act1.progress", at: 80, reason: "The Cinderworks opens with the Foundry Pass, earned in the story near the end of Act I" },
 };
 
 /** The gate on the zone an action, monster or item id belongs to, if it has one. */

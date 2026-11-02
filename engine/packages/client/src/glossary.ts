@@ -22,6 +22,8 @@ export const glossary = {
     "Notice: how much the Gaugers have noticed you, from broken locks, wrong questions and bad company. Some scenes let you lie low and bring it down. 8 is the redline.",
   "needle.haze":
     "Haze: how far the Great Whistle has got into your head. Calming teas and Chapel services bring it down. 8 is the redline.",
+  foundry_pass:
+    "The Foundry Pass lets you into the Cinderworks. It is earned in the story, never bought with money: near the end of Act I, a scene at the Brass Exchange offers it four ways, from mending a vent for the Stokers to taking it on credit from the Counting-House.",
 } as const;
 
 export type GlossaryTerm = keyof typeof glossary;
