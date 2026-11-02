@@ -70,21 +70,20 @@ Data flow, in words: the orchestrator hands each agent only what that agent need
 
 ## Run it
 
-Requires Python 3.10+, and either an Anthropic API key or Claude Code logged in to a Claude plan.
+Requires Python 3.10+ and Claude Code logged in to a Claude plan (or, with `--api`, an Anthropic API key).
 
 ```bash
 cd crew
 uv venv .venv && uv pip install --python .venv/bin/python -r requirements.txt
 # or: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 
-export ANTHROPIC_API_KEY=sk-ant-...
-.venv/bin/python crew.py briefs/rustmoor-silk-storylet.md            # real run, API key
-.venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --claude-code  # real run, Claude plan
+.venv/bin/python crew.py briefs/rustmoor-silk-storylet.md            # real run, on your Claude plan
 .venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --apply    # and add it to the game
-.venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --dry-run  # no API key needed
+.venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --dry-run  # no model calls at all
+.venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --api      # real run on API credits (needs ANTHROPIC_API_KEY)
 ```
 
-`--claude-code` sends each agent's call through headless Claude Code (`claude -p`) with the same system prompt and output schema, no tools and no project settings, so it runs on a Claude subscription instead of API credits (`claude_code_client.py`).
+By default each agent's call goes through headless Claude Code (`claude -p`) with the same system prompt and output schema, no tools and no project settings, so it runs on the Claude plan Claude Code is logged in with, not API credits (`claude_code_client.py`). The crew strips any API key from that call's environment, so it cannot fall back to credits. `--api` calls the Anthropic API instead.
 
 `--dry-run` replaces the three models with canned replies (`dry_run.py`) and runs everything else for real, validators included. The canned first draft contains a banned phrase on purpose, so you can watch the gate send it back:
 
@@ -101,7 +100,7 @@ export ANTHROPIC_API_KEY=sk-ant-...
 
 ## A real run
 
-`sample-run/` is the output of a real run on 2 November 2026 (Claude Opus 5.5 through `--claude-code`), committed as it came out:
+`sample-run/` is the output of a real run on 2 November 2026 (Claude Opus 5.5 on a Claude plan, through headless Claude Code), committed as it came out:
 
 ```
 08:20:52 brief crew/briefs/rustmoor-silk-storylet.md: act1.rustmoor.silk_line, act 1, layer 1
@@ -129,7 +128,7 @@ Each run writes `runs/<timestamp>/`: the storylet file, `report.json` (anything 
 | Path | What it is |
 | --- | --- |
 | `crew.py` | The orchestrator: context assembly, the three agents, the validator gate, the revision loop, the row guard. |
-| `claude_code_client.py` | Runs the agents through headless Claude Code for `--claude-code`. |
+| `claude_code_client.py` | Runs the agents through headless Claude Code on your Claude plan, the default. |
 | `dry_run.py` | Canned agent replies for `--dry-run`. |
 | `sample-run/` | The output of a real run. |
 | `briefs/` | Briefs the crew can take. |

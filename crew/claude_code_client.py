@@ -1,6 +1,6 @@
 """Run the crew's agents through headless Claude Code instead of the API.
 
-    .venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --claude-code
+    .venv/bin/python crew.py briefs/rustmoor-silk-storylet.md
 
 Stands in for anthropic.Anthropic() with the same messages.create call, but
 each call runs `claude -p` with the agent's system prompt and the output
@@ -10,6 +10,7 @@ settings: the agent sees only its system prompt and the message the crew built.
 """
 
 import json
+import os
 import subprocess
 import tempfile
 import types
@@ -30,9 +31,11 @@ class _Messages:
                "--strict-mcp-config",
                "--setting-sources", "",
                "--no-session-persistence"]
+        # Without an API key in its environment, claude -p can only use the plan it is logged in with.
+        env = {k: v for k, v in os.environ.items() if k not in ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")}
         with tempfile.TemporaryDirectory() as cwd:  # nothing in the project to pick up
             proc = subprocess.run(cmd, input=messages[-1]["content"], capture_output=True,
-                                  text=True, cwd=cwd, timeout=TIMEOUT)
+                                  text=True, cwd=cwd, env=env, timeout=TIMEOUT)
         try:
             out = json.loads(proc.stdout)
         except json.JSONDecodeError:

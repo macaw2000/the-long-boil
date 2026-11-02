@@ -3,7 +3,7 @@
     .venv/bin/python crew.py briefs/rustmoor-silk-storylet.md
     .venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --dry-run
     .venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --apply
-    .venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --claude-code
+    .venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --api
 
 The crew turns a brief into one game-ready storylet for The Long Boil, the same
 way the game's own pipeline does:
@@ -323,8 +323,11 @@ def main():
     ap.add_argument("brief")
     ap.add_argument("--dry-run", action="store_true",
                     help="run the whole pipeline with canned agent replies, no API calls")
+    ap.add_argument("--api", action="store_true",
+                    help="call the Anthropic API, which spends API credits; by default each agent runs through "
+                         "headless Claude Code on your Claude plan")
     ap.add_argument("--claude-code", action="store_true",
-                    help="run each agent through headless Claude Code (your Claude plan) instead of the API")
+                    help="the default, kept so older commands still work")
     ap.add_argument("--apply", action="store_true",
                     help="copy the storylet and its row into the game's content tree")
     args = ap.parse_args()
@@ -351,12 +354,13 @@ def main():
     if args.dry_run:
         from dry_run import FakeClient
         client = FakeClient()
-    elif args.claude_code:
-        from claude_code_client import ClaudeCodeClient
-        client = ClaudeCodeClient()
-    else:
+    elif args.api:
         import anthropic
         client = anthropic.Anthropic()
+    else:
+        # The Claude plan first, always (Jeremy, 2 November 2026); API credits only on --api.
+        from claude_code_client import ClaudeCodeClient
+        client = ClaudeCodeClient()
     crew = Crew(client, log)
 
     canon = canon_bundle(meta["act"], meta["layer"])
@@ -470,7 +474,7 @@ if __name__ == "__main__":
         sys.exit(main())
     except Exception as e:
         if type(e).__name__ in ("CredentialsError", "AuthenticationError"):
-            sys.exit(f"No Anthropic credentials: set ANTHROPIC_API_KEY, or run --dry-run. ({e})")
+            sys.exit(f"No Anthropic credentials for --api: set ANTHROPIC_API_KEY, or leave out --api. ({e})")
         if type(e).__name__.endswith("Error") and hasattr(e, "status_code"):
             sys.exit(f"The Anthropic API refused the request ({e.status_code}): {e}")
         raise
