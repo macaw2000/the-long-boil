@@ -1,7 +1,7 @@
 # Work order 033: The Cinderworks' combat
 
 **Agents:** the orchestrator for the Foundry Pass gate; `draftsman` for the monsters, drops, boss and weapons; `assayer` for the measurements; `registrar` for the rows
-**Status:** drafted and measured (2 November 2026). Parts 1 to 3 are done; the zone's Ledger Pages are listed as pending in `content/tuning/economy-global.json` (`ledger_pages_pending`) until the scrivener's work order. Open for Jeremy: Old Bellows solved against empty slots until 034 (real Tinkers win 0.80 to 0.95), the Bronze Fire Rake as its reference weapon, its melee weakness, the Cinderworks' Crown faucet (2.7x Rustmoor, sinks 0.8%), how `lore.whistle_notations` +1 is granted on the first kill, and whether the Bellows Plate trades.
+**Status:** done (2 November 2026). Parts 1 to 3 are done and the open questions are settled below; the zone's Ledger Pages are listed as pending in `content/tuning/economy-global.json` (`ledger_pages_pending`) until the scrivener's work order.
 **Blocks:** work order 034 (the Cinderworks' armour and tool ladder), Act II's storylets, and the art for every new monster and weapon.
 
 ## Why this one
@@ -46,6 +46,17 @@ Attach only these:
 - Everything settled in work orders 029, 031 and 032. Combat first, then gear (Jeremy, 2 November 2026).
 - No change to the XP curve, to Rustmoor, or to any existing Cinderworks action's time or XP.
 - Names and flavour are cleared to Layer 1 only, though the zone belongs to Act II: a monster's flavour is read before any Act II beat is played. The Soot Wraiths may be "shapes in the smoke" (GDD, Act II beat 1); nothing may hint at what Old Bellows' last breath reveals.
+
+## Settled after the hand-back
+
+Jeremy, 2 November 2026:
+
+- **Old Bellows stays solved against empty armour slots until work order 034.** Real Tinkers in Rustmoor's pieces win about 0.80 to 0.88 with the Bronze Fire Rake (0.95 with the Tapping Bar) until then; 034 re-solves the boss against the Cinderworks' own pieces.
+- **The Bronze Fire Rake is the reference weapon.** It rests on an extrapolated Smithing 22 at melee 45; an Act II walk measures it before Act II ships.
+- **Old Bellows is weak to melee.**
+- **The Cinderworks' Crown faucet is accepted** (142,923 a week, 2.7 times Rustmoor's, sinks 0.8%) until Calibrating ships, which comes straight after 034.
+- **`lore.whistle_notations` +1 is granted by a storylet** gated on Old Bellows' first kill, in Act II's scrivener work order. No engine grant on a kill.
+- **The Bellows Plate trades,** like Scrapjaw's Cleaver (items are tradable unless bound).
 
 ## Not in this work order
 
