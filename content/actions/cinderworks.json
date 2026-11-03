@@ -6,7 +6,7 @@
       "skill": "prospecting",
       "level_required": 20,
       "seconds": 270,
-      "xp": 139,
+      "xp": 123,
       "inputs": [],
       "outputs": [
         {
@@ -20,7 +20,7 @@
       "skill": "prospecting",
       "level_required": 25,
       "seconds": 324,
-      "xp": 172,
+      "xp": 152,
       "inputs": [],
       "outputs": [
         {
@@ -34,7 +34,7 @@
       "skill": "prospecting",
       "level_required": 30,
       "seconds": 378,
-      "xp": 206,
+      "xp": 182,
       "inputs": [],
       "outputs": [
         {
@@ -48,7 +48,7 @@
       "skill": "prospecting",
       "level_required": 35,
       "seconds": 432,
-      "xp": 243,
+      "xp": 215,
       "inputs": [],
       "outputs": [
         {
@@ -62,7 +62,7 @@
       "skill": "prospecting",
       "level_required": 40,
       "seconds": 486,
-      "xp": 281,
+      "xp": 249,
       "inputs": [],
       "outputs": [
         {
@@ -76,7 +76,7 @@
       "skill": "scavenging",
       "level_required": 20,
       "seconds": 270,
-      "xp": 139,
+      "xp": 123,
       "inputs": [],
       "outputs": [
         {
@@ -90,7 +90,7 @@
       "skill": "scavenging",
       "level_required": 25,
       "seconds": 324,
-      "xp": 172,
+      "xp": 152,
       "inputs": [],
       "outputs": [
         {
@@ -104,7 +104,7 @@
       "skill": "scavenging",
       "level_required": 30,
       "seconds": 378,
-      "xp": 206,
+      "xp": 182,
       "inputs": [],
       "outputs": [
         {
@@ -118,7 +118,7 @@
       "skill": "scavenging",
       "level_required": 35,
       "seconds": 432,
-      "xp": 243,
+      "xp": 215,
       "inputs": [],
       "outputs": [
         {
@@ -132,7 +132,7 @@
       "skill": "scavenging",
       "level_required": 40,
       "seconds": 486,
-      "xp": 281,
+      "xp": 249,
       "inputs": [],
       "outputs": [
         {
@@ -146,7 +146,7 @@
       "skill": "smithing",
       "level_required": 20,
       "seconds": 270,
-      "xp": 139,
+      "xp": 123,
       "inputs": [
         {
           "item": "item.cinderworks.tin_ore",
@@ -169,7 +169,7 @@
       "skill": "smithing",
       "level_required": 25,
       "seconds": 324,
-      "xp": 172,
+      "xp": 152,
       "inputs": [
         {
           "item": "item.cinderworks.nickel_ore",
@@ -192,7 +192,7 @@
       "skill": "smithing",
       "level_required": 30,
       "seconds": 378,
-      "xp": 206,
+      "xp": 182,
       "inputs": [
         {
           "item": "item.cinderworks.nickel_steel_ingot",
@@ -215,7 +215,7 @@
       "skill": "smithing",
       "level_required": 35,
       "seconds": 432,
-      "xp": 243,
+      "xp": 215,
       "inputs": [
         {
           "item": "item.cinderworks.manganese_ore",
@@ -238,7 +238,7 @@
       "skill": "smithing",
       "level_required": 40,
       "seconds": 486,
-      "xp": 281,
+      "xp": 249,
       "inputs": [
         {
           "item": "item.cinderworks.manganese_steel_ingot",
@@ -261,7 +261,7 @@
       "skill": "tinkering",
       "level_required": 20,
       "seconds": 270,
-      "xp": 139,
+      "xp": 123,
       "inputs": [
         {
           "item": "item.cinderworks.bronze_ingot",
@@ -280,7 +280,7 @@
       "skill": "tinkering",
       "level_required": 25,
       "seconds": 324,
-      "xp": 172,
+      "xp": 152,
       "inputs": [
         {
           "item": "item.cinderworks.nickel_steel_ingot",
@@ -299,7 +299,7 @@
       "skill": "tinkering",
       "level_required": 30,
       "seconds": 378,
-      "xp": 206,
+      "xp": 182,
       "inputs": [
         {
           "item": "item.cinderworks.bronze_ingot",
@@ -322,7 +322,7 @@
       "skill": "tinkering",
       "level_required": 35,
       "seconds": 432,
-      "xp": 243,
+      "xp": 215,
       "inputs": [
         {
           "item": "item.cinderworks.bronze_valve",
@@ -345,7 +345,7 @@
       "skill": "tinkering",
       "level_required": 40,
       "seconds": 486,
-      "xp": 281,
+      "xp": 249,
       "inputs": [
         {
           "item": "item.cinderworks.fire_opal",
@@ -368,15 +368,15 @@
       "skill": "tailoring",
       "level_required": 20,
       "seconds": 270,
-      "xp": 139,
+      "xp": 123,
       "inputs": [
         {
           "item": "item.rustmoor.brass_ingot",
-          "qty": 1
+          "qty": 11
         },
         {
           "item": "item.cinderworks.cinders",
-          "qty": 1
+          "qty": 11
         }
       ],
       "outputs": [
@@ -391,7 +391,7 @@
       "skill": "tailoring",
       "level_required": 20,
       "seconds": 270,
-      "xp": 139,
+      "xp": 123,
       "inputs": [
         {
           "item": "item.cinderworks.cinders",
@@ -410,11 +410,11 @@
       "skill": "tailoring",
       "level_required": 20,
       "seconds": 270,
-      "xp": 139,
+      "xp": 123,
       "inputs": [
         {
           "item": "item.cinderworks.slag_wool",
-          "qty": 1
+          "qty": 8
         }
       ],
       "outputs": [
@@ -429,7 +429,7 @@
       "skill": "tailoring",
       "level_required": 20,
       "seconds": 270,
-      "xp": 139,
+      "xp": 123,
       "inputs": [
         {
           "item": "item.cinderworks.slag_wool",
@@ -448,15 +448,15 @@
       "skill": "tailoring",
       "level_required": 20,
       "seconds": 270,
-      "xp": 139,
+      "xp": 123,
       "inputs": [
         {
           "item": "item.cinderworks.slag_felt",
-          "qty": 1
+          "qty": 4
         },
         {
           "item": "item.cinderworks.slag_iron",
-          "qty": 1
+          "qty": 4
         }
       ],
       "outputs": [
@@ -471,7 +471,7 @@
       "skill": "tailoring",
       "level_required": 25,
       "seconds": 324,
-      "xp": 172,
+      "xp": 152,
       "inputs": [
         {
           "item": "item.cinderworks.slag_glass",
@@ -494,15 +494,15 @@
       "skill": "tailoring",
       "level_required": 30,
       "seconds": 378,
-      "xp": 206,
+      "xp": 182,
       "inputs": [
         {
           "item": "item.cinderworks.smoked_lens",
-          "qty": 1
+          "qty": 3
         },
         {
           "item": "item.cinderworks.bronze_ingot",
-          "qty": 1
+          "qty": 3
         }
       ],
       "outputs": [
@@ -517,7 +517,7 @@
       "skill": "tailoring",
       "level_required": 35,
       "seconds": 432,
-      "xp": 243,
+      "xp": 215,
       "inputs": [
         {
           "item": "item.cinderworks.burnt_tuyere",
@@ -536,15 +536,15 @@
       "skill": "tailoring",
       "level_required": 40,
       "seconds": 486,
-      "xp": 281,
+      "xp": 249,
       "inputs": [
         {
           "item": "item.cinderworks.bronze_eyecups",
-          "qty": 1
+          "qty": 3
         },
         {
           "item": "item.cinderworks.smoked_lens",
-          "qty": 1
+          "qty": 3
         }
       ],
       "outputs": [
@@ -559,7 +559,7 @@
       "skill": "smithing",
       "level_required": 20,
       "seconds": 270,
-      "xp": 139,
+      "xp": 123,
       "inputs": [
         {
           "item": "item.cinderworks.bronze_ingot",
@@ -578,7 +578,7 @@
       "skill": "smithing",
       "level_required": 25,
       "seconds": 324,
-      "xp": 172,
+      "xp": 152,
       "inputs": [
         {
           "item": "item.cinderworks.nickel_steel_ingot",
@@ -597,7 +597,7 @@
       "skill": "smithing",
       "level_required": 30,
       "seconds": 378,
-      "xp": 206,
+      "xp": 182,
       "inputs": [
         {
           "item": "item.cinderworks.boiler_plate",
@@ -616,7 +616,7 @@
       "skill": "smithing",
       "level_required": 35,
       "seconds": 432,
-      "xp": 243,
+      "xp": 215,
       "inputs": [
         {
           "item": "item.cinderworks.manganese_steel_ingot",
@@ -635,7 +635,7 @@
       "skill": "tinkering",
       "level_required": 20,
       "seconds": 270,
-      "xp": 139,
+      "xp": 123,
       "inputs": [
         {
           "item": "item.cinderworks.bronze_ingot",
@@ -654,7 +654,7 @@
       "skill": "tinkering",
       "level_required": 25,
       "seconds": 324,
-      "xp": 172,
+      "xp": 152,
       "inputs": [
         {
           "item": "item.cinderworks.nickel_steel_ingot",
@@ -677,7 +677,7 @@
       "skill": "tinkering",
       "level_required": 30,
       "seconds": 378,
-      "xp": 206,
+      "xp": 182,
       "inputs": [
         {
           "item": "item.cinderworks.steam_rifle",
@@ -700,7 +700,7 @@
       "skill": "tinkering",
       "level_required": 35,
       "seconds": 432,
-      "xp": 243,
+      "xp": 215,
       "inputs": [
         {
           "item": "item.cinderworks.manganese_steel_ingot",
@@ -723,7 +723,7 @@
       "skill": "tinkering",
       "level_required": 20,
       "seconds": 270,
-      "xp": 139,
+      "xp": 123,
       "inputs": [
         {
           "item": "item.cinderworks.bronze_ingot",
@@ -742,7 +742,7 @@
       "skill": "tinkering",
       "level_required": 25,
       "seconds": 324,
-      "xp": 172,
+      "xp": 152,
       "inputs": [
         {
           "item": "item.cinderworks.nickel_steel_ingot",
@@ -761,7 +761,7 @@
       "skill": "tinkering",
       "level_required": 30,
       "seconds": 378,
-      "xp": 206,
+      "xp": 182,
       "inputs": [
         {
           "item": "item.cinderworks.induction_coil",
@@ -784,7 +784,7 @@
       "skill": "tinkering",
       "level_required": 35,
       "seconds": 432,
-      "xp": 243,
+      "xp": 215,
       "inputs": [
         {
           "item": "item.cinderworks.leyden_rod",
@@ -798,6 +798,1307 @@
       "outputs": [
         {
           "item": "item.cinderworks.tuyere_lance",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_damper_shield",
+      "skill": "smithing",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_damper_shield",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_felt_splash_guard",
+      "skill": "tailoring",
+      "level_required": 23,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 5
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.felt_splash_guard",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_targe",
+      "skill": "smithing",
+      "level_required": 26,
+      "seconds": 324,
+      "xp": 152,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_targe",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_studded_splash_guard",
+      "skill": "tailoring",
+      "level_required": 29,
+      "seconds": 324,
+      "xp": 152,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.slag_iron",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.studded_splash_guard",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_boiler_plate_shield",
+      "skill": "smithing",
+      "level_required": 32,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.boiler_plate",
+          "qty": 3
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.boiler_plate_shield",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_glass_eyed_fire_screen",
+      "skill": "tailoring",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.slag_glass",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.glass_eyed_fire_screen",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_manganese_tower_shield",
+      "skill": "smithing",
+      "level_required": 38,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.manganese_tower_shield",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_quilted_casting_mat",
+      "skill": "tailoring",
+      "level_required": 41,
+      "seconds": 486,
+      "xp": 249,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.spoiled_casting",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.quilted_casting_mat",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_cuirass",
+      "skill": "smithing",
+      "level_required": 22,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_cuirass",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_cuirass",
+      "skill": "smithing",
+      "level_required": 28,
+      "seconds": 324,
+      "xp": 152,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_cuirass",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_casters_apron",
+      "skill": "tailoring",
+      "level_required": 31,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.slag_glass",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.casters_apron",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_boiler_plate_cuirass",
+      "skill": "smithing",
+      "level_required": 34,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.boiler_plate",
+          "qty": 3
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.boiler_plate_cuirass",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_tuyere_collared_coat",
+      "skill": "tailoring",
+      "level_required": 37,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.burnt_tuyere",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.tuyere_collared_coat",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_clinker_barred_cuirass",
+      "skill": "smithing",
+      "level_required": 40,
+      "seconds": 486,
+      "xp": 249,
+      "inputs": [
+        {
+          "item": "item.cinderworks.clinker_bar",
+          "qty": 2
+        },
+        {
+          "item": "item.cinderworks.spoiled_casting",
+          "qty": 2
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.clinker_barred_cuirass",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_kettle_hat",
+      "skill": "smithing",
+      "level_required": 22,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_kettle_hat",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_slag_felt_hood",
+      "skill": "tailoring",
+      "level_required": 25,
+      "seconds": 324,
+      "xp": 152,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.slag_iron",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.slag_felt_hood",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_sallet",
+      "skill": "smithing",
+      "level_required": 27,
+      "seconds": 324,
+      "xp": 152,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_sallet",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_manganese_helm",
+      "skill": "smithing",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.manganese_helm",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_clinker_helm",
+      "skill": "smithing",
+      "level_required": 43,
+      "seconds": 486,
+      "xp": 249,
+      "inputs": [
+        {
+          "item": "item.cinderworks.clinker_bar",
+          "qty": 2
+        },
+        {
+          "item": "item.cinderworks.spoiled_casting",
+          "qty": 2
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.clinker_helm",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_gauntlets",
+      "skill": "smithing",
+      "level_required": 21,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_gauntlets",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_slag_wool_mittens",
+      "skill": "tailoring",
+      "level_required": 24,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_wool",
+          "qty": 8
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.slag_wool_mittens",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_gauntlets",
+      "skill": "smithing",
+      "level_required": 27,
+      "seconds": 324,
+      "xp": 152,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_gauntlets",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_studded_felt_gloves",
+      "skill": "tailoring",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.slag_iron",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.studded_felt_gloves",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_boiler_plate_gauntlets",
+      "skill": "smithing",
+      "level_required": 33,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.boiler_plate",
+          "qty": 3
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.boiler_plate_gauntlets",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_tuyere_cuffed_gloves",
+      "skill": "tailoring",
+      "level_required": 36,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.burnt_tuyere",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.tuyere_cuffed_gloves",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_manganese_gauntlets",
+      "skill": "smithing",
+      "level_required": 39,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 3
+        },
+        {
+          "item": "item.cinderworks.burnt_tuyere",
+          "qty": 3
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.manganese_gauntlets",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_casters_mitts",
+      "skill": "tailoring",
+      "level_required": 42,
+      "seconds": 486,
+      "xp": 249,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.spoiled_casting",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.casters_mitts",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_sabatons",
+      "skill": "smithing",
+      "level_required": 22,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_sabatons",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_felt_overshoes",
+      "skill": "tailoring",
+      "level_required": 25,
+      "seconds": 324,
+      "xp": 152,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.felt_overshoes",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_sabatons",
+      "skill": "smithing",
+      "level_required": 28,
+      "seconds": 324,
+      "xp": 152,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_sabatons",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_studded_felt_boots",
+      "skill": "tailoring",
+      "level_required": 31,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.slag_iron",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.studded_felt_boots",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_boiler_plate_sabatons",
+      "skill": "smithing",
+      "level_required": 34,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.boiler_plate",
+          "qty": 3
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.boiler_plate_sabatons",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_tuyere_toed_boots",
+      "skill": "tailoring",
+      "level_required": 37,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.burnt_tuyere",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.tuyere_toed_boots",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_clinker_shod_sabatons",
+      "skill": "smithing",
+      "level_required": 40,
+      "seconds": 486,
+      "xp": 249,
+      "inputs": [
+        {
+          "item": "item.cinderworks.clinker_bar",
+          "qty": 2
+        },
+        {
+          "item": "item.cinderworks.slag_iron",
+          "qty": 2
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.clinker_shod_sabatons",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_opal_buckled_boots",
+      "skill": "tailoring",
+      "level_required": 43,
+      "seconds": 486,
+      "xp": 249,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.fire_opal",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.opal_buckled_boots",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_slag_felt_favour",
+      "skill": "tailoring",
+      "level_required": 21,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 5
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.slag_felt_favour",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_bronze_square",
+      "skill": "tinkering",
+      "level_required": 24,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_square",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_beaded_felt_armband",
+      "skill": "tailoring",
+      "level_required": 26,
+      "seconds": 324,
+      "xp": 152,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.slag_iron",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.beaded_felt_armband",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_valve_key_ring",
+      "skill": "tinkering",
+      "level_required": 29,
+      "seconds": 324,
+      "xp": 152,
+      "inputs": [
+        {
+          "item": "item.cinderworks.valve_key",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.valve_key_ring",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_smoked_loupe",
+      "skill": "tailoring",
+      "level_required": 32,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.smoked_lens",
+          "qty": 5
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.smoked_loupe",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_manganese_plumb_bob",
+      "skill": "tinkering",
+      "level_required": 36,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.manganese_plumb_bob",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_tuyere_rosette",
+      "skill": "tailoring",
+      "level_required": 39,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.burnt_tuyere",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.tuyere_rosette",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_pyrometer_fob",
+      "skill": "tinkering",
+      "level_required": 44,
+      "seconds": 486,
+      "xp": 249,
+      "inputs": [
+        {
+          "item": "item.cinderworks.opal_pyrometer",
+          "qty": 3
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.pyrometer_fob",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_pick",
+      "skill": "smithing",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_pick",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_pick",
+      "skill": "smithing",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_pick",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_manganese_pick",
+      "skill": "smithing",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.manganese_pick",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_opal_tipped_pick",
+      "skill": "smithing",
+      "level_required": 40,
+      "seconds": 486,
+      "xp": 249,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 3
+        },
+        {
+          "item": "item.cinderworks.fire_opal",
+          "qty": 3
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.opal_tipped_pick",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_tongs",
+      "skill": "smithing",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_tongs",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_tongs",
+      "skill": "smithing",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_tongs",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_manganese_tongs",
+      "skill": "smithing",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.manganese_tongs",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_crucible_tongs",
+      "skill": "smithing",
+      "level_required": 40,
+      "seconds": 486,
+      "xp": 249,
+      "inputs": [
+        {
+          "item": "item.cinderworks.clinker_bar",
+          "qty": 2
+        },
+        {
+          "item": "item.cinderworks.spoiled_casting",
+          "qty": 2
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.crucible_tongs",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_salvage_hook",
+      "skill": "smithing",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_salvage_hook",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_salvage_hook",
+      "skill": "smithing",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_salvage_hook",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_manganese_salvage_hook",
+      "skill": "smithing",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.manganese_salvage_hook",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.forge_clinker_hook",
+      "skill": "smithing",
+      "level_required": 40,
+      "seconds": 486,
+      "xp": 249,
+      "inputs": [
+        {
+          "item": "item.cinderworks.clinker_bar",
+          "qty": 2
+        },
+        {
+          "item": "item.cinderworks.burnt_tuyere",
+          "qty": 2
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.clinker_hook",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_bronze_driver_roll",
+      "skill": "tinkering",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 7
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_driver_roll",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_nickel_steel_driver_roll",
+      "skill": "tinkering",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 6
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_driver_roll",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_manganese_driver_roll",
+      "skill": "tinkering",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.manganese_driver_roll",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tinker_instrument_makers_roll",
+      "skill": "tinkering",
+      "level_required": 40,
+      "seconds": 486,
+      "xp": 249,
+      "inputs": [
+        {
+          "item": "item.cinderworks.opal_pyrometer",
+          "qty": 2
+        },
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 2
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.instrument_makers_roll",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_bronze_needle_case",
+      "skill": "tailoring",
+      "level_required": 20,
+      "seconds": 270,
+      "xp": 123,
+      "inputs": [
+        {
+          "item": "item.cinderworks.bronze_ingot",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.slag_wool",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.bronze_needle_case",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_nickel_steel_needle_case",
+      "skill": "tailoring",
+      "level_required": 30,
+      "seconds": 378,
+      "xp": 182,
+      "inputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_ingot",
+          "qty": 3
+        },
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 3
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.nickel_steel_needle_case",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_manganese_needle_case",
+      "skill": "tailoring",
+      "level_required": 35,
+      "seconds": 432,
+      "xp": 215,
+      "inputs": [
+        {
+          "item": "item.cinderworks.manganese_steel_ingot",
+          "qty": 2
+        },
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 2
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.manganese_needle_case",
+          "qty": 1
+        }
+      ]
+    },
+    {
+      "id": "action.cinderworks.tailor_cast_iron_needle_case",
+      "skill": "tailoring",
+      "level_required": 40,
+      "seconds": 486,
+      "xp": 249,
+      "inputs": [
+        {
+          "item": "item.cinderworks.slag_felt",
+          "qty": 4
+        },
+        {
+          "item": "item.cinderworks.spoiled_casting",
+          "qty": 4
+        }
+      ],
+      "outputs": [
+        {
+          "item": "item.cinderworks.cast_iron_needle_case",
           "qty": 1
         }
       ]

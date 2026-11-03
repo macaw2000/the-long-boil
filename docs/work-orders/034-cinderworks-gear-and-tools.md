@@ -1,7 +1,7 @@
 # Work order 034: The Cinderworks' gear and tool ladder
 
 **Agents:** `draftsman` for the ladder and the re-solve; `assayer` for the measurements; `registrar` for the rows
-**Status:** ready to run
+**Status:** drafted and measured (3 November 2026). 43 pieces in the six slots (metal and cloth alternating, levels 20 to 44), the Bellows Plate as the level-45 body piece, and 20 tools at 20, 30, 35 and 40, in `content/gear/cinderworks-pieces.json`. The five legacy Tailoring pieces moved from the old `armour` slot to head and body under their own ids; their recipes now follow the hours-of-materials rule. Every craft and gathering band 20 to 45 reads 13.82 days with tools (17.97 without); combat 13.90. The Wraiths hold their kill times and the 0.25 share against the drafted pieces, and Old Bellows is re-solved to 0.500 at melee 45 against the bronze set with an empty charm (`combat.json` revision 16; `tools.json` revision 3). Measured win chances at 45: Rustmoor's best set 0.552, the Act I walk's Scrapjaw set 0.412, the best Cinderworks set 0.819, the bronze set with the Tapping Bar 0.802. No recipe mints or sinks Crowns; the zone's sink share stays 0.8%. The client frames the Cinderworks metals in their own colours, gold kept for boss drops. 64 icons are needed (art). Open for Jeremy: the hours-of-materials rule as rebuilt from Rustmoor; the five legacy recipes' new quantities (Gauze Goggles 11 + 11, was 1 + 1); the Studded Felt Coat made at Tailoring 20 but worn at 25; keeping the bronze set as Old Bellows' reference until an Act II walk measures one.
 **Blocks:** Calibrating (Jeremy, 2 November 2026: straight after this one), the art for every new piece and tool, and Act II's storylets.
 
 ## Why this one

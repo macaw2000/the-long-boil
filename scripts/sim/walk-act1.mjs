@@ -591,6 +591,8 @@ async function runCadence(perDay) {
     let best = null;
     for (const m of R.monsters.values()) {
       if (m.boss) continue;
+      // The Cinderworks opens with the Foundry Pass; the engine refuses its monsters before (work order 034 run).
+      if (!foundryAt && !m.id.startsWith("monster.rustmoor.")) continue;
       const plan = planKill(R.combat, f, m, R.ration.heal, rations);
       if (!plan) continue;
       const rate = (m.xp * R.combat.MAIN_COMBAT_SKILL_SHARE) / plan.seconds;

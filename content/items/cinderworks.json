@@ -210,6 +210,321 @@
       "id": "item.cinderworks.bellows_plate",
       "name": "Bellows Plate",
       "flavour": "A curved plate of riveted iron prised off Old Bellows, patched and re-patched by every century that owned it."
+    },
+    {
+      "id": "item.cinderworks.bronze_damper_shield",
+      "name": "Bronze Damper Shield",
+      "flavour": "A bronze furnace damper with a handle riveted to the back, which shuts out heat and most other things."
+    },
+    {
+      "id": "item.cinderworks.felt_splash_guard",
+      "name": "Felt Splash Guard",
+      "flavour": "A square of slag felt on a frame of sticks, held up between you and whatever is spitting."
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_targe",
+      "name": "Nickel Steel Targe",
+      "flavour": "A round nickel steel targe that keeps its shape in heat that would curl a lesser one."
+    },
+    {
+      "id": "item.cinderworks.studded_splash_guard",
+      "name": "Studded Splash Guard",
+      "flavour": "A splash guard studded with slag-iron beads, which stops a splash and, swung hard, rather more."
+    },
+    {
+      "id": "item.cinderworks.boiler_plate_shield",
+      "name": "Boiler Plate Shield",
+      "flavour": "Three boiler plates riveted edge to edge, which make a shield and a fair amount of noise."
+    },
+    {
+      "id": "item.cinderworks.glass_eyed_fire_screen",
+      "name": "Glass-Eyed Fire Screen",
+      "flavour": "A hand-held fire screen of felt with a slag-glass window, so you can watch what you are hiding from."
+    },
+    {
+      "id": "item.cinderworks.manganese_tower_shield",
+      "name": "Manganese Tower Shield",
+      "flavour": "A tall manganese steel shield, heavy enough to lean on between blows."
+    },
+    {
+      "id": "item.cinderworks.quilted_casting_mat",
+      "name": "Quilted Casting Mat",
+      "flavour": "A quilted felt mat with a cast-iron rim, meant for the casting floor and better held up."
+    },
+    {
+      "id": "item.cinderworks.bronze_cuirass",
+      "name": "Bronze Cuirass",
+      "flavour": "A bronze breastplate beaten over a stoker's barrel, which is roughly a stoker's shape."
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_cuirass",
+      "name": "Nickel Steel Cuirass",
+      "flavour": "A nickel steel breastplate that stays cool for longer than the wearer does."
+    },
+    {
+      "id": "item.cinderworks.casters_apron",
+      "name": "Caster's Apron",
+      "flavour": "A long slag felt apron faced with slag-glass beads, for standing close to a pour and staying there."
+    },
+    {
+      "id": "item.cinderworks.boiler_plate_cuirass",
+      "name": "Boiler Plate Cuirass",
+      "flavour": "A breastplate rolled from boiler plate, with the rivet holes left in for the draught."
+    },
+    {
+      "id": "item.cinderworks.tuyere_collared_coat",
+      "name": "Tuyere-Collared Coat",
+      "flavour": "A felt coat with a high collar stiffened by tuyere bronze, which keeps the sparks off your neck."
+    },
+    {
+      "id": "item.cinderworks.clinker_barred_cuirass",
+      "name": "Clinker-Barred Cuirass",
+      "flavour": "A spoiled casting saved from the heap and braced with clinker bar, which nobody now calls spoiled."
+    },
+    {
+      "id": "item.cinderworks.bronze_kettle_hat",
+      "name": "Bronze Kettle Hat",
+      "flavour": "A broad-brimmed bronze helmet that sheds sparks and, at a pinch, boils water."
+    },
+    {
+      "id": "item.cinderworks.slag_felt_hood",
+      "name": "Slag Felt Hood",
+      "flavour": "A slag felt hood with a slag-iron rim at the brow, which keeps the girder drips out of your eyes."
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_sallet",
+      "name": "Nickel Steel Sallet",
+      "flavour": "A nickel steel sallet with a long tail at the back for whatever drips off the roof girders."
+    },
+    {
+      "id": "item.cinderworks.manganese_helm",
+      "name": "Manganese Helm",
+      "flavour": "A close manganese steel helm that has not yet met a girder it could not outlast."
+    },
+    {
+      "id": "item.cinderworks.clinker_helm",
+      "name": "Clinker Helm",
+      "flavour": "A helm cast thick in the Foundry's own iron and ringed with clinker bar, which rings back when struck."
+    },
+    {
+      "id": "item.cinderworks.bronze_gauntlets",
+      "name": "Bronze Gauntlets",
+      "flavour": "Bronze gauntlets with jointed fingers, stiff when cold and stiffer when hot."
+    },
+    {
+      "id": "item.cinderworks.slag_wool_mittens",
+      "name": "Slag Wool Mittens",
+      "flavour": "Thick grey mittens of slag wool, fireproof, itchy and useless for counting change."
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_gauntlets",
+      "name": "Nickel Steel Gauntlets",
+      "flavour": "Nickel steel gauntlets that will hold a hot rivet for as long as you will."
+    },
+    {
+      "id": "item.cinderworks.studded_felt_gloves",
+      "name": "Studded Felt Gloves",
+      "flavour": "Felt gloves studded across the knuckles with slag iron, for a shift that ends in an argument."
+    },
+    {
+      "id": "item.cinderworks.boiler_plate_gauntlets",
+      "name": "Boiler Plate Gauntlets",
+      "flavour": "Gauntlets cut from boiler plate, better at holding a line than a teacup."
+    },
+    {
+      "id": "item.cinderworks.tuyere_cuffed_gloves",
+      "name": "Tuyere-Cuffed Gloves",
+      "flavour": "Long felt gloves with bronze cuffs from a burnt tuyere, which reach into the heat and come back."
+    },
+    {
+      "id": "item.cinderworks.manganese_gauntlets",
+      "name": "Manganese Gauntlets",
+      "flavour": "Manganese steel gauntlets cuffed in tuyere bronze, made for reaching into a furnace wall."
+    },
+    {
+      "id": "item.cinderworks.casters_mitts",
+      "name": "Caster's Mitts",
+      "flavour": "Heavy felt mitts lined with cast iron at the palm, for lifting what left the mould a minute ago."
+    },
+    {
+      "id": "item.cinderworks.bronze_sabatons",
+      "name": "Bronze Sabatons",
+      "flavour": "Bronze foot plates that clank on the Foundry's iron floor and announce you a shift early."
+    },
+    {
+      "id": "item.cinderworks.felt_overshoes",
+      "name": "Felt Overshoes",
+      "flavour": "Slag felt overshoes for walking where the floor is warmer than it ought to be."
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_sabatons",
+      "name": "Nickel Steel Sabatons",
+      "flavour": "Nickel steel sabatons that keep all ten toes through a spilled ladle."
+    },
+    {
+      "id": "item.cinderworks.studded_felt_boots",
+      "name": "Studded Felt Boots",
+      "flavour": "Felt boots with slag-iron studs in the soles, which grip a wet floor and spark on a dry one."
+    },
+    {
+      "id": "item.cinderworks.boiler_plate_sabatons",
+      "name": "Boiler Plate Sabatons",
+      "flavour": "Flat-soled, riveted boiler plate sabatons, which walk over hot slag without complaint."
+    },
+    {
+      "id": "item.cinderworks.tuyere_toed_boots",
+      "name": "Tuyere-Toed Boots",
+      "flavour": "Felt boots capped at the toe with tuyere bronze, for kicking a furnace door shut."
+    },
+    {
+      "id": "item.cinderworks.clinker_shod_sabatons",
+      "name": "Clinker-Shod Sabatons",
+      "flavour": "Sabatons shod with cut clinker bar, which grip a hot floor like a grudge."
+    },
+    {
+      "id": "item.cinderworks.opal_buckled_boots",
+      "name": "Opal-Buckled Boots",
+      "flavour": "Felt boots fastened with fire opal buckles, which light a dark stair for a minute or two."
+    },
+    {
+      "id": "item.cinderworks.slag_felt_favour",
+      "name": "Slag Felt Favour",
+      "flavour": "A knot of grey slag felt pinned to the sleeve, which says you work the Foundry and burn slowly."
+    },
+    {
+      "id": "item.cinderworks.bronze_square",
+      "name": "Bronze Square",
+      "flavour": "A bronze try-square on a chain, for proving a corner true before anyone builds on it."
+    },
+    {
+      "id": "item.cinderworks.beaded_felt_armband",
+      "name": "Beaded Felt Armband",
+      "flavour": "A felt armband beaded with slag iron, worn on the working arm to steady it."
+    },
+    {
+      "id": "item.cinderworks.valve_key_ring",
+      "name": "Valve Key Ring",
+      "flavour": "Four Foundry valve keys on one ring, worn for the weight and for knowing which is which."
+    },
+    {
+      "id": "item.cinderworks.smoked_loupe",
+      "name": "Smoked Loupe",
+      "flavour": "A smoked lens in a felt eyecup on a cord, for judging a pour by its colour."
+    },
+    {
+      "id": "item.cinderworks.manganese_plumb_bob",
+      "name": "Manganese Plumb Bob",
+      "flavour": "A manganese steel plumb bob that hangs true in a furnace draught."
+    },
+    {
+      "id": "item.cinderworks.tuyere_rosette",
+      "name": "Tuyere Rosette",
+      "flavour": "A felt rosette pinned through a ring of tuyere bronze, which the Foundry gives nobody, so you gave it yourself."
+    },
+    {
+      "id": "item.cinderworks.pyrometer_fob",
+      "name": "Pyrometer Fob",
+      "flavour": "Three opal pyrometers on a fob, which agree about the heat more often than not."
+    },
+    {
+      "id": "item.cinderworks.bronze_pick",
+      "name": "Bronze Pick",
+      "flavour": "A bronze pick that bites tin ore and leaves the copper to the tip."
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_pick",
+      "name": "Nickel Steel Pick",
+      "flavour": "A nickel steel pick that keeps its point in a seam warm enough to boil a kettle."
+    },
+    {
+      "id": "item.cinderworks.manganese_pick",
+      "name": "Manganese Pick",
+      "flavour": "A manganese steel pick that wears out the rock before the rock wears out the pick."
+    },
+    {
+      "id": "item.cinderworks.opal_tipped_pick",
+      "name": "Opal-Tipped Pick",
+      "flavour": "A manganese steel pick with a fire opal in the heel, so you can find it in a dark seam."
+    },
+    {
+      "id": "item.cinderworks.bronze_tongs",
+      "name": "Bronze Tongs",
+      "flavour": "Long bronze tongs that hold a bar in the fire while you stand somewhere cooler."
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_tongs",
+      "name": "Nickel Steel Tongs",
+      "flavour": "Nickel steel tongs that stay stiff in a forge that would soften a bronze pair."
+    },
+    {
+      "id": "item.cinderworks.manganese_tongs",
+      "name": "Manganese Tongs",
+      "flavour": "Manganese steel tongs with jaws that close like a door and open like a bank."
+    },
+    {
+      "id": "item.cinderworks.crucible_tongs",
+      "name": "Crucible Tongs",
+      "flavour": "Cast-iron crucible tongs on clinker bar handles, long enough to lift a melt without meeting it."
+    },
+    {
+      "id": "item.cinderworks.bronze_salvage_hook",
+      "name": "Bronze Salvage Hook",
+      "flavour": "A bronze hook on a pole, for pulling good iron out of a heap that would rather keep it."
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_salvage_hook",
+      "name": "Nickel Steel Salvage Hook",
+      "flavour": "A nickel steel hook that goes into a hot slag heap and comes out with something."
+    },
+    {
+      "id": "item.cinderworks.manganese_salvage_hook",
+      "name": "Manganese Salvage Hook",
+      "flavour": "A manganese steel hook that prises a tuyere out of a furnace wall without asking the wall."
+    },
+    {
+      "id": "item.cinderworks.clinker_hook",
+      "name": "Clinker Hook",
+      "flavour": "A clinker bar bent into a hook and tipped with tuyere bronze, which breaks a heap and searches it."
+    },
+    {
+      "id": "item.cinderworks.bronze_driver_roll",
+      "name": "Bronze Driver Roll",
+      "flavour": "A canvas roll of bronze drivers, which will not spark beside a gas main."
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_driver_roll",
+      "name": "Nickel Steel Driver Roll",
+      "flavour": "A roll of nickel steel drivers that turn a seized Foundry screw and keep their tips."
+    },
+    {
+      "id": "item.cinderworks.manganese_driver_roll",
+      "name": "Manganese Driver Roll",
+      "flavour": "A roll of manganese steel drivers and gauges, hard enough to outlast the work."
+    },
+    {
+      "id": "item.cinderworks.instrument_makers_roll",
+      "name": "Instrument Maker's Roll",
+      "flavour": "A roll of manganese drivers with a pyrometer's opal set in the clasp, for reading the heat of the work."
+    },
+    {
+      "id": "item.cinderworks.bronze_needle_case",
+      "name": "Bronze Needle Case",
+      "flavour": "A bronze needle case packed in slag wool, so the needles stay sharp and the wool stays where it is."
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_needle_case",
+      "name": "Nickel Steel Needle Case",
+      "flavour": "A nickel steel case of needles stiff enough to go through slag felt at the first try."
+    },
+    {
+      "id": "item.cinderworks.manganese_needle_case",
+      "name": "Manganese Needle Case",
+      "flavour": "A felt-lined manganese steel needle case, its needles stiff enough for a double fold of slag felt."
+    },
+    {
+      "id": "item.cinderworks.cast_iron_needle_case",
+      "name": "Cast Iron Needle Case",
+      "flavour": "A needle case cut from a spoiled casting and lined with felt, heavy enough to hold a pattern flat."
     }
   ]
 }

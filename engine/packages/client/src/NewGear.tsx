@@ -39,7 +39,7 @@ export function NewGear({
 
   const weapon = content.weapons.find((candidate) => candidate.item === item);
   if (!weapon) return null;
-  const tier = gearTier(weapon.level_required);
+  const tier = gearTier(weapon.level_required, weapon.item);
   const inHand = content.weapons.find((candidate) => candidate.item === tinker.weapon);
   const level = tinker.skills.find((skill) => skill.skill === weapon.style)?.level ?? 1;
   const usable = level >= weapon.level_required;

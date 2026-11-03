@@ -225,10 +225,22 @@ describe("armour", () => {
     expect(wear(state, dressed, COAT).armour).toBe(COAT);
   });
 
-  it("loads the Cinderworks pieces at 3 x their Fortitude level (work order 028)", () => {
-    const goggles = content.armours.get("item.cinderworks.gauze_goggles")!;
-    expect(goggles.armour).toBe(3 * goggles.level_required);
-    for (const piece of content.armours.values()) expect(piece.armour).toBe(3 * piece.level_required);
+  it("wears the Cinderworks' goggles and coats in the six slots, no longer the old armour slot (work order 034)", () => {
+    const slots = Object.fromEntries(
+      ["gauze_goggles", "furnace_goggles", "founders_goggles", "slag_wool_coat", "studded_felt_coat"].map((id) => {
+        const piece = content.pieces.get(`item.cinderworks.${id}`)!;
+        expect(piece.armour).toBe(3 + (3 * piece.level_required) / 16);
+        return [id, `${piece.slot} ${piece.level_required}`];
+      }),
+    );
+    expect(slots).toEqual({
+      gauze_goggles: "head 20",
+      furnace_goggles: "head 30",
+      founders_goggles: "head 40",
+      slag_wool_coat: "body 20",
+      studded_felt_coat: "body 25",
+    });
+    expect(content.armours.size).toBe(0);
   });
 
   it("cannot be put on without holding it", () => {

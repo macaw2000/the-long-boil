@@ -34,8 +34,17 @@ const SLOT_LABELS: Record<string, string> = { head: "Head", body: "Body", hands:
 const round = (value: number) => Math.round(value * 10) / 10;
 
 /** A weapon's tier, from the level it needs: the frame it is shown in. */
-export function gearTier(level: number): { name: string; colour: string } {
-  if (level >= 20) return { name: "Boss", colour: "#f2c14e" };
+/** A boss's first-kill gear, framed in gold whatever its level. */
+const BOSS_DROPS = new Set(["item.rustmoor.scrapjaws_cleaver", "item.cinderworks.bellows_plate"]);
+
+/** The metal a piece of gear is framed in: Rustmoor's four tiers, then the Cinderworks' five (work orders 033 and 034). */
+export function gearTier(level: number, item?: string | null): { name: string; colour: string } {
+  if (item && BOSS_DROPS.has(item)) return { name: "Boss", colour: "#f2c14e" };
+  if (level >= 40) return { name: "Clinker", colour: "#B5734A" };
+  if (level >= 35) return { name: "Manganese", colour: "#9C8BB8" };
+  if (level >= 30) return { name: "Boiler Plate", colour: "#7F95A8" };
+  if (level >= 25) return { name: "Nickel Steel", colour: "#A9C2B4" };
+  if (level >= 20) return { name: "Bronze", colour: "#CD8A45" };
   if (level >= 15) return { name: "Garnet", colour: "#D0545F" };
   if (level >= 10) return { name: "Steel", colour: "#c3ccd0" };
   if (level >= 5) return { name: "Iron", colour: "#8E979A" };
@@ -81,7 +90,7 @@ function Portrait({ weapon, flash, size }: { weapon: string | null; flash: Anima
 }
 
 function Slot({ label, item, empty, tierLevel, pop, small }: { label: string; item: string | null; empty: string; tierLevel?: number; pop?: Animated.Value; small?: boolean }) {
-  const tier = tierLevel === undefined ? null : gearTier(tierLevel);
+  const tier = tierLevel === undefined ? null : gearTier(tierLevel, item);
   const box = small ? 52 : 64;
   return (
     <View style={{ alignItems: "center", gap: 2, width: 64 }}>
@@ -312,9 +321,9 @@ export function Loadout({
       {shown ? (
         <View style={{ gap: 4 }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            <Text style={[ui.text, { color: gearTier(shown.level_required).colour, fontWeight: "700" }]}>{name(shown.item)}</Text>
+            <Text style={[ui.text, { color: gearTier(shown.level_required, shown.item).colour, fontWeight: "700" }]}>{name(shown.item)}</Text>
             <Text style={[ui.muted, { fontSize: 11, color: STYLE_COLOURS[shown.style] }]}>
-              {titleCase(shown.style)} {shown.level_required} · {gearTier(shown.level_required).name}
+              {titleCase(shown.style)} {shown.level_required} · {gearTier(shown.level_required, shown.item).name}
             </Text>
             {shown.equipped && <Text style={[ui.muted, { fontSize: 11, color: colors.verdigris }]}>in hand</Text>}
           </View>
@@ -363,7 +372,7 @@ export function Loadout({
               .slice()
               .sort((a, b) => a.level_required - b.level_required || a.style.localeCompare(b.style))
               .map((weapon) => {
-                const tier = gearTier(weapon.level_required);
+                const tier = gearTier(weapon.level_required, weapon.item);
                 const active = weapon.item === selected || (!selected && weapon.equipped);
                 return (
                   <Pressable

@@ -3406,30 +3406,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/12",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -3460,6 +3445,185 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_boiler_plate_cuirass",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/52",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_boiler_plate_gauntlets",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/64",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_boiler_plate_sabatons",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/72",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_boiler_plate_shield",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/45",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_cuirass",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/49",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_damper_shield",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/41",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -3470,7 +3634,7 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/29",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -3487,6 +3651,185 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_gauntlets",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/60",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_kettle_hat",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/55",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_pick",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/84",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_sabatons",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/68",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_salvage_hook",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/92",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_bronze_tongs",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/88",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -3499,30 +3842,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/14",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -3553,6 +3881,156 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_clinker_barred_cuirass",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/54",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_clinker_helm",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/59",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_clinker_hook",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/95",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_clinker_shod_sabatons",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/74",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_crucible_tongs",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/91",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -3563,7 +4041,7 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/30",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -3580,6 +4058,446 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_manganese_gauntlets",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/66",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_manganese_helm",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/58",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_manganese_pick",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/86",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_manganese_salvage_hook",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/94",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_manganese_tongs",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/90",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_manganese_tower_shield",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/47",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_cuirass",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/50",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_gauntlets",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/62",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_pick",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/85",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_sabatons",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/70",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_sallet",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/57",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_salvage_hook",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/93",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_targe",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/43",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_nickel_steel_tongs",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/89",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.forge_opal_tipped_pick",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/87",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -3592,7 +4510,7 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/31",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -3609,6 +4527,11 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -3621,7 +4544,7 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/32",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -3638,6 +4561,11 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -3650,30 +4578,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/4",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -3704,6 +4617,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -3714,30 +4632,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/3",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -3768,6 +4671,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -3778,30 +4686,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/1",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -3832,6 +4725,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -3842,30 +4740,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/2",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -3896,6 +4779,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -3906,30 +4794,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/0",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -3960,6 +4833,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -3970,30 +4848,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/8",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4024,6 +4887,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4034,30 +4902,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/5",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4088,6 +4941,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4098,30 +4956,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/7",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4152,6 +4995,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4162,30 +5010,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/6",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4216,6 +5049,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4226,30 +5064,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/9",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4280,6 +5103,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4290,30 +5118,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/10",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4344,6 +5157,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4354,30 +5172,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/13",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4408,6 +5211,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4418,30 +5226,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/11",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4472,6 +5265,40 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_beaded_felt_armband",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/78",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4482,30 +5309,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/27",
       "revision": null,
-      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:31:24Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4536,6 +5348,185 @@
           "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_bronze_needle_case",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/100",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_cast_iron_needle_case",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/103",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_casters_apron",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/51",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_casters_mitts",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/67",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_felt_overshoes",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/69",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_felt_splash_guard",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/42",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4546,30 +5537,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/28",
       "revision": null,
-      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:31:24Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4600,6 +5576,11 @@
           "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4610,30 +5591,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/26",
       "revision": null,
-      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:31:24Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4664,6 +5630,11 @@
           "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4674,30 +5645,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/20",
       "revision": null,
-      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:31:24Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4728,6 +5684,156 @@
           "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_glass_eyed_fire_screen",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/46",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_manganese_needle_case",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/102",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_nickel_steel_needle_case",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/101",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_opal_buckled_boots",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/75",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_quilted_casting_mat",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/48",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4738,30 +5844,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/23",
       "revision": null,
-      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:31:24Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4792,6 +5883,69 @@
           "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_slag_felt_favour",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/76",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_slag_felt_hood",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/56",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4802,30 +5956,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/21",
       "revision": null,
-      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:31:24Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4856,6 +5995,11 @@
           "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4866,30 +6010,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/22",
       "revision": null,
-      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:31:24Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4920,6 +6049,40 @@
           "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_slag_wool_mittens",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/61",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4930,30 +6093,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/25",
       "revision": null,
-      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:31:24Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -4984,6 +6132,69 @@
           "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_smoked_loupe",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/80",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_studded_felt_boots",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/71",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -4994,30 +6205,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/24",
       "revision": null,
-      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:31:24Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -5048,6 +6244,185 @@
           "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_studded_felt_gloves",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/63",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_studded_splash_guard",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/44",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_tuyere_collared_coat",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/53",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_tuyere_cuffed_gloves",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/65",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_tuyere_rosette",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/82",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tailor_tuyere_toed_boots",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/73",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -5058,7 +6433,7 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/37",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -5075,6 +6450,11 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -5087,7 +6467,7 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/33",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -5104,6 +6484,69 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_bronze_driver_roll",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/96",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_bronze_square",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/77",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -5116,30 +6559,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/15",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -5170,6 +6598,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -5180,7 +6613,7 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/35",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -5197,6 +6630,11 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -5209,7 +6647,7 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/38",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -5226,6 +6664,11 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -5238,7 +6681,7 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/36",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -5255,6 +6698,40 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_instrument_makers_roll",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/99",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -5267,7 +6744,7 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/39",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -5284,6 +6761,98 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_manganese_driver_roll",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/98",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_manganese_plumb_bob",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/81",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_nickel_steel_driver_roll",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/97",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -5296,30 +6865,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/19",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -5350,6 +6904,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -5360,30 +6919,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/17",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -5414,6 +6958,40 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_pyrometer_fob",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/83",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -5424,30 +7002,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/18",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -5478,6 +7041,11 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -5488,7 +7056,7 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/34",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -5505,6 +7073,11 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -5517,7 +7090,7 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/40",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -5536,6 +7109,11 @@
           "at": "2026-11-02T18:51:02Z",
           "status": "drafted",
           "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -5546,30 +7124,15 @@
       "path": "content/actions/cinderworks.json",
       "pointer": "/actions/16",
       "revision": null,
-      "work_order": "docs/work-orders/031-retune-for-gear-and-tools.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -5600,6 +7163,40 @@
           "at": "2026-10-31T02:04:29Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "action.cinderworks.tinker_valve_key_ring",
+      "type": "action",
+      "path": "content/actions/cinderworks.json",
+      "pointer": "/actions/79",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -11482,29 +13079,15 @@
       "path": "content/gear/cinderworks.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-10-29T16:12:08Z",
-        "checks": [
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": {
@@ -11532,6 +13115,40 @@
         },
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "gear.cinderworks.pieces",
+      "type": "gear",
+      "path": "content/gear/cinderworks-pieces.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -11654,6 +13271,35 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.beaded_felt_armband",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/79",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.bellows_plate",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -11740,6 +13386,122 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.boiler_plate_cuirass",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/53",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.boiler_plate_gauntlets",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/65",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.boiler_plate_sabatons",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/73",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.boiler_plate_shield",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/46",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.bronze_arc_rod",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -11791,6 +13553,93 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_cuirass",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/50",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_damper_shield",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/42",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_driver_roll",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/97",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -11884,6 +13733,35 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.bronze_gauntlets",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/61",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.bronze_ingot",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -11936,6 +13814,209 @@
           "at": "2026-10-29T03:54:32Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_kettle_hat",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/56",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_needle_case",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/101",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_pick",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/85",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_sabatons",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/69",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_salvage_hook",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/93",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_square",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/78",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.bronze_tongs",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/89",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -12055,6 +14136,93 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.cast_iron_needle_case",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/104",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.casters_apron",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/52",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.casters_mitts",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/68",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.cinders",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -12164,6 +14332,209 @@
           "at": "2026-10-29T03:54:32Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.clinker_barred_cuirass",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/55",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.clinker_helm",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/60",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.clinker_hook",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/96",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.clinker_shod_sabatons",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/75",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.crucible_tongs",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/92",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.felt_overshoes",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/70",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.felt_splash_guard",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/43",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -12455,6 +14826,35 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.glass_eyed_fire_screen",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/47",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.induction_coil",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -12513,6 +14913,35 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.instrument_makers_roll",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/100",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.leyden_rod",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -12535,6 +14964,122 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.manganese_driver_roll",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/99",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.manganese_gauntlets",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/67",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.manganese_helm",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/59",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.manganese_needle_case",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/103",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -12599,6 +15144,93 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.manganese_pick",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/87",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.manganese_plumb_bob",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/82",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.manganese_salvage_hook",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/95",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.manganese_steel_ingot",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -12651,6 +15283,64 @@
           "at": "2026-10-29T03:54:32Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.manganese_tongs",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/91",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.manganese_tower_shield",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/48",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -12713,6 +15403,93 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.nickel_steel_cuirass",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/51",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_driver_roll",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/98",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_gauntlets",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/63",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.nickel_steel_ingot",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -12770,6 +15547,238 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.nickel_steel_needle_case",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/102",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_pick",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/86",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_sabatons",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/71",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_sallet",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/58",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_salvage_hook",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/94",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_targe",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/44",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.nickel_steel_tongs",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/90",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.opal_buckled_boots",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/76",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.opal_pyrometer",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -12822,6 +15831,35 @@
           "at": "2026-10-29T03:54:32Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.opal_tipped_pick",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/88",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -12913,6 +15951,64 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.pyrometer_fob",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/84",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.quilted_casting_mat",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/49",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.slag_felt",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -12965,6 +16061,64 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.slag_felt_favour",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/77",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.slag_felt_hood",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/57",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -13198,6 +16352,35 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.slag_wool_mittens",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/62",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.smoked_lens",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -13250,6 +16433,35 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.smoked_loupe",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/81",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -13455,6 +16667,35 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.studded_felt_boots",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/72",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.studded_felt_coat",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -13507,6 +16748,64 @@
           "at": "2026-10-29T16:18:56Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.studded_felt_gloves",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/64",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.studded_splash_guard",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/45",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -13598,6 +16897,64 @@
       "retirement": null
     },
     {
+      "id": "item.cinderworks.tuyere_collared_coat",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/54",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.tuyere_cuffed_gloves",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/66",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "item.cinderworks.tuyere_lance",
       "type": "item",
       "path": "content/items/cinderworks.json",
@@ -13620,6 +16977,64 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.tuyere_rosette",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/83",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.tuyere_toed_boots",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/74",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -13679,6 +17094,35 @@
           "at": "2026-10-29T03:54:32Z",
           "status": "reviewed",
           "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "item.cinderworks.valve_key_ring",
+      "type": "item",
+      "path": "content/items/cinderworks.json",
+      "pointer": "/items/80",
+      "revision": null,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
+      "drafted_by": "draftsman",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": null,
+        "run": null,
+        "checks": null,
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -20060,7 +23504,7 @@
       "path": "content/monsters/cinderworks.json",
       "pointer": "/monsters/4",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -20077,6 +23521,11 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -20089,7 +23538,7 @@
       "path": "content/monsters/cinderworks.json",
       "pointer": "/monsters/2",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -20106,6 +23555,11 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -20118,7 +23572,7 @@
       "path": "content/monsters/cinderworks.json",
       "pointer": "/monsters/1",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -20135,6 +23589,11 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -20147,7 +23606,7 @@
       "path": "content/monsters/cinderworks.json",
       "pointer": "/monsters/3",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -20166,6 +23625,11 @@
           "at": "2026-11-02T18:51:02Z",
           "status": "drafted",
           "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -20176,7 +23640,7 @@
       "path": "content/monsters/cinderworks.json",
       "pointer": "/monsters/0",
       "revision": null,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
@@ -20193,6 +23657,11 @@
       "history": [
         {
           "at": "2026-11-02T18:51:02Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
           "status": "drafted",
           "by": "draftsman"
         }
@@ -21634,31 +25103,16 @@
       "type": "tuning",
       "path": "content/tuning/combat.json",
       "pointer": null,
-      "revision": 15,
-      "work_order": "docs/work-orders/033-cinderworks-combat.md",
+      "revision": 16,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
       "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-11-02T17:10:22Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -21809,6 +25263,11 @@
           "at": "2026-11-02T18:51:02Z",
           "status": "drafted",
           "by": "draftsman"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
@@ -21866,31 +25325,16 @@
       "type": "tuning",
       "path": "content/tuning/tools.json",
       "pointer": null,
-      "revision": 2,
-      "work_order": "docs/work-orders/032-tailoring-from-day-one.md",
-      "status": "validated",
+      "revision": 3,
+      "work_order": "docs/work-orders/034-cinderworks-gear-and-tools.md",
+      "status": "drafted",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
-        "result": "pass",
-        "run": "2026-11-02T16:31:24Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
+        "result": null,
+        "run": null,
+        "checks": null,
         "waiver": null
       },
       "review": null,
@@ -21941,6 +25385,11 @@
           "at": "2026-11-02T16:31:24Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-03T21:02:30Z",
+          "status": "drafted",
+          "by": "draftsman"
         }
       ],
       "retirement": null
