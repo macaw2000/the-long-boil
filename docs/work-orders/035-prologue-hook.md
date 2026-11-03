@@ -1,7 +1,7 @@
 # Work order 035: Hester in the first ten minutes
 
 **Agents:** `scrivener` for the rewrites; `inspector` for voice and reveal; `assayer` for the walk and the cold read; `registrar` for the rows
-**Status:** open (3 November 2026).
+**Status:** drafted, reviewed and measured (3 November 2026). Six scenes reworked (bill, neighbours, register, tip book, receipt, brass plate) and the guide's `brass_plate` line; the other four are unchanged. Hester is named in the bill and her empty notebook binding is found at the bench in scene two. The walk still plays all ten scenes in order on one Nerve bar. The cold read names Hester and her notebook after three scenes; today's Prologue never names her. The inspector failed the register's option 2 outcome and the plate's option 1 label (two evasions where one is allowed); both are fixed at Jeremy's direction, with its polish, and await a re-review. Jeremy kept "long in the arm" and "never used a word where a figure would do". Open for Jeremy: playing it; whether the torn pages prime Act I beat 3's torn charts.
 **Blocks:** nothing in the build plan. It should land before the next round of playtesters.
 
 ## Why this one
