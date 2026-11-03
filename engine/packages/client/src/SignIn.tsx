@@ -74,7 +74,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
 
   const signInWith = (provider?: Provider) => startSignIn(provider).catch((reason: Error) => setError(reason.message));
   const { width, height } = useWindowDimensions();
-  const tall = height > width * 1.1;
+  const tall = useTall(width, height);
   // Signed in, the painting holds still: its loops run on the page's main thread, and on a phone they made typing a Tinker's name lag.
   const still = useReducedMotion() || signedIn;
   const scroller = useRef<ScrollView>(null);
@@ -342,6 +342,19 @@ function useLook(still: boolean) {
     x: sway.interpolate({ inputRange: [0, 0.25, 0.5, 0.75, 1], outputRange: [0, 1, 0, -1, 0] }),
     y: sway.interpolate({ inputRange: [0, 0.5, 1], outputRange: [-0.4, 0.4, -0.4] }),
   };
+}
+
+/**
+ * A phone held upright, decided when the width changes (the phone turned) and
+ * never when only the height does. A phone's keyboard shrinks the window's
+ * height, and in portrait that made the page think it had turned sideways: it
+ * swapped layouts, the name box lost focus, the keyboard closed, and the page
+ * swapped back, so no name could be typed.
+ */
+function useTall(width: number, height: number): boolean {
+  const decided = useRef<{ width: number; tall: boolean } | null>(null);
+  if (decided.current?.width !== width) decided.current = { width, tall: height > width * 1.1 };
+  return decided.current.tall;
 }
 
 /**
