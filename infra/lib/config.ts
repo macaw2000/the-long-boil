@@ -21,7 +21,7 @@ interface EnvironmentShape {
 }
 
 const SHAPES: Record<string, EnvironmentShape> = {
-  dev: { auroraMinAcu: 0, auroraMaxAcu: 2, retainData: false, desiredCount: 1, logRetentionDays: 14, devTools: true },
+  dev: { auroraMinAcu: 0.5, auroraMaxAcu: 2, retainData: false, desiredCount: 1, logRetentionDays: 14, devTools: true },
   // prod: { auroraMinAcu: 0.5, auroraMaxAcu: 4, retainData: true, desiredCount: 2, logRetentionDays: 90, devTools: false },
 };
 

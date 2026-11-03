@@ -62,9 +62,10 @@ export class AppStack extends Stack {
     });
 
     // --- Database ----------------------------------------------------------
-    // Decision 3: dev's floor is 0 ACU, so Aurora pauses when idle and costs
-    // only storage. Pausing at 0 ACU needs PostgreSQL 13.15, 14.12, 15.7,
-    // 16.3 or later.
+    // Decision 3 set dev's floor at 0 ACU, so Aurora paused when idle and cost
+    // only storage. Jeremy, 3 November 2026: dev keeps 0.5 ACU, about $45 a
+    // month, because the 15 s resume stalled family playtesters at sign-in.
+    // Pausing at 0 ACU needs PostgreSQL 13.15, 14.12, 15.7, 16.3 or later.
     const database = new rds.DatabaseCluster(this, "Database", {
       engine: rds.DatabaseClusterEngine.auroraPostgres({ version: rds.AuroraPostgresEngineVersion.VER_17_7 }),
       writer: rds.ClusterInstance.serverlessV2("writer"),
