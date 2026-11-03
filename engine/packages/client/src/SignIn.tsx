@@ -21,19 +21,25 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
   // The Tinker being started over, and the name typed to confirm it.
   const [restarting, setRestarting] = useState<number | null>(null);
   const [confirm, setConfirm] = useState("");
+  // A request on its way. The database sleeps when nobody has played for a while and takes some seconds to wake, so the panel says so rather than looking stuck.
+  const [busy, setBusy] = useState<string | null>(null);
 
-  const lookUp = (account = login.trim()) =>
-    api
+  const lookUp = (account = login.trim()) => {
+    setBusy("Finding your workshop…");
+    return api
       .listTinkers(account)
       .then((result) => {
         setTinkers(result.tinkers);
         setError(null);
       })
-      .catch((reason: Error) => setError(reason.message));
+      .catch((reason: Error) => setError(reason.message))
+      .finally(() => setBusy(null));
+  };
 
   // Signed in with Cognito: the server says which account this is, and its Tinkers follow.
   useEffect(() => {
     if (!cognitoEnabled || !signedIn) return;
+    setBusy("Finding your workshop…");
     api
       .me()
       .then(({ login: account }) => {
@@ -44,11 +50,18 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
       .catch((reason: Error) => setError(reason.message));
   }, [signedIn]);
 
-  const create = () =>
+  const create = () => {
+    if (busy || !name.trim()) return;
+    setBusy("Taking the keys…");
+    setError(null);
     api
       .createTinker(login.trim(), name.trim())
       .then((outcome) => onEnter(login.trim(), outcome.tinker.id))
-      .catch((reason: Error) => setError(reason.message));
+      .catch((reason: Error) => {
+        setError(reason.message);
+        setBusy(null);
+      });
+  };
 
   const startOver = (tinker: { id: number; name: string }) =>
     api
@@ -62,7 +75,8 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
   const signInWith = (provider?: Provider) => startSignIn(provider).catch((reason: Error) => setError(reason.message));
   const { width, height } = useWindowDimensions();
   const tall = height > width * 1.1;
-  const still = useReducedMotion();
+  // Signed in, the painting holds still: its loops run on the page's main thread, and on a phone they made typing a Tinker's name lag.
+  const still = useReducedMotion() || signedIn;
   const scroller = useRef<ScrollView>(null);
   const showcaseTop = useRef(0);
 
@@ -197,19 +211,25 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
                 style={[ui.input, { flex: 1 }]}
                 value={name}
                 onChangeText={setName}
-                onSubmitEditing={() => name.trim() && create()}
+                onSubmitEditing={create}
                 placeholder="a new Tinker's name"
                 placeholderTextColor={colors.muted}
                 maxLength={40}
                 accessibilityLabel="New Tinker's name"
               />
-              <Pressable style={[ui.button, !name.trim() && { opacity: 0.4 }]} disabled={!name.trim()} onPress={create} accessibilityRole="button">
+              <Pressable
+                style={[ui.button, (!name.trim() || busy) && { opacity: 0.4 }]}
+                disabled={!name.trim() || !!busy}
+                onPress={create}
+                accessibilityRole="button"
+              >
                 <Text style={ui.buttonText}>Take the keys</Text>
               </Pressable>
             </View>
           )}
         </View>
       )}
+      {busy && !error && <Text style={[ui.muted, { textAlign: "center" }]}>{busy}</Text>}
       {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
       {cognitoEnabled && (
         <Pressable onPress={signOut} accessibilityRole="button">
