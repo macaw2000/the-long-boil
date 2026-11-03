@@ -20,7 +20,8 @@ const auth: Auth = {
     return { login: `cognito:${login}`, admin: kind === "admin", email: `${login}@example.com`, provider: "Google" };
   },
 };
-const app = buildApi({ db, content, now: () => clock, auth });
+const logged: string[] = [];
+const app = buildApi({ db, content, now: () => clock, auth, logRequest: (line) => logged.push(line) });
 
 beforeAll(async () => {
   await db.query("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
@@ -60,6 +61,17 @@ describe("the admin console", () => {
     expect(row.provider).toBe("Google");
     expect(row.last_seen_at).not.toBeNull();
     expect((await call("GET", "/me", "good:ada")).body).toEqual({ login: "cognito:ada", admin: false, ban: null });
+  });
+
+  it("logs each request as one line: route pattern, status, time and login, never the URL", async () => {
+    logged.length = 0;
+    await call("GET", `/tinkers/${ada}?token=secret`, "good:ada");
+    await call("GET", "/admin/overview", "good:ada");
+    const [read, refused] = logged.map((line) => JSON.parse(line));
+    expect(read).toMatchObject({ request: "GET /tinkers/:id", status: 200, login: "cognito:ada", tinker: ada, phone: false });
+    expect(read.ms).toBeGreaterThanOrEqual(0);
+    expect(refused).toMatchObject({ request: "GET /admin/overview", status: 403, error: "admins only" });
+    expect(logged.join("\n")).not.toContain("secret");
   });
 
   it("is for admins only", async () => {

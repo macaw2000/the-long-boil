@@ -67,6 +67,8 @@ export interface ApiOptions {
   devClock?: DevClock;
   /** Fan-out to open sessions; in-process unless several servers share one. */
   broadcast?: Broadcast;
+  /** Where each finished request is written as one JSON line, for finding a playtester's trouble in the logs; tests leave it off. */
+  logRequest?: (line: string) => void;
   /** Real sign-in; without it, the dev login trusts the login and Tinker id it is given. */
   auth?: Auth;
   /** A path the API also answers under, such as /api behind CloudFront, which sends /api/* to the server unchanged. */
@@ -85,6 +87,8 @@ declare module "fastify" {
     admin: boolean;
     /** The signed-in account's ban, if it has one (milestone 14). */
     ban: Ban | null;
+    /** A refused or failed request's message, for the request log. */
+    failure: string | null;
   }
 }
 
@@ -163,6 +167,7 @@ export function buildApi({
   prefix,
   payments,
   siteUrl = "http://localhost:8081",
+  logRequest,
 }: ApiOptions): FastifyInstance {
   const app = Fastify(
     prefix ? { rewriteUrl: (request) => (request.url?.startsWith(`${prefix}/`) ? request.url.slice(prefix.length) : (request.url ?? "/")) } : {},
@@ -174,6 +179,7 @@ export function buildApi({
   app.decorateRequest("login", null);
   app.decorateRequest("admin", !auth);
   app.decorateRequest("ban", null);
+  app.decorateRequest("failure", null);
   // Open live connections by Tinker, for the admin console's "online now".
   const online = new Map<number, number>();
   if (auth) {
@@ -210,7 +216,28 @@ export function buildApi({
     if (Number.isInteger(id) && id > 0) broadcast.publish(tinkerChannel(id), { type: "changed" });
   });
 
-  app.setErrorHandler((error: Error & { validation?: unknown; code?: string }, _request, reply) => {
+  // One line per request: the route pattern, never the URL, which can carry a sign-in token in its query.
+  if (logRequest) {
+    app.addHook("onResponse", async (request, reply) => {
+      const route = request.routeOptions.url ?? "(no route)";
+      if (route === "/health") return;
+      const id = Number((request.params as { id?: string }).id);
+      logRequest(
+        JSON.stringify({
+          request: `${request.method} ${route}`,
+          status: reply.statusCode,
+          ms: Math.round(reply.elapsedTime),
+          login: request.login,
+          ...(Number.isInteger(id) && id > 0 ? { tinker: id } : {}),
+          ...(request.failure ? { error: request.failure } : {}),
+          phone: /Mobi|Android|iPhone|iPad/.test(request.headers["user-agent"] ?? ""),
+        }),
+      );
+    });
+  }
+
+  app.setErrorHandler((error: Error & { validation?: unknown; code?: string }, request, reply) => {
+    request.failure = error.message;
     if (error instanceof Unauthorized) return reply.code(401).send({ error: error.message });
     if (error instanceof NotFound) return reply.code(404).send({ error: error.message });
     if (error instanceof Refused) return reply.code(403).send({ error: error.message });
