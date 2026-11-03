@@ -87,6 +87,9 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
         The sea has boiled for 312 years. Nobody will say why.
       </Text>
       <Text style={[ui.heading, { fontSize: 22, textAlign: "center", color: PAPER.heading }]}>Sign in to play</Text>
+      <Text style={[ui.text, { fontSize: 14, textAlign: "center", color: PAPER.muted }]}>
+        With Google or Discord, so your workshop is saved. Your email stays private and is never used for marketing.
+      </Text>
       <Text style={[ui.text, { textAlign: "center", color: PAPER.ink }]}>The tenancy of No. 9 Sprocket Row, "contents included", is yours.</Text>
       <View style={{ gap: 10 }}>
         {providers.length ? (
@@ -591,7 +594,8 @@ function Showcase({ wide, still }: { wide: boolean; still: boolean }) {
           Free to play in your browser, and no story is ever sold. Crowns are earned in play; Gilded Cogs, bought in Cog Crates, buy only time and looks. Every piece of gear, every page and every ending can be earned without paying.
         </Text>
         <Text style={[ui.muted, { fontSize: 14, textAlign: "center" }]}>
-          Signing in only keeps your workshop yours: we never see your password, never post anything, and show no ads.
+          You sign in with Google or Discord to play, so your workshop is saved and stays yours. We keep the email address you sign in with,
+          and nobody else sees it. We never see your password, never send you marketing, never post anything, and show no ads.
         </Text>
         <View style={{ flexDirection: "row", gap: 16, marginTop: 4 }}>
           <LegalLink path="/privacy.html" label="Privacy" />
