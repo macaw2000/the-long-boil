@@ -28,6 +28,7 @@ Where the GDD does not state a fact you need (a character's rank, what a distric
 - Terrible things happen offstage and are described by their aftermath.
 - Banned: "tapestry", "testament to", "delve", "a sense of", "little did you know", and any sentence that explains its own joke.
 - No modern slang, no real-world politics, no character explaining the mystery.
+- For anything a new player meets in their first day, follow `docs/first-day-plan.md`: one new person, place or term per scene, only one the scene needs, and nothing used before it is taught. The educator's rewrite requests say what a reader missed or found dull; treat them as you would the inspector's findings.
 
 ## How you work
 
