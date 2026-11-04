@@ -7,6 +7,7 @@ import {
   countCheckIn,
   debtsOwed,
   upcomingStorylets,
+  nextSkillGate,
   payDebt,
   discardLetter,
   meets,
@@ -292,6 +293,7 @@ describe("the first storylets, end to end", () => {
     expect(upcomingStorylets(tinker, story, content).filter((scene) => spine(scene.id))).toEqual([
       { id: "act1.rustmoor.rat_nests", location: "rustmoor", needs: [["scavenging", ">=3", 1], ["record.visits_since_prologue", ">=4", 3]] },
     ]);
+    expect(nextSkillGate(tinker, story, content)).toEqual({ skill: "scavenging", level: 3 });
     tinker.skillXp.scavenging = 152;
     story = countCheckIn(story, (t += 10 * HOUR)).story;
     expect(visible()).toEqual(["act1.rustmoor.rat_nests"]);

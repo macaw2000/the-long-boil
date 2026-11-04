@@ -59,6 +59,8 @@ export interface StorySummary {
   debts: { id: string; label: string; crowns: number }[];
   /** Storylets open to play now, for the Story tab's nudge. */
   openScenes: number;
+  /** The nearest skill level holding back a scene, if one is. */
+  nextGate: { skill: string; level: number } | null;
   /** A stay at St. Pinion's: only its scenes are open, and Scald holds (work order 020). */
   inInfirmary: boolean;
   /** During a stay, when a ward scene can next be played (now or later); null when not held or none will open. */
@@ -280,6 +282,7 @@ function summarizeStory(story: StoryState, tinker: TinkerState, content: GameCon
     backRent: rules.backRentOwed(story),
     debts: rules.debtsOwed(story).map(({ id, label, crowns }) => ({ id, label, crowns })),
     openScenes: rules.availableStorylets(tinker, story, content.rules, now).length,
+    nextGate: rules.nextSkillGate(tinker, story, content.rules),
     inInfirmary: rules.heldAtInfirmary(story),
     wardOpensAt: ((at) => (at === null ? null : new Date(at).toISOString()))(rules.wardOpensAt(tinker, story, content.rules, now)),
     qualities: Object.fromEntries(Object.entries(story.qualities).filter(([, value]) => value > 0)),

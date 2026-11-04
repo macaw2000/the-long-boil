@@ -156,6 +156,8 @@ export interface Tinker {
     backRent: number;
     debts: { id: string; label: string; crowns: number }[];
     openScenes: number;
+    /** The nearest skill level holding back a scene, if one is. */
+    nextGate?: { skill: string; level: number } | null;
     qualities: Record<string, number>;
     inInfirmary: boolean;
     /** During a stay, when a ward scene can next be played; null when not held or none will open. */

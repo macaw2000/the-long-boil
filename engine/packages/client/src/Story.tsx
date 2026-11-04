@@ -97,7 +97,7 @@ export function Story({
   const progress = Object.entries(view.qualities).filter(([name]) => name.startsWith("favour.") || name.startsWith("lore."));
   // Scenes behind a job or an item wait until the screen opens the jobs, the visit after the plate.
   const opened = (view.qualities["record.visits_since_prologue"] ?? 0) >= 1;
-  const waiting = opened ? view.upcoming.filter((scene) => !visitOnly.includes(scene)) : [];
+  const waiting = opened ? view.upcoming.filter((scene) => !visitOnly.includes(scene) && !scene.needs.some(([name]) => name.startsWith("flag."))) : [];
   // Hester's notebook is found at the receipt (prologue.progress 20); nothing names it before.
   const notebookFound = (view.qualities["prologue.progress"] ?? 0) >= 20 || pages.some((page) => page.held);
 
@@ -209,7 +209,7 @@ export function Story({
           {visitOnly.length > 0 && <Text style={ui.muted}>{nextVisitLine(visitOnly, view.nextVisitAt)}</Text>}
           {waiting.map((scene) => (
             <Text key={scene.id} style={ui.muted}>
-              Something waits in {titleCase(scene.location.replace(/_/g, " "))}: needs{" "}
+              Something waits in {scene.location.split("_").map(titleCase).join(" ")}: needs{" "}
               {scene.needs.map(([name, condition, value]) => needText(name, condition, value)).join(", ")}.
             </Text>
           ))}

@@ -38,11 +38,20 @@ const BOILER_MS = 12 * 3_600_000;
 
 const RAT_SCRAP = "item.rustmoor.rat_scrap";
 
-/** Brassbuckle's line on Rations, on the first ledger that shows one eaten: it says nothing that needs doing, so it stays off the goal bar. */
-function firstRations(ledger: LedgerData, tinker: Tinker, content: Content): string | undefined {
+/** The guide-state mark that Brassbuckle's line on Rations has been read. */
+const RATIONS_SEEN = "seen:rations";
+
+/** Her line on Rations, on a ledger that shows one eaten: it says nothing that needs doing, so it stays off the goal bar. */
+function rationsNote(ledger: LedgerData, content: Content): string | undefined {
   const ate = ledger.lines.some((line) => line.consumed[content.ration.item]);
-  if (!ate || (tinker.story.qualities["record.check_ins"] ?? 0) > 2) return undefined;
-  return content.guide.find((entry) => entry.id === "rations")?.line;
+  return ate ? content.guide.find((entry) => entry.id === "rations")?.line : undefined;
+}
+
+/** Start now: the job goes first and the rest stay behind it. A job already queued keeps its count if that is larger, so moving it loses no work. */
+function startFirst(queue: QueueEntry[], entry: QueueEntry): QueueEntry[] {
+  const queued = queue.find((job, index) => index > 0 && job.actionId === entry.actionId);
+  const first = queued && queued.remaining > entry.remaining ? queued : entry;
+  return [first, ...queue.filter((job) => job.actionId !== entry.actionId)];
 }
 
 export function Workshop({ content, tinkerId, admin, onLeave }: { content: Content; tinkerId: number; admin: boolean; onLeave: () => void }) {
@@ -73,7 +82,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       .catch(() => undefined);
   }, [tinkerId]);
   // A new Tinker opens at the bench Brassbuckle points at; after the guide, at the first skill.
-  const [place, setPlace] = useState<Place>(checkoutReturn ? "shop" : guide.skipped || guide.opened ? "skill:prospecting" : GUIDE_START);
+  const [place, setPlace] = useState<Place>(checkoutReturn ? "shop" : guide.skipped ? "skill:prospecting" : GUIDE_START);
   // The job tile picked on a skill page, held here so the guide can point past it to Start.
   const [chosen, setChosen] = useState<string | null>(null);
   const [recent, setRecent] = useState<string[]>([]);
@@ -406,6 +415,11 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     ? new Set<Place>()
     : new Set<Place>([...(lit as Set<Target>)].map(placeOf).filter((value): value is Place => value !== null && value !== place));
   const goal = coaching ? null : nextGoal(tinker, content, now, name, guide, saleLeft);
+  const rationsLine = away ? rationsNote(away.ledger, content) : undefined;
+  const closeLedger = () => {
+    if (rationsLine && !guide.acknowledged.includes(RATIONS_SEEN)) setGuide({ ...guide, acknowledged: [...guide.acknowledged, RATIONS_SEEN] });
+    setAway(null);
+  };
 
   const equipWeapon = (item: string) => {
     setNewGear(null);
@@ -487,7 +501,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         guideAt={at === "start" || at?.startsWith("job:") ? at : null}
         chosen={chosen}
         onChoose={setChosen}
-        onStart={(entry) => setQueue([entry, ...tinker.queue.filter((job) => job.actionId !== entry.actionId)].slice(0, tinker.upgrades.queueSlots))}
+        onStart={(entry) => setQueue(startFirst(tinker.queue, entry).slice(0, tinker.upgrades.queueSlots))}
         onQueue={(entry) => setQueue([...tinker.queue, entry].slice(0, tinker.upgrades.queueSlots))}
         onGrocer={() => setPlace("exchange")}
       />
@@ -632,7 +646,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           {/* On a phone it heads the page instead, which scrolls under it, so the card never leaves the page a sliver. */}
           {!wide && guidance}
           {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
-          {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} note={firstRations(away.ledger, tinker, content)} onClose={() => setAway(null)} />}
+          {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} note={guide.acknowledged.includes(RATIONS_SEEN) ? undefined : rationsLine} onClose={closeLedger} />}
           {page}
           {recent.length > 0 && skillPlace !== null && (
             <View style={ui.panel}>
@@ -646,7 +660,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           )}
         </ScrollView>
         </View>
-        {wide && (
+        {wide && place !== "stores" && (
           <ScrollView style={{ width: 330, flexGrow: 0 }} contentContainerStyle={{ padding: 16, paddingLeft: 0, gap: 12 }}>
             <Stores content={content} tinker={tinker} name={name} />
             {loadout}
@@ -657,7 +671,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       {!wide && (
         <BottomBar place={place} workPlace={workPlace} onPlace={setPlace} badges={badges} lit={litPlaces} guided={guidedPlace} shown={shown} />
       )}
-      {newGear && (
+      {newGear && !step && (
         <NewGear item={newGear} content={content} tinker={tinker} name={name} onEquip={equipWeapon} onClose={() => setNewGear(null)} />
       )}
     </View>

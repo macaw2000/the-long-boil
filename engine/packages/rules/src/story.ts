@@ -400,6 +400,21 @@ export function upcomingStorylets(tinker: TinkerState, story: StoryState, conten
   });
 }
 
+/** The nearest skill level alone holding back a scene: the one a goal line can honestly point at. */
+export function nextSkillGate(tinker: TinkerState, story: StoryState, content: Content): { skill: string; level: number } | null {
+  const gates = upcomingStorylets(tinker, story, content).flatMap(({ needs }) => {
+    // Visits pass by themselves; a second skill or an item is not one line's work.
+    const earnedByWork = needs.filter(([name]) => !name.startsWith("record."));
+    const [need] = earnedByWork;
+    if (earnedByWork.length !== 1 || !need || need[0].includes(".")) return [];
+    const level = Number(need[1].replace(/[^0-9]/g, ""));
+    return [{ skill: need[0], level, gap: level - need[2] }];
+  });
+  gates.sort((a, b) => a.gap - b.gap || a.skill.localeCompare(b.skill));
+  const nearest = gates[0];
+  return nearest ? { skill: nearest.skill, level: nearest.level } : null;
+}
+
 /** Storylets the Tinker can see now: every one whose requirements hold and that is not cooling down. */
 export function availableStorylets(tinker: TinkerState, story: StoryState, content: Content, now = Number.NEGATIVE_INFINITY): Scene[] {
   return [...content.storylets.values()].filter(

@@ -32,17 +32,18 @@ const FIRST_ARMOUR_ACTION = "action.rustmoor.tailor_silk_hand_wraps";
 function rationsNote(planner: Planner, content: Content, id: string, count: number): string {
   const outlook = planner.fights.get(id);
   if (!outlook?.ready || outlook.rations <= 0) return "";
-  return `. About ${Math.ceil(outlook.rations * count).toLocaleString()} Rations; you hold ${(planner.held.get(content.ration.item) ?? 0).toLocaleString()}`;
+  // The figure is at today's level; levels gained on the way cut it a good deal (a first night asked for 493 and ate 150).
+  return `. Up to about ${Math.ceil(outlook.rations * count).toLocaleString()} Rations at today's level, fewer as you improve; you hold ${(planner.held.get(content.ration.item) ?? 0).toLocaleString()}`;
 }
 
 /** What Start now will do to the queue: it puts the job first and keeps the rest, as far as the queue has room. */
-function startNote(tinker: Tinker, id: string, full: boolean, name: (id: string) => string): string {
+function startNote(tinker: Tinker, id: string, full: boolean, job: (id: string) => string): string {
   const head = tinker.queue[0];
   if (!head) return "";
   if (head.actionId === id) return "Start now sets a new count for this job.";
   if (tinker.queue.some((entry) => entry.actionId === id)) return "Start now moves this job to the front.";
-  if (full) return `Start now puts this first, and ${name(tinker.queue[tinker.queue.length - 1]!.actionId)} leaves the queue, which holds ${tinker.upgrades.queueSlots} jobs.`;
-  return `Start now puts this first, and ${name(head.actionId)} waits behind it. Add to queue runs it after.`;
+  if (full) return `Start now puts this first, and ${job(tinker.queue[tinker.queue.length - 1]!.actionId)} leaves the queue, which holds ${tinker.upgrades.queueSlots} jobs.`;
+  return `Start now puts this first, and ${job(head.actionId)} waits behind it. Add to queue runs it after.`;
 }
 
 export function SkillIcon({ skill, size = 24 }: { skill: string; size?: number }) {
@@ -434,10 +435,8 @@ function JobDetail({
             <Text style={[ui.buttonText, { color: colors.brass }]}>Add to queue</Text>
           </Pressable>
         )}
-        <Text style={[ui.muted, { flex: 1 }]}>
-          {startNote(tinker, id, full, name)}
-        </Text>
       </View>
+      {tinker.queue.length > 0 && <Text style={ui.muted}>{startNote(tinker, id, full, (job) => jobTitle(content, job, name))}</Text>}
     </View>
   );
 }

@@ -1,4 +1,4 @@
-// The Assayer's Act I walk (work order 018): plays a new Tinker for up to 14
+// The Assayer's Act I walk (work order 018): plays a new Tinker for up to 21
 // days, or until the Foundry Pass is played, at 2, 3 and 4 check-ins a day,
 // through the same HTTP routes the client calls, with an injected clock and
 // its own database. It changes no engine code, content or tuning.
@@ -50,7 +50,7 @@
 //   createdb long_boil_sim              # once
 //   node scripts/sim/walk-act1.mjs      # all three cadences
 //   node scripts/sim/walk-act1.mjs 3    # one cadence
-//   SIM_DAYS=21 node scripts/sim/walk-act1.mjs   # a longer horizon
+//   SIM_DAYS=42 node scripts/sim/walk-act1.mjs   # another horizon (default 21)
 //   SIM_BOSS_MIN=0.4 node scripts/sim/walk-act1.mjs   # the boss threshold (default 0.4)
 //   SIM_VERBOSE=1 node scripts/sim/walk-act1.mjs 3   # every sitting, line by line
 //   SIM_CONTENT=/abs/dir node scripts/sim/walk-act1.mjs   # walk a content directory other than content/
@@ -123,9 +123,10 @@
 // migrations before each cadence. It refuses long_boil_dev and long_boil_test.
 //
 // Player policy, fixed and stated (not tuned to any result). The player is
-// assumed to know every Act I gate (the client does not show locked
-// storylets), and to know Scrapjaw's win chance before queuing it (the
-// client does not show it; the sim reads it from the engine's own planBoss).
+// assumed to know every Act I gate (Story's "Coming up" lists locked storylets
+// and what each needs once Act I opens; the walk works from GATES below, not
+// from that list), and to know Scrapjaw's win chance before queuing it
+// (read from the engine's /tinkers/:id/fights route, the odds the queue picker shows).
 // - First session (Thursday 18:00): prospect 1 copper and smelt it, tinker 5
 //   Brass Spanners, fight 10 Runts, equip the spanner, play every open scene,
 //   sell to the collectors, pay Pip's bill, then queue an hour of bent nails
@@ -153,6 +154,10 @@
 //   lasts. A scene that never scores above 0 is reported as never worth it.
 //   SIM_DISTRICT=all: spends all spare Nerve, taking the best affordable option
 //   even at a score of 0 or below (an upper bound on story pace).
+// - St. Pinion's (work order 037): Scald 8 closes every scene but the ward's until
+//   discharge, so ward scenes are played as spine beats, by the same rule, as soon
+//   as they open. A ward challenge under 0.5 with no certain option is left alone.
+//   They open only at Scald 8 or during a stay, so the ward is played only then.
 // - Scrapjaw's win chance is read from the engine's /tinkers/:id/fights route,
 //   the odds the queue picker shows.
 // - Queue: slot 1 is one production task sized to half the time until the
@@ -162,11 +167,15 @@
 //        (at most 3) is SIM_BOSS_MIN or better, until beaten.
 //     2. Cook, when Rations held are below what the next interval's fighting
 //        eats plus 3 for a boss attempt and 20 spare.
-//     3. Alternating sitting by sitting between (a) the first unmet Act I
+//     3. Alternating turn by turn between (a) the first unmet Act I
 //        skill gate (scavenging 3, tinkering 6, scavenging 9, cooking 5) and
 //        (b) the next melee weapon (crowbar, riveting hammer, steel blade)
 //        once melee is within 3 levels of it, working its chain backwards
 //        (forge, smelt, prospect, or train the skill that gates the step).
+//        A turn counts only when its entry really goes on the queue: not one a
+//        piece displaced, nor a sitting given to Scrapjaw, Rations or a weapon in
+//        reach (work order 037: at 2 a day production runs every second sitting,
+//        so counting sittings locked onto one parity and starved gate or weapon).
 //     4. Otherwise rotate scavenging, prospecting, smithing, cooking, tinkering.
 // - Fighting: melee only (Scrapjaw is weak to melee and the first-session
 //   spanner is melee); the ordinary monster with the best melee XP an hour by
@@ -181,7 +190,7 @@ import { fighterFor, levelFor, planKill } from "../../engine/packages/rules/dist
 const DB_NAME = process.env.SIM_DB ?? "long_boil_sim";
 if (["long_boil_dev", "long_boil_test"].includes(DB_NAME)) throw new Error(`refusing to use ${DB_NAME}`);
 const VERBOSE = process.env.SIM_VERBOSE === "1";
-const DAYS = Number(process.env.SIM_DAYS ?? 14);
+const DAYS = Number(process.env.SIM_DAYS ?? 21);
 const BOSS_MIN = Number(process.env.SIM_BOSS_MIN ?? 0.4);
 // "balanced" (default): slot 2 always fights. "focused": once melee has reached the next weapon's level, the
 // weapon chain takes both slots (prospect then smelt, or smelt then prospect) and fighting waits for the forge.
@@ -323,6 +332,9 @@ function labour(a) {
 const SPINE = new Set(
   [...R.storylets.values()].filter((s) => s.options.some((o) => [o.success, o.failure].some((x) => x && Object.keys(x.changes).some((k) => k === "act1.progress" || k === "prologue.progress" || k.startsWith("ambition."))))).map((s) => s.id),
 );
+// The ward scores nothing on the district rule (entering costs Arrears or Rations), and skipping it strands the walk.
+const WARD = new Set([...R.storylets.values()].filter((s) => s.location === "infirmary").map((s) => s.id));
+for (const id of WARD) SPINE.add(id);
 const DISTRICT = [...R.storylets.values()].filter((s) => !SPINE.has(s.id)).map((s) => s.id);
 const RESERVE = { [I("rustmoor_ration")]: 100, [I("brass_spanner")]: 1 };
 
@@ -437,7 +449,8 @@ async function runCadence(perDay) {
     const refused = new Set(); // scenes the engine refused this sitting, such as a letter whose requirements lapsed in hand
     for (;;) {
       const letter = view.letters.find((l) => l.nerve <= view.nerve && !refused.has(l.id));
-      const storylet = view.storylets.find((s) => SPINE.has(s.id) && s.nerve <= view.nerve && !refused.has(s.id));
+      const wardWorthIt = (s) => !WARD.has(s.id) || s.options.some((o) => o.available && (!o.challenge || o.challenge.odds >= 0.5));
+      const storylet = view.storylets.find((s) => SPINE.has(s.id) && s.nerve <= view.nerve && !refused.has(s.id) && wardWorthIt(s));
       let scene = letter ? { ...letter, kind: "letter" } : storylet ? { ...storylet, kind: "storylet" } : null;
       let choice = -1;
       if (scene && scene.id in FORCE) {
@@ -903,7 +916,8 @@ async function runCadence(perDay) {
       const tt = (await ok("GET", `/tinkers/${main}`)).tinker;
       for (const st of tt.inventory) if (st.item.includes("ledger_page") && st.qty > 0) pagesHeld[st.item] ??= clock;
     }
-    if (!foundryAt && scenes.some((s) => s.id === "act1.brass_exchange.foundry_pass")) {
+    // Only a real pass: a lost Stokers' challenge costs Scald, leaves act1.progress at 70 and the Cinderworks shut.
+    if (!foundryAt && scenes.some((s) => s.id === "act1.brass_exchange.foundry_pass" && s.success)) {
       foundryAt = clock;
       note("Foundry Pass played");
     }
@@ -978,8 +992,9 @@ async function runCadence(perDay) {
         if (gate) wants.push(() => train(main, t, gate.skill, half, `gate ${gate.skill} ${gate.level}`));
         if (nextWeapon) wants.push(async () => makeIt(t, nextWeapon, `weapon ${nextWeapon.split(".").pop()}`) ?? obtain(main, t, nextWeapon, 1, half, `weapon ${nextWeapon.split(".").pop()}`, 0, false));
         if (wants.length) {
-          const order = alt++ % 2 === 0 ? wants : [...wants].reverse();
+          const order = alt % 2 === 0 ? wants : [...wants].reverse();
           for (const w of order) if ((slot = await w())) break;
+          if (slot) slot.turn = true; // counted below, if this entry is still on the queue
         }
       }
       if (!slot) {
@@ -988,7 +1003,6 @@ async function runCadence(perDay) {
       }
       return slot;
     };
-    const altAt = alt;
     const rotAt = rot;
     if (!slot) slot = await buildProd(t, half);
     let gearEntry = null;
@@ -1062,7 +1076,6 @@ async function runCadence(perDay) {
         }
         if (prodBehind) {
           // Production follows: rebuilt to fill the interval after the piece, the fight waits a sitting.
-          alt = altAt;
           rot = rotAt;
           const fill = Math.max(60, interval / 1000 - chain) * (boosted ? 1 + R.shop.boost.percent / 100 : 1);
           const tt = (await ok("GET", `/tinkers/${main}`)).tinker;
@@ -1117,6 +1130,7 @@ async function runCadence(perDay) {
         gearBank -= chain;
       }
     }
+    if (slot.turn || followProd?.turn) alt += 1; // a real gate or weapon turn; a displaced one keeps its place
     const extra = threeSlots && gearEntry ? [{ actionId: gearEntry.actionId, remaining: gearEntry.remaining }] : [];
     {
       const kind = kindOf(slot);
@@ -1202,13 +1216,15 @@ const wanted = process.argv.slice(2).length ? process.argv.slice(2).map(Number) 
 const results = [];
 for (const perDay of wanted) results.push(await runCadence(perDay));
 
+// A scene's first success, or its first play if it never succeeded (a beat can be lost and tried again).
+const playedAt = (r, id) => r.scenes.find((s) => s.id === id && s.success) ?? r.scenes.find((s) => s.id === id);
 const lvlOf = (end, skill) => end.skills.find((s) => s.skill === skill)?.level ?? 1;
 for (const r of results) {
   console.log(`\n=============== ${r.perDay} check-ins a day, ${DAYS}-day horizon, boss threshold ${BOSS_MIN}, policy ${POLICY}, district ${DISTRICT_MODE}, gear share ${GEAR_SHARE} placed ${GEAR_PLACE}, gear training ${GEAR_TRAIN} capped at ${TRAIN_SHARE}, first-session piece ${FIRST_TAILOR ? "on" : "off"}${BOSS_WEAPON ? `, Scrapjaw only with ${BOSS_WEAPON.split(".").pop()} or better` : ""} ===============`);
   if (VERBOSE) for (const n of r.notes) console.log(n);
   console.log("-- Act I beats (measured; day = days since the first session, Thursday 18:00)");
   for (const [id, gate] of BEATS) {
-    const played = r.scenes.find((s) => s.id === id);
+    const played = playedAt(r, id);
     const met = gate && gate in r.gateMet ? r.gateMet[gate] : undefined;
     console.log(
       `${id.split(".").pop().padEnd(20)} gate ${(gate || "-").padEnd(38)} met ${met === undefined ? "  -  " : met ? dayOf(met).padStart(5) : "never"}  first seen open ${r.seenOpen[id] ? dayOf(r.seenOpen[id]).padStart(5) : "never"}  played ${played ? `${dayOf(played.at).padStart(5)} option ${played.option}${played.odds !== null ? ` ${played.success ? "won" : "lost"} at ${Math.round(played.odds * 100)}%` : ""}` : "never"}`,
@@ -1271,6 +1287,11 @@ for (const r of results) {
     console.log(`   at the end: off_hand ${short(EL.off_hand)}, head ${short(EL.head)}, body ${short(EL.body)}, hands ${short(EL.hands)}, feet ${short(EL.feet)}, charm ${short(EL.charm)}; tools ${JSON.stringify(Object.fromEntries(Object.entries(EL.tools).map(([k, v]) => [k, short(v)])))}`);
   }
   console.log(`-- end (d${days.toFixed(2)}): skills ${JSON.stringify(Object.fromEntries(r.end.skills.map((s) => [s.skill, s.level])))}; weapon ${r.end.weapon}; ${r.end.crowns} Crowns; ${r.kills} ordinary kills; debts ${JSON.stringify(r.end.story.debts)}`);
+  {
+    const ward = r.scenes.filter((s) => WARD.has(s.id));
+    const q = r.end.story.qualities;
+    console.log(`-- St. Pinion's (measured): ${ward.length} ward scenes${ward.length ? `: ${ward.map((s) => `${s.id.split(".").pop()}#${s.option}@d${dayOf(s.at)}${s.success ? "" : " FAILED"}`).join(", ")}` : ""}; ${(q["flag.in_st_pinion"] ?? 0) === 1 || (q["needle.scald"] ?? 0) >= 8 ? "HELD at the end" : "not held at the end"} (Scald ${q["needle.scald"] ?? 0}, Arrears ${q["needle.arrears"] ?? 0})`);
+  }
   console.log(`   story refusals: ${JSON.stringify(r.refusals.map((x) => `${x.id.split(".").pop()}@d${dayOf(x.at)}`))}`);
   console.log(`-- Cog Shop: ${SHOP.length ? `bought d${dayOf(r.shopBought.at)}: ${r.shopBought.crates} crates, ${r.shopBought.cogs} Cogs, ${JSON.stringify(r.shopBought.buys)}` : "nothing bought"}${HOURS ? `; sittings at ${HOURS.join(",")}h` : ""}`);
   console.log(`-- pacing (measured): melee level reached by day ${JSON.stringify(Object.fromEntries([5, 10, 15, 18, 20, 21, 22].filter((l) => r.meleeAt[l]).map((l) => [l, Number(dayOf(r.meleeAt[l]))])))}; all skills ${Math.round(r.totalXp)} XP at d${days.toFixed(2)}`);
@@ -1316,7 +1337,7 @@ for (const r of results) {
   console.log(`   letters dealt: ${r.lettersArrived.map((l) => `${l.id.split(".").pop()}@d${dayOf(l.at)}`).join(", ")}`);
   const spine = ["act1.sprocket_row.altitude_review", "act1.sprocket_row.what_you_do_with_it", "act1.brass_exchange.foundry_pass", "act1.sprocket_row.the_night_before"];
   for (const id of [...spine, "act1.brass_exchange.gauntletts_question", "act1.rustmoor.where_she_went", "act1.lowvents.who_feeds_it", "act1.polytechnic.how_deep"]) {
-    const s = r.scenes.find((x) => x.id === id);
+    const s = playedAt(r, id);
     if (!s) { console.log(`   ${id.split(".").pop().padEnd(22)} never played`); continue; }
     const diff = Object.fromEntries(Object.entries(s.qAfter).filter(([k, v]) => (s.qBefore[k] ?? 0) !== v && (k.startsWith("ambition.") || k.endsWith(".progress") || k.startsWith("favour.board") || k.startsWith("favour.stokers") || k.startsWith("flag."))));
     console.log(`   ${id.split(".").pop().padEnd(22)} d${dayOf(s.at)} option ${s.option}${s.odds !== null ? ` at ${Math.round(s.odds * 100)}% ${s.success ? "won" : "lost"}` : ""}: ${JSON.stringify(diff)}`);

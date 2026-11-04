@@ -17,6 +17,7 @@ import type { Content, GuideProgress, Tinker } from "./api";
 import { FIGHT } from "./jobs";
 import type { Place } from "./SideNav";
 import { colors, fonts, ui } from "./theme";
+import { titleCase } from "./format";
 
 /**
  * What the guide can point at: a place in the nav, a job's tile, the job's
@@ -112,7 +113,7 @@ const STEPS: Step[] = [
   {
     id: "come_back",
     fallback: "Queue twelve hours of work, then go. The Boiler keeps the bench busy.",
-    done: (tinker, acknowledged) => acknowledged && tinker.queue.length > 0,
+    done: (_, acknowledged) => acknowledged,
   },
 ];
 
@@ -277,7 +278,7 @@ export function coach(step: Step, tinker: Tinker, context: GuideContext): Coachi
       // A playtester queued an hour and came back puzzled by "twelve hours": fill the night with fights, which need nothing.
       const hours = Math.floor(context.queuedMs / 3_600_000);
       const job = toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt");
-      const press = job.at === "start" ? "Press Fill, then Start." : job.hint;
+      const press = job.at === "start" ? "Press Fill, then Start now." : job.hint;
       return { ...job, hint: `Your queue has work for ${hours ? `${hours}h` : "under an hour"} of the Boiler's twelve. ${press}` };
     }
     default:
@@ -338,7 +339,7 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
     return entry ? { text: entry.line, place, speaker: entry.speaker } : { text: plain, place };
   };
   const debt = tinker.story.debts.find((candidate) => tinker.crowns >= candidate.crowns);
-  if (debt) return { text: `Pay ${debt.label}: you have the ${debt.crowns} Crowns.`, place: "exchange" };
+  if (debt) return { text: `Pay ${debt.label}: you have the ${debt.crowns.toLocaleString()} Crowns.`, place: "exchange" };
   if (tinker.story.letters > 0) return said("pips_bill", "A letter is waiting in Story.", "story");
   if (tinker.queue.length === 0) return { text: "The bench is idle. Pick a job and press Start.", place: "skill:tinkering" };
   if (steamLeft <= 0) return { text: "The Boiler is dry. Checking in raises steam.", place: "skill:tinkering" };
@@ -370,7 +371,13 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
   if (unpaid) {
     // Once the week's sale is used the window can do nothing more, so the line points at the fights.
     const line = saleLeft === 0 ? said("sale_done", "The rats' Crowns will make up the rest.", `skill:${FIGHT}`) : said("pay_bill", "Sell rat scrap at the Counting-House window.", "exchange");
-    return { ...line, text: `${line.text} (${tinker.crowns} of ${unpaid.crowns} Crowns.)` };
+    return { ...line, text: `${line.text} (${tinker.crowns.toLocaleString()} of ${unpaid.crowns.toLocaleString()} Crowns.)` };
+  }
+  // Nothing else told a player to train, and a skill gate could hold the story back for weeks (decision 17).
+  const gate = tinker.story.nextGate;
+  if (gate && (tinker.story.qualities["record.visits_since_prologue"] ?? 0) >= 1) {
+    const bench = content.actions.some((action) => action.skill === gate.skill);
+    return { text: `Train ${titleCase(gate.skill)} to ${gate.level}: a scene waits on it.`, place: bench ? `skill:${gate.skill}` : `skill:${FIGHT}` };
   }
   return null;
 }
