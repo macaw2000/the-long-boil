@@ -12,6 +12,12 @@ export const glossary = {
     "Your story budget. Each scene costs Nerve, most of them 1. It refills by 1 every 36 minutes, up to 10, and keeps refilling while you are away.",
   crowns:
     "Kettleport's money. You earn it selling at the Counting-House window or on the Exchange, and spend it at the grocer's, on the Exchange and on your debts.",
+  counting_house:
+    "The Counting-House window is where Kettleport's bills are paid, and where you can sell what you make for Crowns.",
+  pneumatic_post:
+    "The brass tube above your bench. Letters drop into its tray as canisters, and each one is a scene in the Story tab.",
+  rations:
+    "A Ration is a wax-paper brick of stew. In a fight your Tinker eats one when hurt, to heal; make more at Cooking or buy them at the grocer's.",
   needles:
     "The four Needles are the story's risks. Each reads from 0 to 8 and falls by 1 every day on its own. They only touch the story: your Boiler, fights and trades carry on whatever they read.",
   "needle.scald":

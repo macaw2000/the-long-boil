@@ -12,7 +12,7 @@ import { Glow } from "./Glow";
 import { OddsDial } from "./Juice";
 import { vignetteSource } from "./Sprite";
 import type { GlossaryTerm } from "./glossary";
-import { Term } from "./Term";
+import { GlossedText, Term } from "./Term";
 import { colors, ui } from "./theme";
 
 const REFRESH_MS = 10_000;
@@ -103,7 +103,7 @@ export function Story({
               <OddsDial odds={played.odds} roll={played.roll} success={played.success} />
             </View>
           )}
-          <Text style={[ui.text, { lineHeight: 21 }]}>{played.text}</Text>
+          <GlossedText text={played.text} style={[ui.text, { lineHeight: 21 }]} />
         </View>
       )}
 
@@ -237,7 +237,7 @@ function Card({
         )}
         <View style={{ flex: 1, gap: 6 }}>
           {scene.sender && <Text style={[ui.muted, { color: colors.brass }]}>From {scene.sender}</Text>}
-          <Text style={[ui.text, { lineHeight: 21 }]}>{scene.description}</Text>
+          <GlossedText text={scene.description} style={[ui.text, { lineHeight: 21 }]} />
         </View>
       </View>
       {scene.options.map((option, index) => {
