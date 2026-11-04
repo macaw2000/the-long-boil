@@ -32,11 +32,17 @@ function nextVisitLine(scenes: { location: string; needs: [string, string, numbe
   return after ? `The story goes on next time you are back, after ${after}.` : "The story goes on next time you are back.";
 }
 
+/** Why an option is shut: a past choice is not something to chase, so it is never named. */
+function lockText(locked: [string, string, number][]): string {
+  if (locked.some(([name]) => name.startsWith("flag."))) return " · not open to you";
+  return ` · needs ${locked.map(([name, condition]) => `${qualityName(name)} ${condition}`).join(", ")}`;
+}
+
 /** A locked beat's gate in player terms: a skill level, an item count, or more visits. */
 function needText(name: string, condition: string, value: number): string {
   const target = Number(condition.replace(/[^0-9]/g, ""));
   if (name === "record.check_ins") return target - value === 1 ? "another visit" : `${target - value} more visits`;
-  if (name.startsWith("item.")) return `${qualityName(name)} in hand`;
+  if (name.startsWith("item.")) return `${target} ${qualityName(name)} (you have ${value})`;
   return `${titleCase(name.replace(/_/g, " "))} ${target} (you have ${value})`;
 }
 
@@ -163,7 +169,7 @@ export function Story({
       )}
       {view.debts.map((debt) => (
         <Text key={debt.id} style={ui.muted}>
-          {debt.label}: {debt.crowns} Crowns. Pay it under Bills on the Exchange tab.
+          {debt.label}: {debt.crowns.toLocaleString()} Crowns. Pay it under Bills on the Exchange tab.
         </Text>
       ))}
 
@@ -282,7 +288,7 @@ function Card({
                 : risky
                   ? " · certain"
                   : ""}
-              {!option.available ? ` · needs ${option.locked.map(([name, condition]) => `${qualityName(name)} ${condition}`).join(", ")}` : ""}
+              {!option.available ? lockText(option.locked) : ""}
               {option.available && !affordable ? " · not enough Nerve" : ""}
             </Text>
           </Pressable>

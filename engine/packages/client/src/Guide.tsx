@@ -155,7 +155,7 @@ const GUIDE_OPENS: Partial<Record<string, string>> = {
  */
 const BILL_ANSWERED = 10;
 /** prologue.progress once the register is played, whose goal line asks for a job not tried yet. */
-const THIRD_SITTING = 40;
+export const THIRD_SITTING = 40;
 const LATER_OPENS: Partial<Record<string, number>> = {
   exchange: BILL_ANSWERED,
   "skill:tailoring": BILL_ANSWERED,
@@ -215,7 +215,7 @@ export function queuedMs(tinker: Tinker, content: Content): number {
 }
 
 /** Below this many Rations a night of Rust Rats may run the Tinker out (the first night ate about 150). */
-const LOW_RATIONS = 150;
+export const LOW_RATIONS = 150;
 
 /** Leaving the first sitting asks for the bench to be busy nearly all twelve hours. */
 const NIGHT_MS = 11 * 3_600_000;
@@ -312,12 +312,10 @@ function betterWeapon(tinker: Tinker, content: Content): string | null {
 }
 
 /** After the guide, the one thing most worth doing next, as a line on the goal bar. */
-/** The action asked for after each third-sitting scene (decision 6), keyed by prologue.progress after it. */
+/** The two actions asked for between third-sitting scenes (decision 22), keyed by prologue.progress after it. */
 const BETWEEN_SCENES: Record<number, { text: string; place: Place }> = {
   40: { text: "Start a job you have not tried yet.", place: "skill:prospecting" },
   50: { text: "Start a fight in Rustmoor.", place: `skill:${FIGHT}` },
-  60: { text: "Make something new to wear, or something better to hit with.", place: "skill:tailoring" },
-  70: { text: "Set the bench to work before you clear the drawer.", place: "skill:tinkering" },
 };
 
 /** The guide-state mark that the player has acted since the third-sitting scene that left progress here. */
@@ -326,7 +324,8 @@ export const awaitsAction = (progress: number) => progress in BETWEEN_SCENES;
 
 export interface Goal {
   text: string;
-  place: Place;
+  /** Where Go leads; null when there is nothing to do yet, so the line stands without a button. */
+  place: Place | null;
   /** Who says it, when the line is one of Brassbuckle's from the guide file. */
   speaker?: string;
 }
@@ -334,13 +333,13 @@ export interface Goal {
 export function nextGoal(tinker: Tinker, content: Content, now: number, name: (id: string) => string, guide: GuideState, saleLeft: number | null = null): Goal | null {
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
   // The later sittings speak in Brassbuckle's words from the guide file, falling back to plain ones.
-  const said = (id: string, plain: string, place: Place): Goal => {
+  const said = (id: string, plain: string, place: Place | null): Goal => {
     const entry = content.guide.find((candidate) => candidate.id === id);
     return entry ? { text: entry.line, place, speaker: entry.speaker } : { text: plain, place };
   };
   const debt = tinker.story.debts.find((candidate) => tinker.crowns >= candidate.crowns);
   if (debt) return { text: `Pay ${debt.label}: you have the ${debt.crowns.toLocaleString()} Crowns.`, place: "exchange" };
-  if (tinker.story.letters > 0) return said("pips_bill", "A letter is waiting in Story.", "story");
+  if (tinker.story.letters > 0) return prologue(tinker) < BILL_ANSWERED ? said("pips_bill", "A letter is waiting in Story.", "story") : { text: "A letter is waiting in Story.", place: "story" };
   if (tinker.queue.length === 0) return { text: "The bench is idle. Pick a job and press Start.", place: "skill:tinkering" };
   if (steamLeft <= 0) return { text: "The Boiler is dry. Checking in raises steam.", place: "skill:tinkering" };
   const better = betterWeapon(tinker, content);
@@ -370,7 +369,7 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
   const unpaid = tinker.story.debts[0];
   if (unpaid) {
     // Once the week's sale is used the window can do nothing more, so the line points at the fights.
-    const line = saleLeft === 0 ? said("sale_done", "The rats' Crowns will make up the rest.", `skill:${FIGHT}`) : said("pay_bill", "Sell rat scrap at the Counting-House window.", "exchange");
+    const line = saleLeft === 0 ? said("sale_done", "The rats' Crowns will make up the rest.", null) : said("pay_bill", "Sell rat scrap at the Counting-House window.", "exchange");
     return { ...line, text: `${line.text} (${tinker.crowns.toLocaleString()} of ${unpaid.crowns.toLocaleString()} Crowns.)` };
   }
   // Nothing else told a player to train, and a skill gate could hold the story back for weeks (decision 17).
@@ -460,8 +459,8 @@ export function GoalBar({ goal, onGo, onReplay }: { goal: Goal | null; onGo: (pl
         {goal?.speaker && <Text style={{ color: colors.brass }}>{goal.speaker}: </Text>}
         {goal ? goal.text : "All in hand. The workshop runs while you are away."}
       </Text>
-      {goal && (
-        <Pressable onPress={() => onGo(goal.place)} accessibilityRole="button" style={[ui.button, { paddingHorizontal: 12, paddingVertical: 4 }]}>
+      {goal?.place && (
+        <Pressable onPress={() => onGo(goal.place!)} accessibilityRole="button" style={[ui.button, { paddingHorizontal: 12, paddingVertical: 4 }]}>
           <Text style={ui.buttonText}>Go</Text>
         </Pressable>
       )}

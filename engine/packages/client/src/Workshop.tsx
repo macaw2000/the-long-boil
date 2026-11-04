@@ -17,7 +17,7 @@ import { Glow } from "./Glow";
 import { actedMark, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, queuedMs, revealed, type GuideAction, type GuideState, type Target } from "./Guide";
 import { Guild } from "./Guild";
 import { skillOpen } from "@long-boil/rules";
-import { skillOf } from "./jobs";
+import { jobTitle, skillOf, startFirst } from "./jobs";
 import { CanisterDrop, Floaters, ScaldVignette, useFloaters } from "./Juice";
 import { Ledger, STALL_REASONS } from "./Ledger";
 import { useLive } from "./live";
@@ -47,12 +47,6 @@ function rationsNote(ledger: LedgerData, content: Content): string | undefined {
   return ate ? content.guide.find((entry) => entry.id === "rations")?.line : undefined;
 }
 
-/** Start now: the job goes first and the rest stay behind it. A job already queued keeps its count if that is larger, so moving it loses no work. */
-function startFirst(queue: QueueEntry[], entry: QueueEntry): QueueEntry[] {
-  const queued = queue.find((job, index) => index > 0 && job.actionId === entry.actionId);
-  const first = queued && queued.remaining > entry.remaining ? queued : entry;
-  return [first, ...queue.filter((job) => job.actionId !== entry.actionId)];
-}
 
 export function Workshop({ content, tinkerId, admin, onLeave }: { content: Content; tinkerId: number; admin: boolean; onLeave: () => void }) {
   const [tinker, setTinker] = useState<Tinker | null>(null);
@@ -501,7 +495,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         guideAt={at === "start" || at?.startsWith("job:") ? at : null}
         chosen={chosen}
         onChoose={setChosen}
-        onStart={(entry) => setQueue(startFirst(tinker.queue, entry).slice(0, tinker.upgrades.queueSlots))}
+        onStart={(entry) => setQueue(startFirst(tinker.queue, entry, tinker.upgrades.queueSlots, content))}
         onQueue={(entry) => setQueue([...tinker.queue, entry].slice(0, tinker.upgrades.queueSlots))}
         onGrocer={() => setPlace("exchange")}
       />
@@ -516,8 +510,8 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     ) : place === "exchange" ? (
       <View style={{ gap: 12 }}>
         {tinker.story.debts.length > 0 && <Bills tinker={tinker} act={run} payGuided={at === "pay"} />}
-        <WorkOrders content={content} tinker={tinker} name={name} onOutcome={apply} />
-        <Exchange content={content} tinker={tinker} name={name} run={run} />
+        {shown("chat") && <WorkOrders content={content} tinker={tinker} name={name} onOutcome={apply} />}
+        <Exchange content={content} tinker={tinker} name={name} run={run} whole={shown("chat")} />
       </View>
     ) : place === "stores" ? (
       <View style={{ gap: 12 }}>
@@ -646,7 +640,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           {/* On a phone it heads the page instead, which scrolls under it, so the card never leaves the page a sliver. */}
           {!wide && guidance}
           {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
-          {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} note={guide.acknowledged.includes(RATIONS_SEEN) ? undefined : rationsLine} onClose={closeLedger} />}
+          {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} job={(id) => jobTitle(content, id, name)} note={guide.acknowledged.includes(RATIONS_SEEN) ? undefined : rationsLine} onClose={closeLedger} />}
           {page}
           {recent.length > 0 && skillPlace !== null && (
             <View style={ui.panel}>

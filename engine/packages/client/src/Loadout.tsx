@@ -324,8 +324,8 @@ export function Loadout({
         </View>
       </Sparks>
 
-      {/* Once something is worn, say in plain words what armour does; a bare "+3" told playtesters nothing. */}
-      {fromPieces + fromLegacy > 0 && (
+      {/* From the armour goal on, say in plain words what armour does, so the figure before the wraps can be set against the figure after. */}
+      {(fromPieces + fromLegacy > 0 || (tinker.story.qualities["prologue.progress"] ?? 0) >= 10) && (
         <Text style={[ui.muted, { textAlign: "center" }]}>
           Armour {round(armour)}: a hit on you lands at {lands}% of its strength.
         </Text>

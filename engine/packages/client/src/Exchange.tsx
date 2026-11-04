@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { api, type BookLevel, type Content, type MarketView, type Outcome, type Side, type Tinker } from "./api";
 import { Glow } from "./Glow";
+import { LOW_RATIONS, THIRD_SITTING } from "./Guide";
 import { ItemIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
@@ -20,11 +21,14 @@ export function Exchange({
   tinker,
   name,
   run,
+  whole,
 }: {
   content: Content;
   tinker: Tinker;
   name: (id: string) => string;
   run: (call: Promise<Outcome>) => Promise<unknown>;
+  /** The whole Exchange; on the first day only what a player can use, as a first visit read as nine new things and one job. */
+  whole: boolean;
 }) {
   const [market, setMarket] = useState<MarketView | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -53,11 +57,11 @@ export function Exchange({
   return (
     <View style={{ flexDirection: wide ? "row" : "column", gap: 12, alignItems: "flex-start" }}>
       <View style={{ width: wide ? 380 : "100%", gap: 12 }}>
-        <Window content={content} tinker={tinker} market={market} name={name} act={act} />
+        <Window content={content} tinker={tinker} market={market} name={name} act={act} whole={whole} />
       </View>
       <View style={{ flex: wide ? 1 : undefined, width: wide ? undefined : "100%", gap: 12 }}>
         {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
-        <Floor content={content} tinker={tinker} market={market} name={name} act={act} />
+        {whole && <Floor content={content} tinker={tinker} market={market} name={name} act={act} />}
       </View>
     </View>
   );
@@ -79,7 +83,7 @@ export function Bills({ tinker, act, payGuided = false }: { tinker: Tinker; act:
         return (
           <View key={debt.id} style={{ gap: 6 }}>
             <Text style={ui.text}>
-              {debt.label}: {debt.crowns} Crowns. You have {tinker.crowns}.
+              {debt.label}: {debt.crowns.toLocaleString()} Crowns. You have {tinker.crowns.toLocaleString()}.
             </Text>
             <Glow active={payGuided && short <= 0} guide style={{ alignSelf: "flex-start" }}>
               <Pressable
@@ -88,11 +92,11 @@ export function Bills({ tinker, act, payGuided = false }: { tinker: Tinker; act:
                 onPress={() => act(api.payDebt(tinker.id, debt.id))}
                 accessibilityRole="button"
               >
-                <Text style={ui.buttonText}>Pay {debt.crowns} Crowns</Text>
+                <Text style={ui.buttonText}>Pay {debt.crowns.toLocaleString()} Crowns</Text>
               </Pressable>
             </Glow>
             {short > 0 && (
-              <Text style={ui.muted}>{short} more Crowns needed. Sell something at the window below, or fight a few more rats.</Text>
+              <Text style={ui.muted}>{short.toLocaleString()} more Crowns needed. Sell something at the window below, or fight a few more rats.</Text>
             )}
           </View>
         );
@@ -102,9 +106,11 @@ export function Bills({ tinker, act, payGuided = false }: { tinker: Tinker; act:
 }
 
 /** The Counting-House window: the collectors and the grocer's counter. */
-function Window({ content, tinker, market, name, act }: { content: Content; tinker: Tinker; market: MarketView | null; name: (id: string) => string; act: Act }) {
-  const collected = Object.entries(content.economy).filter(([, terms]) => terms.collectorPrice !== null);
-  const groceries = Object.entries(content.economy).filter(([, terms]) => terms.grocerPrice !== null);
+function Window({ content, tinker, market, name, act, whole }: { content: Content; tinker: Tinker; market: MarketView | null; name: (id: string) => string; act: Act; whole: boolean }) {
+  const collected = Object.entries(content.economy).filter(([item, terms]) => terms.collectorPrice !== null && (whole || heldUnbound(tinker, item) > 0));
+  // The grocer opens with Cooking, or sooner if the goal line sends a player here for Rations.
+  const grocer = whole || (tinker.story.qualities["prologue.progress"] ?? 0) >= THIRD_SITTING || heldUnbound(tinker, content.ration.item) < LOW_RATIONS;
+  const groceries = grocer ? Object.entries(content.economy).filter(([, terms]) => terms.grocerPrice !== null) : [];
   return (
     <View style={ui.panel}>
       <Text style={ui.heading}>The Counting-House window</Text>
@@ -127,7 +133,7 @@ function Window({ content, tinker, market, name, act }: { content: Content; tink
           />
         );
       })}
-      <Text style={[ui.heading, { fontSize: 15, marginTop: 6 }]}>The grocer's counter</Text>
+      {grocer && <Text style={[ui.heading, { fontSize: 15, marginTop: 6 }]}>The grocer's counter</Text>}
       {groceries.map(([item, terms]) => (
         <CountRow
           key={item}

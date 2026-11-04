@@ -9,7 +9,7 @@ import { Image, Pressable, Text, TextInput, View } from "react-native";
 import { zoneOpen } from "@long-boil/rules";
 import type { Content, QueueEntry, Tinker } from "./api";
 import { duration, levelProgress, seconds, titleCase } from "./format";
-import { FIGHT, SPANS, BOILER_SECONDS, DEFAULT_SECONDS, jobTitle, notReadyText, usePlanner, type Planner } from "./jobs";
+import { FIGHT, SPANS, BOILER_SECONDS, DEFAULT_SECONDS, jobTitle, notReadyText, startFirst, usePlanner, type Planner } from "./jobs";
 import { Glow } from "./Glow";
 import { Term } from "./Term";
 import { ItemIcon, skillIconSource } from "./Sprite";
@@ -25,24 +25,25 @@ export const SKILL_ICONS: Record<string, string> = {
   scavenging: "item.rustmoor.bent_nails",
 };
 
-/** The first armour's job (work order 032). */
-const FIRST_ARMOUR_ACTION = "action.rustmoor.tailor_silk_hand_wraps";
-
-/** How many Rations a run of fights will eat against what the Tinker holds; a playtester asked if 342 would last 790 fights. */
-function rationsNote(planner: Planner, content: Content, id: string, count: number): string {
+/** What a run of fights means for Rations: a figure at today's level read as a warning, so say what holds and that running out is safe. */
+function rationsNote(planner: Planner, content: Content, id: string): string {
   const outlook = planner.fights.get(id);
   if (!outlook?.ready || outlook.rations <= 0) return "";
-  // The figure is at today's level; levels gained on the way cut it a good deal (a first night asked for 493 and ate 150).
-  return `. Up to about ${Math.ceil(outlook.rations * count).toLocaleString()} Rations at today's level, fewer as you improve; you hold ${(planner.held.get(content.ration.item) ?? 0).toLocaleString()}`;
+  return `. You hold ${(planner.held.get(content.ration.item) ?? 0).toLocaleString()} Rations; running out only slows you down`;
 }
 
 /** What Start now will do to the queue: it puts the job first and keeps the rest, as far as the queue has room. */
-function startNote(tinker: Tinker, id: string, full: boolean, job: (id: string) => string): string {
+function startNote(tinker: Tinker, content: Content, id: string, full: boolean, job: (id: string) => string): string {
   const head = tinker.queue[0];
   if (!head) return "";
   if (head.actionId === id) return "Start now sets a new count for this job.";
   if (tinker.queue.some((entry) => entry.actionId === id)) return "Start now moves this job to the front.";
-  if (full) return `Start now puts this first, and ${job(tinker.queue[tinker.queue.length - 1]!.actionId)} leaves the queue, which holds ${tinker.upgrades.queueSlots} jobs.`;
+  if (full) {
+    const slots = tinker.upgrades.queueSlots;
+    const after = startFirst(tinker.queue, { actionId: id, remaining: 1 }, slots, content);
+    const leaving = tinker.queue.find((entry) => !after.some((kept) => kept.actionId === entry.actionId));
+    return `The queue holds ${slots} jobs, so Add to queue has no room. Start now puts this first, and ${job(leaving!.actionId)} leaves the queue.`;
+  }
   return `Start now puts this first, and ${job(head.actionId)} waits behind it. Add to queue runs it after.`;
 }
 
@@ -104,8 +105,9 @@ export function SkillView({
 
   const choose = (id: string) => {
     setChosen(id);
-    // The first wraps are one pair: the usual hour's worth asked for 390 silk.
-    const first = id === FIRST_ARMOUR_ACTION && Object.keys(tinker.worn).length === 0;
+    // A first piece of gear is one piece: the usual hour's worth asked for 390 silk.
+    const output = content.actions.find((action) => action.id === id)?.outputs[0]?.item;
+    const first = content.pieces.some((piece) => piece.item === output) && (planner.held.get(output!) ?? 0) === 0;
     setCount(String(first ? 1 : planner.countFor(id, DEFAULT_SECONDS)));
   };
   const guided = (id: string) => guideAt === `job:${id}`;
@@ -405,7 +407,7 @@ function JobDetail({
         <Text style={ui.muted}>
           {parsed.toLocaleString()} × {seconds(each)} = {duration(parsed * each * 1000)} of steam
           {parsed * each > BOILER_SECONDS ? " (longer than one Boiler: it carries on after your next check-in)" : ""}
-          {rationsNote(planner, content, id, parsed)}
+          {rationsNote(planner, content, id)}
         </Text>
       )}
       {warning && <Text style={[ui.muted, { color: colors.copper }]}>Careful: {warning}.</Text>}
@@ -436,7 +438,7 @@ function JobDetail({
           </Pressable>
         )}
       </View>
-      {tinker.queue.length > 0 && <Text style={ui.muted}>{startNote(tinker, id, full, (job) => jobTitle(content, job, name))}</Text>}
+      {tinker.queue.length > 0 && <Text style={ui.muted}>{startNote(tinker, content, id, full, (job) => jobTitle(content, job, name))}</Text>}
     </View>
   );
 }

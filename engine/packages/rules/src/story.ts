@@ -402,15 +402,17 @@ export function upcomingStorylets(tinker: TinkerState, story: StoryState, conten
 
 /** The nearest skill level alone holding back a scene: the one a goal line can honestly point at. */
 export function nextSkillGate(tinker: TinkerState, story: StoryState, content: Content): { skill: string; level: number } | null {
-  const gates = upcomingStorylets(tinker, story, content).flatMap(({ needs }) => {
+  const gates = upcomingStorylets(tinker, story, content).flatMap(({ id, needs }) => {
     // Visits pass by themselves; a second skill or an item is not one line's work.
     const earnedByWork = needs.filter(([name]) => !name.startsWith("record."));
     const [need] = earnedByWork;
     if (earnedByWork.length !== 1 || !need || need[0].includes(".")) return [];
     const level = Number(need[1].replace(/[^0-9]/g, ""));
-    return [{ skill: need[0], level, gap: level - need[2] }];
+    const spine = content.storylets.get(id)?.requires["act1.progress"] !== undefined;
+    return [{ skill: need[0], level, gap: level - need[2], spine }];
   });
-  gates.sort((a, b) => a.gap - b.gap || a.skill.localeCompare(b.skill));
+  // The main story's gates first: a side scene should not send a player off training.
+  gates.sort((a, b) => Number(b.spine) - Number(a.spine) || a.gap - b.gap || a.skill.localeCompare(b.skill));
   const nearest = gates[0];
   return nearest ? { skill: nearest.skill, level: nearest.level } : null;
 }

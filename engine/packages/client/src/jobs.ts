@@ -5,7 +5,7 @@
 // quick spans offer 1, 3 and 6 hours or a full Boiler.
 
 import { useEffect, useMemo, useState } from "react";
-import { api, type Content, type FightOutlook, type Tinker } from "./api";
+import { api, type Content, type QueueEntry, type FightOutlook, type Tinker } from "./api";
 import { titleCase } from "./format";
 
 export const BOILER_SECONDS = 12 * 3600;
@@ -110,6 +110,21 @@ export function usePlanner(content: Content, tinker: Tinker, name: (id: string) 
  * "Brass Spanner" rather than "Tinker Brass Spanner" on the Tinkering page.
  * A job that makes several things, or nothing, keeps its own name.
  */
+/**
+ * Start now: the job goes first and the rest stay behind it. A job already
+ * queued keeps its count if that is larger, so moving it loses no work; when
+ * the queue is full the job with the least time left goes, so a night of
+ * fights never does (docs/first-day-plan.md, decision 23).
+ */
+export function startFirst(queue: QueueEntry[], entry: QueueEntry, slots: number, content: Content): QueueEntry[] {
+  const each = (id: string) => content.actions.find((action) => action.id === id)?.seconds ?? content.monsters.find((monster) => monster.id === id)?.seconds_per_kill ?? 60;
+  const queued = queue.find((job, index) => index > 0 && job.actionId === entry.actionId);
+  const first = queued && queued.remaining > entry.remaining ? queued : entry;
+  const rest = queue.filter((job) => job.actionId !== entry.actionId);
+  const kept = [...rest].sort((a, b) => b.remaining * each(b.actionId) - a.remaining * each(a.actionId)).slice(0, slots - 1);
+  return [first, ...rest.filter((job) => kept.includes(job))];
+}
+
 export function jobTitle(content: Content, id: string, name: (id: string) => string): string {
   const action = content.actions.find((candidate) => candidate.id === id);
   if (action) return action.outputs.length === 1 ? name(action.outputs[0]!.item) : name(id);

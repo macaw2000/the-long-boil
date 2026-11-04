@@ -24,12 +24,15 @@ export function Ledger({
   ledger,
   trades,
   name,
+  job,
   note,
   onClose,
 }: {
   ledger: LedgerData;
   trades: TradeNote[];
   name: (id: string) => string;
+  /** A job's name as the bar shows it. */
+  job: (id: string) => string;
   /** A line from the guide, for the first time the ledger shows something new. */
   note?: string;
   onClose: () => void;
@@ -59,8 +62,8 @@ export function Ledger({
           <View key={line.id} style={{ gap: 2 }}>
             <Text style={ui.text}>
               {fight
-                ? `${line.count.toLocaleString()} × ${name(line.id)}${line.won ? ` (${line.won} won)` : ""}`
-                : `${name(line.id)} × ${line.count.toLocaleString()}`}
+                ? `${line.count.toLocaleString()} × ${job(line.id)}${line.won ? ` (${line.won} won)` : ""}`
+                : `${job(line.id)} × ${line.count.toLocaleString()}`}
             </Text>
             <Text style={ui.muted}>
               {[

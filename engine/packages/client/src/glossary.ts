@@ -21,7 +21,7 @@ export const glossary = {
   needles:
     "The four Needles are the story's risks. Each reads from 0 to 8 and falls by 1 every day on its own. They only touch the story: your Boiler, fights and trades carry on whatever they read.",
   "needle.scald":
-    "Scald: knocks and burns from the city's physical risks, its vents, furnaces and rooftops. Some scenes, often for a Ration, bring it down. At 8 you are carried to the Infirmary of St. Pinion until you mend.",
+    "Scald: bruises and burns from the city's physical risks, its vents, furnaces and rooftops. Some scenes, often for a Ration, bring it down. At 8 you are carried to the Infirmary of St. Pinion until you mend.",
   "needle.arrears":
     "Arrears: how deep in debt you are, from borrowing, bribes and deals gone wrong. Some scenes let you settle up and bring it down. 8 is the redline.",
   "needle.notice":
