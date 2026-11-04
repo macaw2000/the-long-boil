@@ -64,6 +64,16 @@
    "id": "brass_plate",
    "speaker": "A fixture professor",
    "line": "A fixture card says where to press."
+  },
+  {
+   "id": "sale_done",
+   "speaker": "A fixture professor",
+   "line": "A fixture card says where to press."
+  },
+  {
+   "id": "rations",
+   "speaker": "A fixture professor",
+   "line": "Two lines,\nnot one."
   }
  ]
 }

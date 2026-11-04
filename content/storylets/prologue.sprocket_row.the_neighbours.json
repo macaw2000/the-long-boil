@@ -9,7 +9,7 @@
     "record.check_ins": ">=2"
   },
   "nerve": 1,
-  "description": "Word has gone down Sprocket Row that No. 9's Boiler is lit again, and by noon your neighbours on the Row have found reasons to stop at your window. They have not come to welcome you. Since the summer the Rust Rats have come up out of Rustmoor every night and taken whatever is metal: a pram wheel, a coal scuttle, two bicycle bells, the brass numbers off four doors. The pie shop is out of tins. The Row knows you have been down among the heaps all night with a spanner, and would like to know what you mean to bring back.",
+  "description": "Word has gone down Sprocket Row that No. 9's Boiler is lit again, and your neighbours on the Row have begun to find reasons to stop at your window. They have not come to welcome you. Since the summer the Rust Rats have come up out of Rustmoor every night and taken whatever is metal: a pram wheel, a coal scuttle, two bicycle bells, the brass numbers off four doors. The pie shop is out of tins. The Row knows you have been down among the heaps with a spanner, and would like to know what you mean to bring back.",
   "options": [
     {
       "label": "Promise the Row that next time you are down in Rustmoor, you will find where the rats keep its things, and bring them home.",
@@ -24,7 +24,7 @@
     {
       "label": "Shut the door, and chalk on it: CLOSED FOR REPAIRS. OPINIONS BY APPOINTMENT.",
       "success": {
-        "text": "The sign is read aloud the length of the Row before the chalk is dry, and improved twice by morning. Nobody calls. But the next day there is a tin of bent nails on your step, saved from somewhere the rats had not reached, and no note. The Row has decided to wait and see. That is as close to a welcome as Sprocket Row gives anyone.",
+        "text": "The sign is read aloud the length of the Row before the chalk is dry, and improved twice before the hour is out. Nobody calls. But the next day there is a tin of bent nails on your step, saved from somewhere the rats had not reached, and no note. The Row has decided to wait and see. That is as close to a welcome as Sprocket Row gives anyone.",
         "changes": {
           "item.rustmoor.bent_nails": "+3",
           "prologue.progress": 30

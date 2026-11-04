@@ -93,8 +93,13 @@ export function Story({
 
   // Beats waiting only on visits, of either count (record.visits_since_prologue opens Act I).
   const visitOnly = view.upcoming.filter((scene) => scene.needs.every(([name]) => name === "record.check_ins" || name === "record.visits_since_prologue"));
-  // The Needles have their own row; record.moved.* only says a Needle has been seen.
-  const progress = Object.entries(view.qualities).filter(([name]) => !name.startsWith("needle.") && !name.startsWith("record.moved."));
+  // Only what a player can read as standing: counters and flags read as debug text to 16 of 18 cold readers.
+  const progress = Object.entries(view.qualities).filter(([name]) => name.startsWith("favour.") || name.startsWith("lore."));
+  // Scenes behind a job or an item wait until the screen opens the jobs, the visit after the plate.
+  const opened = (view.qualities["record.visits_since_prologue"] ?? 0) >= 1;
+  const waiting = opened ? view.upcoming.filter((scene) => !visitOnly.includes(scene)) : [];
+  // Hester's notebook is found at the receipt (prologue.progress 20); nothing names it before.
+  const notebookFound = (view.qualities["prologue.progress"] ?? 0) >= 20 || pages.some((page) => page.held);
 
   return (
     <View style={{ gap: 12, maxWidth: 720, width: "100%" }}>
@@ -189,9 +194,9 @@ export function Story({
         ))}
       </Glow>
 
-      <HestersLedger pages={pages} />
+      {notebookFound && <HestersLedger pages={pages} />}
 
-      {(view.upcoming.length > 0 || view.cooling.length > 0) && (
+      {(visitOnly.length > 0 || waiting.length > 0 || view.cooling.length > 0) && (
         <View style={ui.panel}>
           <Text style={[ui.heading, { fontSize: 15 }]}>Coming up</Text>
           {view.cooling.map((scene) => (
@@ -202,14 +207,12 @@ export function Story({
           ))}
           {/* Beats waiting only on another visit share one calm line with a time, not a list of requirements. */}
           {visitOnly.length > 0 && <Text style={ui.muted}>{nextVisitLine(visitOnly, view.nextVisitAt)}</Text>}
-          {view.upcoming
-            .filter((scene) => !visitOnly.includes(scene))
-            .map((scene) => (
-              <Text key={scene.id} style={ui.muted}>
-                Something waits in {titleCase(scene.location.replace(/_/g, " "))}: needs{" "}
-                {scene.needs.map(([name, condition, value]) => needText(name, condition, value)).join(", ")}.
-              </Text>
-            ))}
+          {waiting.map((scene) => (
+            <Text key={scene.id} style={ui.muted}>
+              Something waits in {titleCase(scene.location.replace(/_/g, " "))}: needs{" "}
+              {scene.needs.map(([name, condition, value]) => needText(name, condition, value)).join(", ")}.
+            </Text>
+          ))}
         </View>
       )}
 

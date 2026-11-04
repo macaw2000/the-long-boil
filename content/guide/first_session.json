@@ -41,7 +41,7 @@
     {
       "id": "come_back",
       "speaker": "Professor Brassbuckle",
-      "line": "The keys are yours now. The Boiler and the bench keep working while you are away. And that brass tube over the bench has started to rattle: something is on its way.",
+      "line": "The keys are yours now. The bench works on while you are away, and the Boiler fills again each time you come back. That brass tube over the bench has started to rattle: something is on its way.",
       "button": "Leave it running"
     },
     {
@@ -57,12 +57,22 @@
     {
       "id": "first_armour",
       "speaker": "Professor Brassbuckle",
-      "line": "The rats have been at your sleeves already. Ten scraps of their Umbrella Silk make hand-wraps. Put them on and look at the Loadout: a bite that landed at 89 in a hundred lands at about 80."
+      "line": "The rats have been at your sleeves. Ten scraps of their Umbrella Silk make hand-wraps. Press Start now and your fights wait behind the job. Put them on in the Loadout and every rat bite hurts about a tenth less."
     },
     {
       "id": "brass_plate",
       "speaker": "Professor Brassbuckle",
       "line": "Nobody has opened Hester's workbench drawer since she left. Clear it out before the day is done; my knees are older than the Boiler."
+    },
+    {
+      "id": "sale_done",
+      "speaker": "Professor Brassbuckle",
+      "line": "That is all the Rat Scrap the window will take this week. Let the rats' Crowns make up the rest, and come back to the window next week."
+    },
+    {
+      "id": "rations",
+      "speaker": "Professor Brassbuckle",
+      "line": "Rations keep you on your feet: you eat one by yourself whenever a rat hurts you. Run out and the rats lay you flat for a minute at a time, but the fight goes on. Nothing else is lost."
     }
   ]
 }

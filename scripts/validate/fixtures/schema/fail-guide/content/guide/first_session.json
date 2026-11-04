@@ -66,6 +66,17 @@
    "glow": "workbench"
   },
   {
+   "id": "sale_done",
+   "speaker": "A fixture professor",
+   "line": "A fixture card says where to press.",
+   "button": "Fixture button"
+  },
+  {
+   "id": "rations",
+   "speaker": "A fixture professor",
+   "line": " "
+  },
+  {
    "id": "fixture_extra",
    "speaker": "A fixture professor",
    "line": "A fixture card says where to press."

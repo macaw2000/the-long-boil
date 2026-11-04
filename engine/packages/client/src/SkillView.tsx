@@ -25,6 +25,26 @@ export const SKILL_ICONS: Record<string, string> = {
   scavenging: "item.rustmoor.bent_nails",
 };
 
+/** The first armour's job (work order 032). */
+const FIRST_ARMOUR_ACTION = "action.rustmoor.tailor_silk_hand_wraps";
+
+/** How many Rations a run of fights will eat against what the Tinker holds; a playtester asked if 342 would last 790 fights. */
+function rationsNote(planner: Planner, content: Content, id: string, count: number): string {
+  const outlook = planner.fights.get(id);
+  if (!outlook?.ready || outlook.rations <= 0) return "";
+  return `. About ${Math.ceil(outlook.rations * count).toLocaleString()} Rations; you hold ${(planner.held.get(content.ration.item) ?? 0).toLocaleString()}`;
+}
+
+/** What Start now will do to the queue: it puts the job first and keeps the rest, as far as the queue has room. */
+function startNote(tinker: Tinker, id: string, full: boolean, name: (id: string) => string): string {
+  const head = tinker.queue[0];
+  if (!head) return "";
+  if (head.actionId === id) return "Start now sets a new count for this job.";
+  if (tinker.queue.some((entry) => entry.actionId === id)) return "Start now moves this job to the front.";
+  if (full) return `Start now puts this first, and ${name(tinker.queue[tinker.queue.length - 1]!.actionId)} leaves the queue, which holds ${tinker.upgrades.queueSlots} jobs.`;
+  return `Start now puts this first, and ${name(head.actionId)} waits behind it. Add to queue runs it after.`;
+}
+
 export function SkillIcon({ skill, size = 24 }: { skill: string; size?: number }) {
   const drawn = skillIconSource(skill);
   if (drawn !== undefined) return <Image source={drawn} style={{ width: size, height: size }} accessibilityIgnoresInvertColors />;
@@ -83,7 +103,9 @@ export function SkillView({
 
   const choose = (id: string) => {
     setChosen(id);
-    setCount(String(planner.countFor(id, DEFAULT_SECONDS)));
+    // The first wraps are one pair: the usual hour's worth asked for 390 silk.
+    const first = id === FIRST_ARMOUR_ACTION && Object.keys(tinker.worn).length === 0;
+    setCount(String(first ? 1 : planner.countFor(id, DEFAULT_SECONDS)));
   };
   const guided = (id: string) => guideAt === `job:${id}`;
 
@@ -382,6 +404,7 @@ function JobDetail({
         <Text style={ui.muted}>
           {parsed.toLocaleString()} × {seconds(each)} = {duration(parsed * each * 1000)} of steam
           {parsed * each > BOILER_SECONDS ? " (longer than one Boiler: it carries on after your next check-in)" : ""}
+          {rationsNote(planner, content, id, parsed)}
         </Text>
       )}
       {warning && <Text style={[ui.muted, { color: colors.copper }]}>Careful: {warning}.</Text>}
@@ -412,11 +435,7 @@ function JobDetail({
           </Pressable>
         )}
         <Text style={[ui.muted, { flex: 1 }]}>
-          {tinker.queue.length === 0
-            ? ""
-            : full
-              ? `Start now replaces ${name(tinker.queue[0]!.actionId)}; the queue holds two jobs.`
-              : `Start now replaces ${name(tinker.queue[0]!.actionId)}; Add to queue runs it after.`}
+          {startNote(tinker, id, full, name)}
         </Text>
       </View>
     </View>

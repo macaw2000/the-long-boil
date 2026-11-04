@@ -64,6 +64,16 @@
    "id": "brass_plate",
    "speaker": "A fixture professor",
    "line": "brass brass brass"
+  },
+  {
+   "id": "sale_done",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "rations",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass"
   }
  ]
 }

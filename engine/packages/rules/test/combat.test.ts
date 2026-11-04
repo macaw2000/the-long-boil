@@ -147,6 +147,17 @@ describe("drops and Rations", () => {
     expect(after.pity.rustmoor!.next).toBe(2);
   });
 
+  it("holds Ledger Pages through the Prologue, and pays the kills out after it", () => {
+    let state = reference("melee", 40, 20, "item.rustmoor.steel_blade", 5000);
+    state = setQueue(state, [{ actionId: RUNT, remaining: 2000 }]);
+    state.steamUntil = Infinity;
+    const { state: held } = resolve({ ...state, holdPages: true }, content, 1100 * 54_000);
+    expect(held.inventory["item.rustmoor.ledger_page_drop_1"]).toBeUndefined();
+    expect(held.pity.rustmoor!.kills).toBeGreaterThan(1000);
+    const { state: after } = resolve({ ...held, holdPages: false }, content, 1102 * 54_000);
+    expect(after.inventory["item.rustmoor.ledger_page_drop_1"]).toBe(1);
+  });
+
   it("tells the screen how long the next kill takes, which is longer than the monster's floor", () => {
     const state = setQueue(reference("melee", 1, 1, "item.rustmoor.brass_spanner", 10), [{ actionId: RUNT, remaining: 2 }]);
     const ms = headMs(state, content)!;

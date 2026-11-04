@@ -309,8 +309,10 @@ export async function advance(tx: Tx, content: GameContent, tinkerId: number, no
   const trades = await settle(tx, content, tinkerId, now);
   await deliverCrates(tx, content, tinkerId, now);
   const loaded = await lockAndLoad(tx, tinkerId);
-  const resolved = refill ? rules.checkIn(loaded.state, content.rules, now, loaded.boilerHours) : rules.resolve(loaded.state, content.rules, now);
   const storyBefore = await loadStory(tx, tinkerId);
+  // No page of Hester's drops until the Prologue is over (docs/first-day-plan.md, decision 15).
+  const working = { ...loaded.state, holdPages: (storyBefore.qualities["prologue.progress"] ?? 0) < 100 };
+  const resolved = refill ? rules.checkIn(working, content.rules, now, loaded.boilerHours) : rules.resolve(working, content.rules, now);
   // A workshop open may count as a visit first, so a scene gated on visits opens as the player arrives.
   const counted = visit ? rules.countCheckIn(storyBefore, now) : { story: storyBefore, event: null };
   const refreshed = rules.refreshStory(counted.story, resolved.state, content.rules, now);

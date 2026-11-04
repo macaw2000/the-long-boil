@@ -36,6 +36,15 @@ import { WorkOrders } from "./WorkOrders";
 const LOOK_EVERY_MS = 5_000;
 const BOILER_MS = 12 * 3_600_000;
 
+const RAT_SCRAP = "item.rustmoor.rat_scrap";
+
+/** Brassbuckle's line on Rations, on the first ledger that shows one eaten: it says nothing that needs doing, so it stays off the goal bar. */
+function firstRations(ledger: LedgerData, tinker: Tinker, content: Content): string | undefined {
+  const ate = ledger.lines.some((line) => line.consumed[content.ration.item]);
+  if (!ate || (tinker.story.qualities["record.check_ins"] ?? 0) > 2) return undefined;
+  return content.guide.find((entry) => entry.id === "rations")?.line;
+}
+
 export function Workshop({ content, tinkerId, admin, onLeave }: { content: Content; tinkerId: number; admin: boolean; onLeave: () => void }) {
   const [tinker, setTinker] = useState<Tinker | null>(null);
   const [away, setAway] = useState<{ ledger: LedgerData; trades: TradeNote[] } | null>(null);
@@ -312,14 +321,22 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     const before = queueSeen.current;
     queueSeen.current = ids;
     const progress = tinker.story.qualities["prologue.progress"] ?? 0;
-    // A job finishing only shortens the queue; a job the player adds is one that was not on it.
-    const added = before !== null && (ids.some((id) => !before.includes(id)) || ids.length > before.length);
+    // A job finishing only shortens the queue; a job the player adds is one that was not on it, or one moved to the front.
+    const added = before !== null && (ids.some((id) => !before.includes(id)) || ids.length > before.length || (ids.length === before.length && ids[0] !== before[0]));
     if (added && awaitsAction(progress) && !guide.acknowledged.includes(actedMark(progress))) {
       setGuide({ ...guide, acknowledged: [...guide.acknowledged, actedMark(progress)] });
     }
     // setGuide only writes state and storage.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tinker?.queue]);
+
+  // While a bill is unpaid the goal line needs to know if the week's Rat Scrap sale is used.
+  const [saleLeft, setSaleLeft] = useState<number | null>(null);
+  const owing = (tinker?.story.debts.length ?? 0) > 0;
+  useEffect(() => {
+    if (!owing) return;
+    api.market(tinkerId).then((market) => setSaleLeft(market.collectorLeft[RAT_SCRAP] ?? null), () => undefined);
+  }, [owing, tinkerId, tinker?.crowns]);
 
   // Once the guide is over, finished or skipped, the whole screen stays open, even if it is replayed.
   // A Tinker past the Prologue from before the guide was kept on the server skips it.
@@ -388,7 +405,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const litPlaces = coaching
     ? new Set<Place>()
     : new Set<Place>([...(lit as Set<Target>)].map(placeOf).filter((value): value is Place => value !== null && value !== place));
-  const goal = coaching ? null : nextGoal(tinker, content, now, name, guide);
+  const goal = coaching ? null : nextGoal(tinker, content, now, name, guide, saleLeft);
 
   const equipWeapon = (item: string) => {
     setNewGear(null);
@@ -470,7 +487,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         guideAt={at === "start" || at?.startsWith("job:") ? at : null}
         chosen={chosen}
         onChoose={setChosen}
-        onStart={(entry) => setQueue([entry, ...tinker.queue.slice(1)])}
+        onStart={(entry) => setQueue([entry, ...tinker.queue.filter((job) => job.actionId !== entry.actionId)].slice(0, tinker.upgrades.queueSlots))}
         onQueue={(entry) => setQueue([...tinker.queue, entry].slice(0, tinker.upgrades.queueSlots))}
         onGrocer={() => setPlace("exchange")}
       />
@@ -615,7 +632,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           {/* On a phone it heads the page instead, which scrolls under it, so the card never leaves the page a sliver. */}
           {!wide && guidance}
           {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
-          {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} onClose={() => setAway(null)} />}
+          {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} note={firstRations(away.ledger, tinker, content)} onClose={() => setAway(null)} />}
           {page}
           {recent.length > 0 && skillPlace !== null && (
             <View style={ui.panel}>

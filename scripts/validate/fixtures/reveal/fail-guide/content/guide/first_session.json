@@ -65,6 +65,16 @@
    "id": "brass_plate",
    "speaker": "A fixture professor",
    "line": "brass brass brass"
+  },
+  {
+   "id": "sale_done",
+   "speaker": "A fixture professor",
+   "line": "The window heard a knock."
+  },
+  {
+   "id": "rations",
+   "speaker": "A fixture professor",
+   "line": "Rations knocked from the crate."
   }
  ]
 }

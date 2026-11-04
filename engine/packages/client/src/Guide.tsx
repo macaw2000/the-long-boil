@@ -46,6 +46,7 @@ const RUNT = "monster.rustmoor.rust_rat_runt";
 // goal line in the second sitting. The quantity is the action's input in content/actions/rustmoor.json.
 const SILK = "item.rustmoor.umbrella_silk";
 const WRAPS_SILK = 10;
+const WRAPS = "item.rustmoor.silk_hand_wraps";
 
 function held(tinker: Tinker, item: string): number {
   return tinker.inventory.filter((stack) => stack.item === item).reduce((sum, stack) => sum + stack.qty, 0);
@@ -140,7 +141,7 @@ const GUIDE_OPENS: Partial<Record<string, string>> = {
   stores: "boiler",
   story: "who_you_are",
   nerve: "who_you_are",
-  loadout: "first_spanner",
+  loadout: "equip",
   [`skill:${FIGHT}`]: "equip",
   crowns: "rats",
 };
@@ -172,7 +173,10 @@ export function revealed(step: Step | null, state: GuideState, prologueProgress:
   // Everything opens at the visit after the plate: opening Guild and the Cog Shop the moment the Prologue ended felt like the story stopping.
   if (state.skipped || visitsSincePrologue >= 1 || (prologueProgress >= 100 && state.acknowledged.length === 0)) return () => true;
   if (step === null || state.opened) {
-    return (feature) => GUIDE_OPENS[feature] !== undefined || prologueProgress >= (LATER_OPENS[feature] ?? 100);
+    return (feature) => {
+      const later = LATER_OPENS[feature];
+      return GUIDE_OPENS[feature] !== undefined || (later !== undefined && prologueProgress >= later);
+    };
   }
   const at = stepIndex(step.id);
   return (feature) => {
@@ -238,8 +242,8 @@ function toJob(context: GuideContext, place: Place, placeName: string, job: stri
     return { hint: `Open ${placeName}${where}.`, at: `place:${place}` };
   }
   if (context.chosen !== job) return { hint: `Pick ${jobName}.`, at: `job:${job}` };
-  // Start now replaces the job at work; playtesters asked "did I just stop my crafting?", so say so.
-  if (context.queueHead && context.queueHead !== job) return { hint: "Press Start now. The bench does one job at a time: the job at work stops, and what it made stays in your Stores.", at: "start" };
+  // Start now keeps the job at work behind the new one; playtesters asked "did I just stop my crafting?", so say so.
+  if (context.queueHead && context.queueHead !== job) return { hint: "Press Start now. The bench does one job at a time: this one goes first, and the job at work waits behind it.", at: "start" };
   return { hint: "Press Start.", at: "start" };
 }
 
@@ -310,7 +314,7 @@ function betterWeapon(tinker: Tinker, content: Content): string | null {
 /** The action asked for after each third-sitting scene (decision 6), keyed by prologue.progress after it. */
 const BETWEEN_SCENES: Record<number, { text: string; place: Place }> = {
   40: { text: "Start a job you have not tried yet.", place: "skill:prospecting" },
-  50: { text: "Fight in Rustmoor until something drops that you have not seen before.", place: `skill:${FIGHT}` },
+  50: { text: "Start a fight in Rustmoor.", place: `skill:${FIGHT}` },
   60: { text: "Make something new to wear, or something better to hit with.", place: "skill:tailoring" },
   70: { text: "Set the bench to work before you clear the drawer.", place: "skill:tinkering" },
 };
@@ -326,7 +330,7 @@ export interface Goal {
   speaker?: string;
 }
 
-export function nextGoal(tinker: Tinker, content: Content, now: number, name: (id: string) => string, guide: GuideState): Goal | null {
+export function nextGoal(tinker: Tinker, content: Content, now: number, name: (id: string) => string, guide: GuideState, saleLeft: number | null = null): Goal | null {
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
   // The later sittings speak in Brassbuckle's words from the guide file, falling back to plain ones.
   const said = (id: string, plain: string, place: Place): Goal => {
@@ -340,30 +344,33 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
   if (steamLeft <= 0) return { text: "The Boiler is dry. Checking in raises steam.", place: "skill:tinkering" };
   const better = betterWeapon(tinker, content);
   if (better) return { text: `Equip your ${name(better)} in the Loadout: it hits harder.`, place: "stores" };
-  // The first armour comes after the bill, in the second sitting: Silk Hand-Wraps, from the rats' silk.
-  if (prologue(tinker) >= BILL_ANSWERED && Object.keys(tinker.worn).length === 0) {
-    return said("first_armour", "Make something to wear.", held(tinker, SILK) >= WRAPS_SILK ? "skill:tailoring" : `skill:${FIGHT}`);
-  }
   // In the third sitting, one action between each pair of scenes, so story and work alternate.
   const progress = prologue(tinker);
-  if (awaitsAction(progress) && !guide.acknowledged.includes(actedMark(progress))) return BETWEEN_SCENES[progress]!;
+  const fightingAlready = progress === 50 && tinker.queue[0]?.actionId.startsWith("monster.");
+  if (awaitsAction(progress) && !fightingAlready && !guide.acknowledged.includes(actedMark(progress))) return BETWEEN_SCENES[progress]!;
   if (tinker.story.openScenes > 0 && tinker.story.nerve > 0) {
     return progress >= PLATE_FROM && progress < 100 ? said("brass_plate", "Scenes are open in Story.", "story") : { text: "Scenes are open in Story, and you have Nerve to play them.", place: "story" };
+  }
+  // The first armour comes after the sitting's scenes (playtesters met it with a night of fights queued): Silk Hand-Wraps, from the rats' silk.
+  if (progress >= BILL_ANSWERED && Object.keys(tinker.worn).length === 0) {
+    if (held(tinker, WRAPS) > 0) return { text: `Wear your ${name(WRAPS)} in the Loadout.`, place: "stores" };
+    return said("first_armour", "Make something to wear.", held(tinker, SILK) >= WRAPS_SILK ? "skill:tailoring" : `skill:${FIGHT}`);
+  }
+  // The bench will stop before the Boiler does: say so before anything that can wait, rather than "All in hand".
+  const queued = queuedMs(tinker, content);
+  if (queued + 3_600_000 < steamLeft) {
+    const head = tinker.queue[0]!;
+    const skill = content.actions.find((action) => action.id === head.actionId)?.skill ?? FIGHT;
+    return { text: `The bench has work for ${Math.round(queued / 360_000) / 10}h, the Boiler steam for ${Math.round(steamLeft / 360_000) / 10}h. Queue more so nothing sits idle.`, place: `skill:${skill}` };
   }
   // Fewer Rations than a night of fights eats: say where more come from.
   if (held(tinker, content.ration.item) < LOW_RATIONS) return { text: "Rations are running low: cook more at Cooking, or buy them at the grocer's counter in the Exchange.", place: "exchange" };
   // An unpaid bill comes after everything that can be done now: once the week's sale is used, it is only fighting.
   const unpaid = tinker.story.debts[0];
   if (unpaid) {
-    const line = said("pay_bill", "Sell rat scrap at the Counting-House window.", "exchange");
+    // Once the week's sale is used the window can do nothing more, so the line points at the fights.
+    const line = saleLeft === 0 ? said("sale_done", "The rats' Crowns will make up the rest.", `skill:${FIGHT}`) : said("pay_bill", "Sell rat scrap at the Counting-House window.", "exchange");
     return { ...line, text: `${line.text} (${tinker.crowns} of ${unpaid.crowns} Crowns.)` };
-  }
-  // The bench will stop before the Boiler does: say so, rather than "All in hand".
-  const queued = queuedMs(tinker, content);
-  if (queued + 3_600_000 < steamLeft) {
-    const head = tinker.queue[0]!;
-    const skill = content.actions.find((action) => action.id === head.actionId)?.skill ?? FIGHT;
-    return { text: `The bench has work for ${Math.round(queued / 360_000) / 10}h, the Boiler steam for ${Math.round(steamLeft / 360_000) / 10}h. Queue more so nothing sits idle.`, place: `skill:${skill}` };
   }
   return null;
 }

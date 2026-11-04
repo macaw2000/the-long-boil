@@ -1,0 +1,1 @@
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps: fewer than 14 items

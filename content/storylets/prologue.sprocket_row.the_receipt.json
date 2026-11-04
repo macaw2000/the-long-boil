@@ -24,7 +24,7 @@
     {
       "label": "Ask Pip when Pip last saw Hester Vane.",
       "success": {
-        "text": "Pip thinks about it. \"The Friday before she went. Paid late, same as ever. Wrote everything down, same as ever. Everything. What the Boiler said, what the tube said, what I said.\" Pip looks round the workshop. \"You've moved the bench.\" You have not moved the bench. Pip looks at it a while longer anyway, then remembers another canister, somewhere else, and goes.",
+        "text": "Pip thinks about it. \"The Friday before she went. A toffee for me and the rent next week, same as ever. Wrote everything down, same as ever. Everything. What the Boiler said, what the tube said, what I said.\" Pip looks round the workshop. \"You've moved the bench.\" You have not moved the bench. Pip looks at it a while longer anyway, then remembers another canister, somewhere else, and goes.",
         "changes": {
           "prologue.progress": 20
         }

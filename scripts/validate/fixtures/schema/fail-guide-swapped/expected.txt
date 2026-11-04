@@ -1,0 +1,2 @@
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/12/id: must equal "sale_done"
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/13/id: must equal "rations"

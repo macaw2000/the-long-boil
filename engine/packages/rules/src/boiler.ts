@@ -62,6 +62,8 @@ export interface TinkerState {
   rationDebt: number;
   /** Per zone: kills since the last rare Ledger Page, and which page is next. */
   pity: Record<string, { kills: number; next: number }>;
+  /** Set by the server for the Prologue, never saved: kills still count towards a page, but none drops. */
+  holdPages?: boolean;
   /** Bosses this Tinker has beaten at least once. */
   bossesBeaten: string[];
   /** Epoch ms the Boiler Boost burns out; 0 when none was ever bought. */
@@ -176,6 +178,7 @@ function rollPage(state: TinkerState, content: Content, monster: Monster, drops:
   const page = pages[counter.next];
   if (!page) return;
   counter.kills += 1;
+  if (state.holdPages) return;
   let chance = 0;
   for (const table of content.drops.values()) {
     if (zoneOf(table.monster) !== zone) continue;

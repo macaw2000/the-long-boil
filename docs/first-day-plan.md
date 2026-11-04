@@ -56,7 +56,7 @@ Three mechanics (the Boiler, a job, a fight) and the Story tab; two scenes; four
 | # | You learn | You do | Story | New in the story | You can now say |
 |---|---|---|---|---|---|
 | 8 | **While you were away**: what your workshop did | Read the ledger | (The ledger is the story.) | (none) | "It kept working while I was gone." |
-| 9 | **Letters**: the brass tube brings you scenes between visits | Open the letter | Pip's bill: 15 Crowns of back rent that Hester left. Both options are certain. | Pip | "I owe 15 Crowns of Hester's rent." |
+| 9 | **Letters**: the brass tube brings you scenes between visits | Open the letter | Pip's bill: 1,400 Crowns of back rent that Hester left (decision 12). Both options are certain. | Pip | "I owe 15 Crowns of Hester's rent." |
 | 10 | **Crowns and selling** | Sell rat scrap at the Counting-House window, pay the bill | At the window, Brassbuckle's name is enough: "We'll take yours on her word, until the Polytechnic has you in its register." | the Counting-House | "I earn Crowns by fighting and selling." |
 | 11 | (story only) | Play the receipt scene | Pip brings the receipt in person, and takes a notebook's binding down from behind a hook: Hester's, every page torn out. "She was never without that." | Hester's notebook | "Hester's notebook is here, but every page is gone." |
 | 12 | **Rations**: fights get harder; your Tinker eats one to heal | Set the Ration trigger, fight on | (goal line only) | (none) | "Rations keep my Tinker going in a fight." |
@@ -113,6 +113,13 @@ The Great Kettle and the Lift move to Act I. So do the Exchange, guilds, the Nee
 11. **The Prologue's item changes** in draft 037 (Rations, Rat Scrap) are accepted without a draftsman review (Jeremy, 3 November 2026).
 12. **The bill and the economy.** Pip's bill is 1,400 Crowns, a year's rent at 350 a quarter; the repair takes 80 off for 10 Rat Scrap; a Rust Rat Runt drops 1 to 2 Crowns; Rat Scrap sells for 8. Pip's receipt scene does not wait for payment: Pip calls either way, and clearing the bill is a goal across the second and third sittings (Jeremy, 3 November 2026).
 13. **Armour counts four times as much** (ARMOUR_HALF_POINT 25, every monster's hit rescaled to keep the reference player's damage), with the draftsman to restate the tables it leaves stale and settle what a Charm is worth (Jeremy, 3 November 2026).
+14. **Start now keeps the queue.** It puts the new job first and the rest waits behind it, as far as the queue has room; a full queue loses its last job, and the screen says which first. The armour goal comes after the sitting's open scenes (Jeremy, 4 November 2026, after the third check: "making it easy to learn and play").
+15. **Ledger Page 1 waits until after the plate**, so sitting 3 does not also carry a page drop (taken on the lead session's recommendation, Jeremy, 4 November 2026).
+16. **Hester's Ledger stays hidden until the receipt finds the binding** (taken on the lead session's recommendation, Jeremy, 4 November 2026).
+17. **The goal bar names the next skill gate** once Act I opens, such as "Train Scavenging to 9": after sitting 3 nothing else told a player to train, and a player who never acts on Story's line reaches rook_at_the_tip about day 25 to 34 instead of day 7 to 9 (Jeremy, 4 November 2026, after the assayer's walk).
+18. **The walk is fixed**: its alternation counter, Scald handling and failed-pass handling, with 21 days as the default horizon (Jeremy, 4 November 2026).
+19. **An evening starter clearing the bill at sitting 2 is fine**: an early win that still needs the sale; decision 12 stands (Jeremy, 4 November 2026).
+20. **Three invented facts stay**: Hester has been gone a year; on the Friday before she went she gave Pip a toffee and promised the rent next week; four names on the tip book's page never came back (Jeremy, 4 November 2026).
 
 ## Measuring it
 
@@ -220,3 +227,71 @@ The same worktree after the scrivener's and lead session's fixes (bill 1,400, th
 Load per screen (new concepts + decisions + presses): come_back 3 (bench hours against the Boiler's, the span chips and Fill, "replaces")+0+2; Leave it running 0 new menus (first draft 10, baseline 12); the sitting-2 ledger 10 (seven skills, levels, Rations, hours)+0+1, now the day's worst; the Exchange 6 (Bills, Work Orders locked, collectors and their weekly cap, eight rows mostly held at 0, the grocer, the trading floor locked with "total level 50 (now 31)")+0+2 (3 runs skimmed it, 3 asked what total level is); end of sitting 2, four menus at once (prologue 30 is reached by the neighbours, not by the third sitting; 4 of 6 named it); after the plate, Guild, Shop and Chat at once (4 of 6; "It felt like the story ended and the monetisation and social menus started"). Sitting 3 now alternates scene and job as planned.
 
 Pull: 18 of 18 would come back, every one for the story. First stop point moved again: from the end of sitting 1 (first draft) to the end of sitting 3, at the Record.visits line (6 of 6); the second is sitting 2's stuck goal bar plus four new menus (2 of 3 novices nearly stopped there). Most wanted: the plate (6 of 6), what the tube brings (6 of 6 in sitting 1), "You've moved the bench" (6 of 6), Hester (18 of 18). Skimmed: the sitting-1 fight setup (5 of 6), the XP wall (10 of 12), the lecture (1).
+
+### Draft 037, third check, 4 November 2026
+
+The same worktree after the fixes of 3 November, 19:08 to 19:09 (`Guide.tsx`, `Story.tsx`, `Workshop.tsx`, the guide lines, the register, the tip book). Cold reads: 18 runs, three cumulative excerpts (end of each sitting) × three origins × two personas, so each persona read each excerpt three times; the same six questions; the register's clasp succeeded for the apprentice and stranger and failed for the relative; transcripts in the scratchpad only. The path is the second check's (09:00, 15:00, next morning at 09:00), but this time every figure is measured: it was walked through the real server routes on a scratch database, not worked by hand. The menus and goal lines are read from `Guide.tsx`, not played in a browser.
+
+The excerpts now show four things that were on the screen all along and that the second check left out: "Your record", "Hester's Ledger", the Loadout's own text, and the ledger's real XP decimals and sixteen level-ups. Their rows below are new to the Ledger, not new to the game. One excerpt artefact repeats: the come_back card was written out twice when its hint changed, and 6 runs said so; that is discounted, as before.
+
+**Measured path:** spanners run about 5 minutes (5 made, Tinkering 2); Fill queues 790 Runts. At 15:00, 392 kills, 88 Rations eaten, 586 Crowns, 397 Rat Scrap, 394 silk. The 66 sale takes it to 1,114. At the next morning's 09:00, 800 more kills, 103 Rations eaten, 2,322 Crowns, the bill paid, Ledger Page 1 held (it drops at 1,000 kills). At the plate, 147 Rations. An overnight second sitting differs: the Act I walk reaches sitting 2 at 13 hours with 1,214 Crowns, so the sale covers the bill there and the capped line never shows.
+
+| Concept | Taught at | First needed at | Gap |
+|---|---|---|---|
+| Who you are, why No. 9 is yours | 4 | 4 | Held: 18 of 18 (baseline 1 of 20). 2 of 4 later apprentice runs said Pip treats them as new ("Pip even explains Hester to me"); second check 0. A hint. |
+| Nerve "next at" versus the next-visit time | 4 | 7 | Closed: 0 of 6 sitting-1 runs (second check 6 of 6). The counter shows "next at" only at 0 Nerve (`Story.tsx`). New, small: 3 runs had "8 left and nothing to spend it on". |
+| What comes next after the plate | 21 | 21 | Closed: `Story.tsx` counts `record.visits_since_prologue` as visit-only, the walk's `upcoming` confirms it, and 0 of 6 runs called the line broken (second check 6 of 6). New: `tube_rack` is also upcoming, so Story adds "Something waits in Sprocket row: needs Bent nails in hand." 6 of 6 asked where Bent Nails come from; 1 read it as the story stalling "behind grinding". |
+| Umbrella Silk | 7 (the rats line: ten make hand-wraps) | 14 | Closed: 6 of 6 sitting-1 runs can say what it is for (second check 4 of 6 asked). New: 4 later runs ask what the surplus is for. |
+| Rations, where from | 6 (equip line: the crate) | 8 | Closed: 0 of 6 sitting-2 runs asked (second check 5 of 6). |
+| Rations, what they do and what running out means | 6 | 8 | Open. Volunteered "eat one when hurt": 1 of 6 in sitting 1, 1 of 6 in sitting 2, 3 of 6 in sitting 3 (second check 3 and 4 of 6). "342 Rations and just queued 790 fights": 6 of 6 sitting-1 runs ask if they run out; 5 of 6 in sitting 3. The low-Rations line now shows at the end of sitting 3 on this path, but 2 runs doubted it ("about 150 left, which doesn't sound low"). Nothing says what happens at zero. |
+| The Rat Scrap cap | 10 | 10 | Mostly closed: 2 of 6 sitting-2 runs named the line (second check 6 of 6), and 5 of 6 worked out that the rats make up the rest. The line itself does not change at the cap: "still tells me to sell scrap after the window has hit its cap, so the only real step left is to wait, and it doesn't say that." |
+| Odds at the register | 16 | 16 | Decision 10 holds on the guided path: measured Tinkering 2, 60%. The second check's "every player arrives at Tinkering 3" was wrong: level 3 needs 19 spanners, about 17 minutes, and the guide's Start now stops them at about 5. A player who uses Add to queue instead would see 90%. Understood: 3 of 3 Forge of Empires readers, 0 of 3 novices ("What's the second 2?"). 1 run on the failure: "fun rather than punishing". |
+| One queue for bench and fights | 6 (the rats hint) | 6 | Open, and changed in kind. "Did I just stop my crafting?" is answered: all 6 sitting-1 runs know fighting stops the spanners. But 18 of 18 runs still ask why ("Why is fighting a bench job?"; second check 15 of 18), and in sitting 2 it now costs a job (next row). All 6 sitting-3 runs end not knowing what is running ("I honestly don't know what's running now"). |
+| Armour goal against a full queue | 14 | 14 | New, the day's worst. The armour goal now comes straight after the bill, with about 6 hours of Runts queued. Start now throws away the 398 Runts left and the bench goes idle: 6 of 6 sitting-2 runs named it as where they nearly stopped ("It felt like the game had punished me for doing what it told me to"), 11 of 12 later runs mention it. Not read, from the code: Add to queue instead leaves the wraps behind the fights, and the armour line then holds the bar over the open scenes for hours, with no glow on Story at 9 of 10 Nerve. The count box defaults to 39 pairs, 390 silk (1 run). A player who leaves on the wraps gets no warning, because the unpaid-bill line comes before "the bench has work for" and the night is lost. |
+| The armour line once the wraps are made | 14 | 14 | New: it repeats until worn and Go opens Tailoring, not the Loadout. 4 of 6 ("came back after I'd already made them"). |
+| Armour's numbers | 14 | 14 | Worse to read, though now in sitting 2 as planned. "89 in a hundred" puzzled 4 runs, "Armour 6.2" 4 runs. Said plainly that it protects: 1 of 6 in sitting 2, 2 of 6 in sitting 3 (second check 6 of 6); 4 of 6 say only "better gear". |
+| Boiler refills at check-in | never | 8 | Open since the baseline: 6 of 6 sitting-2 runs ask ("Did I refill it just by coming back?"), 9 of 12 later runs (second check 4). |
+| Seven combat skills | 8 (the ledger) | not in the first day | Open: `Ledger.tsx`'s XP line is unchanged. 12 of 12 named it, 12 of 12 skimmed the panel (second check 12 and 10). The real panel is worse than the second check's: decimals ("176.4 Vitality XP") and sixteen level-ups in one line. |
+| The Loadout | 4 (appears unexplained) | 6, then 14 | Open: it still opens at first_spanner, two steps before the equip button, which needs no Loadout at all. 5 of 6 sitting-1 runs started skimming there ("it appeared while I was still reading the story and I didn't need it yet"; second check 4 of 6). |
+| "Fight until something drops" | 17 to 20 | 17 to 20 | Open: wording and rule unchanged, it clears when a job is queued. 5 of 6 ("went away the moment I pressed Start, before anything dropped. Did I do it or not?"; second check 4 of 6). "Make something new" clears the same way (2 runs). |
+| Menus at the end of sitting 2 | 16 | 16 | Closed: the four skills now open at the register, where the goal line uses one. No sitting-2 run named them (second check 4 of 6). |
+| Menus after the plate | next visit, as the code's comment says | not in the first day | Open: the fix does not work. `revealed` falls through to `prologueProgress >= (LATER_OPENS[feature] ?? 100)`, true at the plate, so Guild, Cog Shop and Chat still open at once. 6 of 6 named them (second check 4 of 6); with the four skills, "seven new menu items" in one sitting (2 runs). |
+| Your record | never | never | New to the Ledger: "Check ins 1 · Origin apprentice 1 · Prologue progress 8" sits on Story from sitting 1. 16 of 18 ("read like debug stats"). |
+| Hester's Ledger, Hester's notebook | 1 line on Story at 4; 11 in the plan | 11 | New to the Ledger: "Hester's notebook came apart somewhere in the city" shows from sitting 1, seven steps before the receipt finds the binding. 6 of 6 sitting-1 runs already speak of the notebook's pages. Withheld on purpose? For the inspector and Jeremy. |
+| Ledger Page 1 | 21 or later | Act I | New to the Ledger: it drops in sitting 3 on this path. "Rustmoor Drop 1": 6 of 6 ("looks more like a counter than an item"). "Lowvents" or "the rim": 6 of 6. But the page itself was among the day's best moments: 4 of 6 praised it, 5 used it to guess what Hester was measuring. Reveal timing is the inspector's. |
+| The time of day in scenes | n/a | 13 | New: the neighbours arrive "by noon" and you were down "all night", read at 15:00 after a morning's start. 5 of 6 sitting-2 runs (second check 0 of 6, same text and time). |
+| Hester's last rent | 9 | 11 | New, a hint: "left owing a year" against "paid late, same as ever" the Friday before she went. 2 runs. |
+| The bill's stakes; selling | 9; 10 | 9 to 17 | Held: 6 of 6 sitting-2 runs worked towards the bill and sold. Selling now comes last in sitting 2, after armour and both scenes, against the plan's step 10. |
+| Brassbuckle vouching | 10 | 16 | Slipped: 1 of 6 sitting-3 runs says she vouched (second check 3 of 6). The pay_bill line now shows late, and the register's "on her word" passes unremarked. |
+| The tip book | 18 | 21 | Open, with the sentence now in the scene: 1 of 6 can say it ("the book of who came back"; second check 0 of 6), 2 more recall "the ruled lines". 6 of 6 now name the tip-keeper. |
+| The nest | 19 | Act I | Held as the second check: 4 of 6. |
+| The Polytechnic | 16 | 16 | Held: 6 of 6 place Brassbuckle there. |
+| Board of Gauges, the plate | 20; 21 | 21 | Plate held: 6 of 6 want to know why the figures differ. "The Board sets the height": 4 of 6 (second check 6 of 6). |
+
+Can-now-say, runs that said it unprompted at the end of the sitting (baseline and earlier checks from the entries above; "-" means no matching count was recorded):
+
+| Step | Line | Baseline | First draft | Second check | Third check | Verdict |
+|---|---|---|---|---|---|---|
+| 1 | Workshop in a city in the sky | 2 runs asked if it floats | 12 of 12 | 18 of 18 | 18 of 18 | Met |
+| 2 | The Boiler keeps it going while I'm gone | 15 of 20 asked about it | 5 of 12 asked | 4 runs asked | 18 of 18 say it; 9 of 12 ask how it refills | Met, refill open |
+| 3 | I pick a thing and it gets made | - | - | - | 6 of 6 | Met |
+| 4 | No. 9 was Hester's; why it's mine | 1 of 20 | 12 of 12 | 18 of 18 | 18 of 18 | Met |
+| 5 | Rats come for metal | 0 knew why before the fight | 4 of 4 | 18 of 18 | 6 of 6 know why they fight; 3 of 6 say "metal" | Met |
+| 6 | My Tinker fights by itself | 5 runs confused | - | - | 6 of 6 | Met |
+| 7 | I come back and there's more | - | 4 of 4 nearly stopped here | - | 6 of 6 | Met |
+| 8 | It kept working while I was gone | - | - | - | 6 of 6 | Met |
+| 9 | I owe the rent | - | "fell flat", 8 of 8 | 6 of 6 | 6 of 6 | Met (the plan's "15" is now 1,400 by decision 12) |
+| 10 | I earn Crowns by fighting and selling | - | 0 of 8 | 6 of 6 sold | 6 of 6 | Met |
+| 11 | The notebook is here, every page gone | held | 3 of 4 | 6 of 6 | 6 of 6 | Met |
+| 12 | Rations keep my Tinker going | 0 of 12 | 0 of 8 | 3 of 6 | 1 of 6 (3 of 6 by sitting 3) | Not met |
+| 13 | The rats are the whole street's problem | - | - | - | 6 of 6 | Met |
+| 14 | I can make things to protect myself | no run | 6 of 8 read it as nothing | 6 of 6 | 1 of 6 plainly (2 of 6 by sitting 3); 4 of 6 "better gear" | Not met |
+| 16 | My skills change what I can do in the story | never taught | 0 of 4 tied it to a skill | 4 of 6 | 3 of 6: every Forge of Empires reader, no novice | Partly |
+| 18 | People go into Rustmoor and don't always come back | - | 0 of 4 | 0 of 6 | 1 of 6 | Not met |
+| 19 | The rats keep what they steal | - | 0 of 4 | 4 of 6 | 4 of 6 | Partly |
+| 20 | The Board says how high the city flies | 3 of 4 skimmed the lecture | 3 of 4 | 6 of 6 | 4 of 6 | Partly |
+| 21 | Hester knew something about the Gauge Readings | 3 of 4 | 4 of 4 | 6 of 6 | 6 of 6 | Met |
+
+Load per screen (new concepts + decisions + presses): the first fight 5 (Fight, Start now against Add to queue, Crowns, Rat Scrap, Umbrella Silk)+0+3, then the Fill chips: 4 of 6 stopped reading here and pressed what the card said; the sitting-2 ledger about 11 (seven skills, sixteen level-ups, decimals, Rations, hours)+0+1, still the day's worst; the armour detour three places (Tailoring, Fight, the Loadout) and three goal lines before the bar points at the receipt; the Exchange unchanged at 6; the register then four skills at once, with a job asked for; after the plate three menus, Bent Nails and the Rations warning at once. Sitting 3's alternation now reads as a rush: 6 of 6 ("I was changing jobs just to clear the goal bar").
+
+Pull: 18 of 18 would come back, every one for the story. The first stop point moved earlier again: from the end of sitting 3 (second check) to the hand-wraps in sitting 2 (6 of 6); second, the end of sitting 3 (2 of 3 novices: "the game had stopped guiding me"). Sitting 1's ending read flat to 6 of 6, but each had a time and a reason to return. Most wanted: Hester (18 of 18), the tube (6 of 6 in sitting 1), "You've moved the bench" (12 of 12), the plate (6 of 6). Skimmed: the While You Were Away panel (12 of 12), the Exchange (9 of 12), the sitting-1 fight setup (4 of 6), the lecture (4 of 6).
