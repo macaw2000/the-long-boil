@@ -23,7 +23,7 @@
     {
       "label": "Ask how far the Scald has climbed since the Lift.",
       "success": {
-        "text": "The lecture hall goes quiet, the way a room does when someone says a thing out loud that everyone has thought. Brassbuckle smiles. \"An excellent question,\" she says, \"for your second year.\" Then she takes the next question, which is about valves. Several students look at you on the way out. One of them nods.",
+        "text": "The lecture hall goes quiet, the way a room does when someone says a thing out loud that everyone has thought. \"Further than it did,\" says Brassbuckle, \"and never as far as the Kettle can climb. That is the whole of engineering, and the whole of this course.\" Several students look at you on the way out. One of them nods.",
         "changes": {
           "prologue.progress": 80
         }

@@ -24196,7 +24196,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T00:28:45Z",
+        "run": "2026-11-04T00:34:09Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24218,7 +24218,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass or pass with notes (work order 036, 2026-11-03): scene redrafted; inspector's notes (and, where applicable, the Arrears wording fix) applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
+        "notes": "Pass with notes (work order 036, 2026-11-03): option 2's outcome changed to the inspector's wording at Jeremy's direction (Brassbuckle now answers how far the Scald has climbed), then reviewed. Validators pass. Not played by Jeremy; not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -24257,6 +24257,21 @@
           "at": "2026-11-04T00:28:45Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-04T00:34:09Z",
+          "status": "drafted",
+          "by": "orchestrator"
+        },
+        {
+          "at": "2026-11-04T00:34:09Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:34:09Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -24268,7 +24283,7 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/036-prologue-clarity.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
@@ -24295,8 +24310,8 @@
       },
       "review": {
         "by": "inspector",
-        "verdict": "fail",
-        "notes": "Fail (work order 036, 2026-11-03): unkept promise; lecture-like introduction. Inspector's fixes applied at Jeremy's direction and validators pass again; awaiting re-review of the fixed text. Not played by Jeremy; not approved."
+        "verdict": "pass",
+        "notes": "Pass with notes (work order 036, 2026-11-03): re-review of the fixed text after the earlier fail (unkept promise; lecture-like introduction); fixes accepted. Not played by Jeremy; not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -24370,6 +24385,11 @@
           "at": "2026-11-04T00:28:45Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:34:09Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -24575,7 +24595,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass or pass with notes (work order 036, 2026-11-03): scene redrafted; inspector's notes (and, where applicable, the Arrears wording fix) applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
+        "notes": "Pass (work order 036, 2026-11-03): scene redrafted; inspector's notes applied at Jeremy's direction and validators pass. Re-checked by the inspector on 2026-11-03: pass, no further changes; status stays reviewed. Not played by Jeremy; not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -24763,13 +24783,13 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/036-prologue-clarity.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T00:28:45Z",
+        "run": "2026-11-04T00:34:09Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24790,8 +24810,8 @@
       },
       "review": {
         "by": "inspector",
-        "verdict": "fail",
-        "notes": "Fail (work order 036, 2026-11-03): pips_bill glossing order. Inspector's fixes applied at Jeremy's direction and validators pass again; awaiting re-review of the fixed text. Not played by Jeremy; not approved."
+        "verdict": "pass",
+        "notes": "Pass with notes (work order 036, 2026-11-03): re-review after the pips_bill glossing-order fail; notes on pips_bill, boiler and first_spanner. After the review, the inspector's own suggested wording for pips_bill (\"who brings Sprocket Row its bills\", a canon-accuracy note) was applied and validators pass. Not played by Jeremy; not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -24915,6 +24935,11 @@
           "at": "2026-11-04T00:28:45Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:34:09Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
