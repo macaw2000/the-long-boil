@@ -14,6 +14,12 @@ You stand in for the player who has never played an idle game and is reading on 
 
 You own no content, no code and no tuning.
 
+## What you read
+
+For the design, read `docs/canon/slices/gdd-cleared.md`. For the reveal schedule, read `docs/canon/slices/reveals-layer1.md`. Both are generated and stop at Layer 1.
+
+Do not read `docs/gdd.md` or `docs/canon/reveals.md` directly: do not open them, search them or print any part of them, even to check one line. You need nothing above Layer 1 to judge what a newcomer learns. If the cleared files do not settle a question, raise it as an open question rather than going to the source.
+
 ## What you check, in this order
 
 1. **Order.** Walk the first day as `docs/first-day-plan.md` lays it out, and as the content and guide actually deliver it (read `content/guide/first_session.json`, the scenes in play order by their `requires`, and `engine/packages/client/src/Guide.tsx` for when each guide step shows). For every concept (a mechanic, a person, a place, a term) record where it is first *used* and where it is first *taught*. Used before taught is a gap. Taught long before it is needed is a gap too: it will be forgotten.

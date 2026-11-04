@@ -1,0 +1,2 @@
+FAIL clearance/missing docs/canon/slices/gdd-cleared.md : the generated file is missing; run python3 scripts/canon/cut_clearance.py
+FAIL clearance/missing docs/canon/slices/reveals-layer1.md : the generated file is missing; run python3 scripts/canon/cut_clearance.py

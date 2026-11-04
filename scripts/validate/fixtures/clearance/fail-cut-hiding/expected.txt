@@ -1,0 +1,1 @@
+FAIL clearance/cut-failed docs/gdd.md : line 27: required column 'What they are hiding' is missing

@@ -14,9 +14,9 @@
   "description": "The brass tube over the bench rattles, coughs, and drops a canister into the tray. Inside is a bill, and under it a note.\n\nBACK RENT, No. 9 Sprocket Row.\nFour quarters at 350 Crowns.\nDue: 1,400 Crowns.\n\n\"A year since Hester went, and not a Crown of rent since. Not your fault, but your workshop now. The Counting-House sends me round every Friday until it is paid. I have stood at that door for a year of Fridays. Sorry.\"\nPip Tumbler\n\nPip carries Sprocket Row's letters and bills. Crowns are the brass coins the rats drop when you beat them.",
   "options": [
     {
-      "label": "Stick the bill on the spike above the vice. The rats' Crowns go towards it, and whatever scrap you can sell.",
+      "label": "Stick the bill on the spike, and pay all of it from the rats' Crowns and sold scrap. Pip has waited a year.",
       "success": {
-        "text": "You push the bill onto the spike above the vice, where it can watch you work. A night of rats will not pay it; a night of rats and a good deal of scrap sold at the Counting-House window might. On Friday Pip will come up the Row and look at the spike, and say sorry again, and mean it a little less each time.",
+        "text": "You push the bill onto the spike above the vice, where it can watch you work. A night of rats will not pay it; a night of rats and a good deal of scrap sold at the Counting-House window might. You send Pip word that it will be paid, all of it. The reply is in pencil, pressed hard: \"All of it. Nobody on this Row pays all of anything. I should like to be there.\"",
         "changes": {
           "flag.owes_back_rent": 1,
           "prologue.progress": 10
@@ -24,12 +24,12 @@
       }
     },
     {
-      "label": "Offer to mend something for Pip, with ten pieces of Rat Scrap for parts, if Pip will take 80 Crowns off.",
+      "label": "Ask Pip for 80 Crowns off, for a mend and ten Rat Scrap. Cheaper, though Pip will not like begging a clerk.",
       "requires": {
         "item.rustmoor.rat_scrap": ">=10"
       },
       "success": {
-        "text": "The canister comes back within the hour holding a carriage clock that has not struck since anyone can remember, and a note: \"A clerk's. If it strikes, I can take 80 off.\" You take the back off, find a hairspring wound round itself like a nervous cat, and coax it straight with wire picked from ten pieces of your Rat Scrap. At six o'clock the clock strikes seven. The clerk, Pip reports, accepts this as close enough. You owe 1,320 Crowns.",
+        "text": "The canister comes back within the hour holding a carriage clock that has not struck since anyone can remember, and a note: \"A clerk's. If it strikes, I can take 80 off.\" You take the back off, find a hairspring wound round itself like a nervous cat, and coax it straight with wire picked from ten pieces of your Rat Scrap. At six o'clock the clock strikes seven. The clerk, Pip reports, accepts this as close enough, and does not expect to be asked again. You owe 1,320 Crowns. For the first time, Pip's note does not say sorry.",
         "changes": {
           "flag.owes_back_rent": 1,
           "flag.back_rent_reduced": 1,

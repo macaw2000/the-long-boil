@@ -33,6 +33,15 @@ missing, not a whole number or not a known layer fails as not-checkable.
 Which act a page actually reaches the player in (its item's drop or reward)
 is not read here.
 
+Decision 28 (docs/first-day-plan.md): the words a player reads in the client
+are checked as act 0, like the guide, because the client shows them from the
+first screen. client_text.py finds them: string literals, template text and
+JSX text in the client's TypeScript, and the visible text of its public HTML
+pages. Comments and code identifiers are not read. A file the lexer cannot
+follow fails as not-checkable. These lines give the file and line, not the word
+or the quoted limit, and the summary note gives counts, not the word forms:
+this output reaches agents cleared for less than the guard knows.
+
 Files are read leniently, not through their schema, so a layer the schema
 also rejects (4 or 5) is still reported here as a breach. A story file whose
 act or reveal_layer is missing or not a whole number fails as not-checkable:
@@ -41,11 +50,13 @@ the guard never passes a file it could not check.
 Usage: python3 scripts/validate/check_reveal.py [--root DIR]
 """
 
+import os
 import re
 import sys
 
 sys.dont_write_bytecode = True  # keep __pycache__ out of the repo
 
+import client_text  # noqa: E402
 import lib  # noqa: E402
 import story  # noqa: E402
 
@@ -62,6 +73,14 @@ REVEAL_WORDS = (
      "docs/canon/slices/act1.md, Hard limits for this slice",
      "No Steeped, nothing knocking, no capsules."),
 )
+
+
+# Decision 28: where the player-facing client words live. Every .ts and .tsx
+# under CLIENT_DIR's top level and src/, so a new screen is covered without
+# being listed, and every .html under public/.
+CLIENT_DIR = "engine/packages/client"
+CLIENT_REQUIRED = ("src/glossary.ts", "src/Guide.tsx")
+CLIENT_ACT = story.GUIDE_ACT
 
 
 def _word_pattern(forms):
@@ -140,16 +159,78 @@ def run(root):
     pages = story.ledger_files(root)
     for path, data in pages:
         _check_ledger_page(report, path, data)
+    client = _check_client(report, root)
     storylets, letters = story.count_kinds(files)
     report.note("%d storylet file(s), %d letter file(s), %d guide file(s) as act %d, "
-                "%d Work Order file(s), %d Ledger Page file(s) at their layer's act; "
-                "reveal words: %s%s"
+                "%d Work Order file(s), %d Ledger Page file(s) at their layer's act, "
+                "%s client file(s) as act %d; reveal words: %s%s"
                 % (storylets, letters, len(guides), story.GUIDE_ACT, len(orders), len(pages),
-                   "; ".join("%s before act %d" % ("/".join(forms), act)
+                   "no" if client is None else client, CLIENT_ACT,
+                   "; ".join("%d form(s) before act %d" % (len(forms), act)
                              for act, forms, _s, _l in REVEAL_WORDS),
                    "; nothing to check"
                    if not files and not guides and not orders and not pages else ""))
     return report
+
+
+def _client_files(root):
+    """Relative paths of the client files that hold player text. None when the
+    root has no engine, as a fixture or a content-only root does not."""
+    if not os.path.isdir(os.path.join(root, "engine")):
+        return None
+    base = os.path.join(root, CLIENT_DIR)
+    found = []
+    for folder, extensions in (("", (".ts", ".tsx")), ("src", (".ts", ".tsx")),
+                               ("public", (".html",))):
+        walk = [(os.path.join(base, folder), [], None)]
+        if folder:
+            walk = os.walk(os.path.join(base, folder))
+        for here, dirs, names in walk:
+            dirs[:] = sorted(d for d in dirs if d != "node_modules")
+            if names is None:
+                names = os.listdir(here) if os.path.isdir(here) else []
+            for name in sorted(names):
+                full = os.path.join(here, name)
+                if (os.path.isfile(full) and name.endswith(extensions)
+                        and not name.endswith(".d.ts") and ".test." not in name):
+                    found.append(lib.rel(root, full))
+    return found
+
+
+def _check_client(report, root):
+    """Returns how many client files were read, or None if the root has none."""
+    paths = _client_files(root)
+    if paths is None:
+        return None
+    for needed in CLIENT_REQUIRED:
+        relpath = "%s/%s" % (CLIENT_DIR, needed)
+        if relpath not in paths:
+            report.fail("not-checkable", relpath, "this client file is missing, so the "
+                        "guard no longer knows where the player's words are")
+    for relpath in paths:
+        with open(os.path.join(root, relpath), "r", encoding="utf-8") as fh:
+            source = fh.read()
+        try:
+            if relpath.endswith(".html"):
+                strings = client_text.html_strings(source)
+            else:
+                strings = client_text.ts_strings(source, relpath.endswith(".tsx"))
+        except client_text.LexError as error:
+            report.fail("not-checkable", relpath, "line %d: %s, so its strings could not be "
+                        "read" % (error.line, error.message))
+            continue
+        for line, text in strings:
+            for number, (earliest, pattern, _source, _limit) in enumerate(WORD_GUARDS, 1):
+                if CLIENT_ACT >= earliest:
+                    continue
+                for match in pattern.finditer(text):
+                    report.fail("reveal-word-client", relpath,
+                                "line %d: a player-facing string holds a form of guarded word "
+                                "%d, which may not appear before act %d; client text is "
+                                "checked as act %d"
+                                % (line + text.count("\n", 0, match.start()), number,
+                                   earliest, CLIENT_ACT))
+    return len(paths)
 
 
 def _check_ledger_page(report, path, data):

@@ -56,6 +56,11 @@ Canonised by Jeremy on 28 October 2026, from work order 023's scenes.
 - **The Polytechnic:** Brassbuckle's first-years build boilers on a practical bench in the basement, and a qualified hand must test each before it is lit.
 - **The Brass Exchange** closes at a bell. Paid runners carry the day's trade slips to the Counting-House vault, and the House sets their running against what they owe it; a chief clerk runs them, and red ink in his book is good news. The price board is a board of brass flaps. A public gallery with a padded bench is open to anyone.
 
+Canonised by Jeremy on 4 November 2026, from work order 037's scenes (first-day plan, decisions 20 and 29).
+
+- **No. 9 Sprocket Row** stood empty for a year after Hester Vane went. Nobody has paid its rent in that time.
+- **Rustmoor's tip book:** everyone going out onto the heaps by the gate signs in, and signs out coming back. The page you sign on has four names with no signing-out, each ruled off. Those four never came back.
+
 ## Open questions
 
 Not stated in the GDD, and therefore not canon until Jeremy says so:

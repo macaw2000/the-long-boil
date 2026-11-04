@@ -1,0 +1,2 @@
+FAIL clearance/stale docs/canon/slices/gdd-cleared.md : differs from a fresh cut from line 17; run python3 scripts/canon/cut_clearance.py
+FAIL clearance/stale docs/canon/slices/reveals-layer1.md : differs from a fresh cut from line 13; run python3 scripts/canon/cut_clearance.py

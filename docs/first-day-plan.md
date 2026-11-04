@@ -129,6 +129,7 @@ The Great Kettle and the Lift move to Act I. So do the Exchange, guilds, the Nee
 27. **The drop pages keep "Hester's Torn Page, the First" and so on for playtests** (Jeremy, 4 November 2026).
 28. **The reveal section is reviewed again by a fresh inspector** from a pre-cut Layer-1 `reveals.md` and a GDD without the rows above Layer 1, and the reveal guard is extended to client text (Jeremy, 4 November 2026).
 29. **Canon is updated first**: decision 20's facts and the three origins go into `world.md` and `characters.md`, and the other inventions are marked (Jeremy, 4 November 2026).
+30. **Eight more invented facts stay**: the apprentice's year at a hired bench across the city; the Row never learned the apprentice's name; No. 9 was locked up after Hester went; Pip took the apprentice for a lodger; the tip-book page was begun eight weeks ago; the four people's things wait on a shelf, tied in string; the pie shop keeps unclaimed spoons in a drawer; Hester gave Pip a toffee every Friday (Jeremy, 4 November 2026).
 
 ## Measuring it
 

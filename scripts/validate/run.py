@@ -33,6 +33,7 @@ import sys
 sys.dont_write_bytecode = True  # keep __pycache__ out of the repo
 
 import lib  # noqa: E402
+import check_clearance
 import check_combat
 import check_drops
 import check_pacing
@@ -59,6 +60,7 @@ CHECKS = (
     ("qualities", check_qualities),
     ("story_graph", check_story_graph),
     ("reveal", check_reveal),
+    ("clearance", check_clearance),
     ("style", check_style),
     ("work_orders", check_work_orders),
 )

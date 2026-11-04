@@ -17,7 +17,7 @@
     {
       "label": "Send ten tins of bent nails up the tube, and accept the pork.",
       "success": {
-        "text": "The tins go up with a sound like a dropped drawer of cutlery. By evening the rack has stopped swaying, the tubes have stopped rattling, and a parcel of salt pork arrives wrapped in a Counting-House circular. Pip's note says only: \"Straight enough.\"",
+        "text": "The tins go up with a sound like a dropped drawer of cutlery. A while later the rack has stopped swaying, the tubes have stopped rattling, and a parcel of salt pork arrives wrapped in a Counting-House circular. Pip's note says only: \"Straight enough.\"",
         "changes": {
           "item.rustmoor.bent_nails": "-10",
           "item.rustmoor.salt_pork": "+20"

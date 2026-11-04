@@ -1,0 +1,2 @@
+FAIL reveal/not-checkable engine/packages/client/src/Guide.tsx : this client file is missing, so the guard no longer knows where the player's words are
+FAIL reveal/not-checkable engine/packages/client/src/glossary.ts : this client file is missing, so the guard no longer knows where the player's words are

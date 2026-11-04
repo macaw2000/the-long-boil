@@ -1,0 +1,1 @@
+FAIL clearance/cut-failed docs/gdd.md : line 46: required layer table row 2 is missing

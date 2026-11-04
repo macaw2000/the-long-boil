@@ -9,7 +9,7 @@
     "record.check_ins": ">=1"
   },
   "nerve": 1,
-  "description": "Under the floor something is scratching, the way a thing scratches when it has found what it came for. A board by the bench lifts. A Rust Rat comes up through the gap, the size of a terrier and the colour of an old nail: a rat that eats metal, and has smelled your new spanners. Another follows. The first takes a spanner off the bench in its teeth and looks at you. The second bites your ankle on its way past, hard enough to go through the stocking. Under the board is a hole, and under the hole, a long way down, the scrapyards.",
+  "description": "Under the floor something is scratching, the way a thing scratches when it has found what it came for. A board by the bench lifts. A Rust Rat comes up through the gap, the size of a terrier and the colour of an old nail: a rat that steals metal, and has come for your new spanners. Another follows. The first takes a spanner off the bench in its teeth and looks at you. The second bites your ankle on its way past, hard enough to go through the stocking. Under the board is a hole, and under the hole, a long way down, the scrapyards.",
   "options": [
     {
       "label": "Grab a spanner from the bench and go for the rat that has yours.",
@@ -24,7 +24,7 @@
     {
       "label": "Drag the tool chest over the gap, and keep the rest of the spanners safe.",
       "success": {
-        "text": "The chest goes over the hole with a rat's tail still in it, briefly. The rat with the spanner lets go of it to get past, and both of them are gone. Your spanners are all accounted for. Through the boards the scratching goes on, further down each minute, until it joins a great deal more scratching a long way below. A chest will hold them for a night. It will not hold them for good.",
+        "text": "The chest goes over the hole with a rat's tail still in it, briefly. The rat with the spanner lets go of it to get past, and both of them are gone. Your spanners are all accounted for. Through the boards the scratching goes on, further down each minute, until it joins a great deal more scratching a long way below. A chest will hold them for a night. It will not hold them for good, and it drags aside as easily as it dragged across. The hole is still there when you are ready to go down after them.",
         "changes": {
           "prologue.progress": 8
         }

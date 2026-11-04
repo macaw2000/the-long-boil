@@ -57,7 +57,7 @@
     {
       "id": "first_armour",
       "speaker": "Professor Brassbuckle",
-      "line": "The rats have been at your sleeves. Ten scraps of their Umbrella Silk make hand-wraps. Press Start now and your other work waits. Put them on in the Loadout and every rat bite hurts about a tenth less."
+      "line": "The rats have been at your sleeves. Ten scraps of their Umbrella Silk make hand-wraps; wear them and bites hurt less. See the Loadout's Armour line before and after. The note by Start says what happens to the queue."
     },
     {
       "id": "brass_plate",
@@ -72,7 +72,7 @@
     {
       "id": "rations",
       "speaker": "Professor Brassbuckle",
-      "line": "Rations keep you on your feet: you eat one by yourself whenever a rat hurts you. Run out and the rats lay you flat for a minute at a time, but the fight goes on. Nothing else is lost."
+      "line": "Do not fret over Rations. You eat one by yourself when a rat hurts you. If you run out, no lasting harm: each time the rats lay you flat you lose a minute, then get up and fight on."
     }
   ]
 }

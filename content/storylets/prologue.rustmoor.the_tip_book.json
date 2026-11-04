@@ -9,7 +9,7 @@
     "record.check_ins": ">=3"
   },
   "nerve": 1,
-  "description": "Until now you have gone down to Rustmoor through the hole in No. 9's floor, the way the rats go. Today you go by the gate, the way people go, in Hester's oilskin from the peg behind the door. A tip-keeper in three coats turns his book round for you to sign. Everyone signs in going out onto the heaps, and signs out coming back. Most names on the page have both. Four have only the first, with a neat line ruled under each. Those four never came back. The next empty line is yours. \"Name,\" he says. \"Business. And next of kin, for if you're the fifth.\"",
+  "description": "Until now you have gone down to Rustmoor through the hole in No. 9's floor, the way the rats go. Today you go by the gate, the way people go, in Hester's oilskin from the peg behind the door. A tip-keeper in three coats turns his book round for you to sign. Everyone signs in going out onto the heaps, and signs out coming back. This page was begun eight weeks ago. Most names have both. Four have only the first, each ruled off, and those four never came back. Their things wait on the shelf behind him, tied in string. \"Name,\" he says. \"Business. And next of kin, for if you're the fifth.\"",
   "options": [
     {
       "label": "Give Professor Brassbuckle as your next of kin.",
@@ -24,7 +24,7 @@
     {
       "label": "Write \"No. 9 Sprocket Row\" for your next of kin.",
       "success": {
-        "text": "\"A workshop,\" says the tip-keeper. \"Can't say I've had that one.\" He writes it in anyway, in capitals. \"If you're the fifth,\" he says, \"we'll send your spanner home.\" He means it kindly, and to show it he gives you a Ration from inside the second coat. Rustmoor is like that: you can be kind there, as long as you are practical about it.",
+        "text": "\"A workshop,\" says the tip-keeper. \"Can't say I've had that one.\" He writes it in anyway, in capitals. \"If you're the fifth,\" he says, \"we'll send your spanner home.\" He means it kindly, and to show it he gives you a Ration from inside the second coat.",
         "changes": {
           "item.rustmoor.rustmoor_ration": "+1",
           "prologue.progress": 50

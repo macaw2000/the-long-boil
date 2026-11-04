@@ -569,7 +569,7 @@ export interface Debt {
 export function debtsOwed(story: StoryState): Debt[] {
   const debts: Debt[] = [];
   const rent = backRentOwed(story);
-  if (rent > 0) debts.push({ id: "back_rent", label: "Pip's bill for the back rent", crowns: rent, clears: ["flag.owes_back_rent", "flag.back_rent_reduced"] });
+  if (rent > 0) debts.push({ id: "back_rent", label: "Pip's bill for the back rent", crowns: rent, clears: ["flag.owes_back_rent"] });
   if ((story.qualities["flag.owes_foundry_pass"] ?? 0) === 1) {
     debts.push({ id: "foundry_pass", label: "Tallow's account for the Foundry Pass", crowns: FOUNDRY_PASS_DEBT, clears: ["flag.owes_foundry_pass"] });
   }

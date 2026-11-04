@@ -14,7 +14,7 @@
     {
       "label": "You were Hester's apprentice. You learned the trade at this bench, until the morning she did not open up.",
       "success": {
-        "text": "Brassbuckle nods, as if a sum has come out. \"Then you know where she kept the oil, and I need not show you.\" You do know. It is behind the flour tin, where it always was, and the flour tin is empty, as it always was. Whatever Hester was in the middle of, she did not tell you either. You leave the kettle in the vice. It seems wrong to finish it for her.",
+        "text": "Brassbuckle nods, as if a sum has come out. \"Then you know where she kept the oil, and I need not show you.\" You do know. It is behind the flour tin, where it always was, and the flour tin is empty, as it always was. When No. 9 was locked up you took a hired bench across the city, and mended other people's kettles for a year. The Row never learned your name: Hester kept you at the back and did her own talking. Whatever she was in the middle of, she did not tell you either. You leave the kettle in the vice. It seems wrong to finish it for her.",
         "changes": {
           "flag.origin_apprentice": 1,
           "prologue.progress": 4

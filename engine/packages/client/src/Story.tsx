@@ -271,6 +271,8 @@ function Card({
         </View>
       </View>
       {scene.options.map((option, index) => {
+        // An option for another origin is not a door the player could ever open.
+        if (!option.available && option.locked.some(([name]) => name.startsWith("flag.origin_"))) return null;
         const enabled = option.available && affordable && !busy;
         return (
           <Pressable
@@ -282,7 +284,7 @@ function Card({
           >
             <Text style={ui.text}>{option.label}</Text>
             <Text style={ui.muted}>
-              {scene.nerve} Nerve
+              {scene.nerve > 0 ? `${scene.nerve} Nerve` : ""}
               {option.challenge
                 ? ` · ${titleCase(option.challenge.quality)} ${option.challenge.level} against ${option.challenge.difficulty}: ${Math.round(option.challenge.odds * 100)}%`
                 : risky

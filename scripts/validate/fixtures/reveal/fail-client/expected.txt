@@ -1,0 +1,12 @@
+FAIL reveal/not-checkable engine/packages/client/src/Broken.tsx : line 1: unterminated string, so its strings could not be read
+FAIL reveal/reveal-word-client engine/packages/client/App.tsx : line 1: a player-facing string holds a form of guarded word 1, which may not appear before act 2; client text is checked as act 0
+FAIL reveal/reveal-word-client engine/packages/client/public/privacy.html : line 2: a player-facing string holds a form of guarded word 1, which may not appear before act 2; client text is checked as act 0
+FAIL reveal/reveal-word-client engine/packages/client/src/Guide.tsx : line 10: a player-facing string holds a form of guarded word 1, which may not appear before act 2; client text is checked as act 0
+FAIL reveal/reveal-word-client engine/packages/client/src/Guide.tsx : line 1: a player-facing string holds a form of guarded word 1, which may not appear before act 2; client text is checked as act 0
+FAIL reveal/reveal-word-client engine/packages/client/src/Guide.tsx : line 2: a player-facing string holds a form of guarded word 1, which may not appear before act 2; client text is checked as act 0
+FAIL reveal/reveal-word-client engine/packages/client/src/Guide.tsx : line 3: a player-facing string holds a form of guarded word 1, which may not appear before act 2; client text is checked as act 0
+FAIL reveal/reveal-word-client engine/packages/client/src/Guide.tsx : line 4: a player-facing string holds a form of guarded word 1, which may not appear before act 2; client text is checked as act 0
+FAIL reveal/reveal-word-client engine/packages/client/src/Guide.tsx : line 7: a player-facing string holds a form of guarded word 1, which may not appear before act 2; client text is checked as act 0
+FAIL reveal/reveal-word-client engine/packages/client/src/Guide.tsx : line 7: a player-facing string holds a form of guarded word 1, which may not appear before act 2; client text is checked as act 0
+FAIL reveal/reveal-word-client engine/packages/client/src/Guide.tsx : line 9: a player-facing string holds a form of guarded word 1, which may not appear before act 2; client text is checked as act 0
+FAIL reveal/reveal-word-client engine/packages/client/src/glossary.ts : line 2: a player-facing string holds a form of guarded word 1, which may not appear before act 2; client text is checked as act 0

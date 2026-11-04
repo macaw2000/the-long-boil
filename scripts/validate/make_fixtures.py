@@ -1867,3 +1867,237 @@ for check in ("schema", "provenance", "xp_curve", "references", "pacing", "drops
     put(check + "/pass/content/monsters/.cache/stray.json", {"schema": "monster/9", "id": "fixture.hidden.stray",
         "monsters": [{"id": "fixture.hidden.stray"}]})
     put(check + "/pass/content/gear/.cache/stray.json", {"schema": "gear/9", "id": "gear.global.fixture_hidden"})
+
+# Decision 28: the client strings in the reveal guard, and the clearance cut.
+# The guarded word comes from the guard, so this file never has to spell it.
+sys.dont_write_bytecode = True
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "canon"))
+import check_reveal
+import cut_clearance
+GUARDED = check_reveal.REVEAL_WORDS[0][1][0]
+CLIENT = "engine/packages/client/"
+CLIENT_GLOSSARY = 'export const glossary = {\n  boiler: "Your workshop\'s steam.",\n};\n'
+CLIENT_GUIDE = ('export function Guide() {\n  return <Text style={ui.card}>Press Start.</Text>;\n}\n')
+# reveal pass: the word only where a player never reads it. Every line of this
+# file would be a false hit for a plain search.
+RVC = "reveal/pass/" + CLIENT
+put(RVC + "src/glossary.ts", CLIENT_GLOSSARY)
+put(RVC + "src/Guide.tsx", CLIENT_GUIDE)
+put(RVC + "src/Quiet.tsx", """// A comment may say W: comments never reach the screen.
+/* W, in a block comment too. */
+import { W } from "./W";
+import type { Thing } from "./W";
+const art = require("../assets/W.png");
+export type Kind = "W" | "other";
+const W_ID = "item.rustmoor.W";
+const place = `job:${W}`;
+const table = { W: 1, "W": 2, id: "W", kind: "W" };
+function W(x: Kind): number {
+  if (x === "W") return table["W"];
+  switch (x) {
+    case "W":
+      return 1 < 2 ? 3 : 4;
+  }
+  return x.replace(/"W/g, "").length;
+}
+export function Quiet() {
+  return (
+    <View key="W" className="W W" testID="W" style={{ fontFamily: W_ID }}>
+      {/* W, in a JSX comment. */}
+      <Text>{W("other")}</Text>
+    </View>
+  );
+}
+""".replace("W", GUARDED))
+put(RVC + "public/terms.html", """<html><head><title>Terms</title><style>.W { color: red; }</style>
+<script>const W = 1;</script></head><body><!-- W --><p class="W">Plain terms.</p></body></html>
+""".replace("W", GUARDED))
+# reveal fail: the word in every place a player can read it.
+RVCF = "reveal/fail-client/" + CLIENT
+put(RVCF + "App.tsx", 'export const title = "W at the door";\n'.replace("W", GUARDED))
+put(RVCF + "src/glossary.ts", CLIENT_GLOSSARY.replace("Your workshop\\'s steam.", "A W in the pipes.".replace("W", GUARDED)).replace("Your workshop's steam.", "A W in the pipes.".replace("W", GUARDED)))
+put(RVCF + "src/Guide.tsx", """export const goal = "Answer the W.";
+export const hint = (n: number) => `Listen for ${n} W sounds`;
+export const label = "W";
+export const pick = (a: boolean) => (a ? "W" : "quiet");
+export function Guide() {
+  return (
+    <Text title="A W" aria-label={"W now"}>
+      Mind the
+      W below
+      <Text>{"W"}</Text>
+    </Text>
+  );
+}
+""".replace("W", GUARDED))
+put(RVCF + "public/privacy.html", "<html><body><p>Plain.</p>\n<p>W text.</p></body></html>\n".replace("W", GUARDED))
+put(RVCF + "src/Broken.tsx", 'export const text = "never closed;\n')
+# reveal fail: an engine with the known client files gone.
+put("reveal/fail-client-moved/engine/packages/client/src/Other.tsx", "export const a = 1;\n")
+
+GDD = """# A Fixture Design
+
+## 1. Summary
+
+A plain line with no marker.
+
+- The FIXTURE-SECRET reaches you in Acts I to III.
+
+## 2. World
+
+Safe world line.
+
+Later, in Act IV, there is a FIXTURE-SECRET.
+
+%(word)s FIXTURE-SECRET line.
+
+## 3. Factions
+
+### Factions
+
+| Faction | Wants |
+| --- | --- |
+| The Fixture Guild | Rent |
+
+### Characters
+
+| Character | Who they are | What they are hiding |
+| --- | --- | --- |
+| Ada | A clerk | FIXTURE-SECRET one |
+| Bo | Appears in Act II, FIXTURE-SECRET | FIXTURE-SECRET two |
+
+FIXTURE-SECRET paragraph under the table.
+
+### How the cast is used
+
+Safe cast line.
+
+## 4. Storyline
+
+Opening line.
+
+Opening FIXTURE-SECRET line, naming Layer 4.
+
+### The truth, and when players learn it
+
+| Layer | Truth | When |
+| --- | --- | --- |
+| 1 | Safe truth | Prologue |
+| 2 | FIXTURE-SECRET truth | Later |
+| 5 | FIXTURE-SECRET truth | Never |
+
+### Prologue: A Fixture
+
+Safe prologue line.
+
+### Act I: A Fixture
+
+1. Safe beat.
+
+### Act II: FIXTURE-SECRET
+
+1. FIXTURE-SECRET beat.
+
+### Act III: FIXTURE-SECRET
+
+1. FIXTURE-SECRET beat.
+
+### Ambitions
+
+FIXTURE-SECRET ambition with no marker at all.
+
+### A subsection added later
+
+FIXTURE-SECRET, cut by the keep-list.
+
+## 5. Narrative
+
+Safe narrative line.
+
+### A heading naming Act V, FIXTURE-SECRET
+
+FIXTURE-SECRET under that heading, with no marker on this line.
+
+### Safe after
+
+| Bracket | Detail |
+| --- | --- |
+| Act I | Safe row |
+| Act III | FIXTURE-SECRET row |
+
+## 13. Appendices
+
+### A. Samples
+
+#### A.1 Safe sample
+
+Safe sample line.
+
+#### A.2 A later sample
+
+FIXTURE-SECRET first line, with no marker.
+
+Sits in Act II.
+
+### B. After the samples
+
+Safe appendix line.
+""" % {"word": GUARDED.capitalize()}
+
+REVEALS = """# The reveal schedule, Layers 1 to 3
+
+Source: a fixture.
+
+Preface line with no marker.
+
+This file holds Layers 1 to 3, and FIXTURE-SECRET.
+
+| Layer | Truth | Earliest |
+| --- | --- | --- |
+| 0 | Safe layer | Prologue |
+| 1 | Safe layer | Act I |
+| 2 | FIXTURE-SECRET layer | Later |
+| 3 | FIXTURE-SECRET layer | Later |
+
+## Writing against a layer
+
+FIXTURE-SECRET with no marker, below the table.
+"""
+
+def clearance(base, gdd=GDD, reveals=REVEALS, gdd_slice=None, reveals_slice=None):
+    """A root with both sources and both slices, each slice the fresh cut of
+    GDD and REVEALS unless given. False leaves a slice out."""
+    put(base + "docs/gdd.md", gdd)
+    put(base + "docs/canon/reveals.md", reveals)
+    if reveals_slice is not False:
+        put(base + cut_clearance.REVEALS_SLICE, reveals_slice or GOOD_REVEALS_SLICE)
+    if gdd_slice is not False:
+        put(base + cut_clearance.GDD_SLICE, gdd_slice or GOOD_GDD_SLICE)
+GOOD_REVEALS_SLICE = cut_clearance.cut_reveals(REVEALS)[1]
+GOOD_GDD_SLICE = cut_clearance.cut_gdd(GDD)[1]
+clearance("clearance/pass/")
+# clearance fail: a hand edit. Every marker kind, in a slice that is then also
+# stale, and one slice with its header gone.
+clearance("clearance/fail/", gdd_slice=GOOD_GDD_SLICE + """
+This is Layer 2 material.
+Layers 1 to 3 are here, and layer four.
+Act III, and Acts I to II, and Act 4.
+| Character | What they are hiding |
+A %s line.
+
+| Layer | Truth |
+| --- | --- |
+| 1 | Allowed |
+| 2 | Not allowed |
+""" % GUARDED, reveals_slice=GOOD_REVEALS_SLICE.replace(cut_clearance.GENERATED_LINE, "A hand edit."))
+# clearance fail: the sources moved on and nobody regenerated.
+clearance("clearance/fail-stale/", gdd=GDD.replace("Safe world line.", "A newer world line."),
+          reveals=REVEALS.replace("Preface line with no marker.", "A newer preface."))
+# clearance fail: nobody generated them.
+clearance("clearance/fail-missing/", gdd_slice=False, reveals_slice=False)
+# clearance fail, fail closed: each required marker gone from a source.
+clearance("clearance/fail-cut-reveals/", reveals=REVEALS.replace("| 1 | Safe layer | Act I |\n", ""))
+clearance("clearance/fail-cut-act/", gdd=GDD.replace("### Act II: FIXTURE-SECRET", "### Second: FIXTURE-SECRET"))
+clearance("clearance/fail-cut-hiding/", gdd=GDD.replace("What they are hiding", "Their secret"))
+clearance("clearance/fail-cut-rows/", gdd=GDD.replace("| 2 | FIXTURE-SECRET truth | Later |\n", "").replace("| 5 | FIXTURE-SECRET truth | Never |\n", ""))

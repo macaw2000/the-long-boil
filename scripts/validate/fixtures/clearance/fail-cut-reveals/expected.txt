@@ -1,0 +1,1 @@
+FAIL clearance/cut-failed docs/canon/reveals.md : line -: required layer table row 1 is missing

@@ -1,0 +1,25 @@
+{
+  "schema": "letter/1",
+  "id": "prologue.sprocket_row.paid_less_the_clock",
+  "act": 0,
+  "location": "sprocket_row",
+  "reveal_layer": 0,
+  "requires": {
+    "prologue.progress": ">=10",
+    "flag.owes_back_rent": "==0",
+    "flag.back_rent_reduced": "==1"
+  },
+  "nerve": 0,
+  "sender": "Pip Tumbler",
+  "weight": 1,
+  "description": "A canister drops into the tray. Inside is a receipt, BACK RENT, No. 9 Sprocket Row, 1,320 Crowns, PAID, in Pip's ordinary pencil, and a note.\n\n\"Received. No more Fridays. The clerk's clock is now two hours ahead, and the clerk has mentioned it. To me.\"\nPip Tumbler",
+  "options": [
+    {
+      "label": "Put the receipt on the spike above the vice.",
+      "success": {
+        "text": "The receipt goes on the spike above the vice. It is paid, for less than it might have been, and the receipt is correct in every particular. Pip has signed it in full, the way Pip signs for the Counting-House.",
+        "changes": {}
+      }
+    }
+  ]
+}

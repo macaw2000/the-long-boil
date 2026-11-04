@@ -29,6 +29,18 @@
           "prologue.progress": 20
         }
       }
+    },
+    {
+      "label": "As Hester's apprentice, ask whether Pip remembers you at the back bench.",
+      "requires": {
+        "flag.origin_apprentice": "==1"
+      },
+      "success": {
+        "text": "Pip looks at you for some time, then at the back bench, then at you again. \"That was you. Head down, no name, all those Fridays. I took you for a lodger.\" Pip picks the cap up off the bench and turns it round. \"A year across the city, you say, and you come back to this. Hester never said you had a name. She'll have written it down, I expect.\" Pip gives you one short nod, the kind that goes in a book, then remembers another canister, somewhere else, and goes.",
+        "changes": {
+          "prologue.progress": 20
+        }
+      }
     }
   ]
 }

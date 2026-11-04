@@ -34,6 +34,25 @@ Favour with a faction runs 0 to 7. It opens storylets, titles and cosmetics. It 
 | Mrs. Evangeline Inkwell | Editor of the Brass Gazette | A story nobody else has | That she keeps the real Gauge Reading in a drawer | Prints the quote you wish you had not given |
 | Baron Corvin Strake | The Lightning Baron | An audience, then a partner | What his storm-taps fall on | Charming, half right, enjoys himself |
 
+## Hester Vane's going
+
+Canonised by Jeremy on 4 November 2026, from work order 037's scenes (first-day plan, decisions 20 and 29).
+
+- Hester has been gone a year when the story opens.
+- On the Friday before she went, she gave Pip a toffee and promised the rent next week, same as ever.
+
+## The Tinker
+
+Why No. 9 came to you is the player's choice in the first scene, and sets one flag (Jeremy, 3 November 2026, first-day plan, decisions 1 and 7). Every later scene must read true for all three; an origin may add an option of its own, but scene text does not vary.
+
+| Origin | Flag | Who you are |
+| --- | --- | --- |
+| Apprentice | `flag.origin_apprentice` | You learned the trade at Hester's bench, until the morning she did not open up. |
+| Relative | `flag.origin_relative` | A distant branch of the family. Her will named you for No. 9, contents included. |
+| Stranger | `flag.origin_stranger` | You never met her. She put your name down for No. 9, and nobody can tell you why. |
+
+Invented for work order 037, for Jeremy to confirm: the apprentice spent the year at a hired bench across the city, mending other people's kettles, and the Row never learned the apprentice's name, because Hester kept them at the back and did her own talking.
+
 ## Bosses
 
 | Boss | Zone | Act | Drops |
@@ -47,4 +66,4 @@ Favour with a faction runs 0 to 7. It opens storylets, titles and cosmetics. It 
 - First names, ranks and speech habits for anyone not listed here.
 - What Pip calls the player.
 - Whether Rook and Tallow have met.
-- Hester's age, and how long No. 9 stood empty.
+- Hester's age.
