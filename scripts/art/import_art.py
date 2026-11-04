@@ -401,6 +401,11 @@ def main() -> None:
         for frame in (0, 1):
             save(working[index * 2 + frame], f"tinker_{pose}_{frame}")
             written += 1
+    # The first sheet's Smithing pose held a hammer in each hand on one frame, so it was redrawn on its own.
+    smithing = cells(without_gridlines(keyed(sheet("tinker-smithing.jpeg"))), 2, 1, inset=0.004)
+    for frame, image in enumerate(fit_together(smithing, CHARACTER, TINKER_TALL)):
+        save(image, f"tinker_hammer_{frame}")
+        written += 1
     for frame, image in enumerate(fit_together(tinker[14:], PORTRAIT, PORTRAIT_TALL)):
         save(image, f"tinker_bare_portrait_{frame}")
         written += 1
