@@ -24189,15 +24189,16 @@
       "path": "content/storylets/prologue.polytechnic.the_lift_lecture.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/036-prologue-clarity.md",
+      "status": "reviewed",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-28T00:22:11Z",
+        "run": "2026-11-04T00:28:45Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -24214,7 +24215,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass or pass with notes (work order 036, 2026-11-03): scene redrafted; inspector's notes (and, where applicable, the Arrears wording fix) applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -24237,6 +24242,21 @@
           "at": "2026-10-28T00:22:11Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -24247,14 +24267,14 @@
       "path": "content/storylets/prologue.polytechnic.the_register.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/035-prologue-hook.md",
+      "work_order": "docs/work-orders/036-prologue-clarity.md",
       "status": "validated",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-03T23:56:23Z",
+        "run": "2026-11-04T00:28:45Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24276,7 +24296,7 @@
       "review": {
         "by": "inspector",
         "verdict": "fail",
-        "notes": "Fail (work order 035, 2026-11-03): option 2 outcome. Inspector's fixes applied at Jeremy's direction and validators pass again; awaiting re-review of the fixed text."
+        "notes": "Fail (work order 036, 2026-11-03): unkept promise; lecture-like introduction. Inspector's fixes applied at Jeremy's direction and validators pass again; awaiting re-review of the fixed text. Not played by Jeremy; not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -24323,6 +24343,31 @@
         },
         {
           "at": "2026-11-03T23:56:23Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "drafted",
+          "by": "orchestrator"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
           "status": "validated",
           "by": "validators"
         }
@@ -24335,15 +24380,16 @@
       "path": "content/storylets/prologue.rustmoor.the_first_nest.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/036-prologue-clarity.md",
+      "status": "reviewed",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-28T00:22:11Z",
+        "run": "2026-11-04T00:28:45Z",
         "checks": [
+          "fixtures",
           "schema",
           "provenance",
           "xp_curve",
@@ -24360,7 +24406,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass or pass with notes (work order 036, 2026-11-03): scene redrafted; inspector's notes (and, where applicable, the Arrears wording fix) applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -24383,6 +24433,21 @@
           "at": "2026-10-28T00:22:11Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -24393,14 +24458,14 @@
       "path": "content/storylets/prologue.rustmoor.the_tip_book.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/035-prologue-hook.md",
+      "work_order": "docs/work-orders/036-prologue-clarity.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-03T23:56:23Z",
+        "run": "2026-11-04T00:28:45Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24422,7 +24487,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass (work order 035, 2026-11-03): scene redrafted; inspector's polish applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
+        "notes": "Pass or pass with notes (work order 036, 2026-11-03): scene redrafted; inspector's notes (and, where applicable, the Arrears wording fix) applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -24456,6 +24521,21 @@
           "at": "2026-11-03T23:56:23Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -24466,14 +24546,14 @@
       "path": "content/letters/prologue.sprocket_row.back_rent.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/035-prologue-hook.md",
+      "work_order": "docs/work-orders/036-prologue-clarity.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-03T23:56:23Z",
+        "run": "2026-11-04T00:28:45Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24495,7 +24575,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass (work order 035, 2026-11-03): scene redrafted; inspector's polish applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
+        "notes": "Pass or pass with notes (work order 036, 2026-11-03): scene redrafted; inspector's notes (and, where applicable, the Arrears wording fix) applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -24544,6 +24624,21 @@
           "at": "2026-11-03T23:56:23Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -24554,14 +24649,127 @@
       "path": "content/storylets/prologue.sprocket_row.brass_plate.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/035-prologue-hook.md",
+      "work_order": "docs/work-orders/036-prologue-clarity.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-04T00:28:45Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass or pass with notes (work order 036, 2026-11-03): scene redrafted; inspector's notes (and, where applicable, the Arrears wording fix) applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-22T23:24:23Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-22T23:24:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T00:55:57Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-10-23T00:56:05Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-23T01:18:42Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-11-03T23:56:23Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-03T23:56:23Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-03T23:56:23Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-11-03T23:56:23Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-03T23:56:23Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "prologue.sprocket_row.first_session_guide",
+      "type": "guide",
+      "path": "content/guide/first_session.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/036-prologue-clarity.md",
       "status": "validated",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-03T23:56:23Z",
+        "run": "2026-11-04T00:28:45Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24583,105 +24791,7 @@
       "review": {
         "by": "inspector",
         "verdict": "fail",
-        "notes": "Fail (work order 035, 2026-11-03): option 1 label. Inspector's fixes applied at Jeremy's direction and validators pass again; awaiting re-review of the fixed text."
-      },
-      "approved_by": null,
-      "approved_at": null,
-      "history": [
-        {
-          "at": "2026-10-22T23:24:23Z",
-          "status": "drafted",
-          "by": "scrivener"
-        },
-        {
-          "at": "2026-10-22T23:24:30Z",
-          "status": "validated",
-          "by": "validators"
-        },
-        {
-          "at": "2026-10-23T00:55:57Z",
-          "status": "drafted",
-          "by": "scrivener"
-        },
-        {
-          "at": "2026-10-23T00:56:05Z",
-          "status": "validated",
-          "by": "validators"
-        },
-        {
-          "at": "2026-10-23T01:18:42Z",
-          "status": "reviewed",
-          "by": "inspector"
-        },
-        {
-          "at": "2026-10-28T00:22:11Z",
-          "status": "reviewed",
-          "by": "inspector"
-        },
-        {
-          "at": "2026-11-03T23:56:23Z",
-          "status": "drafted",
-          "by": "scrivener"
-        },
-        {
-          "at": "2026-11-03T23:56:23Z",
-          "status": "validated",
-          "by": "validators"
-        },
-        {
-          "at": "2026-11-03T23:56:23Z",
-          "status": "reviewed",
-          "by": "inspector"
-        },
-        {
-          "at": "2026-11-03T23:56:23Z",
-          "status": "drafted",
-          "by": "scrivener"
-        },
-        {
-          "at": "2026-11-03T23:56:23Z",
-          "status": "validated",
-          "by": "validators"
-        }
-      ],
-      "retirement": null
-    },
-    {
-      "id": "prologue.sprocket_row.first_session_guide",
-      "type": "guide",
-      "path": "content/guide/first_session.json",
-      "pointer": null,
-      "revision": null,
-      "work_order": "docs/work-orders/035-prologue-hook.md",
-      "status": "reviewed",
-      "drafted_by": "scrivener",
-      "model": null,
-      "patch": null,
-      "validators": {
-        "result": "pass",
-        "run": "2026-11-03T23:56:23Z",
-        "checks": [
-          "fixtures",
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
-        "waiver": null
-      },
-      "review": {
-        "by": "inspector",
-        "verdict": "pass",
-        "notes": "Pass (work order 035, 2026-11-03): brass_plate line amended at Jeremy's decision; inspector's polish applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
+        "notes": "Fail (work order 036, 2026-11-03): pips_bill glossing order. Inspector's fixes applied at Jeremy's direction and validators pass again; awaiting re-review of the fixed text. Not played by Jeremy; not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -24780,6 +24890,31 @@
           "at": "2026-11-03T23:56:23Z",
           "status": "reviewed",
           "by": "inspector"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "drafted",
+          "by": "orchestrator"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "drafted",
+          "by": "orchestrator"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "validated",
+          "by": "validators"
         }
       ],
       "retirement": null
@@ -24790,130 +24925,14 @@
       "path": "content/storylets/prologue.sprocket_row.the_missing_tins.json",
       "pointer": null,
       "revision": null,
-      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
-      "status": "validated",
-      "drafted_by": "claude",
-      "model": "claude-opus-5-5",
-      "patch": null,
-      "validators": {
-        "result": "pass",
-        "run": "2026-10-28T00:22:11Z",
-        "checks": [
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
-        "waiver": null
-      },
-      "review": null,
-      "approved_by": null,
-      "approved_at": null,
-      "history": [
-        {
-          "at": "2026-10-28T00:10:02Z",
-          "status": "drafted",
-          "by": "claude"
-        },
-        {
-          "at": "2026-10-28T00:10:02Z",
-          "status": "validated",
-          "by": "validators"
-        },
-        {
-          "at": "2026-10-28T00:22:11Z",
-          "status": "drafted",
-          "by": "claude"
-        },
-        {
-          "at": "2026-10-28T00:22:11Z",
-          "status": "validated",
-          "by": "validators"
-        }
-      ],
-      "retirement": null
-    },
-    {
-      "id": "prologue.sprocket_row.the_morning_gazette",
-      "type": "storylet",
-      "path": "content/storylets/prologue.sprocket_row.the_morning_gazette.json",
-      "pointer": null,
-      "revision": null,
-      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
-      "status": "validated",
-      "drafted_by": "claude",
-      "model": "claude-opus-5-5",
-      "patch": null,
-      "validators": {
-        "result": "pass",
-        "run": "2026-10-28T00:22:11Z",
-        "checks": [
-          "schema",
-          "provenance",
-          "xp_curve",
-          "references",
-          "pacing",
-          "drops",
-          "combat",
-          "start",
-          "qualities",
-          "story_graph",
-          "reveal",
-          "style",
-          "work_orders"
-        ],
-        "waiver": null
-      },
-      "review": null,
-      "approved_by": null,
-      "approved_at": null,
-      "history": [
-        {
-          "at": "2026-10-28T00:10:02Z",
-          "status": "drafted",
-          "by": "claude"
-        },
-        {
-          "at": "2026-10-28T00:10:02Z",
-          "status": "validated",
-          "by": "validators"
-        },
-        {
-          "at": "2026-10-28T00:22:11Z",
-          "status": "drafted",
-          "by": "claude"
-        },
-        {
-          "at": "2026-10-28T00:22:11Z",
-          "status": "validated",
-          "by": "validators"
-        }
-      ],
-      "retirement": null
-    },
-    {
-      "id": "prologue.sprocket_row.the_neighbours",
-      "type": "storylet",
-      "path": "content/storylets/prologue.sprocket_row.the_neighbours.json",
-      "pointer": null,
-      "revision": null,
-      "work_order": "docs/work-orders/035-prologue-hook.md",
+      "work_order": "docs/work-orders/036-prologue-clarity.md",
       "status": "reviewed",
-      "drafted_by": "scrivener",
-      "model": null,
+      "drafted_by": "claude",
+      "model": "claude-opus-5-5",
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-03T23:56:23Z",
+        "run": "2026-11-04T00:28:45Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24935,7 +24954,163 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass (work order 035, 2026-11-03): scene redrafted; inspector's polish applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
+        "notes": "Pass or pass with notes (work order 036, 2026-11-03): scene redrafted; inspector's notes (and, where applicable, the Arrears wording fix) applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-28T00:10:02Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:10:02Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "prologue.sprocket_row.the_morning_gazette",
+      "type": "storylet",
+      "path": "content/storylets/prologue.sprocket_row.the_morning_gazette.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/036-prologue-clarity.md",
+      "status": "reviewed",
+      "drafted_by": "claude",
+      "model": "claude-opus-5-5",
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-04T00:28:45Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass or pass with notes (work order 036, 2026-11-03): scene redrafted; inspector's notes (and, where applicable, the Arrears wording fix) applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-10-28T00:10:02Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:10:02Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-10-28T00:22:11Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
+    },
+    {
+      "id": "prologue.sprocket_row.the_neighbours",
+      "type": "storylet",
+      "path": "content/storylets/prologue.sprocket_row.the_neighbours.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/036-prologue-clarity.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-04T00:28:45Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass or pass with notes (work order 036, 2026-11-03): scene redrafted; inspector's notes (and, where applicable, the Arrears wording fix) applied at Jeremy's direction afterwards and validators pass again. Not played by Jeremy; not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -24967,6 +25142,21 @@
         },
         {
           "at": "2026-11-03T23:56:23Z",
+          "status": "reviewed",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-04T00:28:45Z",
           "status": "reviewed",
           "by": "inspector"
         }

@@ -8,12 +8,12 @@
     "prologue.progress": "==40"
   },
   "nerve": 1,
-  "description": "Rustmoor hangs off the city's outer rim on chains as thick as a man. You go down in the oilskin from the peg behind No. 9's door. It was Hester Vane's: long in the arm, and patched at both elbows. At the gate a tip-keeper in three coats keeps a book. Everyone who goes onto the heaps signs it, and everyone who comes back signs it again, and the book is very thick at the front and thinner than you would like at the back. \"Name,\" says the tip-keeper. \"Business. And next of kin, for the Gazette.\"",
+  "description": "Rustmoor hangs off the city's outer rim on chains as thick as a man. You go down in the oilskin from the peg behind No. 9's door. It was Hester Vane's: long in the arm, and patched at both elbows. At the gate a tip-keeper in three coats keeps a book. Everyone who goes onto the heaps signs it, and everyone who comes back signs it again, and the book is very thick at the front and thinner than you would like at the back. \"Name,\" says the tip-keeper. \"Business. And next of kin, in case.\"",
   "options": [
     {
       "label": "Give Professor Brassbuckle as your next of kin.",
       "success": {
-        "text": "The tip-keeper writes it down without comment, which is somehow worse than comment. Word of it reaches the Polytechnic by evening. Brassbuckle does not mention it, but your next delivery of Polytechnic stores comes with a note in her hand, \"Come back in one piece,\" underlined twice, and an extra tin of Rations.",
+        "text": "The tip-keeper writes it down without comment, which is somehow worse than comment. Word of it reaches the Polytechnic by evening. Brassbuckle does not mention it, but your next delivery of Polytechnic stores comes with a note in her hand, \"Come back in one piece,\" underlined twice, and an extra Ration: a wax-paper brick of stew, for eating when a fight goes badly.",
         "changes": {
           "item.rustmoor.rustmoor_ration": "+1",
           "prologue.progress": 50

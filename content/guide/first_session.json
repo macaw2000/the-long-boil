@@ -5,7 +5,7 @@
     {
       "id": "boiler",
       "speaker": "Professor Brassbuckle",
-      "line": "Twelve hours of steam on that gauge: that is how long your Tinker works without you, so you will sleep tonight, like it or not.",
+      "line": "Ottoline Brassbuckle, of the Polytechnic. I hold No. 9's keys until it is yours. Twelve hours of steam on that gauge: that is how long the workshop keeps working without you, so you will sleep tonight, like it or not.",
       "button": "Open the valve"
     },
     {
@@ -16,12 +16,12 @@
     {
       "id": "first_spanner",
       "speaker": "Professor Brassbuckle",
-      "line": "A watched Tinker works no faster, I am told, but nobody has ever managed not to watch the first one."
+      "line": "Watching the work does not make it go faster, I am told, but nobody has ever managed not to watch the first one."
     },
     {
       "id": "pips_bill",
       "speaker": "Professor Brassbuckle",
-      "line": "That canister rattling into the tray is Pip, and Pip's canisters are seldom good news; better answered now than in person."
+      "line": "That canister is from Pip Tumbler, who sends out the city's bills. Pip's canisters are seldom good news; better answered now than in person."
     },
     {
       "id": "equip",

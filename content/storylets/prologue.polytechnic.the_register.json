@@ -8,23 +8,32 @@
     "prologue.progress": "==20"
   },
   "nerve": 1,
-  "description": "Professor Brassbuckle walks you across to the Polytechnic to sign the Tinkers' register, because No. 9 is a registered workshop and the Polytechnic is particular. The register is a ledger the size of a door. She opens it at No. 9's page and turns it round for you. The line above the empty one reads H. Vane, in the small upright hand from inside the binding. Brassbuckle rests her thumb on it a moment, as if to check the ink is dry, and hands you the pen.",
+  "description": "Professor Brassbuckle, who teaches engineering at the Polytechnic and was Hester's oldest colleague, walks you across to sign the Tinkers' register. No. 9 is a registered workshop, and only a registered Tinker may sell their work at the Counting-House. The register is a ledger the size of a door. She opens it at No. 9's page. The line above the empty one reads H. Vane, in the small upright hand from the binding. Brassbuckle rests her thumb on it a moment, as if to check the ink is dry, and holds out the pen. \"Your name goes under hers,\" she says, \"if you want it there.\"",
   "options": [
     {
       "label": "Sign your name, and ask how well she knew Hester Vane.",
       "success": {
-        "text": "\"Longer than anyone,\" says Brassbuckle. \"Hester was my oldest colleague. She never used a word where a figure would do, and she would have wanted you to blot that.\" You blot it. Brassbuckle shuts the register gently, and on the way out tells you which lecture halls leak, which porters can be bribed with toffee, and where the good tea is kept.",
+        "text": "\"Longer than anyone,\" says Brassbuckle. \"She never used a word where a figure would do, and she would have wanted you to blot that.\" You blot it. Brassbuckle shuts the register gently, and on the way out tells you which lecture halls leak, which porters can be bribed with toffee, and where the good tea is kept.",
         "changes": {
           "prologue.progress": 30
         }
       }
     },
     {
-      "label": "Sign your name in your best hand, and ask nothing at all.",
+      "label": "Sign your name neatly, and ask nothing.",
       "success": {
-        "text": "You sign, blot and hand back the pen. Brassbuckle reads your name under Hester's and nods once, the way she nods at a sum that has come out. She takes your arm on the way out and shows you the good tea, which is kept behind the bound copies of the Gazette, where no student has ever looked.",
+        "text": "You sign, blot and hand back the pen. Brassbuckle reads your name under Hester's and nods once, the way she nods at a sum that has come out. She takes your arm on the way out and shows you the good tea, which is kept behind the bound journals in the library, where no student has ever looked.",
         "changes": {
           "favour.polytechnic": "+1",
+          "prologue.progress": 30
+        }
+      }
+    },
+    {
+      "label": "Leave the pen where it is, and ask to read the register's rules first.",
+      "success": {
+        "text": "Brassbuckle gives you a look over her spectacles that has ended several careers. Then she fetches the rules, eleven pages in small type, and puts them in your hand. \"Sensible,\" she says, as if it costs her something. \"Until you sign, the Counting-House will take my word for you.\" You read them by the Boiler that night. Nothing in them bites, quite.",
+        "changes": {
           "prologue.progress": 30
         }
       }
