@@ -107,6 +107,7 @@ export interface Content {
   weapons: Weapon[];
   armours: Armour[];
   pieces: Piece[];
+  armourHalfPoint: number;
   tools: Tool[];
   items: Item[];
   totalXp: number[];
@@ -231,6 +232,7 @@ export interface StoryView {
   letters: SceneView[];
   storylets: SceneView[];
   upcoming: { id: string; location: string; needs: [string, string, number][] }[];
+  nextVisitAt: string | null;
   cooling: { id: string; location: string; opensAt: string }[];
   backRent: number;
   debts: { id: string; label: string; crowns: number }[];

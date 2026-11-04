@@ -5,54 +5,64 @@
     {
       "id": "boiler",
       "speaker": "Professor Brassbuckle",
-      "line": "Ottoline Brassbuckle, of the Polytechnic. I hold No. 9's keys until it is yours. Twelve hours of steam on that gauge: that is how long the workshop keeps working without you, so you will sleep tonight, like it or not.",
+      "line": "Ottoline Brassbuckle; I hold the keys. This Boiler has been cold since the last tenant left, so stand back. If it holds, it runs your workshop for twelve hours, whether you are here or not.",
       "button": "Open the valve"
     },
     {
       "id": "queue_spanners",
       "speaker": "Professor Brassbuckle",
-      "line": "Fifty Brass Ingots from the old stock, and I would rather they became spanners than doorstops."
+      "line": "It held, which I will admit is a relief. Fifty Brass Ingots from the old stock: set the bench to make spanners, and it works on while you do something else."
+    },
+    {
+      "id": "who_you_are",
+      "speaker": "Professor Brassbuckle",
+      "line": "While the spanners turn: this is Story. Each scene is a choice and costs Nerve, which refills with time. The first one is about you, and why No. 9 is yours."
     },
     {
       "id": "first_spanner",
       "speaker": "Professor Brassbuckle",
-      "line": "Watching the work does not make it go faster, I am told, but nobody has ever managed not to watch the first one."
+      "line": "Each spanner takes a little while, and goes into your Stores. Watching does not make it faster, but nobody has ever managed not to watch the first."
     },
     {
-      "id": "pips_bill",
+      "id": "rats_in_the_workshop",
       "speaker": "Professor Brassbuckle",
-      "line": "That canister is from Pip Tumbler, who brings Sprocket Row its bills. Pip's canisters are seldom good news; better answered now than in person."
+      "line": "What is that scratching under the floor? Play the next scene; the spanners will keep."
     },
     {
       "id": "equip",
       "speaker": "Professor Brassbuckle",
-      "line": "Rats have been at the Row again, and a Brass Spanner is a perfectly respectable thing to hit one with."
+      "line": "Take up a spanner and go after those rats; the fighting runs by itself, as the bench does. I have left a crate of Rations from the old stock: you eat one whenever a rat hurts you."
     },
     {
       "id": "rats",
       "speaker": "Professor Brassbuckle",
-      "line": "Mind your Rations and come back in one piece; I have only just got this workshop aired."
-    },
-    {
-      "id": "pay_bill",
-      "speaker": "Professor Brassbuckle",
-      "line": "The rats have paid you in Crowns, and Pip would like some. Short? Rat scrap is worth more than it smells."
-    },
-    {
-      "id": "first_armour",
-      "speaker": "Professor Brassbuckle",
-      "line": "The rats have been at your sleeves already. They carry umbrella silk home for their nests; take ten scraps off them and you have hand-wraps, which is more than you are wearing now."
-    },
-    {
-      "id": "brass_plate",
-      "speaker": "Professor Brassbuckle",
-      "line": "Hester kept that workbench drawer better than she kept her rent. Clear it before the day is out; my knees are older than the Boiler."
+      "line": "Down that hole are the scrapyards, Rustmoor, where the rats live. Beaten, they drop scrap, a Crown or two, and the Umbrella Silk they line their nests with. Keep all of it; ten scraps of silk make hand-wraps."
     },
     {
       "id": "come_back",
       "speaker": "Professor Brassbuckle",
-      "line": "Nothing needs watching: the Boiler and the queue keep working while you are away, and the city will have written by the time you return.",
+      "line": "The keys are yours now. The Boiler and the bench keep working while you are away. And that brass tube over the bench has started to rattle: something is on its way.",
       "button": "Leave it running"
+    },
+    {
+      "id": "pips_bill",
+      "speaker": "Professor Brassbuckle",
+      "line": "The brass tube brought something while you were away. Letters keep until you answer them, but this one will not improve with age."
+    },
+    {
+      "id": "pay_bill",
+      "speaker": "Professor Brassbuckle",
+      "line": "Pip's bill wants more than a night of rats. The Counting-House window, under Exchange, buys your Rat Scrap on my word, but only so much a week; the rats' Crowns make up the rest."
+    },
+    {
+      "id": "first_armour",
+      "speaker": "Professor Brassbuckle",
+      "line": "The rats have been at your sleeves already. Ten scraps of their Umbrella Silk make hand-wraps. Put them on and look at the Loadout: a bite that landed at 89 in a hundred lands at about 80."
+    },
+    {
+      "id": "brass_plate",
+      "speaker": "Professor Brassbuckle",
+      "line": "Nobody has opened Hester's workbench drawer since she left. Clear it out before the day is done; my knees are older than the Boiler."
     }
   ]
 }

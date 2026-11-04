@@ -261,11 +261,11 @@ describe("the dev clock", () => {
     const redlined = await set({ qualities: { "needle.scald": 8 }, fillNerve: true });
     expect(redlined.status).toBe(200);
     expect(redlined.body.view.needles["needle.scald"]).toBe(8);
-    // Haze stays off the screen until Act II, or until something raises it.
-    expect(Object.keys(redlined.body.view.needles)).toEqual(["needle.scald", "needle.arrears", "needle.notice"]);
+    // A Needle shows once something has moved it: Arrears, Notice and Haze have not.
+    expect(Object.keys(redlined.body.view.needles)).toEqual(["needle.scald"]);
     // The top bar reads the Tinker's own view, which must agree.
     const looked = await local.inject({ method: "GET", url: `/tinkers/${kit}` });
-    expect(Object.keys(looked.json().tinker.story.needles)).toEqual(["needle.scald", "needle.arrears", "needle.notice"]);
+    expect(Object.keys(looked.json().tinker.story.needles)).toEqual(["needle.scald"]);
     expect(redlined.body.view.nerve).toBe(10);
     // Redline sends the Tinker to St. Pinion's (work order 020).
     expect(redlined.body.view.inInfirmary).toBe(true);

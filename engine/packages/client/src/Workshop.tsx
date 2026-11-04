@@ -14,7 +14,7 @@ import { Chat, channelOf, useChat, useWhispers } from "./Chat";
 import { Bills, Exchange } from "./Exchange";
 import { duration, namer, titleCase, tradeLine } from "./format";
 import { Glow } from "./Glow";
-import { coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, revealed, type GuideAction, type GuideState, type Target } from "./Guide";
+import { actedMark, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, queuedMs, revealed, type GuideAction, type GuideState, type Target } from "./Guide";
 import { Guild } from "./Guild";
 import { skillOpen } from "@long-boil/rules";
 import { skillOf } from "./jobs";
@@ -304,6 +304,23 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     if (guideCue.current) pageScroll.current?.scrollTo({ y: 0, animated: true });
   });
 
+  // In the third sitting the goal line asks for one action between scenes: a job added to the queue counts.
+  const queueSeen = useRef<string[] | null>(null);
+  useEffect(() => {
+    if (!tinker) return;
+    const ids = tinker.queue.map((entry) => entry.actionId);
+    const before = queueSeen.current;
+    queueSeen.current = ids;
+    const progress = tinker.story.qualities["prologue.progress"] ?? 0;
+    // A job finishing only shortens the queue; a job the player adds is one that was not on it.
+    const added = before !== null && (ids.some((id) => !before.includes(id)) || ids.length > before.length);
+    if (added && awaitsAction(progress) && !guide.acknowledged.includes(actedMark(progress))) {
+      setGuide({ ...guide, acknowledged: [...guide.acknowledged, actedMark(progress)] });
+    }
+    // setGuide only writes state and storage.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tinker?.queue]);
+
   // Once the guide is over, finished or skipped, the whole screen stays open, even if it is replayed.
   // A Tinker past the Prologue from before the guide was kept on the server skips it.
   useEffect(() => {
@@ -331,7 +348,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
   const step = currentStep(tinker, guide);
   // While the guide runs, the screen shows only what it has reached; the place the player is on always shows.
-  const opened = revealed(step, guide);
+  const opened = revealed(step, guide, tinker.story.qualities["prologue.progress"] ?? 0, tinker.story.qualities["record.visits_since_prologue"] ?? 0);
   // A skill the story has not opened yet (rules SKILL_GATES) stays hidden even after the guide.
   const shown = (feature: string) =>
     (!feature.startsWith("skill:") || skillOpen(feature.slice("skill:".length), tinker.story.qualities)) && (feature === place || opened(feature as Place));
@@ -359,6 +376,8 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         nextInMs: goMs * (1 - headProgress),
         wide,
         button: content.guide.find((entry) => entry.id === step.id)?.button,
+        queuedMs: queuedMs(tinker, content),
+        queueHead: tinker.queue[0]?.actionId ?? null,
       })
     : null;
   const at = coaching?.at ?? null;
@@ -369,7 +388,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const litPlaces = coaching
     ? new Set<Place>()
     : new Set<Place>([...(lit as Set<Target>)].map(placeOf).filter((value): value is Place => value !== null && value !== place));
-  const goal = coaching ? null : nextGoal(tinker, content, now, name);
+  const goal = coaching ? null : nextGoal(tinker, content, now, name, guide);
 
   const equipWeapon = (item: string) => {
     setNewGear(null);

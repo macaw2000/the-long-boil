@@ -10,7 +10,7 @@
     "progress": { "range": [0, 100], "set_by": "storylets" },
     "lore": { "range": [0, 24], "set_by": "storylets, boss first-kills, rare drops" },
     "flag": { "range": [0, 1], "set_by": "choices" },
-    "record": { "range": [0, null], "set_by": "the engine, never by a storylet: record.check_ins counts visits, a workshop check-in at least an hour after the last counted one; the queue, a weapon change and the Exchange do not count (Jeremy, 22 October 2026)" }
+    "record": { "range": [0, null], "set_by": "the engine, never by a storylet: record.check_ins counts visits, a workshop check-in at least an hour after the last counted one; the queue, a weapon change and the Exchange do not count (Jeremy, 22 October 2026); record.visits_since_prologue counts the visits after the Prologue's last scene, which open Act I (work order 037); record.moved.needle.* marks a Needle a scene has moved, so the screen shows it (decision 5 of docs/first-day-plan.md)" }
   },
   "qualities": {
     "skill": [
@@ -30,8 +30,8 @@
     ],
     "lore": ["lore.whistle_notations", "lore.ledger_pages"],
     "nerve": ["nerve"],
-    "record": ["record.check_ins"],
-    "flag": ["flag.asked_brassbuckle_plate", "flag.back_rent_reduced", "flag.kept_brass_plate", "flag.owes_back_rent", "flag.owes_foundry_pass", "flag.own_reading", "flag.page_kept", "flag.page_to_gauntlett", "flag.page_to_inkwell", "flag.page_to_rook", "flag.in_st_pinion", "flag.rook_cooperated", "flag.rook_evaded"]
+    "record": ["record.check_ins", "record.visits_since_prologue"],
+    "flag": ["flag.asked_brassbuckle_plate", "flag.back_rent_reduced", "flag.kept_brass_plate", "flag.owes_back_rent", "flag.owes_foundry_pass", "flag.own_reading", "flag.page_kept", "flag.page_to_gauntlett", "flag.page_to_inkwell", "flag.page_to_rook", "flag.in_st_pinion", "flag.rook_cooperated", "flag.rook_evaded", "flag.origin_apprentice", "flag.origin_relative", "flag.origin_stranger"]
   },
   "open_questions": [
     "The flag list is empty. The GDD names example flags (gave Page 1 to Inkwell, partnered with the Baron) but no complete set. Flags get added here as each act's beats are written.",

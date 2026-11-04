@@ -9,7 +9,7 @@
    "line": "A fixture card says where to press."
   },
   {
-   "id": "first_spanner",
+   "id": "who_you_are",
    "speaker": "A fixture professor",
    "line": "A fixture card says where to press."
   },
@@ -19,7 +19,12 @@
    "line": "A fixture card says where to press."
   },
   {
-   "id": "pips_bill",
+   "id": "first_spanner",
+   "speaker": "A fixture professor",
+   "line": "A fixture card says where to press."
+  },
+  {
+   "id": "rats_in_the_workshop",
    "speaker": "A fixture professor",
    "line": "A fixture card says where to press."
   },
@@ -32,6 +37,16 @@
   {
    "id": "rats",
    "speaker": " ",
+   "line": "A fixture card says where to press."
+  },
+  {
+   "id": "come_back",
+   "speaker": "A fixture professor",
+   "button": "Fixture button"
+  },
+  {
+   "id": "pips_bill",
+   "speaker": "A fixture professor",
    "line": "A fixture card says where to press."
   },
   {
@@ -49,11 +64,6 @@
    "speaker": "A fixture professor",
    "line": "A fixture card says where to press.",
    "glow": "workbench"
-  },
-  {
-   "id": "come_back",
-   "speaker": "A fixture professor",
-   "button": "Fixture button"
   },
   {
    "id": "fixture_extra",

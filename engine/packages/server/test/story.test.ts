@@ -1,6 +1,6 @@
 // The story engine through the API, against a real PostgreSQL database,
-// long_boil_test, rebuilt from the migrations: the GDD's first session from
-// Pip's bill to the rat nests.
+// long_boil_test, rebuilt from the migrations: the first day's three sittings
+// (work order 037), then Act I to the rat nests.
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { buildApi } from "../src/api.js";
@@ -33,6 +33,15 @@ async function call(method: "GET" | "POST" | "PUT" | "DELETE", url: string, payl
 
 const ids = (scenes: { id: string }[]) => scenes.map((scene) => scene.id);
 
+/** Plays a new Tinker's first sitting, then opens the second visit, so Pip's bill is in hand. */
+async function toTheBill(id: number) {
+  await call("POST", `/tinkers/${id}/check-in`);
+  for (const scene of ["prologue.sprocket_row.who_you_are", "prologue.sprocket_row.rats_in_the_workshop"])
+    await call("POST", `/tinkers/${id}/story`, { kind: "storylet", scene, option: 0 });
+  clock += HOUR;
+  await call("POST", `/tinkers/${id}/check-in`);
+}
+
 describe("the first session's story", () => {
   let id: number;
 
@@ -57,30 +66,44 @@ describe("the first session's story", () => {
     expect(await visits()).toBe(3);
   });
 
-  it("starts with full Nerve and Pip's bill in the tube", async () => {
+  it("starts with full Nerve, no Needles and no letter: the first scene is about you", async () => {
     id = (await call("POST", "/tinkers", { login: "ada@example.com", name: "Ada" })).body.tinker.id;
     const checked = await call("POST", `/tinkers/${id}/check-in`);
-    expect(checked.body.story).toEqual([
-      expect.objectContaining({ type: "check_in_counted", qualities: { "record.check_ins": 1 } }),
-      expect.objectContaining({ type: "letter_arrived", letter: LETTER }),
-    ]);
-    expect(checked.body.tinker.story).toMatchObject({ nerve: 10, nerveCap: 10, nextNerveAt: null, letters: 1, backRent: 0 });
+    expect(checked.body.story).toEqual([expect.objectContaining({ type: "check_in_counted", qualities: { "record.check_ins": 1 } })]);
+    expect(checked.body.tinker.story).toMatchObject({ nerve: 10, nerveCap: 10, nextNerveAt: null, letters: 0, backRent: 0, needles: {} });
+    const { body } = await call("GET", `/tinkers/${id}/story`);
+    expect(body.view.letters).toEqual([]);
+    expect(ids(body.view.storylets)).toEqual(["prologue.sprocket_row.who_you_are"]);
+  });
+
+  it("plays the first sitting's two scenes: who you are, then rats in the workshop", async () => {
+    const who = await call("POST", `/tinkers/${id}/story`, { kind: "storylet", scene: "prologue.sprocket_row.who_you_are", option: 0 });
+    expect(who.status).toBe(200);
+    expect(who.body.view.qualities).toMatchObject({ "flag.origin_apprentice": 1, "prologue.progress": 4 });
+    expect(ids(who.body.view.storylets)).toEqual(["prologue.sprocket_row.rats_in_the_workshop"]);
+    const rats = await call("POST", `/tinkers/${id}/story`, { kind: "storylet", scene: "prologue.sprocket_row.rats_in_the_workshop", option: 0 });
+    expect(rats.body.view).toMatchObject({ nerve: 8, letters: [], storylets: [] });
+    // The rest of the first day waits for the next visit, and says when that is.
+    expect(new Date(rats.body.view.nextVisitAt).getTime()).toBe(clock + HOUR);
+    expect(rats.body.view.upcoming).toEqual([{ id: LETTER, location: "sprocket_row", needs: [["record.check_ins", ">=2", 1]] }]);
+  });
+
+  it("delivers Pip's bill the moment the second visit opens; spiking it owes a year's rent", async () => {
+    clock += HOUR;
+    const checked = await call("POST", `/tinkers/${id}/check-in`);
+    expect(checked.body.story).toContainEqual(expect.objectContaining({ type: "letter_arrived", letter: LETTER }));
     const { body } = await call("GET", `/tinkers/${id}/story`);
     expect(ids(body.view.letters)).toEqual([LETTER]);
     expect(body.view.letters[0].sender).toBe("Pip Tumbler");
-    expect(body.view.letters[0].options[1].challenge).toEqual({ quality: "tinkering", level: 1, difficulty: 6, odds: 0.1 });
-    expect(body.view.storylets).toEqual([]);
-  });
-
-  it("spikes the bill: a Nerve spent, 15 Crowns owed, and the neighbours call", async () => {
+    // Both answers are certain: odds wait for the third sitting.
+    expect(body.view.letters[0].options.every((option: { challenge: unknown }) => option.challenge === null)).toBe(true);
     const played = await call("POST", `/tinkers/${id}/story`, { kind: "letter", scene: LETTER, option: 0 });
     expect(played.status).toBe(200);
     expect(played.body.played).toMatchObject({ scene: LETTER, success: true, odds: null });
-    expect(played.body.played.text).toMatch(/spike above the vice/);
-    expect(played.body.view).toMatchObject({ nerve: 9, backRent: 15, letters: [] });
-    expect(new Date(played.body.view.nextNerveAt).getTime()).toBe(clock + 36 * MINUTE);
-    expect(ids(played.body.view.storylets)).toEqual(["prologue.sprocket_row.the_neighbours"]);
-    expect(played.body.view.qualities).toEqual({ "record.check_ins": 1, "flag.owes_back_rent": 1, "prologue.progress": 10 });
+    // Pip calls whether or not it is paid, so the receipt opens at once.
+    expect(played.body.view).toMatchObject({ backRent: 1400, letters: [] });
+    expect(ids(played.body.view.storylets)).toEqual(["prologue.sprocket_row.the_receipt"]);
+    expect(played.body.view.qualities).toMatchObject({ "record.check_ins": 2, "flag.owes_back_rent": 1, "prologue.progress": 10 });
   });
 
   it("refuses a letter not in hand, a scene not open, and a missing option", async () => {
@@ -92,13 +115,15 @@ describe("the first session's story", () => {
   it("pays the back rent at the Counting-House window once there are Crowns", async () => {
     const broke = await call("POST", `/tinkers/${id}/debts/back_rent`);
     expect(broke.status).toBe(400);
-    expect(broke.body.error).toMatch(/15 Crowns; you have 0/);
+    expect(broke.body.error).toMatch(/1400 Crowns; you have 0/);
     await call("PUT", `/tinkers/${id}/queue`, { queue: [{ actionId: "action.rustmoor.scavenge_bent_nails", remaining: 500 }] });
     clock += 2 * HOUR;
+    // A night of rats short of the rent, made up at the collectors' window.
+    await db.query("UPDATE tinkers SET crowns = 1340 WHERE id = $1", [id]);
     await call("POST", `/tinkers/${id}/collector`, { item: "item.rustmoor.bent_nails", qty: 10 });
     const paid = await call("POST", `/tinkers/${id}/debts/back_rent`);
     expect(paid.status).toBe(200);
-    expect(paid.body.tinker.crowns).toBe(80 - 15);
+    expect(paid.body.tinker.crowns).toBe(1340 + 80 - 1400);
     expect(paid.body.view.backRent).toBe(0);
     expect(paid.body.view.qualities["flag.owes_back_rent"]).toBeUndefined();
     expect(paid.body.view.debts).toEqual([]);
@@ -107,9 +132,7 @@ describe("the first session's story", () => {
   });
 
   it("plays the chain in order, and the rat nests open at Scavenging 3", async () => {
-    // The next visit opens Act I.
-    await call("POST", `/tinkers/${id}/check-in`);
-    // The opening scenes open one a visit, so each play follows a workshop check-in an hour on.
+    // Each play follows a workshop check-in an hour on, so every sitting's gate is met.
     const play = async (scene: string, option: number) => {
       clock += HOUR;
       await call("POST", `/tinkers/${id}/check-in`);
@@ -117,10 +140,10 @@ describe("the first session's story", () => {
       expect(status).toBe(200);
       return body;
     };
-    // The Prologue: eight scenes after the bill (the rent is paid above), then the plate.
-    for (const scene of ["sprocket_row.the_neighbours", "polytechnic.the_register", "sprocket_row.the_missing_tins", "rustmoor.the_tip_book",
-      "rustmoor.the_first_nest", "sprocket_row.the_receipt", "polytechnic.the_lift_lecture", "sprocket_row.the_morning_gazette"])
-      await play(`prologue.${scene}`, 1);
+    // The rest of the Prologue (the rent is paid above), then the plate; Act I opens at the visit after it.
+    for (const scene of ["sprocket_row.the_receipt", "sprocket_row.the_neighbours", "polytechnic.the_register", "rustmoor.the_tip_book",
+      "rustmoor.the_first_nest", "polytechnic.the_lift_lecture"])
+      await play(`prologue.${scene}`, 0);
     await play("prologue.sprocket_row.brass_plate", 0);
     await play("act1.sprocket_row.altitude_review", 0);
     await play("act1.lowvents.the_list", 0);
@@ -128,14 +151,19 @@ describe("the first session's story", () => {
     expect(last.view.qualities["act1.progress"]).toBe(15);
     expect(last.view.needles["needle.scald"]).toBe(1);
     expect(last.tinker.skills.find((skill: { skill: string }) => skill.skill === "scavenging").level).toBeGreaterThanOrEqual(3);
-    // District scenes (work order 019) open alongside the spine; the next beat is rat_nests.
-    expect(ids(last.view.storylets)).toContain("act1.rustmoor.rat_nests");
-    const nests = last.view.storylets.find((scene: { id: string }) => scene.id === "act1.rustmoor.rat_nests");
+    // District scenes (work order 019) open alongside the spine; the next beat, rat_nests, opens at the next visit.
+    expect(ids(last.view.storylets)).not.toContain("act1.rustmoor.rat_nests");
+    clock += HOUR;
+    await call("POST", `/tinkers/${id}/check-in`);
+    const next = (await call("GET", `/tinkers/${id}/story`)).body;
+    expect(ids(next.view.storylets)).toContain("act1.rustmoor.rat_nests");
+    const nests = next.view.storylets.find((scene: { id: string }) => scene.id === "act1.rustmoor.rat_nests");
     const hand = nests.options.find((option: { challenge: unknown }) => option.challenge);
     expect(hand.challenge).toMatchObject({ quality: "scavenging", difficulty: 4 });
   });
 
   it("refills Nerve while away and lets a Needle fall after a day", async () => {
+    await db.query("UPDATE tinkers SET nerve = 5, nerve_at = $2 WHERE id = $1", [id, new Date(clock)]);
     const before = (await call("GET", `/tinkers/${id}/story`)).body.view;
     clock += 36 * MINUTE;
     expect((await call("GET", `/tinkers/${id}/story`)).body.view.nerve).toBe(before.nerve + 1);
@@ -188,16 +216,17 @@ describe("fights before they are queued", () => {
 describe("the Post", () => {
   it("returns a discarded letter while its requirements hold", async () => {
     const id = (await call("POST", "/tinkers", { login: "kit@example.com", name: "Kit" })).body.tinker.id;
+    await toTheBill(id);
     const discarded = await call("DELETE", `/tinkers/${id}/letters/${LETTER}`);
     expect(discarded.status).toBe(200);
     expect(discarded.body.view.letters).toEqual([]);
-    expect((await call("DELETE", `/tinkers/${id}/letters/${LETTER}`)).status).toBe(400);
-    clock += 2 * HOUR;
+    // A Prologue letter is a step in the first day, so it comes straight back (and the client offers no Discard for it).
     expect(ids((await call("GET", `/tinkers/${id}/story`)).body.view.letters)).toEqual([LETTER]);
   });
 
   it("refuses a scene when Nerve has run out", async () => {
     const id = (await call("POST", "/tinkers", { login: "nell@example.com", name: "Nell" })).body.tinker.id;
+    await toTheBill(id);
     await db.query("UPDATE tinkers SET nerve = 0, nerve_at = $2 WHERE id = $1", [id, new Date(clock)]);
     const refused = await call("POST", `/tinkers/${id}/story`, { kind: "letter", scene: LETTER, option: 0 });
     expect(refused.status).toBe(400);

@@ -5,8 +5,8 @@
     {
       "monster": "monster.rustmoor.rust_rat_runt",
       "crowns": {
-        "min": 5,
-        "max": 9
+        "min": 1,
+        "max": 2
       },
       "entries": [
         {

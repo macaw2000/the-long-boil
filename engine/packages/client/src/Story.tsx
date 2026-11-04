@@ -23,6 +23,15 @@ function qualityName(name: string): string {
   return titleCase(last.replace(/_/g, " "));
 }
 
+/** One line for every beat waiting only on visits: where, and from when a visit counts. */
+function nextVisitLine(scenes: { location: string; needs: [string, string, number][] }[], nextVisitAt: string | null): string {
+  // No place names: a reader met "More from Polytechnic" before the story had said what the Polytechnic is.
+  const visits = Math.min(...scenes.flatMap((scene) => scene.needs.map(([, condition, value]) => Number(condition.replace(/[^0-9]/g, "")) - value)));
+  if (visits > 1) return "The story goes on in a few visits' time.";
+  const after = nextVisitAt && new Date(nextVisitAt).getTime() > Date.now() ? new Date(nextVisitAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : null;
+  return after ? `The story goes on next time you are back, after ${after}.` : "The story goes on next time you are back.";
+}
+
 /** A locked beat's gate in player terms: a skill level, an item count, or more visits. */
 function needText(name: string, condition: string, value: number): string {
   const target = Number(condition.replace(/[^0-9]/g, ""));
@@ -82,7 +91,10 @@ export function Story({
 
   if (!view) return <Text style={ui.muted}>{error ?? "Sorting the post…"}</Text>;
 
-  const progress = Object.entries(view.qualities).filter(([name]) => !name.startsWith("needle."));
+  // Beats waiting only on visits, of either count (record.visits_since_prologue opens Act I).
+  const visitOnly = view.upcoming.filter((scene) => scene.needs.every(([name]) => name === "record.check_ins" || name === "record.visits_since_prologue"));
+  // The Needles have their own row; record.moved.* only says a Needle has been seen.
+  const progress = Object.entries(view.qualities).filter(([name]) => !name.startsWith("needle.") && !name.startsWith("record.moved."));
 
   return (
     <View style={{ gap: 12, maxWidth: 720, width: "100%" }}>
@@ -111,12 +123,15 @@ export function Story({
         <Term term="nerve">
           <Text style={ui.text}>
             Nerve {view.nerve}/{view.nerveCap}
-            {view.nextNerveAt ? <Text style={ui.muted}> · next at {new Date(view.nextNerveAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</Text> : null}
+            {/* Only when out: beside the next-visit time, a second clock read as "which one is it?". */}
+            {view.nextNerveAt && view.nerve === 0 ? <Text style={ui.muted}> · next at {new Date(view.nextNerveAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</Text> : null}
           </Text>
         </Term>
-        <Term term="needles">
-          <Text style={ui.muted}>Needles:</Text>
-        </Term>
+        {Object.keys(view.needles).length > 0 && (
+          <Term term="needles">
+            <Text style={ui.muted}>Needles:</Text>
+          </Term>
+        )}
         {Object.entries(view.needles).map(([needle, value]) => (
           <Term key={needle} term={needle as GlossaryTerm}>
             <Text style={[ui.text, { color: value >= 8 ? colors.scald : value > 0 ? colors.copper : colors.muted }]}>
@@ -157,8 +172,8 @@ export function Story({
               nerve={view.nerve}
               busy={busy}
               onPlay={(option) => act(api.play(tinkerId, "letter", letter.id, option))}
-              // A first letter thrown away cannot be answered, so the guide's letter keeps its Discard hidden.
-              onDiscard={guideAt === "letters" ? undefined : () => act(api.discard(tinkerId, letter.id))}
+              // A Prologue letter is a step in the first day and comes straight back if thrown away, so it has no Discard.
+              onDiscard={letter.act === 0 ? undefined : () => act(api.discard(tinkerId, letter.id))}
             />
           ))}
         </Glow>
@@ -185,12 +200,16 @@ export function Story({
               {new Date(scene.opensAt).toLocaleString([], { weekday: "short", hour: "2-digit", minute: "2-digit" })}.
             </Text>
           ))}
-          {view.upcoming.map((scene) => (
-            <Text key={scene.id} style={ui.muted}>
-              Something waits in {titleCase(scene.location.replace(/_/g, " "))}: needs{" "}
-              {scene.needs.map(([name, condition, value]) => needText(name, condition, value)).join(", ")}.
-            </Text>
-          ))}
+          {/* Beats waiting only on another visit share one calm line with a time, not a list of requirements. */}
+          {visitOnly.length > 0 && <Text style={ui.muted}>{nextVisitLine(visitOnly, view.nextVisitAt)}</Text>}
+          {view.upcoming
+            .filter((scene) => !visitOnly.includes(scene))
+            .map((scene) => (
+              <Text key={scene.id} style={ui.muted}>
+                Something waits in {titleCase(scene.location.replace(/_/g, " "))}: needs{" "}
+                {scene.needs.map(([name, condition, value]) => needText(name, condition, value)).join(", ")}.
+              </Text>
+            ))}
         </View>
       )}
 
@@ -218,6 +237,8 @@ function Card({
   onDiscard?: () => void;
 }) {
   const affordable = nerve >= scene.nerve;
+  // "Certain" only means something beside an option that can fail; on its own it puzzled new players.
+  const risky = scene.options.some((option) => option.challenge);
   return (
     <View style={ui.panel}>
       <View style={{ flexDirection: "row", gap: 12 }}>
@@ -255,7 +276,9 @@ function Card({
               {scene.nerve} Nerve
               {option.challenge
                 ? ` · ${titleCase(option.challenge.quality)} ${option.challenge.level} against ${option.challenge.difficulty}: ${Math.round(option.challenge.odds * 100)}%`
-                : " · certain"}
+                : risky
+                  ? " · certain"
+                  : ""}
               {!option.available ? ` · needs ${option.locked.map(([name, condition]) => `${qualityName(name)} ${condition}`).join(", ")}` : ""}
               {option.available && !affordable ? " · not enough Nerve" : ""}
             </Text>

@@ -14,7 +14,7 @@
 
 import { Image, Pressable, Text, View } from "react-native";
 import type { Content, GuideProgress, Tinker } from "./api";
-import { FIGHT, SKILL_ORDER } from "./jobs";
+import { FIGHT } from "./jobs";
 import type { Place } from "./SideNav";
 import { colors, fonts, ui } from "./theme";
 
@@ -42,17 +42,10 @@ const BRASSBUCKLE = require("../assets/art/brassbuckle_portrait.png");
 const SPANNER = "item.rustmoor.brass_spanner";
 const SPANNER_ACTION = "action.rustmoor.tinker_brass_spanner";
 const RUNT = "monster.rustmoor.rust_rat_runt";
-// The first armour (work order 032): Silk Hand-Wraps from ten Runts' silk, or a
-// Brass Breastplate from the ingots left after the spanners. Quantities are the
-// actions' inputs in content/actions/rustmoor.json.
+// The first armour (work order 032), Silk Hand-Wraps from ten Runts' silk, is a
+// goal line in the second sitting. The quantity is the action's input in content/actions/rustmoor.json.
 const SILK = "item.rustmoor.umbrella_silk";
-const WRAPS = "item.rustmoor.silk_hand_wraps";
-const WRAPS_ACTION = "action.rustmoor.tailor_silk_hand_wraps";
 const WRAPS_SILK = 10;
-const INGOT = "item.rustmoor.brass_ingot";
-const PLATE = "item.rustmoor.brass_breastplate";
-const PLATE_ACTION = "action.rustmoor.forge_brass_breastplate";
-const PLATE_INGOTS = 23;
 
 function held(tinker: Tinker, item: string): number {
   return tinker.inventory.filter((stack) => stack.item === item).reduce((sum, stack) => sum + stack.qty, 0);
@@ -62,7 +55,11 @@ function prologue(tinker: Tinker): number {
   return tinker.story.qualities["prologue.progress"] ?? 0;
 }
 
-const billPaid = (tinker: Tinker) => prologue(tinker) >= 10 && tinker.story.backRent === 0;
+// The first sitting's two scenes take prologue.progress to these (content/storylets/prologue.sprocket_row.*).
+const FIRST_SCENE_DONE = 4;
+const RATS_SCENE_DONE = 8;
+/** prologue.progress when the brass plate, the third sitting's last scene, is next. */
+const PLATE_FROM = 70;
 
 export interface Step {
   id: string;
@@ -72,6 +69,9 @@ export interface Step {
   done: (tinker: Tinker, acknowledged: boolean, all: readonly string[]) => boolean;
 }
 
+// The first sitting only (docs/first-day-plan.md): the Boiler, a job, the first
+// two scenes, a fight, and coming back. The bill, selling, armour and the rest
+// of the Prologue come in later sittings as goal lines (nextGoal), not steps.
 const STEPS: Step[] = [
   {
     id: "boiler",
@@ -84,14 +84,19 @@ const STEPS: Step[] = [
     done: (tinker) => tinker.queue.some((entry) => entry.actionId === SPANNER_ACTION) || held(tinker, SPANNER) > 0 || tinker.weapon !== null,
   },
   {
+    id: "who_you_are",
+    fallback: "While the spanners turn, open Story: the first scene is about you.",
+    done: (tinker) => prologue(tinker) >= FIRST_SCENE_DONE,
+  },
+  {
     id: "first_spanner",
     fallback: "Watch the bench: the first spanner lands in under a minute.",
     done: (tinker) => held(tinker, SPANNER) > 0 || tinker.weapon !== null,
   },
   {
-    id: "pips_bill",
-    fallback: "A letter has come down the tube.",
-    done: (tinker) => prologue(tinker) >= 10,
+    id: "rats_in_the_workshop",
+    fallback: "Something is scratching under the floor. Play the next scene.",
+    done: (tinker) => prologue(tinker) >= RATS_SCENE_DONE,
   },
   {
     id: "equip",
@@ -100,23 +105,8 @@ const STEPS: Step[] = [
   },
   {
     id: "rats",
-    fallback: "Each Rust Rat you beat pays Crowns and rat scrap.",
-    done: (tinker) => tinker.crowns > 0 || billPaid(tinker),
-  },
-  {
-    id: "pay_bill",
-    fallback: "Pip would like the back rent.",
-    done: billPaid,
-  },
-  {
-    id: "first_armour",
-    fallback: "A Tinker in nothing but an apron is a Tinker the rats take seriously. Make something to wear.",
-    done: (tinker, acknowledged, all) => Object.keys(tinker.worn).length > 0 || acknowledged || all.includes("come_back"),
-  },
-  {
-    id: "brass_plate",
-    fallback: "The Row has more to say before the day is out, and there is something in the workbench.",
-    done: (tinker) => prologue(tinker) >= 100,
+    fallback: "Each Rust Rat you beat drops scrap, a Crown or two, and Umbrella Silk.",
+    done: (tinker) => tinker.crowns > 0 || prologue(tinker) >= 10,
   },
   {
     id: "come_back",
@@ -144,30 +134,49 @@ export function currentStep(tinker: Tinker, state: GuideState): Step | null {
 /** Parts of the screen that open as the guide reaches them. */
 export type Feature = Place | "nerve" | "crowns" | "cogs" | `needle.${string}` | "loadout";
 
+/** What the first sitting's guide opens, and the step that opens each. */
+const GUIDE_OPENS: Partial<Record<string, string>> = {
+  "skill:tinkering": "boiler",
+  stores: "boiler",
+  story: "who_you_are",
+  nerve: "who_you_are",
+  loadout: "first_spanner",
+  [`skill:${FIGHT}`]: "equip",
+  crowns: "rats",
+};
+
 /**
- * What the screen shows: everything once the guide is over, and before then
- * only what the guide has reached.
+ * After the first sitting, the rest of the screen opens as the first day
+ * needs it (docs/first-day-plan.md): the Exchange and Tailoring with Pip's
+ * bill, everything else once the Prologue is over. A playtester left with
+ * nine new places at once at the end of the first sitting "felt dropped".
  */
-export function revealed(step: Step | null, state: GuideState): (feature: Feature) => boolean {
-  if (step === null || state.opened) return () => true;
+const BILL_ANSWERED = 10;
+/** prologue.progress once the register is played, whose goal line asks for a job not tried yet. */
+const THIRD_SITTING = 40;
+const LATER_OPENS: Partial<Record<string, number>> = {
+  exchange: BILL_ANSWERED,
+  "skill:tailoring": BILL_ANSWERED,
+  "skill:prospecting": THIRD_SITTING,
+  "skill:smithing": THIRD_SITTING,
+  "skill:cooking": THIRD_SITTING,
+  "skill:scavenging": THIRD_SITTING,
+};
+
+/**
+ * What the screen shows: while the guide runs, only what it has reached;
+ * after it, the first day's places as they come; everything once the guide
+ * is skipped or the Prologue is over.
+ */
+export function revealed(step: Step | null, state: GuideState, prologueProgress: number, visitsSincePrologue = 0): (feature: Feature) => boolean {
+  // Everything opens at the visit after the plate: opening Guild and the Cog Shop the moment the Prologue ended felt like the story stopping.
+  if (state.skipped || visitsSincePrologue >= 1 || (prologueProgress >= 100 && state.acknowledged.length === 0)) return () => true;
+  if (step === null || state.opened) {
+    return (feature) => GUIDE_OPENS[feature] !== undefined || prologueProgress >= (LATER_OPENS[feature] ?? 100);
+  }
   const at = stepIndex(step.id);
-  const from: Partial<Record<string, string>> = {
-    "skill:tinkering": "boiler",
-    stores: "boiler",
-    loadout: "first_spanner",
-    story: "pips_bill",
-    nerve: "pips_bill",
-    "needle.arrears": "pips_bill",
-    [`skill:${FIGHT}`]: "equip",
-    crowns: "rats",
-    exchange: "pay_bill",
-    "skill:tailoring": "first_armour",
-    "skill:smithing": "first_armour",
-  };
-  // The last step asks for twelve hours of work, so every skill opens for it.
-  for (const skill of SKILL_ORDER) from[`skill:${skill}`] ??= "come_back";
   return (feature) => {
-    const opens = from[feature];
+    const opens = GUIDE_OPENS[feature];
     return opens !== undefined && at >= stepIndex(opens);
   };
 }
@@ -192,6 +201,20 @@ export interface Coaching {
   goal?: { label: string; have: number; need: number; unit?: string };
 }
 
+/** How long the queue keeps the bench busy: the head's own go time, the rest at each job's listed time. */
+export function queuedMs(tinker: Tinker, content: Content): number {
+  const each = (id: string) =>
+    1000 * (content.actions.find((action) => action.id === id)?.seconds ?? content.monsters.find((monster) => monster.id === id)?.seconds_per_kill ?? 60);
+  const total = tinker.queue.reduce((sum, entry, index) => sum + (index === 0 && tinker.headMs ? tinker.headMs : each(entry.actionId)) * entry.remaining, 0);
+  return Math.max(0, total - tinker.progressMs);
+}
+
+/** Below this many Rations a night of Rust Rats may run the Tinker out (the first night ate about 150). */
+const LOW_RATIONS = 150;
+
+/** Leaving the first sitting asks for the bench to be busy nearly all twelve hours. */
+const NIGHT_MS = 11 * 3_600_000;
+
 export interface GuideContext {
   place: Place;
   /** The job tile picked on the current skill page. */
@@ -201,6 +224,10 @@ export interface GuideContext {
   wide: boolean;
   /** The step's button label, from content. */
   button?: string;
+  /** How long the queue keeps the bench busy (queuedMs). */
+  queuedMs: number;
+  /** The job at work, if any. */
+  queueHead: string | null;
 }
 
 /** Open a place, pick a job's tile, press Start: the three presses every job takes. */
@@ -211,13 +238,13 @@ function toJob(context: GuideContext, place: Place, placeName: string, job: stri
     return { hint: `Open ${placeName}${where}.`, at: `place:${place}` };
   }
   if (context.chosen !== job) return { hint: `Pick ${jobName}.`, at: `job:${job}` };
+  // Start now replaces the job at work; playtesters asked "did I just stop my crafting?", so say so.
+  if (context.queueHead && context.queueHead !== job) return { hint: "Press Start now. The bench does one job at a time: the job at work stops, and what it made stays in your Stores.", at: "start" };
   return { hint: "Press Start.", at: "start" };
 }
 
 /** What the player should press now, worked out from the step and where they are. */
 export function coach(step: Step, tinker: Tinker, context: GuideContext): Coaching {
-  const debt = tinker.story.debts[0];
-  const rentGoal = debt ? { label: "Pip's back rent", have: Math.min(tinker.crowns, debt.crowns), need: debt.crowns } : undefined;
   const fighting = tinker.queue.some((entry) => entry.actionId === RUNT);
   switch (step.id) {
     case "boiler":
@@ -228,56 +255,27 @@ export function coach(step: Step, tinker: Tinker, context: GuideContext): Coachi
       const left = Math.max(1, Math.ceil(context.nextInMs / 1000));
       return { hint: `Your first Brass Spanner lands in ${left}s. Watch the bench at the top.`, at: "bench" };
     }
-    case "pips_bill":
+    case "who_you_are":
+    case "rats_in_the_workshop":
       return context.place === "story"
-        ? { hint: "Read Pip's letter, then press one of its answers.", at: "letters" }
-        : { hint: "A letter has come. Open Story.", at: "place:story" };
+        ? { hint: "Play the scene under Open to you, and pick an answer.", at: "scenes" }
+        : { hint: "Open Story.", at: "place:story" };
     case "equip":
       return { hint: "Equip your Brass Spanner.", at: "card", action: { label: "Equip Brass Spanner", kind: "equip", item: SPANNER } };
     case "rats":
       if (fighting) {
         const left = Math.max(1, Math.ceil(context.nextInMs / 1000));
-        return { hint: `Your Tinker is fighting a Rust Rat. The first win pays Crowns in about ${left}s.`, at: "bench", goal: rentGoal };
+        return { hint: `You are fighting a Rust Rat. The first win lands in about ${left}s.`, at: "bench" };
       }
-      return { ...toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt"), goal: rentGoal };
-    case "pay_bill":
-      if (debt && tinker.crowns < debt.crowns) {
-        // Short: rat scrap sells at the Counting-House window (GDD section 7, step 6), or more rats pay.
-        if (context.place === "exchange") return { hint: "Sell rat scrap at the Counting-House window below, or fight a few more rats.", at: "pay", goal: rentGoal };
-        return fighting
-          ? { hint: "Your Tinker is fighting rats. Wait for enough Crowns, or sell rat scrap at the Counting-House window in the Exchange.", at: "bench", goal: rentGoal }
-          : { ...toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt"), goal: rentGoal };
-      }
-      return context.place === "exchange"
-        ? { hint: "Press Pay under Bills.", at: "pay", goal: rentGoal }
-        : { hint: "You have the Crowns. Open the Exchange.", at: "place:exchange", goal: rentGoal };
-    case "first_armour": {
-      const made = [WRAPS, PLATE].find((item) => held(tinker, item) > 0);
-      if (made) {
-        const label = made === WRAPS ? "Silk Hand-Wraps" : "Brass Breastplate";
-        return { hint: `Put on your ${label}.`, at: "card", action: { label: `Put on ${label}`, kind: "wear", item: made } };
-      }
-      if (tinker.queue.some((entry) => entry.actionId === WRAPS_ACTION || entry.actionId === PLATE_ACTION)) {
-        return { hint: "Your first piece of armour is on the queue. Watch the bench at the top.", at: "bench" };
-      }
-      const silk = held(tinker, SILK);
-      if (silk >= WRAPS_SILK) return toJob(context, "skill:tailoring", "Tailoring", WRAPS_ACTION, "Silk Hand-Wraps");
-      if (held(tinker, INGOT) >= PLATE_INGOTS) return toJob(context, "skill:smithing", "Smithing", PLATE_ACTION, "Brass Breastplate");
-      // Neither yet: every Runt drops Umbrella Silk, so a few more fights pay for the wraps.
-      const goal = { label: "Toward Silk Hand-Wraps", have: silk, need: WRAPS_SILK, unit: "Umbrella Silk" };
-      return fighting
-        ? { hint: "Each Rust Rat Runt drops Umbrella Silk. Ten make a pair of Silk Hand-Wraps.", at: "bench", goal }
-        : { ...toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt"), goal };
+      return toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt");
+    case "come_back": {
+      if (context.queuedMs >= NIGHT_MS) return { hint: "All set. Press Leave it running.", at: "card", action: { label: context.button ?? "Leave it running", kind: "acknowledge" } };
+      // A playtester queued an hour and came back puzzled by "twelve hours": fill the night with fights, which need nothing.
+      const hours = Math.floor(context.queuedMs / 3_600_000);
+      const job = toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt");
+      const press = job.at === "start" ? "Press Fill, then Start." : job.hint;
+      return { ...job, hint: `Your queue has work for ${hours ? `${hours}h` : "under an hour"} of the Boiler's twelve. ${press}` };
     }
-    case "brass_plate":
-      if (context.place !== "story") return { hint: "Open Story: the Row has more to tell you.", at: "place:story" };
-      if (tinker.story.letters > 0) return { hint: "Answer the letter waiting here.", at: "letters" };
-      if (tinker.story.nerve === 0) return { hint: "You are out of Nerve. It refills with time; keep the bench busy until then.", at: "scenes" };
-      return { hint: "Play a scene under Open to you. Each costs Nerve.", at: "scenes" };
-    case "come_back":
-      return tinker.queue.length === 0
-        ? { hint: "Pick any job and press Start, with enough for twelve hours.", at: context.place.startsWith("skill:") ? "card" : "place:skill:tinkering" }
-        : { hint: "All set. Press Leave it running.", at: "card", action: { label: context.button ?? "Leave it running", kind: "acknowledge" } };
     default:
       return { hint: step.fallback, at: "card" };
   }
@@ -309,18 +307,64 @@ function betterWeapon(tinker: Tinker, content: Content): string | null {
 }
 
 /** After the guide, the one thing most worth doing next, as a line on the goal bar. */
-export function nextGoal(tinker: Tinker, content: Content, now: number, name: (id: string) => string): { text: string; place: Place } | null {
+/** The action asked for after each third-sitting scene (decision 6), keyed by prologue.progress after it. */
+const BETWEEN_SCENES: Record<number, { text: string; place: Place }> = {
+  40: { text: "Start a job you have not tried yet.", place: "skill:prospecting" },
+  50: { text: "Fight in Rustmoor until something drops that you have not seen before.", place: `skill:${FIGHT}` },
+  60: { text: "Make something new to wear, or something better to hit with.", place: "skill:tailoring" },
+  70: { text: "Set the bench to work before you clear the drawer.", place: "skill:tinkering" },
+};
+
+/** The guide-state mark that the player has acted since the third-sitting scene that left progress here. */
+export const actedMark = (progress: number) => `acted:${progress}`;
+export const awaitsAction = (progress: number) => progress in BETWEEN_SCENES;
+
+export interface Goal {
+  text: string;
+  place: Place;
+  /** Who says it, when the line is one of Brassbuckle's from the guide file. */
+  speaker?: string;
+}
+
+export function nextGoal(tinker: Tinker, content: Content, now: number, name: (id: string) => string, guide: GuideState): Goal | null {
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
+  // The later sittings speak in Brassbuckle's words from the guide file, falling back to plain ones.
+  const said = (id: string, plain: string, place: Place): Goal => {
+    const entry = content.guide.find((candidate) => candidate.id === id);
+    return entry ? { text: entry.line, place, speaker: entry.speaker } : { text: plain, place };
+  };
   const debt = tinker.story.debts.find((candidate) => tinker.crowns >= candidate.crowns);
   if (debt) return { text: `Pay ${debt.label}: you have the ${debt.crowns} Crowns.`, place: "exchange" };
-  if (tinker.story.letters > 0) return { text: "A letter is waiting in Story.", place: "story" };
+  if (tinker.story.letters > 0) return said("pips_bill", "A letter is waiting in Story.", "story");
   if (tinker.queue.length === 0) return { text: "The bench is idle. Pick a job and press Start.", place: "skill:tinkering" };
   if (steamLeft <= 0) return { text: "The Boiler is dry. Checking in raises steam.", place: "skill:tinkering" };
   const better = betterWeapon(tinker, content);
   if (better) return { text: `Equip your ${name(better)} in the Loadout: it hits harder.`, place: "stores" };
-  if (tinker.story.openScenes > 0 && tinker.story.nerve > 0) return { text: "Scenes are open in Story, and you have Nerve to play them.", place: "story" };
+  // The first armour comes after the bill, in the second sitting: Silk Hand-Wraps, from the rats' silk.
+  if (prologue(tinker) >= BILL_ANSWERED && Object.keys(tinker.worn).length === 0) {
+    return said("first_armour", "Make something to wear.", held(tinker, SILK) >= WRAPS_SILK ? "skill:tailoring" : `skill:${FIGHT}`);
+  }
+  // In the third sitting, one action between each pair of scenes, so story and work alternate.
+  const progress = prologue(tinker);
+  if (awaitsAction(progress) && !guide.acknowledged.includes(actedMark(progress))) return BETWEEN_SCENES[progress]!;
+  if (tinker.story.openScenes > 0 && tinker.story.nerve > 0) {
+    return progress >= PLATE_FROM && progress < 100 ? said("brass_plate", "Scenes are open in Story.", "story") : { text: "Scenes are open in Story, and you have Nerve to play them.", place: "story" };
+  }
+  // Fewer Rations than a night of fights eats: say where more come from.
+  if (held(tinker, content.ration.item) < LOW_RATIONS) return { text: "Rations are running low: cook more at Cooking, or buy them at the grocer's counter in the Exchange.", place: "exchange" };
+  // An unpaid bill comes after everything that can be done now: once the week's sale is used, it is only fighting.
   const unpaid = tinker.story.debts[0];
-  if (unpaid) return { text: `${unpaid.label}: ${tinker.crowns} of ${unpaid.crowns} Crowns.`, place: "exchange" };
+  if (unpaid) {
+    const line = said("pay_bill", "Sell rat scrap at the Counting-House window.", "exchange");
+    return { ...line, text: `${line.text} (${tinker.crowns} of ${unpaid.crowns} Crowns.)` };
+  }
+  // The bench will stop before the Boiler does: say so, rather than "All in hand".
+  const queued = queuedMs(tinker, content);
+  if (queued + 3_600_000 < steamLeft) {
+    const head = tinker.queue[0]!;
+    const skill = content.actions.find((action) => action.id === head.actionId)?.skill ?? FIGHT;
+    return { text: `The bench has work for ${Math.round(queued / 360_000) / 10}h, the Boiler steam for ${Math.round(steamLeft / 360_000) / 10}h. Queue more so nothing sits idle.`, place: `skill:${skill}` };
+  }
   return null;
 }
 
@@ -394,11 +438,14 @@ function GoalMeter({ label, have, need, unit = "Crowns" }: { label: string; have
 }
 
 /** After the guide, one line saying what to do next, and a way back into the guide. */
-export function GoalBar({ goal, onGo, onReplay }: { goal: { text: string; place: Place } | null; onGo: (place: Place) => void; onReplay: () => void }) {
+export function GoalBar({ goal, onGo, onReplay }: { goal: Goal | null; onGo: (place: Place) => void; onReplay: () => void }) {
   return (
     <View style={[ui.panel, { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 8, paddingHorizontal: 12 }]}>
       <Text style={[ui.muted, { fontSize: 11, letterSpacing: 1, color: colors.brass }]}>NEXT</Text>
-      <Text style={[ui.text, { flex: 1 }]}>{goal ? goal.text : "All in hand. The workshop runs while you are away."}</Text>
+      <Text style={[ui.text, { flex: 1 }]}>
+        {goal?.speaker && <Text style={{ color: colors.brass }}>{goal.speaker}: </Text>}
+        {goal ? goal.text : "All in hand. The workshop runs while you are away."}
+      </Text>
       {goal && (
         <Pressable onPress={() => onGo(goal.place)} accessibilityRole="button" style={[ui.button, { paddingHorizontal: 12, paddingVertical: 4 }]}>
           <Text style={ui.buttonText}>Go</Text>

@@ -90,7 +90,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
       <Text style={[ui.text, { fontSize: 14, textAlign: "center", color: PAPER.muted }]}>
         With Google or Discord, so your workshop is saved. Your email stays private and is never used for marketing.
       </Text>
-      <Text style={[ui.text, { textAlign: "center", color: PAPER.ink }]}>The tenancy of No. 9 Sprocket Row, "contents included", is yours.</Text>
+      <Text style={[ui.text, { textAlign: "center", color: PAPER.ink }]}>The tenancy of No. 9 Sprocket Row, "contents included", is yours: a workshop in Kettleport, the city that rides on steam above the boiling sea.</Text>
       <View style={{ gap: 10 }}>
         {providers.length ? (
           providers.map((provider) => <ProviderButton key={provider} provider={provider} onPress={() => signInWith(provider)} />)
@@ -133,7 +133,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
         </Text>
       )}
       <Text style={[ui.heading, { fontSize: 22, textAlign: "center" }]}>Your workshop</Text>
-      <Text style={[ui.muted, { textAlign: "center" }]}>A solicitor's letter: the tenancy of No. 9 Sprocket Row, "contents included", is yours.</Text>
+      <Text style={[ui.muted, { textAlign: "center" }]}>A solicitor's letter: the tenancy of No. 9 Sprocket Row, "contents included", is yours: a workshop in Kettleport, the city that rides on steam above the boiling sea.</Text>
       {cognitoEnabled ? null : (
         <TapInput
           style={ui.input}

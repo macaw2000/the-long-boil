@@ -5,28 +5,29 @@
   "location": "sprocket_row",
   "reveal_layer": 0,
   "requires": {
-    "prologue.progress": "==10"
+    "prologue.progress": "==20",
+    "record.check_ins": ">=2"
   },
   "nerve": 1,
-  "description": "Word goes down Sprocket Row faster than the Post: No. 9 is let again. By noon your neighbours on the Row have found reasons to pass your window, and then reasons to stop at it. You give them something to watch, and hang your tools on the hooks above the bench. Behind the last hook, pushed into the gap against the wall, is a notebook's binding: marbled boards, a cloth spine, H. Vane inked inside the front board in a small upright hand. You take it down. Every page has been torn out at the stitching. \"She was never without that,\" says someone at the window. Someone else wants to know whether you are stopping.",
+  "description": "Word has gone down Sprocket Row that No. 9's Boiler is lit again, and by noon your neighbours on the Row have found reasons to stop at your window. They have not come to welcome you. Since the summer the Rust Rats have come up out of Rustmoor every night and taken whatever is metal: a pram wheel, a coal scuttle, two bicycle bells, the brass numbers off four doors. The pie shop is out of tins. The Row knows you have been down among the heaps all night with a spanner, and would like to know what you mean to bring back.",
   "options": [
     {
-      "label": "Prop the door open and let the neighbours look their fill.",
+      "label": "Promise the Row that next time you are down in Rustmoor, you will find where the rats keep its things, and bring them home.",
       "success": {
-        "text": "By teatime the Row has decided you are thin, clever and probably not stopping, and the pie shop sends round a pie to test at least the first. A neighbour looks over the Boiler that runs your workshop and gives you her opinion of it. It is not high, but it is free, and she is right about the feed pump.",
+        "text": "The promise goes down the Row the way the news of the Boiler did, gaining detail as it travels. By the pie shop you have found the rats' hoard already. By the corner you have fought something the size of a pony for it, with a spanner, and won. The pie shop sends round two pies to see whether you are eating, and a third for the heaps, with a note: \"Not the last, we hope.\"",
         "changes": {
-          "item.rustmoor.rustmoor_ration": "+2",
-          "prologue.progress": 20
+          "item.rustmoor.rustmoor_ration": "+3",
+          "prologue.progress": 30
         }
       }
     },
     {
-      "label": "Shut the door and chalk a sign on it: CLOSED FOR REPAIRS. OPINIONS BY APPOINTMENT.",
+      "label": "Shut the door, and chalk on it: CLOSED FOR REPAIRS. OPINIONS BY APPOINTMENT.",
       "success": {
-        "text": "The sign is read aloud the length of the Row before the chalk is dry, and improved twice by morning. Nobody calls. But the next day there is a tin of good oil on your step, with no note, and you understand that the Row has decided to wait and see. That is as close to a welcome as Sprocket Row gives anyone.",
+        "text": "The sign is read aloud the length of the Row before the chalk is dry, and improved twice by morning. Nobody calls. But the next day there is a tin of bent nails on your step, saved from somewhere the rats had not reached, and no note. The Row has decided to wait and see. That is as close to a welcome as Sprocket Row gives anyone.",
         "changes": {
           "item.rustmoor.bent_nails": "+3",
-          "prologue.progress": 20
+          "prologue.progress": 30
         }
       }
     }

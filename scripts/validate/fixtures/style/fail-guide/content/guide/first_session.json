@@ -15,24 +15,41 @@
    "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass"
   },
   {
-   "id": "first_spanner",
+   "id": "who_you_are",
    "speaker": "A fixture professor",
    "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass"
   },
   {
-   "id": "pips_bill",
+   "id": "first_spanner",
    "speaker": "A fixture professor",
    "line": "A Testament\nto the brass."
   },
   {
-   "id": "equip",
+   "id": "rats_in_the_workshop",
    "speaker": "A tapestry of a professor",
    "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass"
   },
   {
-   "id": "rats",
+   "id": "equip",
    "speaker": "A fixture professor",
    "line": "The player goes to the Row."
+  },
+  {
+   "id": "rats",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass"
+  },
+  {
+   "id": "come_back",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass",
+   "button": "press press press press"
+  },
+  {
+   "id": "pips_bill",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass",
+   "button": "Delve deeper"
   },
   {
    "id": "pay_bill",
@@ -47,14 +64,7 @@
   {
    "id": "brass_plate",
    "speaker": "A fixture professor",
-   "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass",
-   "button": "Delve deeper"
-  },
-  {
-   "id": "come_back",
-   "speaker": "A fixture professor",
-   "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass",
-   "button": "press press press press"
+   "line": "brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass brass"
   }
  ]
 }

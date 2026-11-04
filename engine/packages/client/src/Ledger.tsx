@@ -55,7 +55,8 @@ export function Ledger({
             <Text style={ui.muted}>
               {[
                 Object.keys(line.produced).length ? `made ${list(line.produced, name)}` : null,
-                Object.keys(line.consumed).length ? `used ${list(line.consumed, name)}` : null,
+                // A fight uses only Rations, eaten when hurt: saying so is how a new player first learns what they are for.
+                Object.keys(line.consumed).length ? (fight ? `ate ${list(line.consumed, name)} to heal` : `used ${list(line.consumed, name)}`) : null,
                 line.crowns ? `${line.crowns.toLocaleString()} Crowns` : null,
                 xp,
               ]

@@ -15,12 +15,17 @@
    "line": "Something is Knocking below."
   },
   {
+   "id": "who_you_are",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass"
+  },
+  {
    "id": "first_spanner",
    "speaker": "A fixture professor",
    "line": "brass brass brass"
   },
   {
-   "id": "pips_bill",
+   "id": "rats_in_the_workshop",
    "speaker": "A fixture professor",
    "line": "brass brass brass"
   },
@@ -31,12 +36,24 @@
   },
   {
    "id": "rats",
-   "speaker": "A fixture professor",
+   "speaker": "Mr Knocker",
    "line": "brass brass brass"
   },
   {
+   "id": "come_back",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass",
+   "button": "press press"
+  },
+  {
+   "id": "pips_bill",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass",
+   "button": "Answer the KNOCK"
+  },
+  {
    "id": "pay_bill",
-   "speaker": "Mr Knocker",
+   "speaker": "A fixture professor",
    "line": "brass brass brass"
   },
   {
@@ -47,14 +64,7 @@
   {
    "id": "brass_plate",
    "speaker": "A fixture professor",
-   "line": "brass brass brass",
-   "button": "Answer the KNOCK"
-  },
-  {
-   "id": "come_back",
-   "speaker": "A fixture professor",
-   "line": "brass brass brass",
-   "button": "press press"
+   "line": "brass brass brass"
   }
  ]
 }

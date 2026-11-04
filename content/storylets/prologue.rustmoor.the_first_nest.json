@@ -5,10 +5,11 @@
   "location": "rustmoor",
   "reveal_layer": 0,
   "requires": {
-    "prologue.progress": "==50"
+    "prologue.progress": "==50",
+    "record.check_ins": ">=3"
   },
   "nerve": 1,
-  "description": "Behind a slope of broken bedsteads you find a Rust Rat nest, and in it, folded into the walls with real care, most of Sprocket Row: the pram wheel, the bicycle bells, a run of brass door numbers that spell nothing, and a great many spoons, crested, none of them the Row's. The Rats have arranged it all by size. The nest is empty. Its builders, by the sound of the heaps, are not far.",
+  "description": "Behind a slope of broken bedsteads you find a Rust Rat nest, lined with black Umbrella Silk, and in it, folded into the walls with real care, most of Sprocket Row: the pram wheel, the bicycle bells, a run of brass door numbers that spell nothing, and a great many spoons, crested, none of them the Row's. The Rats have arranged it all by size. The nest is empty. Its builders, by the sound of the heaps, are not far.",
   "options": [
     {
       "label": "Pack up every last thing that belongs to the Row, and carry it home.",
@@ -23,7 +24,7 @@
     {
       "label": "Take back what the Row will miss, and keep the spoons. Spoons sell.",
       "success": {
-        "text": "The Row gets its wheel, its bells and its numbers. The spoons you keep, on the principle that nobody on Sprocket Row ever owned a crested spoon and so nobody on Sprocket Row will miss one. The spoons were thrown off Gaugehill, at the top of the city, and the Rats kept them better than Gaugehill did.",
+        "text": "The Row gets its wheel, its bells and its numbers. The spoons you keep, on the principle that nobody on Sprocket Row ever owned a crested spoon and so nobody on Sprocket Row will miss one. They were thrown out from somewhere a good deal higher up the city, and the Rats kept them better than their owners did.",
         "changes": {
           "item.rustmoor.odd_spoons": "+3",
           "prologue.progress": 60

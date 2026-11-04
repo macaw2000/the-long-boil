@@ -15,12 +15,17 @@
    "line": "brass brass brass"
   },
   {
-   "id": "first_spanner",
+   "id": "who_you_are",
    "speaker": "A fixture professor",
    "line": "A knockabout day at the yard."
   },
   {
-   "id": "pips_bill",
+   "id": "first_spanner",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "rats_in_the_workshop",
    "speaker": "A fixture professor",
    "line": "brass brass brass"
   },
@@ -31,6 +36,17 @@
   },
   {
    "id": "rats",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "come_back",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass",
+   "button": "press press"
+  },
+  {
+   "id": "pips_bill",
    "speaker": "A fixture professor",
    "line": "brass brass brass"
   },
@@ -48,12 +64,6 @@
    "id": "brass_plate",
    "speaker": "A fixture professor",
    "line": "brass brass brass"
-  },
-  {
-   "id": "come_back",
-   "speaker": "A fixture professor",
-   "line": "brass brass brass",
-   "button": "press press"
   }
  ]
 }

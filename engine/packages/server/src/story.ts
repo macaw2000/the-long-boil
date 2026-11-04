@@ -32,6 +32,8 @@ export interface StoryView {
   storylets: SceneView[];
   /** Next beats held back by a skill, an item or a visit, with what they need. */
   upcoming: rules.UpcomingScene[];
+  /** When a check-in next counts as a visit (record.check_ins), for beats waiting on one; null before the first. */
+  nextVisitAt: string | null;
   /** Storylets closed by their cooldown, with when each opens again. */
   cooling: { id: string; location: string; opensAt: string }[];
   backRent: number;
@@ -68,6 +70,7 @@ function storyView(tinker: TinkerState, story: StoryState, content: GameContent,
     }),
     storylets: rules.availableStorylets(tinker, story, content.rules, now).map((scene) => sceneView(scene, "storylet", tinker, story, content)),
     upcoming: rules.upcomingStorylets(tinker, story, content.rules),
+    nextVisitAt: story.checkInAt === null ? null : new Date(story.checkInAt + rules.VISIT_GAP_MS).toISOString(),
     cooling: rules
       .coolingStorylets(tinker, story, content.rules, now)
       .map((scene) => ({ id: scene.id, location: scene.location, opensAt: new Date(scene.opensAt).toISOString() })),

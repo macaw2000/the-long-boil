@@ -5,28 +5,28 @@
   "location": "sprocket_row",
   "reveal_layer": 0,
   "requires": {
-    "prologue.progress": "==60",
-    "flag.owes_back_rent": "==0"
+    "prologue.progress": "==10",
+    "record.check_ins": ">=2"
   },
   "nerve": 1,
-  "description": "The bill is paid, and the receipt comes not down the tube but up the Row, on foot, carried by Pip Tumbler in person. Pip is of no particular age and every particular opinion, and has clearly come to look at you. The receipt is handed over with ceremony. Pip does not leave, but lifts Hester's empty binding off the bench, weighs it, and sets it down square. \"She'd have had my hand off for that.\" The kettle on your Boiler is beginning to sing.",
+  "description": "Pip Tumbler comes up Sprocket Row on foot, to see how No. 9 is taking its bill. Pip is of no particular age and every particular opinion, and carries a receipt book in one pocket and a pencil for the spike in the other, and has not yet said which is wanted. Then Pip hangs a cap on the last tool hook above the bench, and the hook comes away from the wall. Something drops out of the gap behind it: a notebook's binding, marbled boards and a cloth spine, H. Vane inked inside the front in a small upright hand. Every page has been torn out at the stitching. \"She was never without that,\" says Pip.",
   "options": [
     {
-      "label": "Make a pot of tea, and let Pip tell you about the Row.",
+      "label": "Make a pot of tea, and let Pip tell you about the street.",
       "success": {
-        "text": "Pip takes three sugars and gives you the Row in return: who owes the pie shop, who owes the pawnbroker, and who on the Row is no better than they ought to be, which is everybody. By the second cup you know more about Sprocket Row than the Row does. At the door Pip says, \"Hester never made me tea,\" and then, \"Well. Once,\" and goes.",
+        "text": "Pip takes three sugars and gives you Sprocket Row in return: who owes the pie shop, who owes the pawnbroker, and who on the street is no better than they ought to be, which is everybody. By the second cup you know more about Sprocket Row than Sprocket Row does. At the door Pip says, \"Hester never made me tea,\" and then, \"Well. Once,\" and goes.",
         "changes": {
           "favour.stokers": "+1",
-          "prologue.progress": 70
+          "prologue.progress": 20
         }
       }
     },
     {
-      "label": "Ask Pip what Hester Vane was like.",
+      "label": "Ask Pip when Pip last saw Hester Vane.",
       "success": {
-        "text": "Pip thinks about it. \"Quiet. Paid late. Wrote everything down. Everything. What the Boiler said, what the tube said, what I said.\" Pip looks round the workshop. \"You've moved the bench.\" You have not moved the bench. Pip looks at it a while longer anyway, then remembers another canister, somewhere else, and goes.",
+        "text": "Pip thinks about it. \"The Friday before she went. Paid late, same as ever. Wrote everything down, same as ever. Everything. What the Boiler said, what the tube said, what I said.\" Pip looks round the workshop. \"You've moved the bench.\" You have not moved the bench. Pip looks at it a while longer anyway, then remembers another canister, somewhere else, and goes.",
         "changes": {
-          "prologue.progress": 70
+          "prologue.progress": 20
         }
       }
     }

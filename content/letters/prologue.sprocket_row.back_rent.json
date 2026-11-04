@@ -4,29 +4,38 @@
   "act": 0,
   "location": "sprocket_row",
   "reveal_layer": 0,
-  "requires": { "prologue.progress": "==0" },
+  "requires": {
+    "prologue.progress": "==8",
+    "record.check_ins": ">=2"
+  },
   "nerve": 1,
   "sender": "Pip Tumbler",
   "weight": 1,
-  "description": "The Pneumatic Post, the brass tube that brings letters to your bench, coughs and drops a canister into the tray. Inside is a bill from the Counting-House, where Kettleport pays its debts and buys what Tinkers like you make. You have not yet earned one Crown, the city's brass coin.\n\nCOUNTING-HOUSE. Back rent, No. 9 Sprocket Row.\nDue: 15 Crowns.\n\n\"Hester Vane had No. 9 before you. She left owing, in the middle of a job, and never came back for either. Not your fault, but your workshop now. I only run the bills. I ran hers too. Sorry.\"\nPip Tumbler, Pneumatic Post\n\nThe Arrears dial under your portrait wakes at 0: one bill is not yet trouble.",
+  "description": "The brass tube over the bench rattles, coughs, and drops a canister into the tray. Inside is a bill, and under it a note.\n\nBACK RENT, No. 9 Sprocket Row.\nFour quarters at 350 Crowns.\nDue: 1,400 Crowns.\n\n\"Hester left owing a year, in the middle of a job, and never came back for either. Not your fault, but your workshop now. The Counting-House sends me round every Friday until it is paid. I sent her a year of Fridays. Sorry.\"\nPip Tumbler\n\nPip carries Sprocket Row's letters and bills. Crowns are the brass coins the rats drop when you beat them.",
   "options": [
     {
-      "label": "Stick the bill on the spike above the vice, and pay it at the Counting-House once you have fifteen Crowns.",
+      "label": "Stick the bill on the spike above the vice. The rats' Crowns go towards it, and whatever scrap you can sell.",
       "success": {
-        "text": "You push the bill onto the spike above the vice, where it can watch you work. Fifteen Crowns counted through the Counting-House window will take it down again. Until then it stays where it is, and so, you suspect, does Pip's apology.",
-        "changes": { "flag.owes_back_rent": 1, "prologue.progress": 10 }
+        "text": "You push the bill onto the spike above the vice, where it can watch you work. A night of rats will not pay it; a night of rats and a good deal of scrap sold at the Counting-House window might. On Friday Pip will come up the Row and look at the spike, and say sorry again, and mean it a little less each time.",
+        "changes": {
+          "flag.owes_back_rent": 1,
+          "prologue.progress": 10
+        }
       }
     },
     {
-      "label": "Offer Pip some repair work instead of part of the rent.",
-      "challenge": { "quality": "tinkering", "difficulty": 6 },
-      "success": {
-        "text": "The canister comes back within the hour holding a carriage clock that has not struck since anyone can remember, and a note: \"A Counting-House clerk's. If it strikes, I can take 10 off.\" You take the back off, find a hairspring wound round itself like a nervous cat, and coax it straight. At six o'clock the clock strikes seven. The clerk, Pip reports, accepts this as close enough. You owe 5 Crowns.",
-        "changes": { "flag.owes_back_rent": 1, "flag.back_rent_reduced": 1, "prologue.progress": 10 }
+      "label": "Offer to mend something for Pip, with ten pieces of Rat Scrap for parts, if Pip will take 80 Crowns off.",
+      "requires": {
+        "item.rustmoor.rat_scrap": ">=10"
       },
-      "failure": {
-        "text": "Pip sends down a Counting-House clerk's carriage clock. You return it in two parcels, one of them mostly spring. The reply is polite and brief: the bill stands at 15 Crowns, and the clerk has asked Pip for your name, twice. The Arrears dial ticks up two marks.",
-        "changes": { "flag.owes_back_rent": 1, "needle.arrears": "+2", "prologue.progress": 10 }
+      "success": {
+        "text": "The canister comes back within the hour holding a carriage clock that has not struck since anyone can remember, and a note: \"A clerk's. If it strikes, I can take 80 off.\" You take the back off, find a hairspring wound round itself like a nervous cat, and coax it straight with wire picked from ten pieces of your Rat Scrap. At six o'clock the clock strikes seven. The clerk, Pip reports, accepts this as close enough. You owe 1,320 Crowns.",
+        "changes": {
+          "flag.owes_back_rent": 1,
+          "flag.back_rent_reduced": 1,
+          "item.rustmoor.rat_scrap": "-10",
+          "prologue.progress": 10
+        }
       }
     }
   ]

@@ -18,6 +18,7 @@ import {
   qualityOf,
   refreshStory,
   availableStorylets,
+  visibleNeedles,
   type StoryState,
   type TinkerState,
 } from "../src/index.js";
@@ -31,6 +32,21 @@ const LETTER = "prologue.sprocket_row.back_rent";
 function fresh(seed = 1): { tinker: TinkerState; story: StoryState } {
   return { tinker: newTinker({}, 0, 0, seed), story: newStory(0) };
 }
+
+/** A Tinker at the second visit with the first sitting's two scenes played: Pip's bill opens now (work order 037). */
+function atBill(seed = 1): { tinker: TinkerState; story: StoryState } {
+  return { tinker: newTinker({}, 0, 0, seed), story: { ...newStory(0), qualities: { "prologue.progress": 8, "record.check_ins": 2 } } };
+}
+
+/** A test letter with the old bill's risk: Tinkering 1 against 6 (10% odds), Arrears +2 on a failure. */
+const RISK = {
+  id: "test.x.risk", act: 1, location: "x", requires: {}, nerve: 1, description: "d", weight: 1,
+  options: [
+    { label: "safe", success: { text: "t", changes: {} } },
+    { label: "risky", challenge: { quality: "tinkering", difficulty: 6 }, success: { text: "t", changes: {} }, failure: { text: "f", changes: { "needle.arrears": "+2" } } },
+  ],
+};
+const risky = { ...content, letters: new Map([[RISK.id, RISK]]) };
 
 describe("qualities and requirements", () => {
   it("reads skills as levels, items as counts, and everything else from the story", () => {
@@ -59,8 +75,8 @@ describe("qualities and requirements", () => {
 
 describe("Nerve", () => {
   it("refills 1 every 36 minutes up to 10, offline too", () => {
-    const { tinker, story } = fresh();
-    let { story: spent } = playScene(refreshStory(story, tinker, content, 0).story, tinker, content, "letter", LETTER, 0, 0);
+    const { tinker } = fresh();
+    let { story: spent } = playScene({ ...newStory(0), hand: [LETTER] }, tinker, content, "letter", LETTER, 0, 0);
     expect(spent.nerve).toBe(9);
     expect(refreshStory(spent, tinker, content, 35 * MINUTE).story.nerve).toBe(9);
     expect(refreshStory(spent, tinker, content, 36 * MINUTE).story.nerve).toBe(10);
@@ -75,15 +91,18 @@ describe("Nerve", () => {
 });
 
 describe("the Pneumatic Post", () => {
-  it("delivers Pip's bill at once to a new Tinker", () => {
+  it("delivers no letter in the first sitting, and Pip's bill the moment the second opens", () => {
     const { tinker, story } = fresh();
-    const { story: after, events } = refreshStory(story, tinker, content, 0);
+    expect(refreshStory(story, tinker, content, 0).story.hand).toEqual([]);
+    // Not on a two-hour delivery: a Prologue letter comes as soon as it opens.
+    const bill = atBill();
+    const { story: after, events } = refreshStory(bill.story, bill.tinker, content, 90 * MINUTE);
     expect(after.hand).toEqual([LETTER]);
-    expect(events).toEqual([{ type: "letter_arrived", at: 0, letter: LETTER }]);
+    expect(events).toEqual([{ type: "letter_arrived", at: 90 * MINUTE, letter: LETTER }]);
   });
 
   it("never deals a letter twice into one hand, nor one whose requirements fail", () => {
-    const { tinker, story } = fresh();
+    const { tinker, story } = atBill();
     const { story: after } = refreshStory(story, tinker, content, 12 * HOUR);
     expect(after.hand).toEqual([LETTER]);
     const answered = playScene(after, tinker, content, "letter", LETTER, 0, 12 * HOUR).story;
@@ -109,7 +128,7 @@ describe("the Pneumatic Post", () => {
   });
 
   it("returns a discarded letter to the deck while its requirements hold", () => {
-    const { tinker, story } = fresh();
+    const { tinker, story } = atBill();
     const dealt = refreshStory(story, tinker, content, 0).story;
     const { story: discarded } = discardLetter(dealt, LETTER, MINUTE);
     expect(discarded.hand).toEqual([]);
@@ -121,18 +140,28 @@ describe("the Needles", () => {
   it("raise on a failed risk and fall 1 a day from the last rise", () => {
     const tinker = newTinker({}, 0, 0, 1);
     // Seed 1's first roll fails Tinkering 1 against difficulty 6 (10% odds).
-    const story = { ...newStory(0), hand: [LETTER] };
-    const { story: after, event } = playScene(story, tinker, content, "letter", LETTER, 1, 0);
+    const story = { ...newStory(0), hand: [RISK.id] };
+    const { story: after, event } = playScene(story, tinker, risky, "letter", RISK.id, 1, 0);
     expect(event.type).toBe("scene_played");
     if (event.type !== "scene_played") return;
     expect(event.challenge).toMatchObject({ quality: "tinkering", level: 1, difficulty: 6, odds: 0.1 });
     expect(event.success).toBe(false);
     expect(after.qualities["needle.arrears"]).toBe(2);
-    expect(refreshStory(after, tinker, content, 23 * HOUR).story.qualities["needle.arrears"]).toBe(2);
-    expect(refreshStory(after, tinker, content, 24 * HOUR).story.qualities["needle.arrears"]).toBe(1);
-    const healed = refreshStory(after, tinker, content, 72 * HOUR);
+    expect(refreshStory(after, tinker, risky, 23 * HOUR).story.qualities["needle.arrears"]).toBe(2);
+    expect(refreshStory(after, tinker, risky, 24 * HOUR).story.qualities["needle.arrears"]).toBe(1);
+    const healed = refreshStory(after, tinker, risky, 72 * HOUR);
     expect(healed.story.qualities["needle.arrears"]).toBe(0);
     expect(healed.events.filter((e) => e.type === "needle_fell")).toHaveLength(2);
+  });
+
+  it("stay hidden until a scene first moves one, then stay on screen at 0", () => {
+    expect(visibleNeedles(newStory(0).qualities)).toEqual({});
+    const tinker = newTinker({}, 0, 0, 1);
+    const story = { ...newStory(0), hand: [RISK.id] };
+    const { story: after } = playScene(story, tinker, risky, "letter", RISK.id, 1, 0);
+    expect(visibleNeedles(after.qualities)).toEqual({ "needle.arrears": 2 });
+    const healed = refreshStory(after, tinker, risky, 72 * HOUR).story;
+    expect(visibleNeedles(healed.qualities)).toEqual({ "needle.arrears": 0 });
   });
 });
 
@@ -239,29 +268,42 @@ describe("the first storylets, end to end", () => {
       );
     const visible = () => availableStorylets(tinker, story, content).map((scene) => scene.id).filter(spine);
 
-    expect(visible()).toEqual([]);
+    // The first day in three sittings (work order 037): two scenes, then the bill and the Row, then the city.
+    expect(visible()).toEqual(["prologue.sprocket_row.who_you_are"]);
+    play("storylet", "prologue.sprocket_row.who_you_are", 0);
+    expect(story.qualities["flag.origin_apprentice"]).toBe(1);
+    play("storylet", "prologue.sprocket_row.rats_in_the_workshop", 0);
+    expect(story.hand).toEqual([]);
     play("letter", LETTER, 0);
-    expect(backRentOwed(story)).toBe(15);
-    // The Prologue's ten scenes: the bill, eight in order, then the plate. The receipt waits for the rent to be paid.
-    expect(visible()).toEqual(["prologue.sprocket_row.the_neighbours"]);
-    for (const id of ["sprocket_row.the_neighbours", "polytechnic.the_register", "sprocket_row.the_missing_tins", "rustmoor.the_tip_book", "rustmoor.the_first_nest"])
-      play("storylet", `prologue.${id}`, 1);
-    expect(visible()).toEqual([]);
-    story = payDebt(story, "back_rent").story;
-    for (const id of ["sprocket_row.the_receipt", "polytechnic.the_lift_lecture", "sprocket_row.the_morning_gazette"]) play("storylet", `prologue.${id}`, 1);
+    expect(backRentOwed(story)).toBe(1400);
+    // Pip calls whether or not the rent is paid; clearing it is a goal across the next sittings (decision 12).
+    expect(visible()).toEqual(["prologue.sprocket_row.the_receipt"]);
+    for (const id of ["sprocket_row.the_receipt", "sprocket_row.the_neighbours", "polytechnic.the_register", "rustmoor.the_tip_book", "rustmoor.the_first_nest", "polytechnic.the_lift_lecture"])
+      play("storylet", `prologue.${id}`, 0);
     expect(visible()).toEqual(["prologue.sprocket_row.brass_plate"]);
     play("storylet", "prologue.sprocket_row.brass_plate", 0);
-    expect(visible()).toEqual(["act1.sprocket_row.altitude_review"]);
+    // Act I opens at the visit after the plate, not the one it was played on.
+    expect(visible()).toEqual([]);
     play("storylet", "act1.sprocket_row.altitude_review", 0);
     play("storylet", "act1.lowvents.the_list", 0);
     play("storylet", "act1.polytechnic.sealed_lab", 1);
     expect(story.qualities["act1.progress"]).toBe(15);
     expect(visible()).toEqual([]);
     expect(upcomingStorylets(tinker, story, content).filter((scene) => spine(scene.id))).toEqual([
-      { id: "act1.rustmoor.rat_nests", location: "rustmoor", needs: [["scavenging", ">=3", 1]] },
+      { id: "act1.rustmoor.rat_nests", location: "rustmoor", needs: [["scavenging", ">=3", 1], ["record.visits_since_prologue", ">=4", 3]] },
     ]);
     tinker.skillXp.scavenging = 152;
+    story = countCheckIn(story, (t += 10 * HOUR)).story;
     expect(visible()).toEqual(["act1.rustmoor.rat_nests"]);
+  });
+
+  it("counts visits since the Prologue, and starts the count for a Tinker who finished the old one-visit Prologue", () => {
+    let story: StoryState = { ...newStory(0), qualities: { "prologue.progress": 100, "record.check_ins": 3, "flag.origin_relative": 1 } };
+    story = countCheckIn(story, 0).story;
+    expect(story.qualities["record.visits_since_prologue"]).toBe(1);
+    const old: StoryState = { ...newStory(0), qualities: { "prologue.progress": 100, "record.check_ins": 6 } };
+    // Six visits, the first of which played the whole old Prologue: this seventh is the sixth since.
+    expect(countCheckIn(old, 0).story.qualities["record.visits_since_prologue"]).toBe(6);
   });
 
   it("shows each option's odds and locks before the player commits", () => {
@@ -275,8 +317,8 @@ describe("the first storylets, end to end", () => {
   it("rolls from the Tinker's seeded generator, so a replay gives the same result", () => {
     const run = () => {
       const tinker = newTinker({}, 0, 0, 42);
-      const story = { ...newStory(0), hand: [LETTER] };
-      return playScene(story, tinker, content, "letter", LETTER, 1, 0);
+      const story = { ...newStory(0), hand: [RISK.id] };
+      return playScene(story, tinker, risky, "letter", RISK.id, 1, 0);
     };
     expect(run().event).toEqual(run().event);
     expect(run().tinker.rng).not.toBe(42);
@@ -291,9 +333,9 @@ describe("the first storylets, end to end", () => {
     expect(() => payDebt(paid, "foundry_pass")).toThrow(/nothing is owed/);
   });
 
-  it("charges 5 Crowns after a successful repair", () => {
+  it("charges 1,320 Crowns after the repair, a year's rent less 80", () => {
     const story = { ...newStory(0), qualities: { "flag.owes_back_rent": 1, "flag.back_rent_reduced": 1 } };
-    expect(backRentOwed(story)).toBe(5);
+    expect(backRentOwed(story)).toBe(1320);
     expect(backRentOwed(newStory(0))).toBe(0);
   });
 });

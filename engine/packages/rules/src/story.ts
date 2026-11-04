@@ -19,14 +19,20 @@ export const NERVE_MS = 36 * MINUTE_MS;
 export const NEEDLE_FALL_MS = 24 * HOUR_MS;
 export const NEEDLES = ["needle.scald", "needle.arrears", "needle.notice", "needle.haze"] as const;
 
+/** Set the first time a scene moves a Needle, so the Needle stays on screen after it falls back to 0. */
+export const needleMoved = (needle: string) => `record.moved.${needle}`;
+
 /**
- * The Needles a player can see, with their readings. Haze enters the game in
- * Act II, with the Whistle (GDD section 4, Act II beat 2), so it stays hidden
- * until then, or until something has raised it; the other three show from
- * the start.
+ * The Needles a player can see, with their readings. Each stays hidden until
+ * a scene first moves it (docs/first-day-plan.md, decision 5): a new player
+ * met all three at 0/8 with nothing to explain them. Haze also shows from Act
+ * II, when the Whistle brings it in (GDD section 4, Act II beat 2).
  */
 export function visibleNeedles(qualities: Readonly<Record<string, number>>): Record<string, number> {
-  const shown = NEEDLES.filter((needle) => needle !== "needle.haze" || (qualities[needle] ?? 0) > 0 || (qualities["act2.progress"] ?? 0) > 0);
+  const shown = NEEDLES.filter(
+    (needle) =>
+      (qualities[needle] ?? 0) > 0 || (qualities[needleMoved(needle)] ?? 0) > 0 || (needle === "needle.haze" && (qualities["act2.progress"] ?? 0) > 0),
+  );
   return Object.fromEntries(shown.map((needle) => [needle, qualities[needle] ?? 0]));
 }
 /** GDD section 5, The Pneumatic Post: "You hold up to 3, and a new one arrives every 2 hours". */
@@ -39,9 +45,13 @@ export const POST_MS = 2 * HOUR_MS;
  */
 export const VISIT_GAP_MS = HOUR_MS;
 export const CHECK_INS = "record.check_ins";
-/** Work order 016: the back rent is 15 Crowns; a successful repair takes 10 off. */
-export const BACK_RENT = 15;
-export const BACK_RENT_REDUCTION = 10;
+/**
+ * Hester's back rent: a year's, at 350 a quarter, so one night of fighting does not cover it and
+ * selling at the Counting-House matters (work order 037, decision 8; the draftsman's derivation is
+ * the back_rent anchor in content/tuning/economy-rustmoor.json). The repair takes 80 off for 10 Rat Scrap.
+ */
+export const BACK_RENT = 1400;
+export const BACK_RENT_REDUCTION = 80;
 /**
  * Work order 020: a stay at the Infirmary of St. Pinion. While the flag is
  * set, the story offers only Infirmary scenes and Scald does not fall on its
@@ -303,6 +313,14 @@ export function refreshStory(previous: StoryState, previousTinker: TinkerState, 
     else story.needleAt[needle] = since + falls * NEEDLE_FALL_MS;
   }
 
+  // A Prologue letter is a step in the first day's plan (docs/first-day-plan.md), so it
+  // comes the moment it opens instead of waiting up to two hours for the next delivery.
+  for (const letter of drawable(tinker, story, content).filter((candidate) => candidate.act === 0)) {
+    if (story.hand.length >= HAND_SIZE) break;
+    story.hand.push(letter.id);
+    events.push({ type: "letter_arrived", at: now, letter: letter.id });
+  }
+
   // A full hand does not bank deliveries; the tube starts again when a letter goes.
   while (story.postAt + POST_MS <= now) {
     if (story.hand.length >= HAND_SIZE) {
@@ -370,7 +388,11 @@ export interface UpcomingScene {
  * a locked beat can show its gate without being spoiled.
  */
 export function upcomingStorylets(tinker: TinkerState, story: StoryState, content: Content): UpcomingScene[] {
-  return [...content.storylets.values()].flatMap((scene): UpcomingScene[] => {
+  // A Prologue letter is a step in the first day (it comes the moment it opens), so it counts as coming up too.
+  const prologueLetters = [...content.letters.values()].filter(
+    (letter) => letter.act === 0 && !story.hand.includes(letter.id) && !story.answered.includes(letter.id),
+  );
+  return [...content.storylets.values(), ...prologueLetters].flatMap((scene): UpcomingScene[] => {
     const needs = unmet(scene.requires, tinker, story, content);
     return openDuringStay(scene, story) && needs.length > 0 && needs.every(([name]) => earned(name))
       ? [{ id: scene.id, location: scene.location, needs }]
@@ -470,6 +492,8 @@ export function playScene(
     story.qualities[name] = next;
     qualities[name] = next;
     if (name.startsWith("needle.")) {
+      // In the event's qualities too, so a replay of the log rebuilds it.
+      if (next !== before) story.qualities[needleMoved(name)] = qualities[needleMoved(name)] = 1;
       if (next > before) story.needleAt[name] = now;
       if (next === 0) delete story.needleAt[name];
     }
@@ -497,13 +521,23 @@ export function discardLetter(previous: StoryState, letterId: string, now: numbe
   return { story, event };
 }
 
+/** Visits counted since the Prologue's last scene, which is what opens Act I (work order 037: the Prologue now spans three visits). */
+export const VISITS_SINCE_PROLOGUE = "record.visits_since_prologue";
+const ORIGINS = ["flag.origin_apprentice", "flag.origin_relative", "flag.origin_stranger"];
+
 /** Counts a check-in as a visit when it is the first, or an hour or more after the last counted one. */
 export function countCheckIn(previous: StoryState, now: number): { story: StoryState; event: StoryEvent | null } {
   if (previous.checkInAt !== null && now - previous.checkInAt < VISIT_GAP_MS) return { story: previous, event: null };
   const story = cloneStory(previous);
   story.checkInAt = now;
   story.qualities[CHECK_INS] = (story.qualities[CHECK_INS] ?? 0) + 1;
-  return { story, event: { type: "check_in_counted", at: now, qualities: { [CHECK_INS]: story.qualities[CHECK_INS] } } };
+  const qualities: Record<string, number> = { [CHECK_INS]: story.qualities[CHECK_INS] };
+  if ((story.qualities["prologue.progress"] ?? 0) >= 100) {
+    // A Tinker who finished the one-visit Prologue before work order 037 never chose an origin; its visits since are all but the first.
+    const before = story.qualities[VISITS_SINCE_PROLOGUE] ?? (ORIGINS.some((flag) => story.qualities[flag]) ? 0 : story.qualities[CHECK_INS] - 2);
+    story.qualities[VISITS_SINCE_PROLOGUE] = qualities[VISITS_SINCE_PROLOGUE] = before + 1;
+  }
+  return { story, event: { type: "check_in_counted", at: now, qualities } };
 }
 
 export interface Debt {

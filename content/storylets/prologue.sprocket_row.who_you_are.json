@@ -1,0 +1,45 @@
+{
+  "schema": "storylet/1",
+  "id": "prologue.sprocket_row.who_you_are",
+  "act": 0,
+  "location": "sprocket_row",
+  "reveal_layer": 0,
+  "requires": {
+    "prologue.progress": "==0",
+    "record.check_ins": ">=1"
+  },
+  "nerve": 1,
+  "description": "The spanners turn on the bench. Professor Brassbuckle, who has the keys, sits on the stool by the Boiler as if she has sat there before. No. 9 was Hester Vane's workshop. One morning Hester left in the middle of a job, with a kettle still in the vice and its spout on the bench beside it, and she has not come back. Nobody has seen her since. Brassbuckle looks at the kettle, then at you. \"The solicitor's letter says No. 9 is yours,\" she says. \"It does not say why.\"",
+  "options": [
+    {
+      "label": "You were Hester's apprentice. You learned the trade at this bench, until the morning she did not open up.",
+      "success": {
+        "text": "Brassbuckle nods, as if a sum has come out. \"Then you know where she kept the oil, and I need not show you.\" You do know. It is behind the flour tin, where it always was, and the flour tin is empty, as it always was. Whatever Hester was in the middle of, she did not tell you either. You leave the kettle in the vice. It seems wrong to finish it for her.",
+        "changes": {
+          "flag.origin_apprentice": 1,
+          "prologue.progress": 4
+        }
+      }
+    },
+    {
+      "label": "Hester was family, a distant branch of it. Her will named you for No. 9, contents included.",
+      "success": {
+        "text": "\"Family,\" says Brassbuckle, and looks at you more carefully, as if checking for the likeness. She does not say whether she finds it. You met Hester twice that you can remember, at a wedding and a funeral, and she spent both of them looking at the clock. The clock is here now, on the wall above the bench. It keeps very good time.",
+        "changes": {
+          "flag.origin_relative": 1,
+          "prologue.progress": 4
+        }
+      }
+    },
+    {
+      "label": "You never met Hester Vane. She put your name down for No. 9, and nobody can tell you why.",
+      "success": {
+        "text": "Brassbuckle takes off her spectacles, polishes them, puts them back on, and finds you still a stranger. \"Hester never did anything without a reason,\" she says, \"and never once explained one.\" You look round at the bench, the hooks and the kettle in the vice, and try to see what Hester saw in you from here. Nothing in the workshop is saying.",
+        "changes": {
+          "flag.origin_stranger": 1,
+          "prologue.progress": 4
+        }
+      }
+    }
+  ]
+}

@@ -5,15 +5,16 @@
   "location": "rustmoor",
   "reveal_layer": 0,
   "requires": {
-    "prologue.progress": "==40"
+    "prologue.progress": "==40",
+    "record.check_ins": ">=3"
   },
   "nerve": 1,
-  "description": "Rustmoor hangs off the city's outer rim on chains as thick as a man. You go down in the oilskin from the peg behind No. 9's door. It was Hester Vane's: long in the arm, and patched at both elbows. At the gate a tip-keeper in three coats keeps a book. Everyone who goes onto the heaps signs it, and everyone who comes back signs it again, and the book is very thick at the front and thinner than you would like at the back. \"Name,\" says the tip-keeper. \"Business. And next of kin, in case.\"",
+  "description": "Until now you have gone down to Rustmoor through the hole in No. 9's floor, the way the rats go. Today you go by the gate, the way people go, in Hester's oilskin from the peg behind the door. At the gate a tip-keeper in three coats keeps a book. You sign in going out onto the heaps, and sign out coming back. Most lines down the page have both. Some have only the first, and under each the tip-keeper has ruled a neat line: those people went out and did not come back. \"Name,\" he says. \"Business. And next of kin, for if you're one of the ruled lines.\"",
   "options": [
     {
       "label": "Give Professor Brassbuckle as your next of kin.",
       "success": {
-        "text": "The tip-keeper writes it down without comment, which is somehow worse than comment. Word of it reaches the Polytechnic by evening. Brassbuckle does not mention it, but your next delivery of Polytechnic stores comes with a note in her hand, \"Come back in one piece,\" underlined twice, and an extra Ration: a wax-paper brick of stew, for eating when a fight goes badly.",
+        "text": "The tip-keeper writes it down without comment, which is somehow worse than comment. Word of it reaches the Polytechnic by evening. Brassbuckle does not mention it, but your next delivery of Polytechnic stores comes with a note in her hand, \"Come back in one piece,\" underlined twice, and an extra Ration.",
         "changes": {
           "item.rustmoor.rustmoor_ration": "+1",
           "prologue.progress": 50
@@ -23,8 +24,9 @@
     {
       "label": "Write \"No. 9 Sprocket Row\" for your next of kin.",
       "success": {
-        "text": "\"A workshop,\" says the tip-keeper. \"Can't say I've had that one.\" He considers it and writes it in anyway, in capitals, under the heading. \"If it comes to it,\" he says, \"we'll send your spanner home.\" He means it kindly. Rustmoor is like that: you can be kind there, as long as you are practical about it.",
+        "text": "\"A workshop,\" says the tip-keeper. \"Can't say I've had that one.\" He writes it in anyway, in capitals. \"If it comes to it,\" he says, \"we'll send your spanner home.\" He means it kindly, and to show it he gives you a Ration from inside the second coat. Rustmoor is like that: you can be kind there, as long as you are practical about it.",
         "changes": {
+          "item.rustmoor.rustmoor_ration": "+1",
           "prologue.progress": 50
         }
       }

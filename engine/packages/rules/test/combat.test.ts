@@ -63,9 +63,9 @@ function plan(state: TinkerState, monsterId: string, withRations: boolean) {
 describe("kill time matches the combat check", () => {
   it.each([
     ["melee", 1, 1, "item.rustmoor.brass_spanner", RUNT, 54, 72.9],
-    ["marksmanship", 5, 2, "item.rustmoor.iron_rifle", "monster.rustmoor.rust_rat_scrounger", 108, 133.8],
-    ["aetherics", 10, 4, "item.rustmoor.spark_rod", "monster.rustmoor.rust_rat_tinplate", 162, 194.4],
-    ["melee", 15, 5, "item.rustmoor.steel_blade", "monster.rustmoor.rust_rat_gaffer", 216, 254.9],
+    ["marksmanship", 5, 2, "item.rustmoor.iron_rifle", "monster.rustmoor.rust_rat_scrounger", 108, 133.9],
+    ["aetherics", 10, 4, "item.rustmoor.spark_rod", "monster.rustmoor.rust_rat_tinplate", 162, 194.5],
+    ["melee", 15, 5, "item.rustmoor.steel_blade", "monster.rustmoor.rust_rat_gaffer", 216, 254.8],
   ])("%s %i against %s", (style, level, secondary, weapon, monster, stocked, unstocked) => {
     const state = reference(style as string, level as number, secondary as number, weapon as string, 10);
     expect(plan(state, monster as string, true).seconds).toBeCloseTo(stocked as number, 1);
@@ -124,7 +124,7 @@ describe("drops and Rations", () => {
     const { state: after, events } = resolve(state, content, 100 * 60_000);
     const kills = events.filter((event) => event.type === "monster_killed") as Extract<GameEvent, { type: "monster_killed" }>[];
     expect(kills).toHaveLength(100);
-    expect(kills.every((kill) => kill.crowns >= 5 && kill.crowns <= 9)).toBe(true);
+    expect(kills.every((kill) => kill.crowns >= 1 && kill.crowns <= 2)).toBe(true);
     expect(after.crowns).toBe(kills.reduce((sum, kill) => sum + kill.crowns, 0));
     expect(after.inventory["item.rustmoor.rat_scrap"]).toBe(100);
     expect(after.skillXp.melee! - state.skillXp.melee!).toBeCloseTo(100 * content.monsters.get(RUNT)!.xp * 0.7, 6);

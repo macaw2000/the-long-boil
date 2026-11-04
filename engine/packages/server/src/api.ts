@@ -270,6 +270,8 @@ export function buildApi({
     shop: content.rules.shop,
     payments: payments && content.rules.shop ? { testMode: payments.testMode } : null,
     ration: { item: content.rules.ration.item, bossCap: content.rules.combat.BOSS_RATION_CAP_PER_ATTEMPT ?? 0 },
+    // Armour this high halves a hit (combat.json), so the Loadout can say what armour does.
+    armourHalfPoint: content.rules.combat.ARMOUR_HALF_POINT ?? 100,
   }));
 
   if (clock) {

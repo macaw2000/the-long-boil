@@ -1249,7 +1249,7 @@
       "stats_by_calibration": [
         {
           "calibration": 0,
-          "accuracy": 2.05
+          "accuracy": 4.3
         },
         null,
         null,
@@ -1280,7 +1280,7 @@
       "stats_by_calibration": [
         {
           "calibration": 0,
-          "accuracy": 2.2
+          "accuracy": 4.45
         },
         null,
         null,
@@ -1311,7 +1311,7 @@
       "stats_by_calibration": [
         {
           "calibration": 0,
-          "accuracy": 2.3
+          "accuracy": 4.55
         },
         null,
         null,
@@ -1342,7 +1342,7 @@
       "stats_by_calibration": [
         {
           "calibration": 0,
-          "accuracy": 2.45
+          "accuracy": 4.7
         },
         null,
         null,
@@ -1373,7 +1373,7 @@
       "stats_by_calibration": [
         {
           "calibration": 0,
-          "accuracy": 2.6
+          "accuracy": 4.85
         },
         null,
         null,
@@ -1404,7 +1404,7 @@
       "stats_by_calibration": [
         {
           "calibration": 0,
-          "accuracy": 2.8
+          "accuracy": 5.05
         },
         null,
         null,
@@ -1435,7 +1435,7 @@
       "stats_by_calibration": [
         {
           "calibration": 0,
-          "accuracy": 2.95
+          "accuracy": 5.2
         },
         null,
         null,
@@ -1466,7 +1466,7 @@
       "stats_by_calibration": [
         {
           "calibration": 0,
-          "accuracy": 3.2
+          "accuracy": 5.45
         },
         null,
         null,

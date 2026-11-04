@@ -230,6 +230,13 @@ export function Loadout({
   const legacyWorn = content.armours.find((armour) => armour.item === tinker.armour);
   const fortitude = styleLevel("fortitude");
   const combat = Math.max(styleLevel("melee"), styleLevel("marksmanship"), styleLevel("aetherics"));
+  // What the Tinker wears adds to Fortitude against every hit, as the fight counts it (rules fighterFor).
+  const fromPieces = content.pieces
+    .filter((piece) => Object.values(tinker.worn).includes(piece.item) && combat >= piece.level_required)
+    .reduce((sum, piece) => sum + piece.armour, 0);
+  const fromLegacy = legacyWorn && fortitude >= legacyWorn.level_required ? legacyWorn.armour : 0;
+  const armour = fortitude + fromPieces + fromLegacy;
+  const lands = Math.round((1 - armour / (armour + content.armourHalfPoint)) * 100);
   // Tools for the skills that have any, in the order the skills are listed.
   const toolSkills = [...new Set(content.tools.map((tool) => tool.skill))];
   // Everything held that can be worn, for the rack.
@@ -316,6 +323,13 @@ export function Loadout({
           )}
         </View>
       </Sparks>
+
+      {/* Once something is worn, say in plain words what armour does; a bare "+3" told playtesters nothing. */}
+      {fromPieces + fromLegacy > 0 && (
+        <Text style={[ui.muted, { textAlign: "center" }]}>
+          Armour {round(armour)}: a hit on you lands at {lands}% of its strength.
+        </Text>
+      )}
 
       {/* What the shown weapon does, and how it compares with the one in hand. */}
       {shown ? (
