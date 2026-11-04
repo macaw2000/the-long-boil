@@ -17,7 +17,8 @@ export const characters: Record<string, Record<string, Frames>> = {
   },
   "tinker:item.rustmoor.brass_spanner": {
     idle: [require("../assets/art/tinker_brass_spanner_idle_0.png"), require("../assets/art/tinker_brass_spanner_idle_1.png")],
-    attack: [require("../assets/art/tinker_brass_spanner_attack_0.png"), require("../assets/art/tinker_brass_spanner_attack_1.png")],
+    // Its attack frame is the overhead wind-up, not the blow, and the scene lands each hit on the second frame; swapped, the hit comes as the spanner drops.
+    attack: [require("../assets/art/tinker_brass_spanner_attack_1.png"), require("../assets/art/tinker_brass_spanner_attack_0.png")],
     portrait: [require("../assets/art/tinker_brass_spanner_portrait_0.png"), require("../assets/art/tinker_brass_spanner_portrait_1.png")],
   },
   "tinker:item.rustmoor.iron_crowbar": {
