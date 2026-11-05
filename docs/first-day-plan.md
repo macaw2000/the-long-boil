@@ -133,6 +133,7 @@ The Great Kettle and the Lift move to Act I. So do the Exchange, guilds, the Nee
 31. **Style allows one exception**: a zero-Nerve letter that only reports an earlier choice may have a single option (Jeremy, 4 November 2026).
 32. **Left as they are for now**: the Lowvents tripe shop stays, the missing quarter of rent stays unexplained, and `sealed_lab`'s forced drawer stays (Jeremy, 4 November 2026).
 33. **Brassbuckle steers away, not towards**: her note ending the_neighbours plays the register down, in keeping with her stance (Jeremy, 4 November 2026).
+34. **Closing calls**: "tomorrow" is cut from Brassbuckle's note, since sitting 3 can come the same day; the quieter end of sitting 2 stays, to be watched in playtests; `tube_rack` keeps its tone after `the_list`; `world.md` records the rent at 350 a quarter (Jeremy, 5 November 2026).
 
 ## Measuring it
 

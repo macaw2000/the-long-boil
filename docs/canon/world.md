@@ -58,7 +58,7 @@ Canonised by Jeremy on 28 October 2026, from work order 023's scenes.
 
 Canonised by Jeremy on 4 November 2026, from work order 037's scenes (first-day plan, decisions 12, 20, 29 and 30).
 
-- **No. 9 Sprocket Row** was locked up after Hester Vane went, and stood empty for a year. Nobody has paid its rent in that time.
+- **No. 9 Sprocket Row** was locked up after Hester Vane went, and stood empty for a year. Nobody has paid its rent in that time: 350 Crowns a quarter, 1,400 for the year.
 - **Rustmoor's tip book:** everyone going out onto the heaps by the gate signs in, and signs out coming back. The page you sign on was begun eight weeks ago, and has four names with no signing-out, each ruled off. Those four never came back. Their things wait on a shelf behind the tip-keeper, tied in string.
 - **The pie shop on Sprocket Row** keeps a drawer of unclaimed spoons.
 

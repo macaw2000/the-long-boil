@@ -140,7 +140,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       const fills = trades.map((note) => tradeLine(note, name));
       // A job that cannot run is taken off the queue; say so, or it seems to vanish.
       const stalls = ledger.stalls.map(
-        (stall) => `${name(stall.actionId)} was taken off the queue: it ${STALL_REASONS[stall.reason] ?? stall.reason}.`,
+        (stall) => `${jobTitle(content, stall.actionId, name)} was taken off the queue: it ${STALL_REASONS[stall.reason] ?? stall.reason}.`,
       );
       if (stalls.length || lines.length || ups.length || fills.length) {
         setRecent((previous) => [...stalls, ...fills, ...ups, ...lines, ...previous].slice(0, 8));

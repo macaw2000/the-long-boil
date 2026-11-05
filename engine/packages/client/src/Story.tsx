@@ -35,7 +35,7 @@ function nextVisitLine(scenes: { location: string; needs: [string, string, numbe
 /** Why an option is shut: a past choice is not something to chase, so it is never named. */
 function lockText(locked: [string, string, number][]): string {
   if (locked.some(([name]) => name.startsWith("flag."))) return " · not open to you";
-  return ` · needs ${locked.map(([name, condition]) => `${qualityName(name)} ${condition}`).join(", ")}`;
+  return ` · needs ${locked.map(([name, condition, value]) => needText(name, condition, value)).join(", ")}`;
 }
 
 /** A locked beat's gate in player terms: a skill level, an item count, or more visits. */
@@ -191,7 +191,7 @@ export function Story({
       )}
 
       <Glow active={guideAt === "scenes"} guide style={{ gap: 12 }}>
-        <Text style={ui.heading}>Open to you</Text>
+        {(view.storylets.length > 0 || view.letters.length === 0) && <Text style={ui.heading}>Open to you</Text>}
         {view.storylets.length === 0 && view.letters.length === 0 && (
           <Text style={ui.muted}>Nothing waits for you just now. Work the bench, and come back when the city has moved.</Text>
         )}

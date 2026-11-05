@@ -16,6 +16,9 @@
   "options": [
     {
       "label": "Send ten tins of bent nails up the tube, and accept the pork.",
+      "requires": {
+        "item.rustmoor.bent_nails": ">=10"
+      },
       "success": {
         "text": "The tins go up with a sound like a dropped drawer of cutlery. A while later the rack has stopped swaying, the tubes have stopped rattling, and a parcel of salt pork arrives wrapped in a Counting-House circular. Pip's note says only: \"Straight enough.\"",
         "changes": {
@@ -26,9 +29,14 @@
     },
     {
       "label": "Send one tin, and a note telling Pip where the rest of Rustmoor is.",
+      "requires": {
+        "item.rustmoor.bent_nails": ">=1"
+      },
       "success": {
         "text": "The reply comes back in under a minute: \"Fair.\" The tube rack sways a little less, in the one corner where your tin of nails went. Pip, you suspect, will not be paying in pork for this.",
-        "changes": { "item.rustmoor.bent_nails": "-1" }
+        "changes": {
+          "item.rustmoor.bent_nails": "-1"
+        }
       }
     }
   ]

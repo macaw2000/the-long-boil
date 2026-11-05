@@ -95,7 +95,7 @@ export function Ledger({
       )}
       {ledger.stalls.map((stall, index) => (
         <Text key={index} style={[ui.text, { color: colors.scald }]}>
-          {name(stall.actionId)} {STALL_REASONS[stall.reason] ?? stall.reason}.
+          {job(stall.actionId)} {STALL_REASONS[stall.reason] ?? stall.reason}.
         </Text>
       ))}
       {note && <Text style={[ui.muted, { fontStyle: "italic", lineHeight: 19 }]}>{note}</Text>}
