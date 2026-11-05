@@ -29,7 +29,7 @@
         "item.rustmoor.rat_scrap": ">=10"
       },
       "success": {
-        "text": "The canister comes back within the hour holding a carriage clock that has not struck since anyone can remember, and a note: \"A clerk's. If it strikes, I can take 80 off.\" You take the back off, find a hairspring wound round itself like a nervous cat, and coax it straight with wire picked from ten pieces of your Rat Scrap. At six o'clock the clock strikes seven. The clerk, Pip reports, accepts this as close enough, and does not expect to be asked again. You owe 1,320 Crowns. For the first time, Pip's note does not say sorry.",
+        "text": "The canister comes back within the hour holding a carriage clock that has not struck since anyone can remember, and a note: \"A clerk's. If it strikes, I can take 80 off.\" You take the back off, find a hairspring wound round itself like a nervous cat, and coax it straight with wire picked from ten pieces of your Rat Scrap. At six o'clock the clock strikes seven. The clerk, Pip reports, accepts this as close enough, and does not expect to be asked again. You owe 1,320 Crowns. Pip's report does not say sorry.",
         "changes": {
           "flag.owes_back_rent": 1,
           "flag.back_rent_reduced": 1,

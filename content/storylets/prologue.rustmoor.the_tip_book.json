@@ -14,7 +14,7 @@
     {
       "label": "Give Professor Brassbuckle as your next of kin.",
       "success": {
-        "text": "The tip-keeper writes it down without comment, and leaves a space under it for the ruler, which is somehow worse than comment. Word of it reaches the Polytechnic ahead of you. Brassbuckle does not mention it, but your next delivery of Polytechnic stores comes with a note in her hand, \"Come back in one piece,\" underlined twice, and an extra Ration.",
+        "text": "The tip-keeper writes it down without comment, and leaves a space under it for the ruler, which is somehow worse than comment. Word of it reaches the Polytechnic ahead of you. Brassbuckle does not mention it, but a parcel from the Polytechnic comes with a note in her hand, \"Come back in one piece,\" underlined twice, and an extra Ration.",
         "changes": {
           "item.rustmoor.rustmoor_ration": "+1",
           "prologue.progress": 50

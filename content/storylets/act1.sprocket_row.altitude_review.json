@@ -26,7 +26,7 @@
       "label": "Take the brass plate from your waistcoat and lay it on the Gazette, beside the headline.",
       "requires": { "flag.kept_brass_plate": "==1" },
       "success": {
-        "text": "Brassbuckle looks at the plate, then at the headline, then at you. She does not ask how long it has been in your pocket. \"Put that away,\" she says, not unkindly, \"before somebody asks to see it.\" You put it away. She stands at the window a while longer than the weather deserves.",
+        "text": "Brassbuckle looks at the plate, then at the headline, then at you. She does not ask why you kept it. \"Put that away,\" she says, not unkindly, \"before somebody asks to see it.\" You put it away. She stands at the window a while longer than the weather deserves.",
         "changes": { "act1.progress": 5 }
       }
     },

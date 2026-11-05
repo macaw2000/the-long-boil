@@ -107,7 +107,8 @@ export function SkillView({
     setChosen(id);
     // A first piece of gear is one piece: the usual hour's worth asked for 390 silk.
     const output = content.actions.find((action) => action.id === id)?.outputs[0]?.item;
-    const first = content.pieces.some((piece) => piece.item === output) && (planner.held.get(output!) ?? 0) === 0;
+    const gear = content.pieces.some((piece) => piece.item === output) || content.weapons.some((weapon) => weapon.item === output);
+    const first = gear && (planner.held.get(output!) ?? 0) === 0;
     setCount(String(first ? 1 : planner.countFor(id, DEFAULT_SECONDS)));
   };
   const guided = (id: string) => guideAt === `job:${id}`;

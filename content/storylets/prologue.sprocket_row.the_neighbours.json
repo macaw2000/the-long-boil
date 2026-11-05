@@ -14,7 +14,7 @@
     {
       "label": "Promise the Row that next time you are down in Rustmoor, you will find where the rats keep its things, and bring them home.",
       "success": {
-        "text": "The promise goes down the Row the way the news of the Boiler did, gaining detail as it travels. By the pie shop you have found the rats' hoard already. By the corner you have fought something the size of a pony for it, with a spanner, and won. The pie shop sends round two pies to see whether you are eating, and a third for the heaps, with a note: \"Not the last, we hope.\" A canister drops into the tray before the day is out, with a note in Brassbuckle's hand: \"The Polytechnic, where I teach, will want your name in its register tomorrow. I will call for you. There is a line in that book you should see for yourself.\"",
+        "text": "The promise goes down the Row the way the news of the Boiler did, gaining detail as it travels. By the pie shop you have found the rats' hoard already. By the corner you have fought something the size of a pony for it, with a spanner, and won. The pie shop sends round two pies to see whether you are eating, and a third for the heaps, with a note: \"Not the last, we hope.\" A canister drops into the tray before the day is out, with a note in Brassbuckle's hand: \"The Polytechnic, where I teach, will want your name in its register tomorrow. I will call for you. It is only a book and a signature, whatever you may have heard.\"",
         "changes": {
           "item.rustmoor.rustmoor_ration": "+3",
           "prologue.progress": 30
@@ -24,7 +24,7 @@
     {
       "label": "Shut the door, and chalk on it: CLOSED FOR REPAIRS. OPINIONS BY APPOINTMENT.",
       "success": {
-        "text": "The sign is read aloud the length of the Row before the chalk is dry, and improved twice before the hour is out. Nobody calls. But the next day there are three tins of bent nails on your step, saved from somewhere the rats had not reached, and no note. The Row has decided to wait and see. That is as close to a welcome as Sprocket Row gives anyone. A canister drops into the tray before the day is out, with a note in Brassbuckle's hand: \"The Polytechnic, where I teach, will want your name in its register tomorrow. I will call for you. There is a line in that book you should see for yourself.\"",
+        "text": "The sign is read aloud the length of the Row before the chalk is dry, and improved twice before the hour is out. Nobody calls. But the next time you open the door there are three tins of bent nails on your step, saved from somewhere the rats had not reached, and no note. The Row has decided to wait and see. That is as close to a welcome as Sprocket Row gives anyone. A canister drops into the tray before the day is out, with a note in Brassbuckle's hand: \"The Polytechnic, where I teach, will want your name in its register tomorrow. I will call for you. It is only a book and a signature, whatever you may have heard.\"",
         "changes": {
           "item.rustmoor.bent_nails": "+3",
           "prologue.progress": 30

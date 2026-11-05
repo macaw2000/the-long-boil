@@ -20,7 +20,7 @@ const REFRESH_MS = 10_000;
 function qualityName(name: string): string {
   const last = name.split(".").pop() ?? name;
   if (name.endsWith(".progress")) return `${titleCase(name.split(".")[0] ?? name)} progress`;
-  return titleCase(last.replace(/_/g, " "));
+  return last.split("_").map(titleCase).join(" ");
 }
 
 /** One line for every beat waiting only on visits: where, and from when a visit counts. */
@@ -192,7 +192,7 @@ export function Story({
 
       <Glow active={guideAt === "scenes"} guide style={{ gap: 12 }}>
         <Text style={ui.heading}>Open to you</Text>
-        {view.storylets.length === 0 && (
+        {view.storylets.length === 0 && view.letters.length === 0 && (
           <Text style={ui.muted}>Nothing waits for you just now. Work the bench, and come back when the city has moved.</Text>
         )}
         {view.storylets.map((scene) => (
@@ -207,7 +207,7 @@ export function Story({
           <Text style={[ui.heading, { fontSize: 15 }]}>Coming up</Text>
           {view.cooling.map((scene) => (
             <Text key={scene.id} style={ui.muted}>
-              {titleCase(scene.location.replace(/_/g, " "))} again from{" "}
+              {scene.location.split("_").map(titleCase).join(" ")} again from{" "}
               {new Date(scene.opensAt).toLocaleString([], { weekday: "short", hour: "2-digit", minute: "2-digit" })}.
             </Text>
           ))}

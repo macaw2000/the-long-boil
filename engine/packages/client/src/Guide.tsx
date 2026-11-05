@@ -49,7 +49,7 @@ const SILK = "item.rustmoor.umbrella_silk";
 const WRAPS_SILK = 10;
 const WRAPS = "item.rustmoor.silk_hand_wraps";
 
-function held(tinker: Tinker, item: string): number {
+export function held(tinker: Tinker, item: string): number {
   return tinker.inventory.filter((stack) => stack.item === item).reduce((sum, stack) => sum + stack.qty, 0);
 }
 
@@ -364,7 +364,7 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
     return { text: `The bench has work for ${Math.round(queued / 360_000) / 10}h, the Boiler steam for ${Math.round(steamLeft / 360_000) / 10}h. Queue more so nothing sits idle.`, place: `skill:${skill}` };
   }
   // Fewer Rations than a night of fights eats: say where more come from.
-  if (held(tinker, content.ration.item) < LOW_RATIONS) return { text: "Rations are running low: cook more at Cooking, or buy them at the grocer's counter in the Exchange.", place: "exchange" };
+  if (held(tinker, content.ration.item) < LOW_RATIONS) return { text: "Rations are running low: cook more at Cooking, with what the grocer's counter in the Exchange sells.", place: "exchange" };
   // An unpaid bill comes after everything that can be done now: once the week's sale is used, it is only fighting.
   const unpaid = tinker.story.debts[0];
   if (unpaid) {

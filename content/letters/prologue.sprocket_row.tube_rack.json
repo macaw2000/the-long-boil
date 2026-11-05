@@ -6,7 +6,7 @@
   "reveal_layer": 0,
   "requires": {
     "prologue.progress": ">=100",
-    "act1.progress": "==0",
+    "act1.progress": "<=15",
     "item.rustmoor.bent_nails": ">=10"
   },
   "nerve": 1,

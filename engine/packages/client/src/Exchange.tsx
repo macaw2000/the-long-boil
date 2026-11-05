@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { api, type BookLevel, type Content, type MarketView, type Outcome, type Side, type Tinker } from "./api";
 import { Glow } from "./Glow";
-import { LOW_RATIONS, THIRD_SITTING } from "./Guide";
+import { held as heldAll, LOW_RATIONS, THIRD_SITTING } from "./Guide";
 import { ItemIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
@@ -96,7 +96,7 @@ export function Bills({ tinker, act, payGuided = false }: { tinker: Tinker; act:
               </Pressable>
             </Glow>
             {short > 0 && (
-              <Text style={ui.muted}>{short.toLocaleString()} more Crowns needed. Sell something at the window below, or fight a few more rats.</Text>
+              <Text style={ui.muted}>{short.toLocaleString()} more Crowns needed. The rats pay Crowns, and the window below buys what it still can.</Text>
             )}
           </View>
         );
@@ -109,7 +109,7 @@ export function Bills({ tinker, act, payGuided = false }: { tinker: Tinker; act:
 function Window({ content, tinker, market, name, act, whole }: { content: Content; tinker: Tinker; market: MarketView | null; name: (id: string) => string; act: Act; whole: boolean }) {
   const collected = Object.entries(content.economy).filter(([item, terms]) => terms.collectorPrice !== null && (whole || heldUnbound(tinker, item) > 0));
   // The grocer opens with Cooking, or sooner if the goal line sends a player here for Rations.
-  const grocer = whole || (tinker.story.qualities["prologue.progress"] ?? 0) >= THIRD_SITTING || heldUnbound(tinker, content.ration.item) < LOW_RATIONS;
+  const grocer = whole || (tinker.story.qualities["prologue.progress"] ?? 0) >= THIRD_SITTING || heldAll(tinker, content.ration.item) < LOW_RATIONS;
   const groceries = grocer ? Object.entries(content.economy).filter(([, terms]) => terms.grocerPrice !== null) : [];
   return (
     <View style={ui.panel}>
@@ -126,7 +126,7 @@ function Window({ content, tinker, market, name, act, whole }: { content: Conten
             key={item}
             item={item}
             title={name(item)}
-            detail={`${terms.collectorPrice} each · you hold ${held} · they take ${left} more`}
+            detail={`${terms.collectorPrice} each · you hold ${held.toLocaleString()} · they take ${left} more`}
             max={Math.min(held, left)}
             verb="Sell"
             onSubmit={(qty) => act(api.sellToCollector(tinker.id, item, qty))}
@@ -139,7 +139,7 @@ function Window({ content, tinker, market, name, act, whole }: { content: Conten
           key={item}
           item={item}
           title={name(item)}
-          detail={`${terms.grocerPrice} each · you hold ${heldUnbound(tinker, item)}`}
+          detail={`${terms.grocerPrice} each · you hold ${heldUnbound(tinker, item).toLocaleString()}`}
           max={Math.floor(tinker.crowns / (terms.grocerPrice ?? 1))}
           verb="Buy"
           onSubmit={(qty) => act(api.buyFromGrocer(tinker.id, item, qty))}

@@ -31,7 +31,7 @@
     {
       "id": "equip",
       "speaker": "Professor Brassbuckle",
-      "line": "Take up a spanner and go after those rats; the fighting runs by itself, as the bench does. I have left a crate of Rations from the old stock: you eat one whenever a rat hurts you."
+      "line": "Take up a spanner and go after those rats; the fighting runs by itself, as the bench does. I have left a crate of Rations from the old stock: you eat one when the bites add up."
     },
     {
       "id": "rats",
@@ -72,7 +72,7 @@
     {
       "id": "rations",
       "speaker": "Professor Brassbuckle",
-      "line": "Do not fret over Rations. You eat one by yourself when a rat hurts you. If you run out, no lasting harm: each time the rats lay you flat you lose a minute, then get up and fight on."
+      "line": "Do not fret over Rations. You eat one by yourself when the bites add up. If you run out, no lasting harm: each time the rats lay you flat you lose a minute, then get up and fight on."
     }
   ]
 }

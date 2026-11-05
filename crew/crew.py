@@ -129,9 +129,12 @@ def agent_prompt(name):
 
 
 def reveals_to(layer):
-    """reveals.md with every table row above the cleared layer cut out."""
+    """The reveals with every table row above the cleared layer cut out. Up to
+    Layer 1 this starts from the generated slice: cutting rows from reveals.md
+    alone left its clearance paragraphs in the prompt."""
+    source = os.path.join(CANON, "slices", "reveals-layer1.md") if layer <= 1 else os.path.join(CANON, "reveals.md")
     out = []
-    for line in read(os.path.join(CANON, "reveals.md")).splitlines():
+    for line in read(source).splitlines():
         m = re.match(r"\|\s*(\d+)\s*\|", line)
         if m and int(m.group(1)) > layer:
             continue

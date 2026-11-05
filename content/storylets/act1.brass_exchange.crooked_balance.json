@@ -26,7 +26,7 @@
       "label": "Tip five pieces of Rat Scrap onto the counter, to be set against your name.",
       "requires": { "needle.arrears": ">=1", "item.rustmoor.rat_scrap": ">=5" },
       "success": {
-        "text": "The clerk weighs your scrap on the crooked balance, naturally, and enters a figure that is fair to within a hair. You know which way the hair goes. Still, the slip comes back initialled, and the Arrears dial under your portrait drops a mark.",
+        "text": "The clerk weighs your scrap on the crooked balance, naturally, and enters a figure that is fair to within a hair. You know which way the hair goes. Still, the slip comes back initialled, and the figure against your name comes down a line.",
         "changes": { "item.rustmoor.rat_scrap": "-5", "needle.arrears": "-1" }
       }
     },

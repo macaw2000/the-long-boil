@@ -27,4 +27,4 @@ Kettleport is grim and funny in the same breath.
 
 ## Options
 
-Every storylet gives a real choice. If one option is obviously correct, it is not a choice and the scene needs rewriting. Challenge options show their odds before the player commits; there are no hidden rolls.
+Every storylet gives a real choice. If one option is obviously correct, it is not a choice and the scene needs rewriting. The one exception is a zero-Nerve letter that only reports an earlier choice: it may have a single option, as a moment and not a decision. Challenge options show their odds before the player commits; there are no hidden rolls.

@@ -263,8 +263,9 @@ describe("the first storylets, end to end", () => {
       return played;
     };
     // The spine only: district scenes (work order 019) open alongside and never move progress.
+    // A letter still waiting on an item, such as the tube rack, is not a storylet, so not the spine.
     const spine = (id: string) =>
-      content.storylets.get(id)!.options.some((option) =>
+      content.storylets.get(id)?.options.some((option) =>
         [option.success, option.failure].some((outcome) => outcome && Object.keys(outcome.changes).some((name) => name.endsWith(".progress"))),
       );
     const visible = () => availableStorylets(tinker, story, content).map((scene) => scene.id).filter(spine);

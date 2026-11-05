@@ -113,7 +113,7 @@ The Great Kettle and the Lift move to Act I. So do the Exchange, guilds, the Nee
 11. **The Prologue's item changes** in draft 037 (Rations, Rat Scrap) are accepted without a draftsman review (Jeremy, 3 November 2026).
 12. **The bill and the economy.** Pip's bill is 1,400 Crowns, a year's rent at 350 a quarter; the repair takes 80 off for 10 Rat Scrap; a Rust Rat Runt drops 1 to 2 Crowns; Rat Scrap sells for 8. Pip's receipt scene does not wait for payment: Pip calls either way, and clearing the bill is a goal across the second and third sittings (Jeremy, 3 November 2026).
 13. **Armour counts four times as much** (ARMOUR_HALF_POINT 25, every monster's hit rescaled to keep the reference player's damage), with the draftsman to restate the tables it leaves stale and settle what a Charm is worth (Jeremy, 3 November 2026).
-14. **Start now keeps the queue.** It puts the new job first and the rest waits behind it, as far as the queue has room; a full queue loses its last job, and the screen says which first. The armour goal comes after the sitting's open scenes (Jeremy, 4 November 2026, after the third check: "making it easy to learn and play").
+14. **Start now keeps the queue.** It puts the new job first and the rest waits behind it, as far as the queue has room; a full queue loses one job, by decision 23, and the screen says which first. The armour goal comes after the sitting's open scenes (Jeremy, 4 November 2026, after the third check: "making it easy to learn and play").
 15. **The first drop page (`ledger_page_drop_1`, not canon's Ledger Page 1) waits until after the plate**, so sitting 3 does not also carry a page drop (taken on the lead session's recommendation, Jeremy, 4 November 2026).
 16. **Hester's Ledger stays hidden until the receipt finds the binding** (taken on the lead session's recommendation, Jeremy, 4 November 2026).
 17. **The goal bar names the next skill gate** once Act I opens, such as "Train Scavenging to 9": after sitting 3 nothing else told a player to train, and a player who never acts on Story's line reaches rook_at_the_tip about day 25 to 34 instead of day 7 to 9 (Jeremy, 4 November 2026, after the assayer's walk).
@@ -130,6 +130,9 @@ The Great Kettle and the Lift move to Act I. So do the Exchange, guilds, the Nee
 28. **The reveal section is reviewed again by a fresh inspector** from a pre-cut Layer-1 `reveals.md` and a GDD without the rows above Layer 1, and the reveal guard is extended to client text (Jeremy, 4 November 2026).
 29. **Canon is updated first**: decision 20's facts and the three origins go into `world.md` and `characters.md`, and the other inventions are marked (Jeremy, 4 November 2026).
 30. **Eight more invented facts stay**: the apprentice's year at a hired bench across the city; the Row never learned the apprentice's name; No. 9 was locked up after Hester went; Pip took the apprentice for a lodger; the tip-book page was begun eight weeks ago; the four people's things wait on a shelf, tied in string; the pie shop keeps unclaimed spoons in a drawer; Hester gave Pip a toffee every Friday (Jeremy, 4 November 2026).
+31. **Style allows one exception**: a zero-Nerve letter that only reports an earlier choice may have a single option (Jeremy, 4 November 2026).
+32. **Left as they are for now**: the Lowvents tripe shop stays, the missing quarter of rent stays unexplained, and `sealed_lab`'s forced drawer stays (Jeremy, 4 November 2026).
+33. **Brassbuckle steers away, not towards**: her note ending the_neighbours plays the register down, in keeping with her stance (Jeremy, 4 November 2026).
 
 ## Measuring it
 

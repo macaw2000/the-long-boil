@@ -134,7 +134,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       const lines = ledger.lines.map((line) =>
         line.id.startsWith("monster.")
           ? `${line.count} × ${name(line.id)}${line.crowns ? `, ${line.crowns} Crowns` : ""}`
-          : `${name(line.id)} × ${line.count}`,
+          : `${jobTitle(content, line.id, name)} × ${line.count}`,
       );
       const ups = ledger.levelUps.map((up) => `${titleCase(up.skill)} reached ${up.level}`);
       const fills = trades.map((note) => tradeLine(note, name));

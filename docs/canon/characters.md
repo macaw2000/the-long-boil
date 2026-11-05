@@ -36,10 +36,10 @@ Favour with a faction runs 0 to 7. It opens storylets, titles and cosmetics. It 
 
 ## Hester Vane's going
 
-Canonised by Jeremy on 4 November 2026, from work order 037's scenes (first-day plan, decisions 20 and 29).
+Canonised by Jeremy on 4 November 2026, from work order 037's scenes (first-day plan, decisions 20, 29 and 30).
 
 - Hester has been gone a year when the story opens.
-- On the Friday before she went, she gave Pip a toffee and promised the rent next week, same as ever.
+- Every Friday Hester gave Pip a toffee and promised the rent next week. The last was the Friday before she went.
 
 ## The Tinker
 
@@ -51,7 +51,7 @@ Why No. 9 came to you is the player's choice in the first scene, and sets one fl
 | Relative | `flag.origin_relative` | A distant branch of the family. Her will named you for No. 9, contents included. |
 | Stranger | `flag.origin_stranger` | You never met her. She put your name down for No. 9, and nobody can tell you why. |
 
-Invented for work order 037, for Jeremy to confirm: the apprentice spent the year at a hired bench across the city, mending other people's kettles, and the Row never learned the apprentice's name, because Hester kept them at the back and did her own talking.
+Canonised by Jeremy on 4 November 2026, from work order 037's scenes (first-day plan, decision 30): the apprentice spent the year at a hired bench across the city, mending other people's kettles, and the Row never learned the apprentice's name, because Hester kept them at the back and did her own talking. Pip took the apprentice for a lodger.
 
 ## Bosses
 

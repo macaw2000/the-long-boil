@@ -24,7 +24,7 @@
     {
       "label": "Slip the plate into your waistcoat pocket and say nothing.",
       "success": {
-        "text": "The plate goes into your pocket and sits there, heavier than a playing card has any right to be. Brassbuckle's shoulders come down an inch. She hands you a No. 4 spanner and points at the Boiler's feed pump, and neither of you mentions the Gazette, not then, and not for a long while after.",
+        "text": "The plate goes into your pocket and sits there, heavier than a playing card has any right to be. Brassbuckle's shoulders come down an inch. She hands you a No. 4 spanner and points at the Boiler's feed pump, and neither of you mentions the Gazette.",
         "changes": {
           "flag.kept_brass_plate": 1,
           "prologue.progress": 100
