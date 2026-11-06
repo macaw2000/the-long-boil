@@ -134,6 +134,10 @@ The Great Kettle and the Lift move to Act I. So do the Exchange, guilds, the Nee
 32. **Left as they are for now**: the Lowvents tripe shop stays, the missing quarter of rent stays unexplained, and `sealed_lab`'s forced drawer stays (Jeremy, 4 November 2026).
 33. **Brassbuckle steers away, not towards**: her note ending the_neighbours plays the register down, in keeping with her stance (Jeremy, 4 November 2026).
 34. **Closing calls**: "tomorrow" is cut from Brassbuckle's note, since sitting 3 can come the same day; the quieter end of sitting 2 stays, to be watched in playtests; `tube_rack` keeps its tone after `the_list`; `world.md` records the rent at 350 a quarter (Jeremy, 5 November 2026).
+35. **The Charm rule stands**: 3.25 + L/20, with the seven monsters' hp raised to match; the draftsman drops "proposal" from `open_questions` at next touch (Jeremy, 5 November 2026, after the inspector's number review).
+36. **Later pages are named by their own titles**, such as "Hester's Torn Page: No. 9, accounts", to be settled across the drop pages before the first Cinderworks page is drafted; decision 27 stands until then (Jeremy, 5 November 2026).
+37. **Hester's "the line comes first" stays** at 4 Crowns against 350 (Jeremy, 5 November 2026).
+38. **The Friday runner in `drop_3` stays open**: canon does not say whether it is Pip (Jeremy, 5 November 2026).
 
 ## Measuring it
 

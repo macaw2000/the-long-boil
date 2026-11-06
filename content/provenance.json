@@ -13144,13 +13144,13 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -13164,12 +13164,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -13212,6 +13217,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -13276,13 +13286,13 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -13296,12 +13306,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -13319,6 +13334,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -13330,13 +13350,13 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -13350,12 +13370,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -13388,6 +13413,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -20596,13 +20626,13 @@
       "pointer": "/items/15",
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-05T23:54:52Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -20625,7 +20655,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "This verdict and Jeremy's approval of 2026-10-22 apply to the name before the rename to \"Hester's Torn Page\" at 62f37e4; the rename came after approval, so the row went back to validated (Jeremy agreed, 2026-11-05). Re-approval waits for his playthrough."
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved. The page keeps its name for playtests (decision 27); decision 36 renames the drop pages by title before the first Cinderworks page. Covers the rename to \"Hester's Torn Page\" at 62f37e4; Jeremy's approval of 2026-10-22 predates it, and re-approval waits for his playthrough."
       },
       "approved_by": null,
       "approved_at": null,
@@ -20659,6 +20689,11 @@
           "at": "2026-11-05T23:54:52Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -20670,13 +20705,13 @@
       "pointer": "/items/16",
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-05T23:54:52Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -20699,7 +20734,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "This verdict and Jeremy's approval of 2026-10-22 apply to the name before the rename to \"Hester's Torn Page\" at 62f37e4; the rename came after approval, so the row went back to validated (Jeremy agreed, 2026-11-05). Re-approval waits for his playthrough."
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved. The page keeps its name for playtests (decision 27); decision 36 renames the drop pages by title before the first Cinderworks page. Covers the rename to \"Hester's Torn Page\" at 62f37e4; Jeremy's approval of 2026-10-22 predates it, and re-approval waits for his playthrough."
       },
       "approved_by": null,
       "approved_at": null,
@@ -20733,6 +20768,11 @@
           "at": "2026-11-05T23:54:52Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -20744,13 +20784,13 @@
       "pointer": "/items/17",
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-05T23:54:52Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -20773,7 +20813,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "This verdict and Jeremy's approval of 2026-10-22 apply to the name before the rename to \"Hester's Torn Page\" at 62f37e4; the rename came after approval, so the row went back to validated (Jeremy agreed, 2026-11-05). Re-approval waits for his playthrough."
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved. The page keeps its name for playtests (decision 27); decision 36 renames the drop pages by title before the first Cinderworks page. Covers the rename to \"Hester's Torn Page\" at 62f37e4; Jeremy's approval of 2026-10-22 predates it, and re-approval waits for his playthrough."
       },
       "approved_by": null,
       "approved_at": null,
@@ -20807,6 +20847,11 @@
           "at": "2026-11-05T23:54:52Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -20818,13 +20863,13 @@
       "pointer": "/items/18",
       "revision": null,
       "work_order": "docs/work-orders/008-rustmoor-drops.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-05T23:54:52Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -20847,7 +20892,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "This verdict and Jeremy's approval of 2026-10-22 apply to the name before the rename to \"Hester's Torn Page\" at 62f37e4; the rename came after approval, so the row went back to validated (Jeremy agreed, 2026-11-05). Re-approval waits for his playthrough."
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved. The page keeps its name for playtests (decision 27); decision 36 renames the drop pages by title before the first Cinderworks page. Covers the rename to \"Hester's Torn Page\" at 62f37e4; Jeremy's approval of 2026-10-22 predates it, and re-approval waits for his playthrough."
       },
       "approved_by": null,
       "approved_at": null,
@@ -20881,6 +20926,11 @@
           "at": "2026-11-05T23:54:52Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -23588,13 +23638,13 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -23608,6 +23658,7 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
@@ -23616,7 +23667,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass with notes: Crown prices in prose are a taste call for Jeremy. Reviewed files as of the 2026-10-28T00:22:11Z validator run. Applies to the content before work order 037; the 037 changes are not yet reviewed."
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved. Carried from the earlier review: Crown prices in prose are a taste call for Jeremy."
       },
       "approved_by": null,
       "approved_at": null,
@@ -23645,6 +23696,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -23770,13 +23826,13 @@
       "pointer": "/monsters/4",
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -23790,12 +23846,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -23818,6 +23879,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -23829,13 +23895,13 @@
       "pointer": "/monsters/2",
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -23849,12 +23915,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -23877,6 +23948,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -23888,13 +23964,13 @@
       "pointer": "/monsters/1",
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -23908,12 +23984,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -23936,6 +24017,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -23947,13 +24033,13 @@
       "pointer": "/monsters/3",
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -23967,12 +24053,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -23995,6 +24086,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -24006,13 +24102,13 @@
       "pointer": "/monsters/0",
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24026,12 +24122,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -24054,6 +24155,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -24065,13 +24171,13 @@
       "pointer": "/monsters/3",
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24085,12 +24191,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -24163,6 +24274,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -24174,13 +24290,13 @@
       "pointer": "/monsters/0",
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24194,12 +24310,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -24272,6 +24393,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -24283,13 +24409,13 @@
       "pointer": "/monsters/1",
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24303,12 +24429,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -24381,6 +24512,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -24392,13 +24528,13 @@
       "pointer": "/monsters/2",
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24412,12 +24548,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -24490,6 +24631,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -24501,13 +24647,13 @@
       "pointer": "/monsters/4",
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -24521,12 +24667,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -24619,6 +24770,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -26431,13 +26587,13 @@
       "pointer": null,
       "revision": 17,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -26451,12 +26607,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved. Note-text fixes pending for the draftsman, no numbers affected. The Charm rule stands (decision 35)."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -26619,6 +26780,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -26916,13 +27082,13 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -26936,12 +27102,17 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved. Note-text fixes pending for the draftsman, no numbers affected."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -27099,6 +27270,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -27110,13 +27286,13 @@
       "pointer": null,
       "revision": 1,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "draftsman",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-04T03:00:33Z",
+        "run": "2026-11-06T00:06:53Z",
         "checks": [
           "fixtures",
           "schema",
@@ -27130,6 +27306,7 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
           "work_orders"
         ],
@@ -27138,7 +27315,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass. Reviewed files as of the 2026-10-24T16:11:37Z run. Faucet +8,122 Crowns a week (15.8%), accepted by Jeremy until Calibrating exists. Applies to the content before work order 037; the 037 changes are not yet reviewed."
+        "notes": "Pass (work order 037, 2026-11-05): inspector's review at 9d0ea17, no fails. File unchanged from 9d0ea17 to a8d52b5, checked with git. Not approved. Carried from the earlier review: faucet +8,122 Crowns a week (15.8%), accepted by Jeremy until Calibrating exists."
       },
       "approved_by": null,
       "approved_at": null,
@@ -27177,6 +27354,11 @@
           "at": "2026-11-04T03:00:33Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-06T00:07:49Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null

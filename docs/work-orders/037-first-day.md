@@ -1,7 +1,7 @@
 # Work order 037: the first day, in three sittings
 
 **Agents:** `scrivener` for the scenes and guide lines; the lead session for the client and guide code; `educator` on every draft, before the inspector; `inspector` for voice, lore and reveal; `assayer` for the walk; `registrar` for the rows
-**Status:** open (3 November 2026).
+**Status:** closed (5 November 2026). Shipped to dev in a8d52b5; every row is at reviewed, awaiting Jeremy's approval. Left over: the Great Kettle and the Lift get their own work order (decision 26); the draftsman's note fixes in combat and economy tuning, and dropping "proposal" from the Charm rule (decision 35); the drop pages renamed by title before the first Cinderworks page (decision 36); the assayer's question on how days 2 to 4 feel at 100 Crowns an hour; Jeremy's spot-check of `docs/canon/slices/gdd-cleared.md`.
 **Blocks:** the next round of playtests. Supersedes the first-session parts of work orders 021, 035 and 036, whose hooks it keeps.
 
 ## Why this one
