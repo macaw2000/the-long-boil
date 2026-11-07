@@ -45,6 +45,7 @@ const app = buildApi({
   ...(payments ? { payments } : {}),
   ...(siteUrl ? { siteUrl } : {}),
   logRequest: (line) => console.log(line),
+  adminEmails,
 });
 if (dev) console.log("dev clock on: POST /dev/skip moves time forward");
 console.log(payments ? `payments: Stripe Checkout, ${payments.testMode ? "test mode" : "LIVE"}` : "payments: none (crates are not sold for money)");

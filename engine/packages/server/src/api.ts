@@ -69,6 +69,8 @@ export interface ApiOptions {
   broadcast?: Broadcast;
   /** Where each finished request is written as one JSON line, for finding a playtester's trouble in the logs; tests leave it off. */
   logRequest?: (line: string) => void;
+  /** Accounts the admin console leaves out of who comes back: the people running the playtest. */
+  adminEmails?: string[];
   /** Real sign-in; without it, the dev login trusts the login and Tinker id it is given. */
   auth?: Auth;
   /** A path the API also answers under, such as /api behind CloudFront, which sends /api/* to the server unchanged. */
@@ -168,6 +170,7 @@ export function buildApi({
   payments,
   siteUrl = "http://localhost:8081",
   logRequest,
+  adminEmails = [],
 }: ApiOptions): FastifyInstance {
   const app = Fastify(
     prefix ? { rewriteUrl: (request) => (request.url?.startsWith(`${prefix}/`) ? request.url.slice(prefix.length) : (request.url ?? "/")) } : {},
@@ -641,7 +644,7 @@ export function buildApi({
 
   // The admin console (milestone 14). Admins only: the preHandler refuses anyone else under sign-in,
   // and the dev login, which has no one to tell apart, is everyone's admin.
-  app.get("/admin/overview", async () => overview(db, content, online.size));
+  app.get("/admin/overview", async () => overview(db, content, online.size, adminEmails));
   app.get<{ Querystring: { q?: string } }>("/admin/players", async (request) => ({ players: await players(db, content, request.query.q ?? "") }));
   app.get<{ Params: { account: string } }>("/admin/players/:account", async (request) => player(db, content, Number(request.params.account)));
   app.get("/admin/purchases", async () => ({ purchases: await purchases(db, content) }));

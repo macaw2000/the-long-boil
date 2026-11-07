@@ -392,6 +392,7 @@ export interface AdminOverview {
   online: number;
   revenue: { cents: number; crates: number; buyers: number; refunded: number };
   funnel: { label: string; tinkers: number }[];
+  returns: { label: string; back: number; of: number; tooNew: number }[];
 }
 
 export interface AdminPlayer {
@@ -403,7 +404,7 @@ export interface AdminPlayer {
   lastSeenAt: string | null;
   ban: AdminBan | null;
   spentCents: number;
-  tinkers: { id: number; name: string; totalLevel: number; act1: number; crowns: number; cogs: number }[];
+  tinkers: { id: number; name: string; totalLevel: number; act1: number; stage: string; visits: number; crowns: number; cogs: number }[];
 }
 
 export interface AdminPurchase {

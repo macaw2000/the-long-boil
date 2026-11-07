@@ -100,6 +100,7 @@ Milestones 1 to 6 are built. The GDD makes Kettleport a shared city (sections 6 
     - **Purchases:** every Stripe purchase, newest first, refunds struck through.
     - **Accounts now keep** the email and provider they sign in with and when they were last seen (wall clock, at most once a minute), shown only to admins. The privacy page says so (Jeremy chose to store emails, 2 November 2026).
     - **Bans, chosen per ban** (Jeremy, 2 November 2026): a **chat ban** stops posting and hides the account's messages from everyone, and it plays on; a **full ban** also refuses every route but `/me`, which says why, and cancels the account's open Exchange orders, returning goods and Crowns. Lifting either restores everything; nothing is deleted. An admin can also remove one chat message.
+    - **Who comes back** (Jeremy, 6 November 2026, after no tester came back past their first day): the Overview shows how many accounts were seen again an hour, 12 hours, 3 days and 7 days after their first visit, from counted visits on the wall clock, leaving out admins and anyone too new to have had the chance. The funnel gains the first two sittings, and each Tinker in Players shows its visits and the sitting it is on.
     - Not yet: the console on phones (desktop only), live updates (it refreshes on demand), and an audit log of admin actions.
 
 ## Prerequisites on this machine

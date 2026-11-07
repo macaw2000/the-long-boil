@@ -105,6 +105,24 @@ function OverviewView() {
           </View>
         ))}
       </View>
+      <View style={[ui.panel, { gap: 8 }]}>
+        <Text style={ui.heading}>Who comes back</Text>
+        <Text style={ui.muted}>Accounts seen again that long after their first visit. Admins are left out, and so is anyone too new to have had the chance.</Text>
+        {data.returns.map((step) => (
+          <View key={step.label} style={{ gap: 3 }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <Text style={ui.text}>{step.label}</Text>
+              <Text style={ui.number}>
+                {step.of ? `${step.back} of ${step.of} · ${Math.round((100 * step.back) / step.of)}%` : "nobody yet"}
+                {step.tooNew ? <Text style={ui.muted}> · {step.tooNew} too new</Text> : null}
+              </Text>
+            </View>
+            <View style={{ height: 8, backgroundColor: colors.panelEdge, borderRadius: 4 }}>
+              <View style={{ width: `${step.of ? (100 * step.back) / step.of : 0}%`, height: 8, backgroundColor: colors.verdigris, borderRadius: 4 }} />
+            </View>
+          </View>
+        ))}
+      </View>
       <View style={{ alignSelf: "flex-start" }}>
         <Chip label="Refresh" active={false} onPress={reload} />
       </View>
@@ -162,7 +180,7 @@ function PlayerLine({ player, onPress }: { player: AdminPlayer; onPress: () => v
       </View>
       <Text style={ui.muted}>
         {player.tinkers.length
-          ? player.tinkers.map((tinker) => `${tinker.name} (level ${tinker.totalLevel}, Act I ${tinker.act1}%)`).join(" · ")
+          ? player.tinkers.map((tinker) => `${tinker.name} (level ${tinker.totalLevel}, ${tinker.stage}, ${tinker.visits} ${tinker.visits === 1 ? "visit" : "visits"})`).join(" · ")
           : "No Tinker yet"}
       </Text>
     </Pressable>

@@ -63,7 +63,28 @@ export async function banOfTinker(db: Db, tinkerId: number): Promise<Ban | null>
   return banOf(row);
 }
 
+const HOUR_MS = 3_600_000;
 const DAY_MS = 86_400_000;
+
+/** prologue.progress at the end of the first and second sittings (docs/first-day-plan.md); the third ends the Prologue at 100. */
+const SITTING_1_DONE = 8;
+const SITTING_2_DONE = 30;
+
+/** How long after a first visit counts as coming back. An hour is the least that counts as a visit; 12 hours is one full Boiler. */
+const RETURNS = [
+  { label: "Came back at all", hours: 1 },
+  { label: "After 12 hours", hours: 12 },
+  { label: "After 3 days", hours: 72 },
+  { label: "After 7 days", hours: 168 },
+];
+
+/** The sitting a Tinker is on, then how far through Act I. */
+function stageOf(prologue: number, act1: number): string {
+  if (prologue < SITTING_1_DONE) return "sitting 1";
+  if (prologue < SITTING_2_DONE) return "sitting 2";
+  if (prologue < 100) return "sitting 3";
+  return `Act I ${act1}%`;
+}
 
 /** Total level across a Tinker's skills, from the XP curve. */
 function totalLevel(rules: RulesContent, skills: { xp: number }[]): number {
@@ -81,10 +102,48 @@ export interface Overview {
   online: number;
   revenue: { cents: number; crates: number; buyers: number; refunded: number };
   funnel: { label: string; tinkers: number }[];
+  returns: ReturnRow[];
+}
+
+/** Of the accounts whose first visit is at least this old, how many visited again that long after it. */
+export interface ReturnRow {
+  label: string;
+  back: number;
+  of: number;
+  /** Accounts first seen too recently to have had the chance, left out of `of`. */
+  tooNew: number;
+}
+
+/**
+ * Who comes back, from counted visits on the wall clock (recorded_at, since
+ * this is about real people and an admin can skip the game's clock). Accounts
+ * on `admins` are left out: a playtest is small enough for the people running
+ * it to swamp the figure.
+ */
+async function returns(db: Db, admins: string[], at: number): Promise<ReturnRow[]> {
+  const accounts = (
+    await db.query(
+      `SELECT min(e.recorded_at) AS first, max(e.recorded_at) AS last
+       FROM events e JOIN tinkers t ON t.id = e.tinker_id JOIN accounts a ON a.id = t.account_id
+       WHERE e.type = 'check_in_counted' AND lower(coalesce(a.email, '')) <> ALL($1)
+       GROUP BY a.id`,
+      [admins.map((email) => email.trim().toLowerCase())],
+    )
+  ).rows.map((row) => ({ first: row.first.getTime() as number, last: row.last.getTime() as number }));
+  return RETURNS.map(({ label, hours }) => {
+    const span = hours * HOUR_MS;
+    const eligible = accounts.filter((account) => at - account.first >= span);
+    return {
+      label,
+      back: eligible.filter((account) => account.last - account.first >= span).length,
+      of: eligible.length,
+      tooNew: accounts.length - eligible.length,
+    };
+  });
 }
 
 /** The headline numbers: sign-ups by day for two weeks, who is active, revenue, and how far Tinkers get. */
-export async function overview(db: Db, content: GameContent, online: number, at = Date.now()): Promise<Overview> {
+export async function overview(db: Db, content: GameContent, online: number, admins: string[] = [], at = Date.now()): Promise<Overview> {
   const now = new Date(at);
   const counts = (
     await db.query(
@@ -127,12 +186,15 @@ export async function overview(db: Db, content: GameContent, online: number, at 
     revenue: { cents: Number(sales.crates) * priceOf(content), crates: Number(sales.crates), buyers: Number(sales.buyers), refunded: Number(sales.refunded) },
     funnel: [
       { label: "Started a Tinker", tinkers },
+      { label: "Finished sitting 1", tinkers: await quality("prologue.progress", SITTING_1_DONE) },
+      { label: "Finished sitting 2", tinkers: await quality("prologue.progress", SITTING_2_DONE) },
       { label: "Finished the Prologue", tinkers: await quality("prologue.progress", 100) },
       { label: "Act I under way", tinkers: await quality("act1.progress", 20) },
       { label: "Beat Scrapjaw", tinkers: scrapjaw },
       { label: "Earned the Foundry Pass", tinkers: await quality("act1.progress", 80) },
       { label: "Chose an Ambition", tinkers: await quality("act1.progress", 100) },
     ],
+    returns: await returns(db, admins, at),
   };
 }
 
@@ -145,7 +207,7 @@ export interface PlayerRow {
   lastSeenAt: string | null;
   ban: Ban | null;
   spentCents: number;
-  tinkers: { id: number; name: string; totalLevel: number; act1: number; crowns: number; cogs: number }[];
+  tinkers: { id: number; name: string; totalLevel: number; act1: number; stage: string; visits: number; crowns: number; cogs: number }[];
 }
 
 /** Every account, most recently seen first, optionally narrowed by email, login or Tinker name. */
@@ -165,8 +227,11 @@ export async function players(db: Db, content: GameContent, search = "", limit =
   const ids = accounts.map((row) => row.id);
   const tinkers = (
     await db.query(
-      `SELECT t.id, t.account_id, t.name, t.crowns, t.cogs, coalesce(q.value, 0) AS act1
-       FROM tinkers t LEFT JOIN qualities q ON q.tinker_id = t.id AND q.name = 'act1.progress'
+      `SELECT t.id, t.account_id, t.name, t.crowns, t.cogs, coalesce(q.value, 0) AS act1, coalesce(p.value, 0) AS prologue,
+              (SELECT count(*) FROM events e WHERE e.tinker_id = t.id AND e.type = 'check_in_counted') AS visits
+       FROM tinkers t
+       LEFT JOIN qualities q ON q.tinker_id = t.id AND q.name = 'act1.progress'
+       LEFT JOIN qualities p ON p.tinker_id = t.id AND p.name = 'prologue.progress'
        WHERE t.account_id = ANY($1) ORDER BY t.id`,
       [ids],
     )
@@ -199,6 +264,8 @@ export async function players(db: Db, content: GameContent, search = "", limit =
           skills.filter((skill) => String(skill.tinker_id) === String(tinker.id)).map((skill) => ({ xp: Number(skill.xp) })),
         ),
         act1: Number(tinker.act1),
+        stage: stageOf(Number(tinker.prologue), Number(tinker.act1)),
+        visits: Number(tinker.visits),
         crowns: Number(tinker.crowns),
         cogs: Number(tinker.cogs),
       })),

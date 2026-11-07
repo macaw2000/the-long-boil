@@ -4,6 +4,7 @@
 // with a Google email, and "admin:<login>" for an admin.
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { overview } from "../src/admin.js";
 import { buildApi } from "../src/api.js";
 import { Unauthorized, whoIs, type Auth } from "../src/auth.js";
 import { loadContent } from "../src/content-loader.js";
@@ -100,6 +101,36 @@ describe("the admin console", () => {
     expect((await call("GET", "/admin/purchases", "admin:jeremy")).body.purchases).toEqual([
       expect.objectContaining({ tinkerId: ada, email: "ada@example.com", crates: 2, refunded: false }),
     ]);
+  });
+
+  it("counts who comes back on the wall clock, leaving out admins and anyone too new", async () => {
+    const hours = (n: number) => new Date(Date.now() - n * 3_600_000);
+    const visit = async (tinker: number, seq: number, at: Date) =>
+      db.query("INSERT INTO events (tinker_id, seq, type, at, payload, content_version, recorded_at) VALUES ($1, $2, 'check_in_counted', $3, '{}', 'test', $3)", [
+        tinker,
+        seq,
+        at,
+      ]);
+    await db.query("DELETE FROM events WHERE type = 'check_in_counted'");
+    // Ada came back 14 hours later; Bea came once, 80 hours ago; Jeremy's own Tinker would otherwise be a third.
+    await visit(ada, 9001, hours(80));
+    await visit(ada, 9002, hours(66));
+    await visit(bea, 9001, hours(80));
+    const jeremy = (await call("POST", "/tinkers", "admin:jeremy", { login: "cognito:jeremy", name: "Jem" })).body.tinker.id;
+    await visit(jeremy, 9001, hours(80));
+    await visit(jeremy, 9002, hours(1));
+    const fresh = (await call("POST", "/tinkers", "good:cleo", { login: "cognito:cleo", name: "Cleo" })).body.tinker.id;
+    await visit(fresh, 9001, hours(2));
+    const adminEmails = ["Jeremy@example.com "];
+    const { returns } = await overview(db, content, 0, adminEmails);
+    expect(returns).toEqual([
+      { label: "Came back at all", back: 1, of: 3, tooNew: 0 },
+      { label: "After 12 hours", back: 1, of: 2, tooNew: 1 },
+      { label: "After 3 days", back: 0, of: 2, tooNew: 1 },
+      { label: "After 7 days", back: 0, of: 0, tooNew: 3 },
+    ]);
+    const { players } = (await call("GET", "/admin/players?q=ada", "admin:jeremy")).body;
+    expect(players[0].tinkers[0]).toMatchObject({ visits: 2, stage: "sitting 1" });
   });
 
   it("shows one player's events, purchases and chat", async () => {
