@@ -4,6 +4,7 @@ import { cognitoAuth } from "./auth.js";
 import { stripePayments } from "./payments.js";
 import { loadContent } from "./content-loader.js";
 import { connect, migrate } from "./db.js";
+import { sesMailer, startReminders } from "./reminders.js";
 
 const db = connect();
 const ran = await migrate(db);
@@ -50,6 +51,10 @@ const app = buildApi({
 if (dev) console.log("dev clock on: POST /dev/skip moves time forward");
 console.log(payments ? `payments: Stripe Checkout, ${payments.testMode ? "test mode" : "LIVE"}` : "payments: none (crates are not sold for money)");
 console.log(auth ? `sign-in: Cognito user pool ${userPoolId}, ${adminEmails.length} admin email(s)` : "sign-in: dev login (trusts any login)");
+// REMINDER_FROM: the address the Boiler reminder comes from (work order 039); without it, none are sent.
+const reminderFrom = process.env.REMINDER_FROM;
+if (reminderFrom && siteUrl) startReminders(db, content, sesMailer(reminderFrom, process.env.AWS_REGION ?? "us-west-2"), siteUrl, prefix ?? "", dev?.now ?? Date.now);
+console.log(reminderFrom ? `reminders: from ${reminderFrom}` : "reminders: none (no REMINDER_FROM)");
 const port = Number(process.env.PORT ?? 3000);
 // HOST=0.0.0.0 in a container; the default keeps a dev server off the network.
 const host = process.env.HOST ?? "127.0.0.1";

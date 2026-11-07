@@ -3,9 +3,9 @@
 // Boiler, Nerve, Crowns and Needles, so none of it is ever scrolled to. On a
 // phone it wraps to two rows.
 
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
-import type { Content, QueueEntry, Tinker } from "./api";
+import { api, type Content, type QueueEntry, type Tinker } from "./api";
 import { duration, seconds, titleCase } from "./format";
 import type { GlossaryTerm } from "./glossary";
 import { jobTitle } from "./jobs";
@@ -212,9 +212,12 @@ export function ActionBar({
             </Pressable>
           );
         })()}
-        <Pressable onPress={onLeave} accessibilityRole="button" accessibilityLabel={`Leave ${tinker.name}'s workshop`}>
-          <Text style={[ui.muted, { fontSize: 12 }]}>{tinker.name} · leave</Text>
-        </Pressable>
+        <View style={{ alignItems: "flex-end", gap: 2 }}>
+          <Pressable onPress={onLeave} accessibilityRole="button" accessibilityLabel={`Leave ${tinker.name}'s workshop`}>
+            <Text style={[ui.muted, { fontSize: 12 }]}>{tinker.name} · leave</Text>
+          </Pressable>
+          <ReminderSwitch />
+        </View>
       </View>
     </View>
   );
@@ -251,4 +254,37 @@ export function JobPicture({ content, id, size }: { content: Content; id: string
   if (content.monsters.some((monster) => monster.id === id)) return <MonsterPicture id={id} size={size} />;
   const output = content.actions.find((action) => action.id === id)?.outputs[0]?.item;
   return <ItemIcon item={output ?? "item.fallback"} size={size} />;
+}
+
+/** Email reminders, on by default (work order 039); not shown to an account with no email. */
+function ReminderSwitch() {
+  const [on, setOn] = useState<boolean | null>(null);
+  useEffect(() => {
+    api.me().then((me) => setOn(me.reminders), () => undefined);
+  }, []);
+  if (on === null) return null;
+  return (
+    <Pressable onPress={() => api.setReminders(!on).then((result) => setOn(result.reminders), () => undefined)} accessibilityRole="switch" accessibilityState={{ checked: on }}>
+      <Text style={[ui.muted, { fontSize: 12 }]}>Email reminders: {on ? "on" : "off"}</Text>
+    </Pressable>
+  );
+}
+
+/** Said once to an account made before reminders, which gets none until it has seen this (work order 039). */
+export function ReminderNotice() {
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    api.me().then((me) => setShown(me.reminderNotice), () => undefined);
+  }, []);
+  if (!shown) return null;
+  return (
+    <View style={[ui.panel, { flexDirection: "row", alignItems: "center", gap: 12, flexWrap: "wrap" }]}>
+      <Text style={[ui.text, { flex: 1, minWidth: 220 }]}>
+        New: we may email you if your Boiler runs out while you are away, at most once every two days. Turn this off any time at the top of the screen, or with the link in the email.
+      </Text>
+      <Pressable onPress={() => api.reminderNoticeSeen().then(() => setShown(false), () => undefined)} accessibilityRole="button" style={[ui.button, { paddingHorizontal: 12, paddingVertical: 4 }]}>
+        <Text style={ui.buttonText}>Got it</Text>
+      </Pressable>
+    </View>
+  );
 }

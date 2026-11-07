@@ -69,6 +69,7 @@ SCHEMA_HOMES = (
     ("work_order/", "content/work_orders/"),
     ("ledger_page/", "content/ledger/"),
     ("road/", "content/road/"),
+    ("email/", "content/email/"),
 )
 
 # Work orders 007 and 022: schema family -> the only directory it may live in. The
@@ -84,6 +85,7 @@ SCHEMA_AT_PATH = (
     ("start/", "content/start.json"),
     ("guide/", "content/guide/first_session.json"),
     ("road/", "content/road/road.json"),
+    ("email/", "content/email/boiler_reminder.json"),
     ("tuning.cog_shop/", "content/tuning/cog-shop.json"),
 )
 

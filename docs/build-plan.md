@@ -105,6 +105,8 @@ Milestones 1 to 6 are built. The GDD makes Kettleport a shared city (sections 6 
 
 15. **The road** (Jeremy, 6 November 2026, after no tester came back past their first day: "some visual indicator we can give to the player to see their progress and inspire them to continue"). Work order 038: a road at the top of Story and its dots on the NEXT bar, three stops for the first day and five for Act I, ending at the Foundry Pass. A stop is named only once reached, so the server sends no name ahead, and the next scene shows what it waits on. Stops live in `content/road/road.json` (schema `road/1`).
 
+16. **The Boiler reminder** (Jeremy, 6 November 2026: on by default, "make sure there is easy opt-out instructions on the email"). Work order 039: one email when a Boiler runs out and the player is away, at most one an account every two days, through SES from `reminders@thelongboil.com`. Every email carries a one-click opt-out, and the game has a switch. Accounts older than this see a notice in the game first, and get no reminder until they have. The server waits while SES is in its sandbox.
+
 ## Prerequisites on this machine
 
 Not installed yet: Node.js 22 LTS and Docker. With Homebrew:

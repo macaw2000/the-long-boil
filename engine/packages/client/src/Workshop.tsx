@@ -23,6 +23,7 @@ import { Ledger, STALL_REASONS } from "./Ledger";
 import { useLive } from "./live";
 import { Loadout } from "./Loadout";
 import { NewGear } from "./NewGear";
+import { ReminderNotice } from "./ActionBar";
 import { Admin } from "./Admin";
 import { BottomBar, SideNav, SkillStrip, type Place, type PlaceBadge } from "./SideNav";
 import { Shop, takeCheckoutReturn } from "./Shop";
@@ -457,12 +458,17 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     </View>
   );
 
-  const guidance =
-    step && coaching ? (
+  // The notice stands outside the guide: a tester who stopped mid-guide gets no reminder until they have seen it.
+  const guidance = (
+    <View style={{ gap: 12 }}>
+      <ReminderNotice />
+      {step && coaching ? (
       <GuideCard step={step} content={content} coaching={coaching} onAction={guideAction} onSkip={() => setGuide({ ...guide, skipped: true })} />
     ) : (
       <GoalBar goal={goal} road={tinker.story.road} onGo={setPlace} onReplay={() => setGuide({ acknowledged: [], skipped: false, opened: true, seen: guide.seen })} />
-    );
+      )}
+    </View>
+  );
 
   const loadout = shown("loadout") ? (
     <Glow active={lit.has("loadout")}>

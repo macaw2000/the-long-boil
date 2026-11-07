@@ -61,7 +61,7 @@ describe("the admin console", () => {
     expect(row.email).toBe("ada@example.com");
     expect(row.provider).toBe("Google");
     expect(row.last_seen_at).not.toBeNull();
-    expect((await call("GET", "/me", "good:ada")).body).toEqual({ login: "cognito:ada", admin: false, ban: null });
+    expect((await call("GET", "/me", "good:ada")).body).toEqual({ login: "cognito:ada", admin: false, ban: null, reminders: true, reminderNotice: false });
   });
 
   it("logs each request as one line: route pattern, status, time and login, never the URL", async () => {

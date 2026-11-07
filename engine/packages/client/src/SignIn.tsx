@@ -88,7 +88,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
       </Text>
       <Text style={[ui.heading, { fontSize: 22, textAlign: "center", color: PAPER.heading }]}>Sign in to play</Text>
       <Text style={[ui.text, { fontSize: 14, textAlign: "center", color: PAPER.muted }]}>
-        With Google or Discord, so your workshop is saved. Your email stays private and is never used for marketing.
+        With Google or Discord, so your workshop is saved. Your email stays private. We use it to run your account and for reminder emails, which you can turn off.
       </Text>
       <Text style={[ui.text, { textAlign: "center", color: PAPER.ink }]}>The tenancy of No. 9 Sprocket Row, "contents included", is yours: a workshop in Kettleport, the city that rides on steam above the boiling sea.</Text>
       <View style={{ gap: 10 }}>
@@ -595,7 +595,7 @@ function Showcase({ wide, still }: { wide: boolean; still: boolean }) {
         </Text>
         <Text style={[ui.muted, { fontSize: 14, textAlign: "center" }]}>
           You sign in with Google or Discord to play, so your workshop is saved and stays yours. We keep the email address you sign in with,
-          and nobody else sees it. We never see your password, never send you marketing, never post anything, and show no ads.
+          and we never sell it or show it to other players. The only email the game sends is a reminder you can turn off. We never see your password, never post anything, and show no ads.
         </Text>
         <View style={{ flexDirection: "row", gap: 16, marginTop: 4 }}>
           <LegalLink path="/privacy.html" label="Privacy" />

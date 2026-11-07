@@ -170,6 +170,9 @@ def run(root):
                 continue
             _check_words(report, path, story.file_id(data),
                          [(pointer, text) for pointer, text, _f in story.road_prose_fields(section, index)], act)
+    for path, data in story.email_files(root):
+        _check_words(report, path, story.file_id(data),
+                     [(pointer, text) for pointer, text, _f in story.email_prose_fields(data)], story.EMAIL_ACT)
     client = _check_client(report, root)
     storylets, letters = story.count_kinds(files)
     report.note("%d storylet file(s), %d letter file(s), %d guide file(s) as act %d, "

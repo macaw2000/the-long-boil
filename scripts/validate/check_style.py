@@ -70,6 +70,8 @@ LEDGER_TEXT_MAX_WORDS = None
 LEDGER_LIMITS = {"title": LEDGER_TITLE_MAX_WORDS, "text": LEDGER_TEXT_MAX_WORDS}
 # Work order 038: a stop's label sits under a mark at phone width.
 ROAD_LIMITS = {"title": 6, "goal": 8, "label": 4, "hint": 6}
+# Work order 039: an email to someone who may have played for a minute.
+EMAIL_LIMITS = {"subject": 10, "lines": 60, "button": 4, "opt_out": 30, "opt_out_link": 4}
 
 # docs/canon/style.md, Voice; work order 015, scope 6.
 ALWAYS_BANNED = ("the player",)
@@ -166,6 +168,15 @@ def run(root):
             for pointer, text, field in story.road_prose_fields(section, index):
                 fields += 1
                 _check_text(report, path, story.file_id(data), pointer, text, ROAD_LIMITS[field], patterns)
+    for path, data in story.email_files(root):
+        for pointer, text, field in story.email_prose_fields(data):
+            fields += 1
+            _check_text(report, path, story.file_id(data), pointer, text, EMAIL_LIMITS[field], patterns)
+        # The lines' limit is for all of them together.
+        words = sum(len(text.split()) for _p, text, field in story.email_prose_fields(data) if field == "lines")
+        if words > EMAIL_LIMITS["lines"]:
+            report.fail("too-long", path, "/lines have %d words in all; at most %d allowed"
+                        % (words, EMAIL_LIMITS["lines"]), story.file_id(data))
     unset = sorted(name for name, value in (("LEDGER_TITLE_MAX_WORDS", LEDGER_TITLE_MAX_WORDS),
                                             ("LEDGER_TEXT_MAX_WORDS", LEDGER_TEXT_MAX_WORDS))
                    if value is None)

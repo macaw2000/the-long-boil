@@ -269,6 +269,38 @@ def road_prose_fields(section, index):
     return out
 
 
+# --------------------------------------------------------------------------
+# Emails to players (work order 039)
+# --------------------------------------------------------------------------
+
+EMAIL_PREFIX = "email/"
+EMAIL_ACT = 0  # it may reach someone who played for a minute
+
+
+def email_files(root):
+    """(path, data) for every parsed content file declaring email/*, anywhere
+    under content/ (the schema check reports one in the wrong place)."""
+    out = []
+    for path in lib.content_files(root):
+        data, error = lib.load_json(root, path)
+        if error or not isinstance(data, dict):
+            continue
+        if declared(data).startswith(EMAIL_PREFIX):
+            out.append((path, data))
+    return out
+
+
+def email_prose_fields(data):
+    """(pointer, text, field) for an email's words, leniently."""
+    out = [("/" + field, data[field], field) for field in ("subject", "button", "opt_out", "opt_out_link")
+           if isinstance(data.get(field), str)]
+    lines = data.get("lines")
+    for index, line in enumerate(lines if isinstance(lines, list) else []):
+        if isinstance(line, str):
+            out.append(("/lines/%d" % index, line, "lines"))
+    return out
+
+
 def ledger_prose_fields(data):
     """(pointer, text, field) for the page's title and text, leniently: a
     field that is missing or not a string is skipped (the schema check's to

@@ -8,6 +8,7 @@
     "migrate": "node --experimental-strip-types src/migrate-cli.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-sesv2": "3.1164.0",
     "@fastify/cors": "11.2.0",
     "@fastify/websocket": "11.3.2",
     "@long-boil/rules": "0.1.0",

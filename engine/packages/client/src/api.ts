@@ -459,7 +459,9 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 
 export const api = {
   content: () => request<Content>("GET", "/content"),
-  me: () => request<{ login: string | null; admin: boolean; ban: AdminBan | null }>("GET", "/me"),
+  me: () => request<{ login: string | null; admin: boolean; ban: AdminBan | null; reminders: boolean | null; reminderNotice: boolean }>("GET", "/me"),
+  reminderNoticeSeen: () => request<{ reminderNotice: boolean }>("POST", "/me/reminders/notice"),
+  setReminders: (on: boolean) => request<{ reminders: boolean }>("PUT", "/me/reminders", { on }),
   admin: {
     overview: () => request<AdminOverview>("GET", "/admin/overview"),
     players: (q = "") => request<{ players: AdminPlayer[] }>("GET", `/admin/players?q=${encodeURIComponent(q)}`),

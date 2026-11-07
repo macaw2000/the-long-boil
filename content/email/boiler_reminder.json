@@ -1,0 +1,13 @@
+{
+  "schema": "email/1",
+  "id": "email.boiler_reminder",
+  "subject": "Your Long Boil workshop is out of steam",
+  "lines": [
+    "{tinker}, in The Long Boil, the game you joined, your Boiler is out of steam and your workshop is idle. This is only a reminder.",
+    "Your workshop, in a city that rides on steam, can run for a stretch without you, then wait. Anything it made is waiting there.",
+    "The Boiler fills when you come back, whenever that is."
+  ],
+  "button": "Open your workshop",
+  "opt_out": "You got this because you signed up for The Long Boil, where reminders are on by default. The link below turns them off in one click, no sign-in needed.",
+  "opt_out_link": "Turn off reminders"
+}

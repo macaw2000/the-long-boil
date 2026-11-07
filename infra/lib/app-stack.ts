@@ -18,6 +18,7 @@ import * as route53 from "aws-cdk-lib/aws-route53";
 import * as targets from "aws-cdk-lib/aws-route53-targets";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
+import * as ses from "aws-cdk-lib/aws-ses";
 import type { Construct } from "constructs";
 import { deployRoleName, REGION, type Settings } from "./config.js";
 
@@ -199,6 +200,8 @@ export class AppStack extends Stack {
         SITE_URL: siteUrl,
         ADMIN_EMAILS: settings.adminEmails,
         ...(settings.devTools ? { LONG_BOIL_DEV: "1" } : {}),
+        // The Boiler reminder (work order 039) needs the domain's own address.
+        ...(settings.domainName ? { REMINDER_FROM: `The Long Boil <reminders@${settings.domainName}>` } : {}),
       },
       secrets: {
         PGUSER: ecs.Secret.fromSecretsManager(databaseSecret, "username"),
@@ -249,6 +252,15 @@ export class AppStack extends Stack {
         hostedZoneId: settings.hostedZoneId,
         zoneName: settings.hostedZoneName ?? settings.domainName,
       });
+      // Mail from the domain, DKIM-signed, for the Boiler reminder (work order 039).
+      const mail = new ses.EmailIdentity(this, "MailIdentity", {
+        identity: ses.Identity.publicHostedZone(zone),
+        mailFromDomain: `mail.${settings.domainName}`,
+      });
+      taskDefinition.addToTaskRolePolicy(
+        new iam.PolicyStatement({ actions: ["ses:SendEmail"], resources: [mail.emailIdentityArn] }),
+      );
+      taskDefinition.addToTaskRolePolicy(new iam.PolicyStatement({ actions: ["ses:GetAccount"], resources: ["*"] }));
       const target = route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution));
       const siteA = new route53.ARecord(this, "SiteA", { zone, recordName: settings.domainName, target });
       new route53.AaaaRecord(this, "SiteAaaa", { zone, recordName: settings.domainName, target });

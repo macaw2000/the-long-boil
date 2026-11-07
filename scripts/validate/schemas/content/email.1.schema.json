@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "email/1",
+  "title": "An email to a player, version 1",
+  "description": "The one file content/email/boiler_reminder.json (work order 039). 'subject' and each of 'lines' may hold {tinker}, the Tinker's name. 'button' is the link back to the game. 'opt_out' says why the email came and how to stop it, and 'opt_out_link' is the one-click link's words; both are required, so no email can ship without them. Word limits and banned words are the style check's; the reveal check reads the file as act 0. The shape is fixed by the engine's loader, so the file takes no other field, 'revision' included: its register row's revision is null.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "subject", "lines", "button", "opt_out", "opt_out_link"],
+  "properties": {
+    "schema": {"const": "email/1"},
+    "id": {"const": "email.boiler_reminder"},
+    "subject": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"},
+    "lines": {"type": "array", "minItems": 1, "maxItems": 3, "items": {"type": "string", "minLength": 1, "pattern": "\\S"}},
+    "button": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"},
+    "opt_out": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "opt_out_link": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"}
+  }
+}

@@ -6,6 +6,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { buildContent, readCogShop, type Action, type Content, type CurveRow } from "@long-boil/rules";
+import type { ReminderWords } from "./reminders.js";
 
 export interface StartStack {
   item: string;
@@ -45,6 +46,8 @@ export interface GameContent {
   ledger: ReadonlyMap<string, LedgerPage>;
   /** Brassbuckle's first-session guide (work order 021), or no steps before it is written. */
   guide: { id: string; speaker: string; line: string; button?: string }[];
+  /** The Boiler reminder's words (work order 039). */
+  reminder: ReminderWords;
 }
 
 function guideSteps(dir: string): GameContent["guide"] {
@@ -127,6 +130,7 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
     }),
     start: { inventory: start.inventory, crowns: start.crowns },
     guide: guideSteps(dir),
+    reminder: readJson(join(dir, "email", "boiler_reminder.json")),
     ledger: new Map(ledger.map((page) => [page.item, { id: page.id, item: page.item, title: page.title, text: page.text }])),
     economy,
     items,

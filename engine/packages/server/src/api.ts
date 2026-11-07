@@ -11,6 +11,7 @@ import { PURCHASES, type Purchase } from "@long-boil/rules";
 import websocket from "@fastify/websocket";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import Fastify, { type FastifyInstance } from "fastify";
+import { reminderNoticeSeen, remindersOf, remindersOff, setReminders } from "./reminders.js";
 import { liftBan, overview, player, players, purchases, removeMessage, setBan, touchAccount, type Ban, type BanKind } from "./admin.js";
 import { Unauthorized, tokenOf, type Auth } from "./auth.js";
 import { mutedAccounts, recentChat, say, setMute, whisperInbox, whisperTo } from "./chat.js";
@@ -101,7 +102,9 @@ const PING_MS = 45_000;
 const NO_GATE: TradingRules = { level: 0, days: 0 };
 
 /** Routes anyone may call, signed in or not: the load balancer's health check, the game's content, and Stripe's webhook, which carries its own signature. */
-const OPEN_ROUTES = new Set(["/health", "/content", "/stripe/webhook"]);
+/** Where to write when an opt-out link fails: the privacy page's address. */
+const OPT_OUT_CONTACT = "macaw2000@gmail.com";
+const OPEN_ROUTES = new Set(["/health", "/content", "/stripe/webhook", "/reminders/off"]);
 
 export interface DevClock {
   /** How far the server's clock runs ahead of the wall clock, in ms. */
@@ -255,7 +258,40 @@ export function buildApi({
   app.get("/health", async () => ({ ok: true }));
 
   // Who the token speaks for, so the client can list and open its own Tinkers (null under the dev login), and whether to show the dev tools.
-  app.get("/me", async (request) => ({ login: request.login, admin: request.admin, ban: request.ban }));
+  app.get("/me", async (request) => ({
+    login: request.login,
+    admin: request.admin,
+    ban: request.ban,
+    ...(request.login ? await remindersOf(db, request.login) : { reminders: null, reminderNotice: false }),
+  }));
+  app.post("/me/reminders/notice", async (request) => {
+    if (request.login) await reminderNoticeSeen(db, request.login);
+    return { reminderNotice: false };
+  });
+  app.put<{ Body: { on?: unknown } }>("/me/reminders", async (request) => {
+    if (typeof request.body?.on !== "boolean") throw new BadRequest("on must be true or false");
+    if (request.login) await setReminders(db, request.login, request.body.on);
+    return { reminders: request.body.on };
+  });
+
+  // An email's opt-out (work order 039): the link a person presses, and the one-click POST a mail client
+  // sends from the List-Unsubscribe header. Open, because the token is the proof, and it never reaches the logs.
+  const optOutPage = (done: boolean) =>
+    `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>The Long Boil</title>` +
+    `<body style="font-family:Georgia,serif;max-width:480px;margin:48px auto;padding:0 16px;line-height:1.5;color:#2b2118">` +
+    (done
+      ? `<h1 style="font-size:22px">Reminders are off</h1><p>We will not email you about your Boiler again. You can turn reminders back on in the game, at the top of your workshop.</p>`
+      : `<h1 style="font-size:22px">That link did not work</h1><p>Sign in and turn reminders off at the top of your workshop, or write to <a href="mailto:${OPT_OUT_CONTACT}">${OPT_OUT_CONTACT}</a>.</p>`) +
+    `</body></html>`;
+  app.register(async (hook) => {
+    hook.addContentTypeParser("application/x-www-form-urlencoded", { parseAs: "string" }, (_request, body, done) => done(null, body));
+    const optOut = async (request: { query: unknown }, reply: { code: (status: number) => { type: (kind: string) => { send: (body: string) => unknown } } }) => {
+      const done = await remindersOff(db, String((request.query as { token?: unknown }).token ?? ""));
+      return reply.code(done ? 200 : 404).type("text/html; charset=utf-8").send(optOutPage(done));
+    };
+    hook.get("/reminders/off", optOut);
+    hook.post("/reminders/off", optOut);
+  });
 
   app.get("/content", async () => ({
     version: content.rules.version,
