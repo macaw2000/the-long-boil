@@ -227,6 +227,48 @@ def ledger_files(root):
     return out
 
 
+# --------------------------------------------------------------------------
+# The road on the Story tab (work order 038)
+# --------------------------------------------------------------------------
+
+ROAD_PREFIX = "road/"
+
+
+def road_files(root):
+    """(path, data) for every parsed content file declaring road/*, anywhere
+    under content/ (the schema check reports one in the wrong place)."""
+    out = []
+    for path in lib.content_files(root):
+        data, error = lib.load_json(root, path)
+        if error or not isinstance(data, dict):
+            continue
+        if declared(data).startswith(ROAD_PREFIX):
+            out.append((path, data))
+    return out
+
+
+def road_sections(data):
+    """(index, section) for each section that is an object, leniently."""
+    sections = data.get("sections")
+    if not isinstance(sections, list):
+        return []
+    return [(index, section) for index, section in enumerate(sections) if isinstance(section, dict)]
+
+
+def road_prose_fields(section, index):
+    """(pointer, text, field) for a section's words: its title and goal, and
+    each stop's label and hint. field is the key, for the word limits."""
+    base = "/sections/%d" % index
+    out = [("%s/%s" % (base, field), section[field], field) for field in ("title", "goal")
+           if isinstance(section.get(field), str)]
+    stops = section.get("stops")
+    for number, stop in enumerate(stops if isinstance(stops, list) else []):
+        if isinstance(stop, dict):
+            out.extend(("%s/stops/%d/%s" % (base, number, field), stop[field], field)
+                       for field in ("label", "hint") if isinstance(stop.get(field), str))
+    return out
+
+
 def ledger_prose_fields(data):
     """(pointer, text, field) for the page's title and text, leniently: a
     field that is missing or not a string is skipped (the schema check's to

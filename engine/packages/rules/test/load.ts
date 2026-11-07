@@ -35,6 +35,7 @@ export function loadRealContent(): Content {
     killTimeCap: readJson(join(CONTENT_DIR, "tuning", "combat.json")).kill_time?.floor?.KILL_TIME_CAP_FRACTION?.value,
     storylets: files("storylets"),
     letters: files("letters"),
+    road: readJson(join(CONTENT_DIR, "road", "road.json")).sections,
     workOrders: files("work_orders"),
     grocer: files("tuning")
       .filter((file) => String(file.schema ?? "").startsWith("tuning.economy"))

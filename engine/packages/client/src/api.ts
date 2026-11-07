@@ -158,6 +158,7 @@ export interface Tinker {
     openScenes: number;
     /** The nearest skill level holding back a scene, if one is. */
     nextGate?: { skill: string; level: number } | null;
+    road: RoadView | null;
     qualities: Record<string, number>;
     inInfirmary: boolean;
     /** During a stay, when a ward scene can next be played; null when not held or none will open. */
@@ -225,6 +226,20 @@ export interface SceneView {
   options: OptionView[];
 }
 
+/** The road on the Story tab (work order 038). A stop ahead has no label. */
+export interface RoadView {
+  title: string;
+  goal: string | null;
+  stops: { label: string | null; reached: boolean }[];
+  passed: number;
+  lastLabel: string | null;
+  next:
+    | { state: "open"; scene: string; reaches: boolean }
+    | { state: "nerve"; scene: string }
+    | { state: "waiting"; scene: string; needs: [string, string, number][]; hint: string | null }
+    | null;
+}
+
 export interface StoryView {
   nerve: number;
   nerveCap: number;
@@ -234,6 +249,7 @@ export interface StoryView {
   letters: SceneView[];
   storylets: SceneView[];
   upcoming: { id: string; location: string; needs: [string, string, number][] }[];
+  road: RoadView | null;
   nextVisitAt: string | null;
   cooling: { id: string; location: string; opensAt: string }[];
   backRent: number;

@@ -417,6 +417,70 @@ export function nextSkillGate(tinker: TinkerState, story: StoryState, content: C
   return nearest ? { skill: nearest.skill, level: nearest.level } : null;
 }
 
+/** A stretch of the story a player can see their way along, and the stops on it (work order 038). */
+export interface RoadSection {
+  id: string;
+  title: string;
+  /** Where the section ends, shown from its start. */
+  goal?: string;
+  /** The story quality it follows; a stop is reached when this stands at `at` or above. */
+  quality: string;
+  /** A record that must reach 1 before this section takes over, so the one before stays up, complete, until the next visit. */
+  opens_on?: string;
+  stops: { at: number; scene: string; label: string; hint?: string }[];
+}
+
+/** What stands between the Tinker and the next stop. */
+export type RoadNext =
+  /** `reaches` when playing it reaches the stop, not just a step on the way. */
+  | { state: "open"; scene: string; reaches: boolean }
+  /** The scene is open, but there is not the Nerve to play it. */
+  | { state: "nerve"; scene: string }
+  | { state: "waiting"; scene: string; needs: [string, string, number][]; hint: string | null };
+
+export interface RoadView {
+  title: string;
+  goal: string | null;
+  /** The section's stops. A stop ahead has no label: its name is earned, so it is never sent. */
+  stops: { label: string | null; reached: boolean }[];
+  /** Stops reached across every section, and the last one's name, so a new arrival can be seen across a change of section. */
+  passed: number;
+  lastLabel: string | null;
+  next: RoadNext | null;
+}
+
+/** The road as this Tinker stands on it: the first open section with a stop ahead, or the last open one when all are reached. */
+export function roadView(tinker: TinkerState, story: StoryState, content: Content, now: number): RoadView | null {
+  const progress = (section: RoadSection) => story.qualities[section.quality] ?? 0;
+  const open = content.road.filter((candidate) => !candidate.opens_on || (story.qualities[candidate.opens_on] ?? 0) >= 1);
+  const section = open.find((candidate) => candidate.stops.some((stop) => progress(candidate) < stop.at)) ?? open.at(-1);
+  if (!section) return null;
+  const value = progress(section);
+  const reached = content.road.flatMap((candidate) => candidate.stops.filter((stop) => progress(candidate) >= stop.at));
+  return {
+    title: section.title,
+    goal: section.goal ?? null,
+    stops: section.stops.map((stop) => (value >= stop.at ? { label: stop.label, reached: true } : { label: null, reached: false })),
+    passed: reached.length,
+    lastLabel: reached.at(-1)?.label ?? null,
+    next: roadNext(section, value, tinker, story, content, now),
+  };
+}
+
+/** The scene that moves the section on from here: played now if it can be, else what holds it back. */
+function roadNext(section: RoadSection, value: number, tinker: TinkerState, story: StoryState, content: Content, now: number): RoadNext | null {
+  const stop = section.stops.find((candidate) => value < candidate.at);
+  if (!stop) return null;
+  const onTheRoad = (scene: Scene) => scene.requires?.[section.quality] === `==${value}`;
+  const open = [...availableStorylets(tinker, story, content, now), ...story.hand.flatMap((id) => content.letters.get(id) ?? [])].find(onTheRoad);
+  if (open) return open.nerve <= story.nerve ? { state: "open", scene: open.id, reaches: open.id === stop.scene } : { state: "nerve", scene: open.id };
+  const waiting = upcomingStorylets(tinker, story, content).find(({ id }) => {
+    const scene = content.storylets.get(id) ?? content.letters.get(id);
+    return scene !== undefined && onTheRoad(scene);
+  });
+  return waiting ? { state: "waiting", scene: waiting.id, needs: waiting.needs, hint: stop.hint ?? null } : null;
+}
+
 /** Storylets the Tinker can see now: every one whose requirements hold and that is not cooling down. */
 export function availableStorylets(tinker: TinkerState, story: StoryState, content: Content, now = Number.NEGATIVE_INFINITY): Scene[] {
   return [...content.storylets.values()].filter(

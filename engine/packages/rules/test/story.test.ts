@@ -18,6 +18,7 @@ import {
   playScene,
   qualityOf,
   refreshStory,
+  roadView,
   availableStorylets,
   visibleNeedles,
   type StoryState,
@@ -340,5 +341,64 @@ describe("the first storylets, end to end", () => {
     const story = { ...newStory(0), qualities: { "flag.owes_back_rent": 1, "flag.back_rent_reduced": 1 } };
     expect(backRentOwed(story)).toBe(1320);
     expect(backRentOwed(newStory(0))).toBe(0);
+  });
+});
+
+describe("the road (work order 038)", () => {
+  const road = (qualities: Record<string, number>, change: Partial<StoryState> = {}) =>
+    roadView(newTinker(0), { ...newStory(0), ...change, qualities: { ...newStory(0).qualities, ...qualities } }, content, 0)!;
+
+  it("names only the stops reached, so nothing ahead reaches the client", () => {
+    const view = road({ "prologue.progress": 30, "record.check_ins": 2 });
+    expect(view.stops.map((stop) => stop.reached)).toEqual([true, true, false]);
+    expect(view.stops[1]!.label).toBeTruthy();
+    expect(view.stops[2]!.label).toBeNull();
+    expect(view.passed).toBe(2);
+    expect(view.lastLabel).toBe(view.stops[1]!.label);
+  });
+
+  it("moves on to Act I once the first day is done, keeping the count", () => {
+    const view = road({ "prologue.progress": 100, "act1.progress": 40, "record.visits_since_prologue": 1 });
+    expect(view.goal).toContain("Foundry Pass");
+    expect(view.stops.filter((stop) => stop.reached)).toHaveLength(3);
+    expect(view.passed).toBe(6);
+  });
+
+  it("keeps the finished first day up until the next visit, with no Act I words", () => {
+    const view = road({ "prologue.progress": 100 });
+    expect(view.stops.map((stop) => stop.reached)).toEqual([true, true, true]);
+    expect(view.goal).toBeNull();
+    expect(view.next).toBeNull();
+    expect(view.passed).toBe(3);
+  });
+
+  it("has every stop's scene, and has a next scene at every step of the main story", () => {
+    for (const section of content.road) {
+      for (const stop of section.stops) expect(content.storylets.has(stop.scene)).toBe(true);
+    }
+    const prologueSteps = [0, 4, 8, 10, 20, 30, 40, 50, 60, 70];
+    for (const step of prologueSteps) {
+      const hand = step === 8 ? ["prologue.sprocket_row.back_rent"] : [];
+      const view = road({ "prologue.progress": step, "record.check_ins": 3 }, { hand });
+      expect(view.next, `prologue ${step}`).not.toBeNull();
+    }
+    for (const step of [0, 5, 10, 15, 20, 30, 35, 40, 50, 60, 70]) {
+      const view = road({ "prologue.progress": 100, "act1.progress": step, "record.visits_since_prologue": 9 });
+      expect(view.next, `act 1 ${step}`).not.toBeNull();
+    }
+  });
+
+  it("says a scene is open only when there is the Nerve to play it", () => {
+    const qualities = { "prologue.progress": 30, "record.check_ins": 3 };
+    expect(road(qualities).next).toMatchObject({ state: "open", reaches: false });
+    expect(road({ "prologue.progress": 20, "record.check_ins": 3 }).next).toMatchObject({ state: "open", reaches: true });
+    expect(road(qualities, { nerve: 0 }).next?.state).toBe("nerve");
+  });
+
+  it("shows what the next scene waits on, and stops at the end of the road", () => {
+    const visited = { "prologue.progress": 100, "record.visits_since_prologue": 1 };
+    const next = road({ ...visited, "act1.progress": 35 }).next;
+    expect(next).toMatchObject({ state: "waiting", needs: [["scavenging", ">=9", 1]] });
+    expect(road({ ...visited, "act1.progress": 80 }).next).toBeNull();
   });
 });

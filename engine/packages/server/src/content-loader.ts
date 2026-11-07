@@ -120,6 +120,7 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
       killTimeCap: readJson(join(dir, "tuning", "combat.json")).kill_time?.floor?.KILL_TIME_CAP_FRACTION?.value,
       storylets: listJson(join(dir, "storylets")).map(readJson),
       letters: listJson(join(dir, "letters")).map(readJson),
+      road: readJson(join(dir, "road", "road.json")).sections,
       workOrders: existsSync(workOrderDir) ? listJson(workOrderDir).map(readJson) : [],
       grocer: [...economy].filter(([, terms]) => terms.grocerPrice !== null).map(([item]) => item),
       shop,

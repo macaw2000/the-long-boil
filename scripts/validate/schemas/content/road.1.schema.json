@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "road/1",
+  "title": "The road on the Story tab, version 1",
+  "description": "The one file content/road/road.json (work order 038): the sections of the story a player can see their way along, and the stops on each. 'act' is the act the section's words are read at, for the reveal check. 'quality' is the story quality the section follows, and a stop is reached when it stands at 'at' or above; 'at' rises through a section. 'scene' is the storylet that first takes the quality there; that it exists and sets the value is the references check's. 'label' is read only once the stop is reached. 'hint' stands in for an item the next scene waits on, which would otherwise be named by its id. 'goal' names where the section ends and is shown from the section's start. 'opens_on' is a record that must stand at 1 or more before the section takes over from the one before it, so a finished section stays up, complete, until then. The shape is fixed by the engine's loader, so the file takes no other field, 'revision' included: its register row's revision is null.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "sections"],
+  "properties": {
+    "schema": {"const": "road/1"},
+    "id": {"const": "road.main"},
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "act", "title", "quality", "stops"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+          "act": {"type": "integer", "minimum": 0, "maximum": 3},
+          "title": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"},
+          "opens_on": {"type": "string", "pattern": "^record\\.[a-z0-9_]+$"},
+          "goal": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"},
+          "quality": {"type": "string", "pattern": "^[a-z0-9_]+\\.progress$"},
+          "stops": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["at", "scene", "label"],
+              "properties": {
+                "at": {"type": "integer", "minimum": 1},
+                "scene": {"type": "string", "pattern": "^(prologue|act[1-9])\\.[a-z0-9_]+\\.[a-z0-9_]+$"},
+                "label": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"},
+                "hint": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

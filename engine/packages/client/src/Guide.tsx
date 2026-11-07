@@ -13,7 +13,7 @@
 // guide opens the rest.
 
 import { Image, Pressable, Text, View } from "react-native";
-import type { Content, GuideProgress, Tinker } from "./api";
+import type { Content, GuideProgress, RoadView, Tinker } from "./api";
 import { FIGHT } from "./jobs";
 import type { Place } from "./SideNav";
 import { colors, fonts, ui } from "./theme";
@@ -437,7 +437,7 @@ export function GuideCard({
   );
 }
 
-function GoalMeter({ label, have, need, unit = "Crowns" }: { label: string; have: number; need: number; unit?: string }) {
+export function GoalMeter({ label, have, need, unit = "Crowns" }: { label: string; have: number; need: number; unit?: string }) {
   return (
     <View style={{ gap: 3 }}>
       <Text style={[ui.muted, { fontSize: 12 }]}>
@@ -450,10 +450,23 @@ function GoalMeter({ label, have, need, unit = "Crowns" }: { label: string; have
   );
 }
 
+/** The road in small, on the NEXT bar: the section's stops, leading to Story. */
+export function RoadDots({ road, onPress }: { road: RoadView; onPress: () => void }) {
+  const reached = road.stops.filter((stop) => stop.reached).length;
+  return (
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`Story: ${reached} of ${road.stops.length} stops reached`} style={{ flexDirection: "row", gap: 3 }}>
+      {road.stops.map((stop, index) => (
+        <View key={index} style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: stop.reached ? colors.brass : colors.panelEdge }} />
+      ))}
+    </Pressable>
+  );
+}
+
 /** After the guide, one line saying what to do next, and a way back into the guide. */
-export function GoalBar({ goal, onGo, onReplay }: { goal: Goal | null; onGo: (place: Place) => void; onReplay: () => void }) {
+export function GoalBar({ goal, road, onGo, onReplay }: { goal: Goal | null; road: RoadView | null; onGo: (place: Place) => void; onReplay: () => void }) {
   return (
     <View style={[ui.panel, { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 8, paddingHorizontal: 12 }]}>
+      {road && <RoadDots road={road} onPress={() => onGo("story")} />}
       <Text style={[ui.muted, { fontSize: 11, letterSpacing: 1, color: colors.brass }]}>NEXT</Text>
       <Text style={[ui.text, { flex: 1 }]}>
         {goal?.speaker && <Text style={{ color: colors.brass }}>{goal.speaker}: </Text>}

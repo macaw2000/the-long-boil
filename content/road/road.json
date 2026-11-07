@@ -1,0 +1,65 @@
+{
+  "schema": "road/1",
+  "id": "road.main",
+  "sections": [
+    {
+      "id": "first_day",
+      "act": 0,
+      "title": "Your First Day",
+      "quality": "prologue.progress",
+      "stops": [
+        {
+          "at": 8,
+          "scene": "prologue.sprocket_row.rats_in_the_workshop",
+          "label": "The First Bite"
+        },
+        {
+          "at": 30,
+          "scene": "prologue.sprocket_row.the_neighbours",
+          "label": "The Row Has Opinions"
+        },
+        {
+          "at": 100,
+          "scene": "prologue.sprocket_row.brass_plate",
+          "label": "Two Figures Disagree"
+        }
+      ]
+    },
+    {
+      "id": "act1",
+      "opens_on": "record.visits_since_prologue",
+      "act": 1,
+      "title": "Hester's Figures",
+      "goal": "Ends with a Foundry Pass in your hand.",
+      "quality": "act1.progress",
+      "stops": [
+        {
+          "at": 15,
+          "scene": "act1.polytechnic.sealed_lab",
+          "label": "The Rats Have It"
+        },
+        {
+          "at": 30,
+          "scene": "act1.lowvents.bottom_rim",
+          "label": "Forty Fathoms Out"
+        },
+        {
+          "at": 40,
+          "scene": "act1.rustmoor.rook_at_the_tip",
+          "label": "Rook Gets There First"
+        },
+        {
+          "at": 60,
+          "scene": "act1.sprocket_row.two_columns",
+          "label": "Seventy, Not Six",
+          "hint": "Beat Scrapjaw in Rustmoor."
+        },
+        {
+          "at": 80,
+          "scene": "act1.brass_exchange.foundry_pass",
+          "label": "Foundry Pass in Hand"
+        }
+      ]
+    }
+  ]
+}

@@ -159,6 +159,17 @@ def run(root):
     pages = story.ledger_files(root)
     for path, data in pages:
         _check_ledger_page(report, path, data)
+    # Work order 038: a road section's words are read at its own act, though no stop ahead is ever sent.
+    for path, data in story.road_files(root):
+        for index, section in story.road_sections(data):
+            act = section.get("act")
+            if not _whole(act):
+                report.fail("not-checkable", path,
+                            "/sections/%d act is %s; it must be a whole number for the guard to "
+                            "check this section" % (index, lib.json.dumps(act)), story.file_id(data))
+                continue
+            _check_words(report, path, story.file_id(data),
+                         [(pointer, text) for pointer, text, _f in story.road_prose_fields(section, index)], act)
     client = _check_client(report, root)
     storylets, letters = story.count_kinds(files)
     report.note("%d storylet file(s), %d letter file(s), %d guide file(s) as act %d, "

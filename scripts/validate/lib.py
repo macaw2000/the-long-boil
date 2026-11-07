@@ -137,7 +137,7 @@ def collect_ids(node, pointer=""):
 # Jeremy's answer to work order 021's open question 1: the first-session
 # guide's "steps" hold the client's fixed step keys, not content ids, so the
 # guide file takes one register row (its file id).
-ID_EXEMPT_KEYS = (("tuning.economy/", "anchors"), ("guide/", "steps"))
+ID_EXEMPT_KEYS = (("tuning.economy/", "anchors"), ("guide/", "steps"), ("road/", "sections"))
 
 
 def content_ids(data):

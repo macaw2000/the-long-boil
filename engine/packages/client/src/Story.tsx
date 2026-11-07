@@ -4,12 +4,14 @@
 // Nerve cost and, for a challenge, its odds before the player commits.
 // Hester's Ledger closes the tab: the pages found, each readable once held.
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { api, type LedgerPage, type Outcome, type SceneView, type StoryOutcome, type StoryView } from "./api";
 import { titleCase } from "./format";
 import { Glow } from "./Glow";
 import { OddsDial } from "./Juice";
+import { Road } from "./Road";
+import type { Place } from "./SideNav";
 import { vignetteSource } from "./Sprite";
 import type { GlossaryTerm } from "./glossary";
 import { GlossedText, Term } from "./Term";
@@ -50,21 +52,29 @@ export function Story({
   tinkerId,
   onOutcome,
   guideAt = null,
+  onGo,
 }: {
   tinkerId: number;
   onOutcome: (outcome: Outcome) => void;
   /** The guide points at the letters or the open scenes. */
   guideAt?: "letters" | "scenes" | null;
+  onGo: (place: Place) => void;
 }) {
   const [view, setView] = useState<StoryView | null>(null);
   const [pages, setPages] = useState<LedgerPage[]>([]);
   const [played, setPlayed] = useState<StoryOutcome["played"]>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // A stop reached while the tab is open, for the road to mark; opening the tab is no arrival.
+  const passed = useRef<number | null>(null);
+  const [arrived, setArrived] = useState<{ label: string | null; count: number }>({ label: null, count: 0 });
 
   const take = useCallback(
     (result: StoryOutcome) => {
       setView(result.view);
+      const road = result.view.road;
+      if (road && passed.current !== null && road.passed > passed.current) setArrived((last) => ({ label: road.lastLabel, count: last.count + 1 }));
+      if (road) passed.current = road.passed;
       onOutcome(result);
       setError(null);
       return result;
@@ -98,12 +108,15 @@ export function Story({
   if (!view) return <Text style={ui.muted}>{error ?? "Sorting the post…"}</Text>;
 
   // Beats waiting only on visits, of either count (record.visits_since_prologue opens Act I).
-  const visitOnly = view.upcoming.filter((scene) => scene.needs.every(([name]) => name === "record.check_ins" || name === "record.visits_since_prologue"));
+  // The road says what its own next scene waits on, so Coming up does not say it again.
+  const roadScene = view.road?.next?.scene;
+  const offRoad = view.upcoming.filter((scene) => scene.id !== roadScene);
+  const visitOnly = offRoad.filter((scene) => scene.needs.every(([name]) => name === "record.check_ins" || name === "record.visits_since_prologue"));
   // Only what a player can read as standing: counters and flags read as debug text to 16 of 18 cold readers.
   const progress = Object.entries(view.qualities).filter(([name]) => name.startsWith("favour.") || name.startsWith("lore."));
   // Scenes behind a job or an item wait until the screen opens the jobs, the visit after the plate.
   const opened = (view.qualities["record.visits_since_prologue"] ?? 0) >= 1;
-  const waiting = opened ? view.upcoming.filter((scene) => !visitOnly.includes(scene) && !scene.needs.some(([name]) => name.startsWith("flag."))) : [];
+  const waiting = opened ? offRoad.filter((scene) => !visitOnly.includes(scene) && !scene.needs.some(([name]) => name.startsWith("flag."))) : [];
   // Hester's notebook is found at the receipt (prologue.progress 20); nothing names it before.
   const notebookFound = (view.qualities["prologue.progress"] ?? 0) >= 20 || pages.some((page) => page.held);
 
@@ -128,6 +141,17 @@ export function Story({
           )}
           <GlossedText text={played.text} style={[ui.text, { lineHeight: 21 }]} />
         </View>
+      )}
+
+      {view.road && (
+        <Road
+          road={view.road}
+          arrived={arrived.label}
+          arrivals={arrived.count}
+          nextNerveAt={view.nextNerveAt}
+          visitLine={(needs) => nextVisitLine([{ location: "", needs }], view.nextVisitAt)}
+          onGo={onGo}
+        />
       )}
 
       <View style={[ui.panel, { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 16, zIndex: 10 }]}>

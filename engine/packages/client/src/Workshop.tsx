@@ -461,7 +461,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     step && coaching ? (
       <GuideCard step={step} content={content} coaching={coaching} onAction={guideAction} onSkip={() => setGuide({ ...guide, skipped: true })} />
     ) : (
-      <GoalBar goal={goal} onGo={setPlace} onReplay={() => setGuide({ acknowledged: [], skipped: false, opened: true, seen: guide.seen })} />
+      <GoalBar goal={goal} road={tinker.story.road} onGo={setPlace} onReplay={() => setGuide({ acknowledged: [], skipped: false, opened: true, seen: guide.seen })} />
     );
 
   const loadout = shown("loadout") ? (
@@ -504,7 +504,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     ) : place === "shop" ? (
       <Shop content={content} tinker={tinker} now={now} returned={checkoutReturn} onOutcome={apply} />
     ) : place === "story" ? (
-      <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} guideAt={at === "letters" || at === "scenes" ? at : null} />
+      <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} guideAt={at === "letters" || at === "scenes" ? at : null} onGo={setPlace} />
     ) : place === "guild" ? (
       <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} crownsHeld={tinker.crowns} />
     ) : place === "exchange" ? (

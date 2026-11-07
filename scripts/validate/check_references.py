@@ -44,6 +44,7 @@ import sys
 sys.dont_write_bytecode = True  # keep __pycache__ out of the repo
 
 import lib  # noqa: E402
+import story  # noqa: E402
 
 CHECK = "references"
 
@@ -210,6 +211,41 @@ def check_ledger_page(report, path, data, items, pages):
     return 1
 
 
+def check_road(report, root, path, data):
+    """Returns the number of references checked in the road file (work order
+    038): each stop's scene exists and sets the section's quality to the
+    stop's value, and the stops rise along the section."""
+    ident = data.get("id") if isinstance(data.get("id"), str) else None
+    scenes = {}
+    for scene_path in lib.content_files(root):
+        scene, error = lib.load_json(root, scene_path)
+        if not error and isinstance(scene, dict) and str(scene.get("schema", "")).startswith("storylet/"):
+            scenes[scene.get("id")] = scene
+    references = 0
+    for index, section in story.road_sections(data):
+        quality = section.get("quality")
+        last = 0
+        for number, stop in enumerate(section.get("stops") or []):
+            if not isinstance(stop, dict):
+                continue  # the schema check reports this
+            at = stop.get("at")
+            pointer = "/sections/%d/stops/%d" % (index, number)
+            references += 1
+            if isinstance(at, int):
+                if at <= last:
+                    report.fail("road-order", path, "%s/at is %d, not above the stop before it (%d)"
+                                % (pointer, at, last), ident)
+                last = at
+            scene = scenes.get(stop.get("scene"))
+            if scene is None:
+                report.fail("unknown-scene", path, "%s/scene names %r, which is no storylet"
+                            % (pointer, stop.get("scene")), ident)
+            elif '"%s": %s' % (quality, at) not in lib.json.dumps(scene.get("options")):
+                report.fail("road-scene", path, "%s/scene %s never sets %s to %s"
+                            % (pointer, stop.get("scene"), quality, at), ident)
+    return references
+
+
 def check_duplicate_pages(report, pages):
     for item in sorted(pages):
         named = pages[item]
@@ -262,6 +298,9 @@ def run(root):
         if declared.startswith(WORK_ORDER_SCHEMA_PREFIX):
             order_files += 1
             order_refs += check_work_order(report, path, data, items)
+            continue
+        if declared.startswith(story.ROAD_PREFIX):
+            page_refs += check_road(report, root, path, data)
             continue
         if declared.startswith(LEDGER_SCHEMA_PREFIX):
             page_files += 1

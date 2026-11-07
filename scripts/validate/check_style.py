@@ -68,6 +68,8 @@ REQUEST_MAX_WORDS = 25
 LEDGER_TITLE_MAX_WORDS = None
 LEDGER_TEXT_MAX_WORDS = None
 LEDGER_LIMITS = {"title": LEDGER_TITLE_MAX_WORDS, "text": LEDGER_TEXT_MAX_WORDS}
+# Work order 038: a stop's label sits under a mark at phone width.
+ROAD_LIMITS = {"title": 6, "goal": 8, "label": 4, "hint": 6}
 
 # docs/canon/style.md, Voice; work order 015, scope 6.
 ALWAYS_BANNED = ("the player",)
@@ -159,6 +161,11 @@ def run(root):
         for pointer, text, field in story.ledger_prose_fields(data):
             fields += 1
             _check_text(report, path, ident, pointer, text, LEDGER_LIMITS[field], patterns)
+    for path, data in story.road_files(root):
+        for index, section in story.road_sections(data):
+            for pointer, text, field in story.road_prose_fields(section, index):
+                fields += 1
+                _check_text(report, path, story.file_id(data), pointer, text, ROAD_LIMITS[field], patterns)
     unset = sorted(name for name, value in (("LEDGER_TITLE_MAX_WORDS", LEDGER_TITLE_MAX_WORDS),
                                             ("LEDGER_TEXT_MAX_WORDS", LEDGER_TEXT_MAX_WORDS))
                    if value is None)

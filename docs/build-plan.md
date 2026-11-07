@@ -103,6 +103,8 @@ Milestones 1 to 6 are built. The GDD makes Kettleport a shared city (sections 6 
     - **Who comes back** (Jeremy, 6 November 2026, after no tester came back past their first day): the Overview shows how many accounts were seen again an hour, 12 hours, 3 days and 7 days after their first visit, from counted visits on the wall clock, leaving out admins and anyone too new to have had the chance. The funnel gains the first two sittings, and each Tinker in Players shows its visits and the sitting it is on.
     - Not yet: the console on phones (desktop only), live updates (it refreshes on demand), and an audit log of admin actions.
 
+15. **The road** (Jeremy, 6 November 2026, after no tester came back past their first day: "some visual indicator we can give to the player to see their progress and inspire them to continue"). Work order 038: a road at the top of Story and its dots on the NEXT bar, three stops for the first day and five for Act I, ending at the Foundry Pass. A stop is named only once reached, so the server sends no name ahead, and the next scene shows what it waits on. Stops live in `content/road/road.json` (schema `road/1`).
+
 ## Prerequisites on this machine
 
 Not installed yet: Node.js 22 LTS and Docker. With Homebrew:
