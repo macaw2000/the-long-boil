@@ -23,7 +23,7 @@ The Prologue and Act I are playable end to end. A new Tinker trains skills, figh
 | The city | The Brass Exchange (an order book, collectors and the grocer), live updates over WebSocket, chat, guilds, and Work Orders |
 | Money | The Cog Shop: Gilded Cogs, Cog Crates and four time savers, with Stripe Checkout in test mode |
 | Admin | A console for running the playtest: sign-ups, who's active and online, revenue, a story funnel, every player and purchase, chat removal, and chat or full bans |
-| Infrastructure | Cognito sign-in, and AWS through CDK: ECS on Fargate, Aurora Serverless v2, CloudFront. Pushing to `main` deploys dev. |
+| Infrastructure | Cognito sign-in, and AWS through CDK: ECS on Fargate, RDS PostgreSQL, CloudFront. Pushing to `main` deploys dev. |
 
 **Next:** the rest of milestone 13 (the Cinderworks' own gear and tool ladder), then Act II. The plan is [`docs/build-plan.md`](docs/build-plan.md).
 

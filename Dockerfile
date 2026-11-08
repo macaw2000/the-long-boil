@@ -37,7 +37,7 @@ RUN npm ci --omit=dev --workspace @long-boil/rules --workspace @long-boil/server
 # --- Runtime ----------------------------------------------------------------
 FROM --platform=linux/arm64 ${NODE_IMAGE}
 ENV NODE_ENV=production
-# Aurora's certificates are signed by the RDS CA, which is not in Node's own
+# The database's certificates are signed by the RDS CA, which is not in Node's own
 # store. With this bundle trusted, PGSSLMODE=require makes node-pg verify the
 # certificate chain and the host name (node-pg treats require as verify-full
 # unless uselibpqcompat is set).

@@ -17,7 +17,7 @@ One environment per synth, chosen with `-c env=dev`. Only `dev` exists; `prod` i
 | --- | --- | --- |
 | `LongBoil-dev-Foundation` | us-west-2 | ECR repository, monthly budget, daily spend email, GitHub OIDC provider and deploy role |
 | `LongBoil-dev-Certificate` | us-east-1 | The ACM certificate for CloudFront. Only with a custom domain |
-| `LongBoil-dev-App` | us-west-2 | VPC (no NAT), Aurora Serverless v2, ECS on Fargate (arm64) behind an ALB, S3 and CloudFront, Cognito |
+| `LongBoil-dev-App` | us-west-2 | VPC (no NAT), RDS PostgreSQL (t4g.micro), ECS on Fargate (arm64) behind an ALB, S3 and CloudFront, Cognito |
 
 The repository is in its own stack so an image can be pushed before the service that runs it exists.
 
@@ -50,10 +50,10 @@ Whatever context was used for a deploy must be used for every later one, or the 
 The task definition sets the contract with `engine/packages/server`:
 
 - `HOST=0.0.0.0`, `PORT=3000`, `API_PREFIX=/api`
-- `PGHOST`, `PGPORT`, `PGDATABASE=long_boil`, `PGSSLMODE=require`; `PGUSER` and `PGPASSWORD` as ECS secrets from the Aurora secret (`long-boil/<env>/aurora`)
+- `PGHOST`, `PGPORT`, `PGDATABASE=long_boil`, `PGSSLMODE=require`; `PGUSER` and `PGPASSWORD` as ECS secrets from the database secret (`long-boil/<env>/postgres`)
 - `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `CORS_ORIGINS=https://<site domain>`, and `ADMIN_EMAILS` from the context
 
-Dev also sets `LONG_BOIL_DEV=1`: the dev clock, kept in the database and skippable by admins only, and one clock for the whole server. `LONG_BOIL_OPEN_TRADING` is never set. The ALB health check is `GET /api/health`; it must not query Postgres, or dev's Aurora never pauses.
+Dev also sets `LONG_BOIL_DEV=1`: the dev clock, kept in the database and skippable by admins only, and one clock for the whole server. `LONG_BOIL_OPEN_TRADING` is never set. The ALB health check is `GET /api/health`; it must not query Postgres.
 
 ## Outputs
 

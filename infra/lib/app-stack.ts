@@ -39,7 +39,7 @@ const DATABASE_NAME = "long_boil";
 
 export class AppStack extends Stack {
   // Named, not looked up, so synth never needs AWS credentials. Two zones
-  // because the ALB and Aurora's subnet group each need two.
+  // because the ALB and the database's subnet group each need two.
   override get availabilityZones(): string[] {
     return [`${REGION}a`, `${REGION}b`];
   }
@@ -52,7 +52,7 @@ export class AppStack extends Stack {
     // --- Network -----------------------------------------------------------
     // Decision 1: no NAT gateway until launch. Game servers sit in public
     // subnets with public IPs (to reach ECR, Secrets Manager, Cognito's keys
-    // and CloudWatch); Aurora sits in isolated subnets with no internet route.
+    // and CloudWatch); the database sits in isolated subnets with no internet route.
     const vpc = new ec2.Vpc(this, "Vpc", {
       maxAzs: 2,
       natGateways: 0,
@@ -63,25 +63,25 @@ export class AppStack extends Stack {
     });
 
     // --- Database ----------------------------------------------------------
-    // Decision 3 set dev's floor at 0 ACU, so Aurora paused when idle and cost
-    // only storage. Jeremy, 3 November 2026: dev keeps 0.5 ACU, about $45 a
-    // month, because the 15 s resume stalled family playtesters at sign-in.
-    // Pausing at 0 ACU needs PostgreSQL 13.15, 14.12, 15.7, 16.3 or later.
-    const database = new rds.DatabaseCluster(this, "Database", {
-      engine: rds.DatabaseClusterEngine.auroraPostgres({ version: rds.AuroraPostgresEngineVersion.VER_17_7 }),
-      writer: rds.ClusterInstance.serverlessV2("writer"),
-      serverlessV2MinCapacity: settings.auroraMinAcu,
-      serverlessV2MaxCapacity: settings.auroraMaxAcu,
-      // Only matters at 0 ACU: how long without connections before it pauses.
-      ...(settings.auroraMinAcu === 0 ? { serverlessV2AutoPauseDuration: Duration.minutes(10) } : {}),
+    // Decision 3 had dev on Aurora Serverless v2, paused at 0 ACU when idle.
+    // Jeremy, 3 November 2026: the 15 s resume stalled family playtesters at
+    // sign-in, so dev held 0.5 ACU, about $45 a month and half the bill.
+    // Jeremy, 8 November 2026: a single-AZ RDS PostgreSQL t4g.micro instead,
+    // which never pauses either, for about $15 a month.
+    const database = new rds.DatabaseInstance(this, "Postgres", {
+      engine: rds.DatabaseInstanceEngine.postgres({ version: rds.PostgresEngineVersion.VER_17_7 }),
+      instanceType: new ec2.InstanceType(settings.databaseInstance),
       credentials: rds.Credentials.fromGeneratedSecret("long_boil", {
-        secretName: `long-boil/${settings.envName}/aurora`,
+        secretName: `long-boil/${settings.envName}/postgres`,
       }),
-      defaultDatabaseName: DATABASE_NAME,
+      databaseName: DATABASE_NAME,
       vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
+      multiAz: false,
+      allocatedStorage: 20,
+      storageType: rds.StorageType.GP3,
       storageEncrypted: true,
-      backup: { retention: Duration.days(settings.retainData ? 7 : 1) },
+      backupRetention: Duration.days(settings.retainData ? 7 : 1),
       // A final snapshot on delete, even in dev: it costs little and saves the event log.
       removalPolicy: RemovalPolicy.SNAPSHOT,
       deletionProtection: settings.retainData,
@@ -133,79 +133,10 @@ export class AppStack extends Stack {
     const serviceSecurityGroup = new ec2.SecurityGroup(this, "ServiceSecurityGroup", {
       vpc,
       description: "Game server: traffic from the load balancer only",
-      // Outbound to ECR, Secrets Manager, Cognito and Aurora.
+      // Outbound to ECR, Secrets Manager, Cognito and Postgres.
       allowAllOutbound: true,
     });
-    database.connections.allowDefaultPortFrom(serviceSecurityGroup, "Game server to Aurora");
-
-    // Jeremy, 8 November 2026: Aurora's 0.5 ACU floor was half the dev bill.
-    // A single-AZ RDS PostgreSQL t4g.micro never pauses either, for about $15
-    // a month. It runs beside Aurora until the copy task below has moved the data.
-    const postgres = new rds.DatabaseInstance(this, "Postgres", {
-      engine: rds.DatabaseInstanceEngine.postgres({ version: rds.PostgresEngineVersion.VER_17_7 }),
-      instanceType: new ec2.InstanceType(settings.databaseInstance),
-      credentials: rds.Credentials.fromGeneratedSecret("long_boil", {
-        secretName: `long-boil/${settings.envName}/postgres`,
-      }),
-      databaseName: DATABASE_NAME,
-      vpc,
-      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
-      multiAz: false,
-      allocatedStorage: 20,
-      storageType: rds.StorageType.GP3,
-      storageEncrypted: true,
-      backupRetention: Duration.days(settings.retainData ? 7 : 1),
-      removalPolicy: RemovalPolicy.SNAPSHOT,
-      deletionProtection: settings.retainData,
-    });
-    const postgresSecret = postgres.secret!;
-    postgres.connections.allowDefaultPortFrom(serviceSecurityGroup, "Game server to Postgres");
-
-    // One-off: copies Aurora into the new instance, run by hand with
-    // `aws ecs run-task` while the game server is stopped. Removed with Aurora.
-    const copyTask = new ecs.FargateTaskDefinition(this, "DatabaseCopyTask", {
-      cpu: 256,
-      memoryLimitMiB: 512,
-      runtimePlatform: {
-        cpuArchitecture: ecs.CpuArchitecture.ARM64,
-        operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
-      },
-    });
-    const countRows =
-      "SELECT table_name, (xpath('/row/c/text()', query_to_xml(format('SELECT count(*) AS c FROM public.%I', table_name), false, true, '')))[1]::text " +
-      "FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY 1";
-    copyTask.addContainer("copy", {
-      image: ecs.ContainerImage.fromRegistry("public.ecr.aws/docker/library/postgres:17.7"),
-      logging: ecs.LogDrivers.awsLogs({
-        logGroup: new logs.LogGroup(this, "CopyLogs", { retention: logs.RetentionDays.ONE_WEEK, removalPolicy: RemovalPolicy.DESTROY }),
-        streamPrefix: "copy",
-      }),
-      environment: {
-        PGDATABASE: DATABASE_NAME,
-        PGSSLMODE: "require",
-        SRC_HOST: database.clusterEndpoint.hostname,
-        DST_HOST: postgres.instanceEndpoint.hostname,
-        COUNT_ROWS: countRows,
-      },
-      secrets: {
-        SRC_USER: ecs.Secret.fromSecretsManager(databaseSecret, "username"),
-        SRC_PASSWORD: ecs.Secret.fromSecretsManager(databaseSecret, "password"),
-        DST_USER: ecs.Secret.fromSecretsManager(postgresSecret, "username"),
-        DST_PASSWORD: ecs.Secret.fromSecretsManager(postgresSecret, "password"),
-      },
-      entryPoint: ["sh", "-c"],
-      command: [
-        [
-          "set -eu",
-          'PGHOST=$SRC_HOST PGUSER=$SRC_USER PGPASSWORD=$SRC_PASSWORD pg_dump -Fc --no-owner --no-acl -f /tmp/db.dump',
-          'PGHOST=$DST_HOST PGUSER=$DST_USER PGPASSWORD=$DST_PASSWORD pg_restore --no-owner --no-acl --exit-on-error -d "$PGDATABASE" /tmp/db.dump',
-          'PGHOST=$SRC_HOST PGUSER=$SRC_USER PGPASSWORD=$SRC_PASSWORD psql -At -c "$COUNT_ROWS" > /tmp/src.txt',
-          'PGHOST=$DST_HOST PGUSER=$DST_USER PGPASSWORD=$DST_PASSWORD psql -At -c "$COUNT_ROWS" > /tmp/dst.txt',
-          "cat /tmp/dst.txt",
-          "diff /tmp/src.txt /tmp/dst.txt && echo COPY_OK",
-        ].join("\n"),
-      ],
-    });
+    database.connections.allowDefaultPortFrom(serviceSecurityGroup, "Game server to Postgres");
 
     // Decision 5: Graviton everywhere. The cost table's build phase sizes a
     // small server at 0.5 vCPU and 1 GB.
@@ -257,8 +188,8 @@ export class AppStack extends Stack {
         HOST: "0.0.0.0",
         PORT: String(SERVER_PORT),
         API_PREFIX,
-        PGHOST: database.clusterEndpoint.hostname,
-        PGPORT: database.clusterEndpoint.port.toString(),
+        PGHOST: database.instanceEndpoint.hostname,
+        PGPORT: database.instanceEndpoint.port.toString(),
         PGDATABASE: DATABASE_NAME,
         // node-pg reads require as "verify the certificate and host name";
         // the image trusts the RDS CA bundle (see the Dockerfile).
@@ -292,7 +223,7 @@ export class AppStack extends Stack {
       minHealthyPercent: 100,
       maxHealthyPercent: 200,
       circuitBreaker: { enable: true, rollback: true },
-      // A paused Aurora takes about 15 s to resume, then migrations run.
+      // Migrations run before the server answers its health check.
       healthCheckGracePeriod: Duration.seconds(120),
       enableExecuteCommand: true,
     });
@@ -309,8 +240,7 @@ export class AppStack extends Stack {
       port: SERVER_PORT,
       protocol: elbv2.ApplicationProtocol.HTTP,
       targets: [service],
-      // Should answer without touching Postgres, or the checks every 30 s
-      // would keep a dev Aurora from ever pausing.
+      // Answers without touching Postgres, so a slow query never fails the check.
       healthCheck: { path: `${API_PREFIX}/health`, healthyHttpCodes: "200", interval: Duration.seconds(30) },
       deregistrationDelay: Duration.seconds(30),
     });
@@ -376,8 +306,8 @@ export class AppStack extends Stack {
       EcrRepositoryUri: [props.repository.repositoryUri, "Server image repository"],
       ClusterName: [cluster.clusterName, "ECS cluster"],
       ServiceName: [service.serviceName, "ECS service"],
-      DatabaseEndpoint: [database.clusterEndpoint.hostname, "Aurora writer endpoint"],
-      DatabaseSecretArn: [databaseSecret.secretArn, "Aurora credentials"],
+      DatabaseEndpoint: [database.instanceEndpoint.hostname, "Postgres endpoint"],
+      DatabaseSecretArn: [databaseSecret.secretArn, "Postgres credentials"],
     };
     for (const [id, [value, description]] of Object.entries(outputs)) new CfnOutput(this, id, { value, description });
   }

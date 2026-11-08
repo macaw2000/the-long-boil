@@ -254,7 +254,7 @@ export function buildApi({
     return reply.code(500).send({ error: "internal error" });
   });
 
-  // Answers without touching the database, so the load balancer's checks never wake a paused Aurora (GDD section 11, decision 3).
+  // Answers without touching the database, so a slow query never fails the load balancer's checks.
   app.get("/health", async () => ({ ok: true }));
 
   // Who the token speaks for, so the client can list and open its own Tinkers (null under the dev login), and whether to show the dev tools.
