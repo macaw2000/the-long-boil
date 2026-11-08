@@ -138,6 +138,75 @@ export class AppStack extends Stack {
     });
     database.connections.allowDefaultPortFrom(serviceSecurityGroup, "Game server to Aurora");
 
+    // Jeremy, 8 November 2026: Aurora's 0.5 ACU floor was half the dev bill.
+    // A single-AZ RDS PostgreSQL t4g.micro never pauses either, for about $15
+    // a month. It runs beside Aurora until the copy task below has moved the data.
+    const postgres = new rds.DatabaseInstance(this, "Postgres", {
+      engine: rds.DatabaseInstanceEngine.postgres({ version: rds.PostgresEngineVersion.VER_17_7 }),
+      instanceType: new ec2.InstanceType(settings.databaseInstance),
+      credentials: rds.Credentials.fromGeneratedSecret("long_boil", {
+        secretName: `long-boil/${settings.envName}/postgres`,
+      }),
+      databaseName: DATABASE_NAME,
+      vpc,
+      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
+      multiAz: false,
+      allocatedStorage: 20,
+      storageType: rds.StorageType.GP3,
+      storageEncrypted: true,
+      backupRetention: Duration.days(settings.retainData ? 7 : 1),
+      removalPolicy: RemovalPolicy.SNAPSHOT,
+      deletionProtection: settings.retainData,
+    });
+    const postgresSecret = postgres.secret!;
+    postgres.connections.allowDefaultPortFrom(serviceSecurityGroup, "Game server to Postgres");
+
+    // One-off: copies Aurora into the new instance, run by hand with
+    // `aws ecs run-task` while the game server is stopped. Removed with Aurora.
+    const copyTask = new ecs.FargateTaskDefinition(this, "DatabaseCopyTask", {
+      cpu: 256,
+      memoryLimitMiB: 512,
+      runtimePlatform: {
+        cpuArchitecture: ecs.CpuArchitecture.ARM64,
+        operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
+      },
+    });
+    const countRows =
+      "SELECT table_name, (xpath('/row/c/text()', query_to_xml(format('SELECT count(*) AS c FROM public.%I', table_name), false, true, '')))[1]::text " +
+      "FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY 1";
+    copyTask.addContainer("copy", {
+      image: ecs.ContainerImage.fromRegistry("public.ecr.aws/docker/library/postgres:17.7"),
+      logging: ecs.LogDrivers.awsLogs({
+        logGroup: new logs.LogGroup(this, "CopyLogs", { retention: logs.RetentionDays.ONE_WEEK, removalPolicy: RemovalPolicy.DESTROY }),
+        streamPrefix: "copy",
+      }),
+      environment: {
+        PGDATABASE: DATABASE_NAME,
+        PGSSLMODE: "require",
+        SRC_HOST: database.clusterEndpoint.hostname,
+        DST_HOST: postgres.instanceEndpoint.hostname,
+        COUNT_ROWS: countRows,
+      },
+      secrets: {
+        SRC_USER: ecs.Secret.fromSecretsManager(databaseSecret, "username"),
+        SRC_PASSWORD: ecs.Secret.fromSecretsManager(databaseSecret, "password"),
+        DST_USER: ecs.Secret.fromSecretsManager(postgresSecret, "username"),
+        DST_PASSWORD: ecs.Secret.fromSecretsManager(postgresSecret, "password"),
+      },
+      entryPoint: ["sh", "-c"],
+      command: [
+        [
+          "set -eu",
+          'PGHOST=$SRC_HOST PGUSER=$SRC_USER PGPASSWORD=$SRC_PASSWORD pg_dump -Fc --no-owner --no-acl -f /tmp/db.dump',
+          'PGHOST=$DST_HOST PGUSER=$DST_USER PGPASSWORD=$DST_PASSWORD pg_restore --no-owner --no-acl --exit-on-error -d "$PGDATABASE" /tmp/db.dump',
+          'PGHOST=$SRC_HOST PGUSER=$SRC_USER PGPASSWORD=$SRC_PASSWORD psql -At -c "$COUNT_ROWS" > /tmp/src.txt',
+          'PGHOST=$DST_HOST PGUSER=$DST_USER PGPASSWORD=$DST_PASSWORD psql -At -c "$COUNT_ROWS" > /tmp/dst.txt',
+          "cat /tmp/dst.txt",
+          "diff /tmp/src.txt /tmp/dst.txt && echo COPY_OK",
+        ].join("\n"),
+      ],
+    });
+
     // Decision 5: Graviton everywhere. The cost table's build phase sizes a
     // small server at 0.5 vCPU and 1 GB.
     const taskDefinition = new ecs.FargateTaskDefinition(this, "ServerTask", {

@@ -12,6 +12,11 @@ interface EnvironmentShape {
   /** Aurora's floor. Dev pauses at 0 ACU; prod keeps 0.5 so no player waits ~15 s for a resume (GDD section 11, decision 3). */
   auroraMinAcu: number;
   auroraMaxAcu: number;
+  /**
+   * The RDS PostgreSQL instance class replacing Aurora. A t4g.micro never
+   * pauses, so no player waits on a resume, at about a third of the 0.5 ACU floor.
+   */
+  databaseInstance: string;
   /** Whether stateful resources (user pool, site bucket) survive a stack deletion. */
   retainData: boolean;
   desiredCount: number;
@@ -21,7 +26,7 @@ interface EnvironmentShape {
 }
 
 const SHAPES: Record<string, EnvironmentShape> = {
-  dev: { auroraMinAcu: 0.5, auroraMaxAcu: 2, retainData: false, desiredCount: 1, logRetentionDays: 14, devTools: true },
+  dev: { auroraMinAcu: 0.5, auroraMaxAcu: 2, databaseInstance: "t4g.micro", retainData: false, desiredCount: 1, logRetentionDays: 14, devTools: true },
   // prod: { auroraMinAcu: 0.5, auroraMaxAcu: 4, retainData: true, desiredCount: 2, logRetentionDays: 90, devTools: false },
 };
 
