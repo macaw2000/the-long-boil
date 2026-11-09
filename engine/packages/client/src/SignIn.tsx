@@ -18,9 +18,10 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
   const [tinkers, setTinkers] = useState<{ id: number; name: string }[] | null>(null);
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
-  // The Tinker being started over, and the name typed to confirm it.
+  // The Tinker being started over, the name typed to confirm it, and the name it starts again under.
   const [restarting, setRestarting] = useState<number | null>(null);
   const [confirm, setConfirm] = useState("");
+  const [rename, setRename] = useState("");
   // A request on its way. The database sleeps when nobody has played for a while and takes some seconds to wake, so the panel says so rather than looking stuck.
   const [busy, setBusy] = useState<string | null>(null);
 
@@ -65,7 +66,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
 
   const startOver = (tinker: { id: number; name: string }) =>
     api
-      .resetTinker(tinker.id, confirm)
+      .resetTinker(tinker.id, confirm, rename.trim() && rename.trim() !== tinker.name ? rename.trim() : undefined)
       .then(() => {
         forgetGuide(tinker.id);
         onEnter(login.trim(), tinker.id);
@@ -168,8 +169,17 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
               {restarting === tinker.id ? (
                 <View style={{ gap: 6 }}>
                   <Text style={[ui.muted, { color: colors.scald }]}>
-                    Starting over gives {tinker.name} a fresh workshop: skills, stores, Crowns and story all go. Cogs and what they bought stay. Type {tinker.name} to confirm.
+                    Starting over gives {tinker.name} a fresh workshop: skills, stores, Crowns and story all go. Cogs and what they bought stay. Keep the name or give a new one, then type {tinker.name} to confirm.
                   </Text>
+                  <TapInput
+                    style={ui.input}
+                    value={rename}
+                    onChangeText={setRename}
+                    placeholder="name for the fresh start"
+                    placeholderTextColor={colors.muted}
+                    maxLength={40}
+                    accessibilityLabel="Name for the fresh start"
+                  />
                   <View style={{ flexDirection: "row", gap: 8 }}>
                     <TapInput
                       style={[ui.input, { flex: 1 }]}
@@ -181,8 +191,8 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
                       accessibilityLabel={`Type ${tinker.name} to start over`}
                     />
                     <Pressable
-                      style={[ui.button, confirm.trim() !== tinker.name && { opacity: 0.4 }]}
-                      disabled={confirm.trim() !== tinker.name}
+                      style={[ui.button, (confirm.trim() !== tinker.name || !rename.trim()) && { opacity: 0.4 }]}
+                      disabled={confirm.trim() !== tinker.name || !rename.trim()}
                       onPress={() => startOver(tinker)}
                       accessibilityRole="button"
                     >
@@ -198,6 +208,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
                   onPress={() => {
                     setRestarting(tinker.id);
                     setConfirm("");
+                    setRename(tinker.name);
                     setError(null);
                   }}
                   accessibilityRole="button"

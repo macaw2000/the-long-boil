@@ -378,11 +378,19 @@ export function buildApi({
     },
   );
 
-  // Start over in the same slot, confirmed by typing the Tinker's name.
-  app.post<{ Params: { id: string }; Body: { name: string } }>(
+  // Start over in the same slot, confirmed by typing the Tinker's name, and renamed if newName is given.
+  app.post<{ Params: { id: string }; Body: { name: string; newName?: string } }>(
     "/tinkers/:id/reset",
-    { schema: { body: { type: "object", required: ["name"], properties: { name: { type: "string", maxLength: 64 } } } } },
-    async (request) => resetTinker(db, content, Number(request.params.id), request.body.name, now()),
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: ["name"],
+          properties: { name: { type: "string", maxLength: 64 }, newName: { type: "string", minLength: 1, maxLength: 40 } },
+        },
+      },
+    },
+    async (request) => resetTinker(db, content, Number(request.params.id), request.body.name, now(), request.body.newName),
   );
 
   app.post<{ Params: { id: string } }>("/tinkers/:id/check-in", async (request) =>

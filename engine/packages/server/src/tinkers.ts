@@ -384,15 +384,17 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent, now =
 
 
 /**
- * Starts a Tinker over in its own slot: a fresh workshop under the same name,
- * as on the day the keys were taken. Progress goes (skills, stores, Crowns,
+ * Starts a Tinker over in its own slot: a fresh workshop, as on the day the
+ * keys were taken, under the same name or a new one if given. Progress goes (skills, stores, Crowns,
  * queue, story, Work Orders, open Exchange orders); what Cogs bought stays
  * (Cogs, the Cog Shop's upgrades and crates still on their way). The event
  * log is append-only, so the reset is logged, not erased. A Tinker in a guild,
  * or with Crowns pledged to a charter, must leave or be refunded first, so no
  * guild loses a member or a pledge without its own rules running.
  */
-export async function resetTinker(db: Db, content: GameContent, tinkerId: number, confirmName: string, now: number): Promise<Outcome> {
+export async function resetTinker(db: Db, content: GameContent, tinkerId: number, confirmName: string, now: number, newName?: string): Promise<Outcome> {
+  const name = newName?.trim();
+  if (newName !== undefined && !name) throw new BadRequest("a new name cannot be blank");
   return withTransaction(db, async (tx) => {
     const row = (await tx.query("SELECT name, last_seq FROM tinkers WHERE id = $1 FOR UPDATE", [tinkerId])).rows[0];
     if (!row) throw new NotFound(`no Tinker ${tinkerId}`);
@@ -421,7 +423,7 @@ export async function resetTinker(db: Db, content: GameContent, tinkerId: number
       `UPDATE tinkers SET crowns = $2, progress_ms = 0, resolved_to = $3, steam_until = $4, content_version = $5,
          weapon = NULL, armour = NULL, worn = '{}', tools = '{}', head_tool = 0, ration_debt = 0, pity = '{}', bosses_beaten = '[]',
          nerve = $6, nerve_at = $7, post_at = $8, hand = '[]', needle_at = '{}', check_in_at = NULL,
-         answered = '[]', played_at = '{}', work_orders = DEFAULT, guide = NULL, head_boosted = false
+         answered = '[]', played_at = '{}', work_orders = DEFAULT, guide = NULL, head_boosted = false, name = $9
        WHERE id = $1`,
       [
         tinkerId,
@@ -432,6 +434,7 @@ export async function resetTinker(db: Db, content: GameContent, tinkerId: number
         story.nerve,
         new Date(story.nerveAt),
         new Date(story.postAt),
+        name || row.name,
       ],
     );
     for (const stack of content.start.inventory) {
@@ -441,7 +444,7 @@ export async function resetTinker(db: Db, content: GameContent, tinkerId: number
       tx,
       tinkerId,
       Number(row.last_seq),
-      [{ type: "tinker_reset", at: now, payload: { inventory: content.start.inventory, crowns: content.start.crowns } }],
+      [{ type: "tinker_reset", at: now, payload: { name: name || row.name, inventory: content.start.inventory, crowns: content.start.crowns } }],
       version,
     );
     await tx.query("UPDATE tinkers SET last_seq = $2 WHERE id = $1", [tinkerId, seq]);

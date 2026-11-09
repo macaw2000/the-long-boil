@@ -318,6 +318,16 @@ describe("starting a Tinker over", () => {
     expect((await call("GET", "/accounts/again@example.com/tinkers")).body.tinkers).toHaveLength(1);
   });
 
+  it("starts again under a new name when one is given", async () => {
+    const { status, body } = await call("POST", `/tinkers/${id}/reset`, { name: "Wren", newName: " Finch " });
+    expect(status).toBe(200);
+    expect(body.tinker.id).toBe(id);
+    expect(body.tinker.name).toBe("Finch");
+    expect((await call("GET", "/accounts/again@example.com/tinkers")).body.tinkers).toEqual([{ id, name: "Finch" }]);
+    expect((await call("POST", `/tinkers/${id}/reset`, { name: "Finch", newName: "   " })).status).toBe(400);
+    expect((await call("POST", `/tinkers/${id}/reset`, { name: "Finch", newName: "Wren" })).body.tinker.name).toBe("Wren");
+  });
+
   it("is refused while the Tinker is in a guild", async () => {
     const guild = (await db.query("INSERT INTO guilds (name, status, created_at, charter_ends) VALUES ('Resetters', 'active', now(), now()) RETURNING id")).rows[0].id;
     const account = (await db.query("SELECT account_id FROM tinkers WHERE id = $1", [id])).rows[0].account_id;
