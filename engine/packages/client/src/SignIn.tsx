@@ -169,36 +169,43 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
               {restarting === tinker.id ? (
                 <View style={{ gap: 6 }}>
                   <Text style={[ui.muted, { color: colors.scald }]}>
-                    Starting over gives {tinker.name} a fresh workshop: skills, stores, Crowns and story all go. Cogs and what they bought stay. Keep the name or give a new one, then type {tinker.name} to confirm.
+                    Starting over gives {tinker.name} a fresh workshop: skills, stores, Crowns and story all go. Cogs and what they bought stay. Type {tinker.name} to confirm.
                   </Text>
                   <TapInput
                     style={ui.input}
-                    value={rename}
-                    onChangeText={setRename}
-                    placeholder="name for the fresh start"
+                    value={confirm}
+                    onChangeText={setConfirm}
+                    placeholder={tinker.name}
                     placeholderTextColor={colors.muted}
-                    maxLength={40}
-                    accessibilityLabel="Name for the fresh start"
+                    autoCapitalize="none"
+                    accessibilityLabel={`Type ${tinker.name} to start over`}
                   />
-                  <View style={{ flexDirection: "row", gap: 8 }}>
-                    <TapInput
-                      style={[ui.input, { flex: 1 }]}
-                      value={confirm}
-                      onChangeText={setConfirm}
-                      placeholder={tinker.name}
-                      placeholderTextColor={colors.muted}
-                      autoCapitalize="none"
-                      accessibilityLabel={`Type ${tinker.name} to start over`}
-                    />
-                    <Pressable
-                      style={[ui.button, (confirm.trim() !== tinker.name || !rename.trim()) && { opacity: 0.4 }]}
-                      disabled={confirm.trim() !== tinker.name || !rename.trim()}
-                      onPress={() => startOver(tinker)}
-                      accessibilityRole="button"
-                    >
-                      <Text style={ui.buttonText}>Start over</Text>
-                    </Pressable>
-                  </View>
+                  {/* Once confirmed, the fresh start is named: the old name to hand, or a new one. */}
+                  {confirm.trim() === tinker.name && (
+                    <>
+                      <Text style={ui.text}>Name your fresh start:</Text>
+                      <View style={{ flexDirection: "row", gap: 8 }}>
+                        <TapInput
+                          style={[ui.input, { flex: 1 }]}
+                          value={rename}
+                          onChangeText={setRename}
+                          onSubmitEditing={() => rename.trim() && startOver(tinker)}
+                          placeholder="a new Tinker's name"
+                          placeholderTextColor={colors.muted}
+                          maxLength={40}
+                          accessibilityLabel="Name for the fresh start"
+                        />
+                        <Pressable
+                          style={[ui.button, !rename.trim() && { opacity: 0.4 }]}
+                          disabled={!rename.trim()}
+                          onPress={() => startOver(tinker)}
+                          accessibilityRole="button"
+                        >
+                          <Text style={ui.buttonText}>Start over as {rename.trim() || "…"}</Text>
+                        </Pressable>
+                      </View>
+                    </>
+                  )}
                   <Pressable onPress={() => setRestarting(null)} accessibilityRole="button">
                     <Text style={ui.muted}>Keep {tinker.name}</Text>
                   </Pressable>
@@ -208,7 +215,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
                   onPress={() => {
                     setRestarting(tinker.id);
                     setConfirm("");
-                    setRename(tinker.name);
+                    setRename("");
                     setError(null);
                   }}
                   accessibilityRole="button"
