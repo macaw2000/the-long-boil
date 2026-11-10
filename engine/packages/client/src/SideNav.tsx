@@ -14,7 +14,7 @@ import { SkillIcon } from "./SkillView";
 import { UiIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
-export type Place = "story" | "exchange" | "guild" | "shop" | "stores" | "chat" | "admin" | `skill:${string}`;
+export type Place = "story" | "exchange" | "guild" | "shop" | "leaderboards" | "stores" | "chat" | "admin" | `skill:${string}`;
 
 export interface PlaceBadge {
   count: number;
@@ -68,6 +68,17 @@ export function SideNav({
           </View>
         </NavRow>
       ))}
+      {/* The boards open with the rest of the city, at the visit after the Prologue; their icon is not drawn yet. */}
+      {shown("leaderboards") && (
+        <NavRow active={place === "leaderboards"} lit={false} guided={false} onPress={() => onPlace("leaderboards")}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <View style={{ width: 26, height: 26, alignItems: "center", justifyContent: "center" }}>
+              <Text style={[ui.number, { color: colors.brass, fontSize: 16 }]}>#</Text>
+            </View>
+            <Text style={[ui.text, { fontSize: 15, color: place === "leaderboards" ? colors.brass : colors.ink }]}>Leaderboards</Text>
+          </View>
+        </NavRow>
+      )}
       <Text style={[ui.muted, { fontSize: 10, letterSpacing: 1, paddingHorizontal: 14, paddingTop: 14, paddingBottom: 4 }]}>SKILLS</Text>
       {skills.map((skill) => {
         const key: Place = `skill:${skill}`;

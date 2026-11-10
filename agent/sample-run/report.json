@@ -1,0 +1,651 @@
+{
+  "passes": [
+    [
+      {
+        "id": "boiler",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 16,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "queue",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 17,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "skills",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 22,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "combat",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 20,
+        "unlocks": 1,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "gear",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 24,
+        "unlocks": 1,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "storylets",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 66,
+        "unlocks": 1,
+        "cut_rank": 5,
+        "waiting_on": []
+      },
+      {
+        "id": "nerve",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 21,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "post",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 36,
+        "unlocks": 0,
+        "cut_rank": 4,
+        "waiting_on": []
+      },
+      {
+        "id": "needles",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 22,
+        "unlocks": 0,
+        "cut_rank": 5,
+        "waiting_on": []
+      },
+      {
+        "id": "ledger_pages",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 14,
+        "unlocks": 1,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "exchange",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 21,
+        "unlocks": 1,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "collectors",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 6,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "work_orders",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 14,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "guilds",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 28,
+        "unlocks": 1,
+        "cut_rank": 1,
+        "waiting_on": []
+      },
+      {
+        "id": "chat",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 5,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "cog_shop",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 35,
+        "unlocks": 1,
+        "cut_rank": 0,
+        "waiting_on": []
+      },
+      {
+        "id": "stripe",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 13,
+        "unlocks": 0,
+        "cut_rank": 0,
+        "waiting_on": []
+      },
+      {
+        "id": "reduced_motion",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 1,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "page_blur",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 1,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "leaderboards",
+        "status": "missing",
+        "score": 7.0,
+        "progress": 0.0,
+        "mentions": 5,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "commonplace_book",
+        "status": "missing",
+        "score": 3.67,
+        "progress": 0.0,
+        "mentions": 2,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "combat_triggers",
+        "status": "missing",
+        "score": 2.25,
+        "progress": 0.0,
+        "mentions": 3,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "guild_contracts",
+        "status": "missing",
+        "score": 2.0,
+        "progress": 0.0,
+        "mentions": 9,
+        "unlocks": 1,
+        "cut_rank": 2,
+        "waiting_on": []
+      },
+      {
+        "id": "guild_charters",
+        "status": "missing",
+        "score": 0.0,
+        "progress": 0.0,
+        "mentions": 7,
+        "unlocks": 0,
+        "cut_rank": 1,
+        "waiting_on": [
+          "guild_contracts"
+        ]
+      },
+      {
+        "id": "npc_sell_orders",
+        "status": "missing",
+        "score": 0.0,
+        "progress": 0.0,
+        "mentions": 4,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "calibrating",
+        "status": "partial",
+        "score": 0.0,
+        "progress": 0.5,
+        "mentions": 12,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "gazette",
+        "status": "missing",
+        "score": 0.0,
+        "progress": 0.0,
+        "mentions": 22,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "cosmetics",
+        "status": "missing",
+        "score": 0.0,
+        "progress": 0.0,
+        "mentions": 5,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      }
+    ],
+    [
+      {
+        "id": "boiler",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 16,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "queue",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 17,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "skills",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 22,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "combat",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 20,
+        "unlocks": 1,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "gear",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 24,
+        "unlocks": 1,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "storylets",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 66,
+        "unlocks": 1,
+        "cut_rank": 5,
+        "waiting_on": []
+      },
+      {
+        "id": "nerve",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 21,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "post",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 36,
+        "unlocks": 0,
+        "cut_rank": 4,
+        "waiting_on": []
+      },
+      {
+        "id": "needles",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 22,
+        "unlocks": 0,
+        "cut_rank": 5,
+        "waiting_on": []
+      },
+      {
+        "id": "ledger_pages",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 14,
+        "unlocks": 1,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "exchange",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 21,
+        "unlocks": 1,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "collectors",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 6,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "work_orders",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 14,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "guilds",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 28,
+        "unlocks": 1,
+        "cut_rank": 1,
+        "waiting_on": []
+      },
+      {
+        "id": "chat",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 5,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "cog_shop",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 35,
+        "unlocks": 1,
+        "cut_rank": 0,
+        "waiting_on": []
+      },
+      {
+        "id": "stripe",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 13,
+        "unlocks": 0,
+        "cut_rank": 0,
+        "waiting_on": []
+      },
+      {
+        "id": "reduced_motion",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 1,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "page_blur",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 1,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "leaderboards",
+        "status": "met",
+        "score": null,
+        "progress": 1.0,
+        "mentions": 5,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "commonplace_book",
+        "status": "missing",
+        "score": 3.67,
+        "progress": 0.0,
+        "mentions": 2,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "combat_triggers",
+        "status": "missing",
+        "score": 2.25,
+        "progress": 0.0,
+        "mentions": 3,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "guild_contracts",
+        "status": "missing",
+        "score": 2.0,
+        "progress": 0.0,
+        "mentions": 9,
+        "unlocks": 1,
+        "cut_rank": 2,
+        "waiting_on": []
+      },
+      {
+        "id": "guild_charters",
+        "status": "missing",
+        "score": 0.0,
+        "progress": 0.0,
+        "mentions": 7,
+        "unlocks": 0,
+        "cut_rank": 1,
+        "waiting_on": [
+          "guild_contracts"
+        ]
+      },
+      {
+        "id": "npc_sell_orders",
+        "status": "missing",
+        "score": 0.0,
+        "progress": 0.0,
+        "mentions": 4,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "calibrating",
+        "status": "partial",
+        "score": 0.0,
+        "progress": 0.5,
+        "mentions": 12,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "gazette",
+        "status": "missing",
+        "score": 0.0,
+        "progress": 0.0,
+        "mentions": 22,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      },
+      {
+        "id": "cosmetics",
+        "status": "missing",
+        "score": 0.0,
+        "progress": 0.0,
+        "mentions": 5,
+        "unlocks": 0,
+        "cut_rank": null,
+        "waiting_on": []
+      }
+    ]
+  ],
+  "features": [
+    {
+      "id": "leaderboards",
+      "built": true,
+      "rounds": [
+        {
+          "round": 1,
+          "files": [
+            "engine/packages/server/src/leaderboards.ts",
+            "engine/packages/server/test/leaderboards.test.ts",
+            "engine/packages/client/src/Leaderboards.tsx"
+          ],
+          "edits": [
+            "engine/packages/server/src/api.ts",
+            "engine/packages/server/src/api.ts",
+            "engine/packages/client/src/api.ts",
+            "engine/packages/client/src/api.ts",
+            "engine/packages/client/App.tsx",
+            "engine/packages/client/App.tsx",
+            "engine/packages/client/src/SideNav.tsx",
+            "engine/packages/client/src/SideNav.tsx",
+            "engine/packages/client/src/SideNav.tsx",
+            "engine/packages/client/src/SideNav.tsx",
+            "engine/packages/client/src/SideNav.tsx"
+          ]
+        }
+      ],
+      "plan": {
+        "approach": "Server: a new module engine/packages/server/src/leaderboards.ts reads existing tables and ranks the boards, so no migration is needed. There is a total level board, one board for each of the sixteen GDD_SKILLS, a net worth board and a guild board. Skill levels come from the skills projection through levelFor and totalLevel in rules. Ties go to whoever reached the XP first, then by name. Net worth is Crowns plus held items, each valued at its Collector price from content, the same price market.ts uses. Escrowed open orders are left out. Guilds are ranked by the summed total level of their members. Every board leaves out Tinkers whose account has a full ban, joining the bans table from 018_admin the same way admin.ts's banOfTinker does. A guild's member count and total also skip those Tinkers. Each board returns the top 50, plus the viewing Tinker's own rank even when they fall below the cut. One route, GET /tinkers/:id/leaderboards/:board, is registered in src/api.ts. It uses the same tinker-ownership auth and error handling as GET /tinkers/:id/guild. Board names are 'total', a skill name, 'worth' or 'guilds'. An unknown board gets the existing 400 reply. There is no story board and no Reckoning board, as the GDD says. Client: fetchers and types go in src/api.ts. A new screen, src/Leaderboards.tsx, follows Guild.tsx: a row of board tabs, a skill picker using SKILL_ORDER and SkillIcon, and a ranked list that highlights the player's own row. A 'leaderboards' Place is added in SideNav.tsx and routed in App.tsx like the other screens. Tests: engine/packages/server/test/leaderboards.test.ts is written like guilds.test.ts. It checks the order on the total, skill, worth and guild boards through the API, checks that a fully banned player is hidden from the boards and from guild totals, checks that an unknown board is refused, and checks that someone else's Tinker id is refused. Open questions: the net worth valuation (Collector price, escrow excluded), the guild ranking measure (summed total level), the top 50 cut, and the tie-break.",
+        "read": [
+          "engine/packages/server/src/api.ts",
+          "engine/packages/server/src/admin.ts",
+          "engine/packages/server/src/market.ts",
+          "engine/packages/server/src/content-loader.ts",
+          "engine/packages/server/migrations/001_event_log.sql",
+          "engine/packages/server/migrations/010_guilds.sql",
+          "engine/packages/server/migrations/018_admin.sql",
+          "engine/packages/server/test/guilds.test.ts",
+          "engine/packages/rules/src/exchange.ts",
+          "engine/packages/client/App.tsx",
+          "engine/packages/client/src/api.ts",
+          "engine/packages/client/src/SideNav.tsx",
+          "engine/packages/client/src/Guild.tsx",
+          "engine/packages/server/src/guilds.ts"
+        ],
+        "create": [
+          "engine/packages/server/src/leaderboards.ts",
+          "engine/packages/server/test/leaderboards.test.ts",
+          "engine/packages/client/src/Leaderboards.tsx"
+        ]
+      },
+      "summary": "Leaderboards: total level, net worth, guilds, and one board for each of the GDD's sixteen skills (GDD section 6). There is no story board.\n\nServer: a new module, `src/leaderboards.ts`, ranks Tinkers and guilds from the existing tables (skills, purses, inventory, open orders, guild members). No migration.\n- **Route:** `GET /tinkers/:id/leaderboards/:board`, added to `api.ts` beside the Ledger pages route. It goes through the same sign-in and ownership check, so the caller's own row can be marked.\n- **Response:** the top 100 rows, plus the caller's own row even when it falls outside them.\n- **Ranks:** equal scores share a rank (1, 1, 3).\n- **Bans:** a fully banned account's Tinkers never appear on any board and don't count toward a guild's total. A chat ban hides nothing.\n- **Errors:** an unknown board gives 400; an unknown Tinker gives 404.\n\nTests: `test/leaderboards.test.ts` runs through the API against the real database. It covers:\n- the total-level order and your own row\n- the shared rank on a skill tie, and skill boards leaving out Tinkers with no XP in that skill\n- net worth: Crowns, Crowns held in open buy orders, unbound goods at the collectors' price, bound goods counting nothing\n- guilds ranked by their members' total levels, with guilds still forming left out\n- a full ban hiding a Tinker everywhere while a chat ban hides nothing\n- the 400 and 404 cases\n\nClient:\n- **Screen:** `src/Leaderboards.tsx` has board tabs, a short note on how each board counts, the ranked list with your row in brass, and your own rank below the list when you are outside the top 100.\n- **Fetcher:** `api.leaderboard` in `src/api.ts`.\n- **Navigation:** a \"Leaderboards\" row in the side list (`SideNav`) and a \"Ranks\" button on the phone's bottom bar (`BottomBar`).\n- **How it opens (check this first):** I couldn't see `Workshop.tsx`, so the screen opens as an overlay over the workshop. `App.tsx` wraps the workshop in a small provider instead of the screen being a `Place`. To make it a normal place, add a `leaderboards` entry to `Place` and a case in `Workshop.tsx`.\n\nNothing has been run yet: the typecheck, tests and validation are still to do.",
+      "open_questions": [
+        "Net worth: Crowns in the purse, plus Crowns held in open buy orders, plus unbound goods (held or in open sell orders) at the collectors' price. Goods the collectors don't buy, and bound goods, count as nothing. Gilded Cogs are left out because they are bought with money and the GDD says nothing is exclusive to paying players. Exchange fills not yet collected and pledges to an open charter are not counted.",
+        "Guild board: only formed (active) guilds, ranked by their members' total levels added together, showing the member count. Charters still raising the fee are not shown.",
+        "Ties: equal scores share a rank (1, 1, 3). On the total board, a tie in total level goes to the Tinker with more total XP. Skill boards rank by XP and show the level. Any remaining tie is listed by name.",
+        "A board shows the top 100 (BOARD_SIZE), plus the caller's own row when it is lower.",
+        "Skill boards list only Tinkers with some XP in that skill. The total and net worth boards list every Tinker.",
+        "Boards are per Tinker, not per account, so all three of an account's Tinkers can appear.",
+        "Boards read the stored projections and do not resolve other Tinkers' offline Boilers, so each Tinker counts as of its last visit. The screen says so.",
+        "Fully banned accounts are left out of every board and out of guild totals. A guild whose members are all fully banned is not shown. Chat bans don't affect the boards.",
+        "The GDD puts leaderboards in ElastiCache for Valkey. This build reads them from PostgreSQL to add no dependency. Moving them to Valkey later only changes the server module.",
+        "The screen opens as an overlay over the workshop, from a row in the side list and a 'Ranks' button on the phone's bottom bar. It is not a Place, because I could not see Workshop.tsx's place switch to wire one in. It shows from the start, not revealed by the first-session guide, since the GDD says any player can open the boards."
+      ],
+      "created": [
+        "engine/packages/client/src/Leaderboards.tsx",
+        "engine/packages/server/src/leaderboards.ts",
+        "engine/packages/server/test/leaderboards.test.ts"
+      ],
+      "edited": [
+        "engine/packages/client/App.tsx",
+        "engine/packages/client/src/SideNav.tsx",
+        "engine/packages/client/src/api.ts",
+        "engine/packages/server/src/api.ts"
+      ],
+      "score": 7.0,
+      "why": "(3x3 value + 5 mentions + 2x0 unlocks + 3x0.00 progress) / 2 effort"
+    }
+  ]
+}

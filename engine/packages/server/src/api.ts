@@ -46,6 +46,7 @@ import {
   sellToCollector,
   type TradingRules,
 } from "./market.js";
+import { leaderboard } from "./leaderboards.js";
 import { readLedgerPages } from "./pages.js";
 import { BadSignature, MAX_CRATES, type Payments } from "./payments.js";
 import { buyUpgrade, grantCrates, openCrates, readShop, rememberStripeCustomer, revokeCrates, stripeCustomerOf } from "./shop.js";
@@ -519,6 +520,11 @@ export function buildApi({
 
   // Hester's Ledger: the pages this Tinker holds can be read; the rest are only counted.
   app.get<{ Params: { id: string } }>("/tinkers/:id/pages", async (request) => readLedgerPages(db, content, Number(request.params.id)));
+
+  // The leaderboards (GDD section 6), open to every player. Named by Tinker so the caller's own row, or guild, can be marked.
+  app.get<{ Params: { id: string; board: string } }>("/tinkers/:id/leaderboards/:board", async (request) =>
+    leaderboard(db, content, Number(request.params.id), request.params.board),
+  );
 
   app.post<{ Params: { id: string }; Body: { kind: "storylet" | "letter"; scene: string; option: number } }>(
     "/tinkers/:id/story",

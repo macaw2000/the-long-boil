@@ -19,6 +19,7 @@ import { Guild } from "./Guild";
 import { skillOpen } from "@long-boil/rules";
 import { jobTitle, skillOf, startFirst } from "./jobs";
 import { CanisterDrop, Floaters, ScaldVignette, useFloaters } from "./Juice";
+import { Leaderboards } from "./Leaderboards";
 import { Ledger, STALL_REASONS } from "./Ledger";
 import { useLive } from "./live";
 import { Loadout } from "./Loadout";
@@ -512,7 +513,17 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     ) : place === "story" ? (
       <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} guideAt={at === "letters" || at === "scenes" ? at : null} onGo={setPlace} />
     ) : place === "guild" ? (
-      <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} crownsHeld={tinker.crowns} />
+      <View style={{ gap: 12 }}>
+        {/* A phone's bar has no room for another tab, so the boards are reached from here. */}
+        {!wide && (
+          <Pressable onPress={() => setPlace("leaderboards")} accessibilityRole="button" style={[ui.button, { alignSelf: "flex-start" }]}>
+            <Text style={ui.buttonText}>Leaderboards</Text>
+          </Pressable>
+        )}
+        <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} crownsHeld={tinker.crowns} />
+      </View>
+    ) : place === "leaderboards" ? (
+      <Leaderboards tinkerId={tinkerId} />
     ) : place === "exchange" ? (
       <View style={{ gap: 12 }}>
         {tinker.story.debts.length > 0 && <Bills tinker={tinker} act={run} payGuided={at === "pay"} />}

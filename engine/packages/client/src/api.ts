@@ -353,6 +353,26 @@ export interface GuildView {
   rules: { fee: number; founderMin: number; maxMembers: number; renameCrowns: number };
 }
 
+/** One row of a leaderboard (packages/server/src/leaderboards.ts): a Tinker, or a guild on the guild board. */
+export interface LeaderboardRow {
+  rank: number;
+  id: number;
+  name: string;
+  value: number;
+  /** XP on the level boards, members on the guild board, nothing on net worth. */
+  detail: number | null;
+  you: boolean;
+}
+
+export interface LeaderboardView {
+  board: string;
+  boards: string[];
+  size: number;
+  rows: LeaderboardRow[];
+  /** This Tinker's row, or its guild's, wherever it falls. */
+  you: LeaderboardRow | null;
+}
+
 export type ChatChannel = "city" | "trade" | "help" | "guild" | "whisper";
 
 export interface WhisperConversation {
@@ -527,6 +547,7 @@ export const api = {
   removeMember: (id: number, other: number) => request<GuildView>("DELETE", `/tinkers/${id}/guild/members/${other}`),
   renameGuild: (id: number, name: string) => request<GuildView>("POST", `/tinkers/${id}/guild/rename`, { name }),
   disbandGuild: (id: number) => request<GuildView>("POST", `/tinkers/${id}/guild/disband`),
+  leaderboard: (id: number, board: string) => request<LeaderboardView>("GET", `/tinkers/${id}/leaderboards/${encodeURIComponent(board)}`),
   mute: (id: number, other: number) => request<ChatView>("PUT", `/tinkers/${id}/mutes/${other}`),
   unmute: (id: number, other: number) => request<ChatView>("DELETE", `/tinkers/${id}/mutes/${other}`),
 };

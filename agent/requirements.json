@@ -1,0 +1,810 @@
+{
+  "about": "The features the GDD asks of the engine. Each quote must appear in docs/canon/slices/gdd-cleared.md under the named section, or the agent stops. evidence is what the scan must find for the feature to count as built; keywords is how the GDD names it. player_value and effort (1 to 5) are Jeremy's judgement and feed priority_score(); everything else it uses is computed. hold parks a feature, with the reason.",
+  "requirements": [
+    {
+      "id": "boiler",
+      "name": "The Boiler: 12 hours of offline work",
+      "gdd": {
+        "section": "Offline play: the Boiler",
+        "quote": "Logging off leaves 12 hours of steam"
+      },
+      "keywords": "Boiler",
+      "player_value": 5,
+      "effort": 4,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "steam",
+          "what": "offline resolution"
+        },
+        {
+          "layer": "server",
+          "pattern": "steam_until",
+          "what": "the Boiler's clock"
+        },
+        {
+          "layer": "client",
+          "pattern": "Boiler",
+          "what": "the Boiler gauge"
+        },
+        {
+          "layer": "tests",
+          "pattern": "boiler",
+          "what": "replay tests"
+        }
+      ]
+    },
+    {
+      "id": "queue",
+      "name": "The action queue",
+      "gdd": {
+        "section": "Offline play: the Boiler",
+        "quote": "The queue holds two actions"
+      },
+      "keywords": "queue",
+      "player_value": 5,
+      "effort": 3,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "queue",
+          "what": "queued actions"
+        },
+        {
+          "layer": "server",
+          "pattern": "setQueue",
+          "what": "a route to set the queue"
+        },
+        {
+          "layer": "client",
+          "pattern": "queue",
+          "what": "the queue on screen"
+        }
+      ]
+    },
+    {
+      "id": "skills",
+      "name": "Sixteen skills on one XP curve",
+      "gdd": {
+        "section": "Skills",
+        "quote": "Sixteen skills, each levelled 1 to 100"
+      },
+      "keywords": "skills?",
+      "player_value": 5,
+      "effort": 3,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "xp\\.ts",
+          "what": "the XP curve"
+        },
+        {
+          "layer": "client",
+          "pattern": "SkillView",
+          "what": "a skill's screen"
+        }
+      ]
+    },
+    {
+      "id": "combat",
+      "name": "Automatic combat",
+      "gdd": {
+        "section": "Combat",
+        "quote": "Combat is automatic"
+      },
+      "keywords": "combat",
+      "player_value": 5,
+      "effort": 4,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "planKill",
+          "what": "the combat model"
+        },
+        {
+          "layer": "client",
+          "pattern": "fight",
+          "what": "a fight on screen"
+        },
+        {
+          "layer": "tests",
+          "pattern": "combat",
+          "what": "combat tests"
+        }
+      ]
+    },
+    {
+      "id": "gear",
+      "name": "Seven gear slots and tools",
+      "gdd": {
+        "section": "Combat",
+        "quote": "A loadout fills seven gear slots"
+      },
+      "keywords": "gear|loadout",
+      "player_value": 4,
+      "effort": 4,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "slot",
+          "what": "gear slots"
+        },
+        {
+          "layer": "client",
+          "pattern": "Loadout",
+          "what": "the Loadout screen"
+        },
+        {
+          "layer": "tests",
+          "pattern": "gear",
+          "what": "gear tests"
+        }
+      ]
+    },
+    {
+      "id": "storylets",
+      "name": "Storylets with challenge odds",
+      "gdd": {
+        "section": "Storylets",
+        "quote": "Challenge odds use one formula everywhere"
+      },
+      "keywords": "storylets?",
+      "player_value": 5,
+      "effort": 4,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "challenge",
+          "what": "the story engine"
+        },
+        {
+          "layer": "server",
+          "pattern": "playStory",
+          "what": "a route to play an option"
+        },
+        {
+          "layer": "client",
+          "pattern": "Story",
+          "what": "the Story screen"
+        },
+        {
+          "layer": "tests",
+          "pattern": "story",
+          "what": "story tests"
+        }
+      ]
+    },
+    {
+      "id": "nerve",
+      "name": "Nerve",
+      "gdd": {
+        "section": "Nerve",
+        "quote": "It caps at 10, refills by 1 every 36 minutes"
+      },
+      "keywords": "Nerve",
+      "player_value": 4,
+      "effort": 2,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "nerve",
+          "what": "the Nerve budget"
+        },
+        {
+          "layer": "client",
+          "pattern": "nerve",
+          "what": "the Nerve gauge"
+        }
+      ]
+    },
+    {
+      "id": "post",
+      "name": "The Pneumatic Post",
+      "gdd": {
+        "section": "The Pneumatic Post",
+        "quote": "You hold up to 3, and a new one arrives every 2 hours"
+      },
+      "keywords": "Pneumatic Post|letters?",
+      "player_value": 4,
+      "effort": 3,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "letter",
+          "what": "the letter deck"
+        },
+        {
+          "layer": "server",
+          "pattern": "discardLetter",
+          "what": "letter routes"
+        },
+        {
+          "layer": "client",
+          "pattern": "letter",
+          "what": "letters on screen"
+        }
+      ]
+    },
+    {
+      "id": "needles",
+      "name": "The Four Needles",
+      "gdd": {
+        "section": "The Four Needles",
+        "quote": "Each runs from 0 to 8, falls by 1 every 24 hours"
+      },
+      "keywords": "Needles?",
+      "player_value": 4,
+      "effort": 3,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "needle",
+          "what": "Needle rules"
+        },
+        {
+          "layer": "client",
+          "pattern": "needle",
+          "what": "the Needle dials"
+        }
+      ]
+    },
+    {
+      "id": "ledger_pages",
+      "name": "Ledger Pages and Hester's Ledger",
+      "gdd": {
+        "section": "Ledger Pages and the Commonplace Book",
+        "quote": "Pages are bound to the player and read in Hester's Ledger"
+      },
+      "keywords": "Ledger Pages?",
+      "player_value": 4,
+      "effort": 3,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "ledger",
+          "what": "page rules"
+        },
+        {
+          "layer": "server",
+          "pattern": "readLedgerPages",
+          "what": "a route to read pages"
+        },
+        {
+          "layer": "client",
+          "pattern": "Ledger",
+          "what": "the Ledger screen"
+        },
+        {
+          "layer": "tests",
+          "pattern": "ledger",
+          "what": "page tests"
+        }
+      ]
+    },
+    {
+      "id": "exchange",
+      "name": "The Brass Exchange order book",
+      "gdd": {
+        "section": "The Brass Exchange",
+        "quote": "a 2% sales tax removes Crowns, and orders expire after 30 days"
+      },
+      "keywords": "Exchange",
+      "player_value": 5,
+      "effort": 4,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "exchange",
+          "what": "matching rules"
+        },
+        {
+          "layer": "server",
+          "pattern": "placeOrder",
+          "what": "order routes"
+        },
+        {
+          "layer": "client",
+          "pattern": "Exchange",
+          "what": "the Exchange screen"
+        },
+        {
+          "layer": "tests",
+          "pattern": "exchange",
+          "what": "Exchange tests"
+        }
+      ]
+    },
+    {
+      "id": "collectors",
+      "name": "Collectors and the grocer's counter",
+      "gdd": {
+        "section": "Guilds, Work Orders, and Favour",
+        "quote": "Selling to NPC collectors at the Counting-House window is never locked"
+      },
+      "keywords": "collectors?|grocer",
+      "player_value": 4,
+      "effort": 2,
+      "evidence": [
+        {
+          "layer": "server",
+          "pattern": "sellToCollector",
+          "what": "selling to collectors"
+        },
+        {
+          "layer": "server",
+          "pattern": "buyFromGrocer",
+          "what": "the grocer's counter"
+        },
+        {
+          "layer": "client",
+          "pattern": "collector",
+          "what": "the window on screen"
+        }
+      ]
+    },
+    {
+      "id": "work_orders",
+      "name": "Work Orders with faction seals",
+      "gdd": {
+        "section": "Guilds, Work Orders, and Favour",
+        "quote": "Solo players get a new Work Order every 8 hours"
+      },
+      "keywords": "Work Orders?",
+      "player_value": 4,
+      "effort": 3,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "work_orders",
+          "what": "Work Order rules"
+        },
+        {
+          "layer": "server",
+          "pattern": "turnIn",
+          "what": "Work Order routes"
+        },
+        {
+          "layer": "client",
+          "pattern": "WorkOrders",
+          "what": "the Work Orders screen"
+        },
+        {
+          "layer": "tests",
+          "pattern": "work_orders",
+          "what": "Work Order tests"
+        }
+      ]
+    },
+    {
+      "id": "guilds",
+      "name": "Guilds",
+      "gdd": {
+        "section": "Guilds, Work Orders, and Favour",
+        "quote": "A guild costs 500,000 Crowns"
+      },
+      "keywords": "guilds?",
+      "player_value": 4,
+      "effort": 4,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "guild",
+          "what": "guild rules"
+        },
+        {
+          "layer": "server",
+          "pattern": "foundGuild",
+          "what": "guild routes"
+        },
+        {
+          "layer": "client",
+          "pattern": "Guild",
+          "what": "the Guild screen"
+        },
+        {
+          "layer": "tests",
+          "pattern": "guild",
+          "what": "guild tests"
+        }
+      ]
+    },
+    {
+      "id": "chat",
+      "name": "Chat",
+      "gdd": {
+        "section": "What the screen shows",
+        "quote": "chat on the right"
+      },
+      "keywords": "chat",
+      "player_value": 4,
+      "effort": 3,
+      "evidence": [
+        {
+          "layer": "server",
+          "pattern": "recentChat",
+          "what": "chat storage and routes"
+        },
+        {
+          "layer": "client",
+          "pattern": "Chat",
+          "what": "the chat panel"
+        }
+      ]
+    },
+    {
+      "id": "cog_shop",
+      "name": "The Cog Shop",
+      "gdd": {
+        "section": "Monetization and Fairness",
+        "quote": "Cogs come in Cog Crates of 10, bought through Stripe"
+      },
+      "keywords": "Cogs?|Cog Shop",
+      "player_value": 3,
+      "effort": 3,
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "shop",
+          "what": "shop rules"
+        },
+        {
+          "layer": "server",
+          "pattern": "openCrates",
+          "what": "shop routes"
+        },
+        {
+          "layer": "client",
+          "pattern": "Shop",
+          "what": "the shop screen"
+        },
+        {
+          "layer": "tests",
+          "pattern": "shop",
+          "what": "shop tests"
+        }
+      ]
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe Checkout and its webhook",
+      "gdd": {
+        "section": "Monetization and Fairness",
+        "quote": "Its signed webhook reaches the game server, which grants crates exactly once per Checkout Session"
+      },
+      "keywords": "Stripe",
+      "player_value": 2,
+      "effort": 3,
+      "evidence": [
+        {
+          "layer": "server",
+          "pattern": "stripe/webhook",
+          "what": "the signed webhook"
+        },
+        {
+          "layer": "tests",
+          "pattern": "payments",
+          "what": "payment tests"
+        }
+      ]
+    },
+    {
+      "id": "reduced_motion",
+      "name": "Reduced motion",
+      "gdd": {
+        "section": "Comfort and access",
+        "quote": "Reduced-motion settings turn off the Haze shimmer and the Scald vignette"
+      },
+      "keywords": "reduced.motion",
+      "player_value": 2,
+      "effort": 1,
+      "evidence": [
+        {
+          "layer": "client",
+          "pattern": "reduce.?motion",
+          "what": "motion that respects the setting"
+        }
+      ]
+    },
+    {
+      "id": "page_blur",
+      "name": "Ledger Page text blurred in chat",
+      "gdd": {
+        "section": "Comfort and access",
+        "quote": "Ledger Page text is blurred in chat by default"
+      },
+      "keywords": "blurred",
+      "player_value": 2,
+      "effort": 1,
+      "evidence": [
+        {
+          "layer": "client",
+          "pattern": "blur",
+          "what": "blurred page text in chat"
+        }
+      ]
+    },
+    {
+      "id": "leaderboards",
+      "name": "Leaderboards",
+      "gdd": {
+        "section": "Leaderboards",
+        "quote": "Total level, each skill, net worth, and guilds"
+      },
+      "keywords": "leaderboards?",
+      "player_value": 3,
+      "effort": 2,
+      "goal": "Boards any player can open: total level, each of the sixteen skills, net worth, and guilds (GDD section 6, Leaderboards). There is no story leaderboard. The per-guild Reckoning contribution board waits for the Reckoning and is not part of this.",
+      "evidence": [
+        {
+          "layer": "server",
+          "pattern": "leaderboard",
+          "what": "a module that ranks Tinkers and guilds, and a route that serves the boards"
+        },
+        {
+          "layer": "client",
+          "pattern": "leaderboard",
+          "what": "a screen that shows the boards, reached from the navigation"
+        },
+        {
+          "layer": "tests",
+          "pattern": "leaderboard",
+          "what": "tests of the boards through the API"
+        }
+      ]
+    },
+    {
+      "id": "commonplace_book",
+      "name": "The Commonplace Book",
+      "gdd": {
+        "section": "Ledger Pages and the Commonplace Book",
+        "quote": "Every lore fact a player uncovers is written into the Commonplace Book, a re-readable codex."
+      },
+      "keywords": "Commonplace Book",
+      "player_value": 3,
+      "effort": 3,
+      "needs": [
+        "ledger_pages",
+        "storylets"
+      ],
+      "goal": "A re-readable codex of every lore fact a Tinker has uncovered (GDD section 5), built from qualities and pages the Tinker already holds.",
+      "evidence": [
+        {
+          "layer": "server",
+          "pattern": "commonplace",
+          "what": "a route that reads a Tinker's uncovered lore"
+        },
+        {
+          "layer": "client",
+          "pattern": "commonplace",
+          "what": "the codex screen"
+        },
+        {
+          "layer": "tests",
+          "pattern": "commonplace",
+          "what": "tests of the codex through the API"
+        }
+      ]
+    },
+    {
+      "id": "combat_triggers",
+      "name": "Combat triggers",
+      "gdd": {
+        "section": "Combat",
+        "quote": "pick a zone, a loadout, and triggers"
+      },
+      "keywords": "triggers?",
+      "player_value": 2,
+      "effort": 4,
+      "needs": [
+        "combat"
+      ],
+      "goal": "A player-set trigger for eating Rations in a fight (GDD section 6, Combat: \"eat a Ration below 40% HP\"), with offline resolution still equal to step-by-step replay.",
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "trigger",
+          "what": "a trigger in the combat model"
+        },
+        {
+          "layer": "client",
+          "pattern": "trigger",
+          "what": "a control to set it"
+        },
+        {
+          "layer": "tests",
+          "pattern": "trigger",
+          "what": "trigger tests"
+        }
+      ]
+    },
+    {
+      "id": "guild_contracts",
+      "name": "Guild Contracts",
+      "gdd": {
+        "section": "Guilds, Work Orders, and Favour",
+        "quote": "5 weekly Guild Contracts"
+      },
+      "keywords": "Guild Contracts?",
+      "player_value": 3,
+      "effort": 4,
+      "needs": [
+        "guilds"
+      ],
+      "goal": "Five weekly Guild Contracts a guild fills together, each with a faction's seal (GDD section 6).",
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "contract",
+          "what": "contract rules"
+        },
+        {
+          "layer": "server",
+          "pattern": "contract",
+          "what": "contract storage and routes"
+        },
+        {
+          "layer": "client",
+          "pattern": "contract",
+          "what": "contracts on the Guild screen"
+        },
+        {
+          "layer": "tests",
+          "pattern": "contract",
+          "what": "contract tests"
+        }
+      ]
+    },
+    {
+      "id": "guild_charters",
+      "name": "Faction charters for guilds",
+      "gdd": {
+        "section": "Guild charters",
+        "quote": "At the start of each season a guild may take one faction's charter"
+      },
+      "keywords": "charters?",
+      "player_value": 3,
+      "effort": 4,
+      "needs": [
+        "guild_contracts"
+      ],
+      "goal": "A guild takes one faction's charter for a season; its storyline bar fills from Guild Contracts (GDD section 5).",
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "faction.?charter|charter.?faction",
+          "what": "charter rules"
+        },
+        {
+          "layer": "server",
+          "pattern": "faction.?charter|charter.?faction",
+          "what": "charter storage and routes"
+        },
+        {
+          "layer": "client",
+          "pattern": "faction.?charter|charter.?faction",
+          "what": "the charter on the Guild screen"
+        }
+      ]
+    },
+    {
+      "id": "npc_sell_orders",
+      "name": "NPC sell orders at a price ceiling",
+      "gdd": {
+        "section": "The Brass Exchange",
+        "quote": "NPC sell orders at a price ceiling keep a thin market moving"
+      },
+      "keywords": "NPC sell orders",
+      "player_value": 2,
+      "effort": 3,
+      "needs": [
+        "exchange"
+      ],
+      "hold": "each item's ceiling price is tuning data the draftsman drafts and the assayer models; the engine cannot invent it",
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "npc.?sell|ceiling",
+          "what": "ceiling rules"
+        },
+        {
+          "layer": "server",
+          "pattern": "npc.?sell|ceiling",
+          "what": "standing NPC orders"
+        },
+        {
+          "layer": "tests",
+          "pattern": "npc.?sell|ceiling",
+          "what": "ceiling tests"
+        }
+      ]
+    },
+    {
+      "id": "calibrating",
+      "name": "Calibrating gear from +0 to +20",
+      "gdd": {
+        "section": "Treasure and Calibrating",
+        "quote": "Each calibration attempt costs Crowns and materials, with its odds shown up front"
+      },
+      "keywords": "Calibrat\\w+",
+      "player_value": 5,
+      "effort": 5,
+      "needs": [
+        "gear"
+      ],
+      "hold": "parked by Jeremy on the wip/calibration-model branch (docs/build-plan.md, Not in this slice)",
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "calibrateGear|calibration",
+          "what": "the calibration model"
+        },
+        {
+          "layer": "server",
+          "pattern": "calibrat",
+          "what": "an attempt route"
+        },
+        {
+          "layer": "client",
+          "pattern": "calibrat",
+          "what": "the Calibrating screen"
+        },
+        {
+          "layer": "tests",
+          "pattern": "calibrat",
+          "what": "calibration tests"
+        }
+      ]
+    },
+    {
+      "id": "gazette",
+      "name": "The Brass Gazette",
+      "gdd": {
+        "section": "The Brass Gazette",
+        "quote": "written daily by the Chronicler agent from game data and the canon"
+      },
+      "keywords": "Gazette",
+      "player_value": 4,
+      "effort": 5,
+      "hold": "an edition is written by the Chronicler agent, which is not built, and is content under the approval gate, not engine code",
+      "evidence": [
+        {
+          "layer": "server",
+          "pattern": "gazette\\w*\\(|TABLE gazette",
+          "what": "edition storage and a route"
+        },
+        {
+          "layer": "client",
+          "pattern": "gazette",
+          "what": "the Gazette screen"
+        }
+      ]
+    },
+    {
+      "id": "cosmetics",
+      "name": "Cosmetics in the Cog Shop",
+      "gdd": {
+        "section": "Monetization and Fairness",
+        "quote": "Cosmetics: coats, goggles, workshop signs"
+      },
+      "keywords": "cosmetics?",
+      "player_value": 2,
+      "effort": 3,
+      "needs": [
+        "cog_shop"
+      ],
+      "hold": "waits for art (docs/build-plan.md, milestone 12)",
+      "evidence": [
+        {
+          "layer": "rules",
+          "pattern": "cosmetic",
+          "what": "cosmetic items"
+        },
+        {
+          "layer": "client",
+          "pattern": "cosmetic",
+          "what": "cosmetics in the shop"
+        }
+      ]
+    }
+  ]
+}

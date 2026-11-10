@@ -1,0 +1,73 @@
+15:13:31 GDD read: 75 sections, 28 requirements, each quote found
+15:13:31 GDD cut order: the Cog Shop's Stripe path; guild charters; Guild Contracts; Discord sign-in; the Post deck from 36 letters to 20; each Needle's consequence chapter from 4 storylets to 2
+15:13:31 [gate] checking the codebase passes before anything is written
+15:13:41 == pass 1: 107 files scanned, 19 of 28 requirements met
+15:13:41   met      boiler             The Boiler: 12 hours of offline work
+15:13:41   met      queue              The action queue
+15:13:41   met      skills             Sixteen skills on one XP curve
+15:13:41   met      combat             Automatic combat
+15:13:41   met      gear               Seven gear slots and tools
+15:13:41   met      storylets          Storylets with challenge odds
+15:13:41   met      nerve              Nerve
+15:13:41   met      post               The Pneumatic Post
+15:13:41   met      needles            The Four Needles
+15:13:41   met      ledger_pages       Ledger Pages and Hester's Ledger
+15:13:41   met      exchange           The Brass Exchange order book
+15:13:41   met      collectors         Collectors and the grocer's counter
+15:13:41   met      work_orders        Work Orders with faction seals
+15:13:41   met      guilds             Guilds
+15:13:41   met      chat               Chat
+15:13:41   met      cog_shop           The Cog Shop
+15:13:41   met      stripe             Stripe Checkout and its webhook
+15:13:41   met      reduced_motion     Reduced motion
+15:13:41   met      page_blur          Ledger Page text blurred in chat
+15:13:41   MISSING  leaderboards       score  7.00 = (3x3 value + 5 mentions + 2x0 unlocks + 3x0.00 progress) / 2 effort
+15:13:41   MISSING  commonplace_book   score  3.67 = (3x3 value + 2 mentions + 2x0 unlocks + 3x0.00 progress) / 3 effort
+15:13:41   MISSING  combat_triggers    score  2.25 = (3x2 value + 3 mentions + 2x0 unlocks + 3x0.00 progress) / 4 effort
+15:13:41   MISSING  guild_contracts    score  2.00 = (3x3 value + 5 mentions + 2x1 unlocks + 3x0.00 progress) / 4 effort / 2 (on the GDD's cut list)
+15:13:41   MISSING  guild_charters     waiting on guild_contracts
+15:13:41   MISSING  npc_sell_orders    held: each item's ceiling price is tuning data the draftsman drafts and the assayer models; the engine cannot invent it
+15:13:41   PARTIAL  calibrating        held: parked by Jeremy on the wip/calibration-model branch (docs/build-plan.md, Not in this slice)
+15:13:41   MISSING  gazette            held: an edition is written by the Chronicler agent, which is not built, and is content under the approval gate, not engine code
+15:13:41   MISSING  cosmetics          held: waits for art (docs/build-plan.md, milestone 12)
+15:13:41 next: leaderboards (Leaderboards), score 7.0
+15:13:41 [planner] choosing what to read
+15:13:56 [planner] Server: a new module engine/packages/server/src/leaderboards.ts reads existing tables and ranks the boards, so no migration is needed. There is a total level board, one board for each of the sixteen GDD_SKILLS, a net worth board and a guild board. Skill levels come from the skills projection through levelFor and totalLevel in rules. Ties go to whoever reached the XP first, then by name. Net worth is Crowns plus held items, each valued at its Collector price from content, the same price market.ts uses. Escrowed open orders are left out. Guilds are ranked by the summed total level of their members. Every board leaves out Tinkers whose account has a full ban, joining the bans table from 018_admin the same way admin.ts's banOfTinker does. A guild's member count and total also skip those Tinkers. Each board returns the top 50, plus the viewing Tinker's own rank even when they fall below the cut. One route, GET /tinkers/:id/leaderboards/:board, is registered in src/api.ts. It uses the same tinker-ownership auth and error handling as GET /tinkers/:id/guild. Board names are 'total', a skill name, 'worth' or 'guilds'. An unknown board gets the existing 400 reply. There is no story board and no Reckoning board, as the GDD says. Client: fetchers and types go in src/api.ts. A new screen, src/Leaderboards.tsx, follows Guild.tsx: a row of board tabs, a skill picker using SKILL_ORDER and SkillIcon, and a ranked list that highlights the player's own row. A 'leaderboards' Place is added in SideNav.tsx and routed in App.tsx like the other screens. Tests: engine/packages/server/test/leaderboards.test.ts is written like guilds.test.ts. It checks the order on the total, skill, worth and guild boards through the API, checks that a fully banned player is hidden from the boards and from guild totals, checks that an unknown board is refused, and checks that someone else's Tinker id is refused. Open questions: the net worth valuation (Collector price, escrow excluded), the guild ranking measure (summed total level), the top 50 cut, and the tie-break.
+15:13:56 [planner] reading 14 file(s): api.ts, admin.ts, market.ts, content-loader.ts, 001_event_log.sql, 010_guilds.sql, 018_admin.sql, guilds.test.ts, exchange.ts, App.tsx, api.ts, SideNav.tsx, Guild.tsx, guilds.ts
+15:13:56 -- leaderboards: round 1
+15:13:56 [writer] writing (high effort)
+15:23:47 [writer] 3 file(s), 11 edit(s)
+15:23:47 [gate] typecheck, tests, validators
+15:23:58 [gate] all pass, and the scan finds the feature
+15:23:58 == pass 2: 110 files scanned, 20 of 28 requirements met
+15:23:58   met      boiler             The Boiler: 12 hours of offline work
+15:23:58   met      queue              The action queue
+15:23:58   met      skills             Sixteen skills on one XP curve
+15:23:58   met      combat             Automatic combat
+15:23:58   met      gear               Seven gear slots and tools
+15:23:58   met      storylets          Storylets with challenge odds
+15:23:58   met      nerve              Nerve
+15:23:58   met      post               The Pneumatic Post
+15:23:58   met      needles            The Four Needles
+15:23:58   met      ledger_pages       Ledger Pages and Hester's Ledger
+15:23:58   met      exchange           The Brass Exchange order book
+15:23:58   met      collectors         Collectors and the grocer's counter
+15:23:58   met      work_orders        Work Orders with faction seals
+15:23:58   met      guilds             Guilds
+15:23:58   met      chat               Chat
+15:23:58   met      cog_shop           The Cog Shop
+15:23:58   met      stripe             Stripe Checkout and its webhook
+15:23:58   met      reduced_motion     Reduced motion
+15:23:58   met      page_blur          Ledger Page text blurred in chat
+15:23:58   met      leaderboards       Leaderboards
+15:23:58   MISSING  commonplace_book   score  3.67 = (3x3 value + 2 mentions + 2x0 unlocks + 3x0.00 progress) / 3 effort
+15:23:58   MISSING  combat_triggers    score  2.25 = (3x2 value + 3 mentions + 2x0 unlocks + 3x0.00 progress) / 4 effort
+15:23:58   MISSING  guild_contracts    score  2.00 = (3x3 value + 5 mentions + 2x1 unlocks + 3x0.00 progress) / 4 effort / 2 (on the GDD's cut list)
+15:23:58   MISSING  guild_charters     waiting on guild_contracts
+15:23:58   MISSING  npc_sell_orders    held: each item's ceiling price is tuning data the draftsman drafts and the assayer models; the engine cannot invent it
+15:23:58   PARTIAL  calibrating        held: parked by Jeremy on the wip/calibration-model branch (docs/build-plan.md, Not in this slice)
+15:23:58   MISSING  gazette            held: an edition is written by the Chronicler agent, which is not built, and is content under the approval gate, not engine code
+15:23:58   MISSING  cosmetics          held: waits for art (docs/build-plan.md, milestone 12)
+15:23:58 next: commonplace_book (The Commonplace Book), score 3.67
+15:23:58 stop: --max-features 1 reached
+15:23:58 run written to agent/runs/20261110-151331

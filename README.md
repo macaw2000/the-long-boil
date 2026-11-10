@@ -53,6 +53,7 @@ Two rules protect the story. The canon bible (`docs/canon/`) splits the world by
 | GDD first draft | [`docs/The-Long-Boil-GDD-First-Draft.pdf`](docs/The-Long-Boil-GDD-First-Draft.pdf); the full design is [`docs/gdd.md`](docs/gdd.md) |
 | A crew of 3+ agents producing game-ready output | [`crew/`](crew/README.md): the Scrivener, Inspector and Registrar as standalone Python, with the validators as a gate |
 | A content pipeline that reads the GDD, with a critic | [`crew/outputs/`](crew/outputs/README.md): three Tailoring storylets, now in the game, and what the critic caught |
+| A goal-oriented coding agent that builds a missing feature | [`agent/`](agent/README.md): it read the GDD, scanned the engine, ranked the gaps and built the Leaderboards |
 
 ## Repository
 
