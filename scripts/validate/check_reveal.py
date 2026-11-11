@@ -72,6 +72,12 @@ REVEAL_WORDS = (
     (2, ("knock", "knocks", "knocked", "knocking", "knocker", "knockers"),
      "docs/canon/slices/act1.md, Hard limits for this slice",
      "No Steeped, nothing knocking, no capsules."),
+    (2, ("haze",),
+     "docs/canon/slices/act1.md, The Needles",
+     "Haze does not exist yet: it enters in Act II with the Whistle. Do not reference it."),
+    (3, ("capsule", "capsules"),
+     "docs/canon/slices/act2.md, Hard limits for this slice",
+     "No Steeped, nothing living below, nothing knocking, no capsules. That is Act III."),
 )
 
 

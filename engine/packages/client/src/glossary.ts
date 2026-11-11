@@ -2,8 +2,9 @@
 // on the top bar and the Story tab (Term.tsx). Drawn from GDD section 5 and
 // kept to what the game does today: a Needle at 8 is called the redline, but
 // only Scald's is promised, because only the Infirmary exists yet, and paying
-// a debt clears the debt, not Arrears. Haze's line is safe to show because
-// Haze itself stays hidden until Act II.
+// a debt clears the debt, not Arrears. Haze has no line: the bundle reaches
+// every player, so its words would be readable before Act II (the reveal
+// check guards "haze" below act 2). Its entry comes back with Act II's content.
 
 export const glossary = {
   boiler:
@@ -26,8 +27,6 @@ export const glossary = {
     "Arrears: how deep in debt you are, from borrowing, bribes and deals gone wrong. Some scenes let you settle up and bring it down. 8 is the redline.",
   "needle.notice":
     "Notice: how much the Gaugers have noticed you, from broken locks, wrong questions and bad company. Some scenes let you lie low and bring it down. 8 is the redline.",
-  "needle.haze":
-    "Haze: how far the Great Whistle has got into your head. Calming teas and Chapel services bring it down. 8 is the redline.",
   foundry_pass:
     "The Foundry Pass lets you into the Cinderworks. It comes through the story, never the Cog Shop or the Exchange: near the end of Act I, a scene at the Brass Exchange offers it several ways, from mending a vent for the Stokers to taking it on credit from the Counting-House.",
 } as const;

@@ -125,10 +125,16 @@ class CutError(Exception):
         self.path, self.line, self.message = path, line, message
 
 
+HARD_LIMIT_FORMS = frozenset(form for _n, forms, _l in HARD_LIMIT_WORDS for form in forms)
+
+
 def _guards():
-    """The check_reveal word guards for acts above the clearance."""
-    return [(act, pattern) for act, pattern, _s, _l in check_reveal.WORD_GUARDS
-            if act > CLEARED_ACT]
+    """The check_reveal word guards for acts above the clearance. A guard whose
+    forms are all hard-limit words is left to G7, so a sentence naming Haze or
+    a capsule costs that sentence, not its whole line."""
+    return [(act, pattern) for (act, pattern, _s, _l), (_a, forms, _so, _li)
+            in zip(check_reveal.WORD_GUARDS, check_reveal.REVEAL_WORDS)
+            if act > CLEARED_ACT and not set(forms) <= HARD_LIMIT_FORMS]
 
 
 def line_markers(line):
