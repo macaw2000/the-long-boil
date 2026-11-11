@@ -8,8 +8,10 @@ docs/canon/slices/gdd-cleared.md. For each one this check fails when:
 - no-header: it does not open with the generated-file header;
 - stale: it differs from what the cut produces now, so its source or the cut
   rules changed and nobody regenerated it, or someone edited it by hand;
-- above-layer-1: it carries a marker for anything above Layer 1. This runs on
-  the file as committed, whatever the cut can do, so a hand edit cannot hide;
+- above-layer-1: it carries a marker for anything above Layer 1, a hard-limit
+  word from docs/canon/slices/act1.md included (cut_clearance.HARD_LIMIT_WORDS).
+  This runs on the file as committed, whatever the cut can do, so a hand edit
+  cannot hide;
 - cut-failed: the cut itself cannot run, because a marker it relies on has gone
   from the source.
 

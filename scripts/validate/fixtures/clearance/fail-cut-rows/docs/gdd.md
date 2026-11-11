@@ -10,6 +10,21 @@ A plain line with no marker.
 
 Safe world line.
 
+Safe sentence kept, by Mrs. Fixture. The Steeped are a FIXTURE-SECRET sentence. Another safe sentence kept.
+
+- Safe list sentence kept. The FIXTURE-SECRET Capsule sentence!
+
+A safe sentence kept. The FIXTURE-SECRET Off-hour, and the Hearth.
+
+Haze alone, on a FIXTURE-SECRET line.
+
+The short version, for the team only: FIXTURE-SECRET.
+
+| Term | Meaning |
+| --- | --- |
+| Safe term | Kept |
+| Notation | FIXTURE-SECRET glossary entry |
+
 Later, in Act IV, there is a FIXTURE-SECRET.
 
 Knock FIXTURE-SECRET line.

@@ -2,7 +2,8 @@
 GENERATED FILE. Do not edit by hand.
 Source: docs/gdd.md, cut by scripts/canon/cut_clearance.py.
 Regenerate with: python3 scripts/canon/cut_clearance.py
-Cleared for Layer 1. Source lines removed, by rule: G1 55, G2 4, G3 1, G4 14, G6 18.
+Cleared for Layer 1. Source lines removed, by rule: G1 55, G2 4, G3 1, G4 14, G6 19, G7 11.
+Source lines kept in part, by rule: G7 6.
 The rules are in the docstring of that script.
 -->
 
@@ -30,7 +31,7 @@ It adds two things the draft lacked: a real story, told through storylets in the
 **The core loop.** Every 3 to 5 minute check-in has two halves. The idle half is unchanged from the first draft: collect what your Tinker made, craft it up a chain or sell it on the Brass Exchange, gear up, and queue the next 12 hours. The story half is new: read the letters the Pneumatic Post delivered, then spend Nerve, a story-action budget that refills while you're gone, on storylets whose options open as your skills rise. A Tinker with Tinkering 30 can pick a lock that a Tinker with Tinkering 10 can only stare at.
 
 - **Win condition:** an idle game never ends, so there is no single win. Players win in three layers: personal progress (levels, gear, leaderboard ranks), personal story (reaching the ending of the Ambition they chose), and city story (their guild's side carrying the season's Reckoning, which changes Kettleport for every player).
-- **Loss states:** a knockout (60-second respawn, then the queue resumes), a lost boss fight (the attempt is spent), a failed calibration (gear falls to +0 unless protected), and, new in this edition, a redlined Needle. Push Scald, Arrears, Notice, or Haze to 8 and the story sends you somewhere unpleasant until you talk, pay, or think your way out. Story losses never touch your queue or your inventory.
+- **Loss states:** a knockout (60-second respawn, then the queue resumes), a lost boss fight (the attempt is spent), a failed calibration (gear falls to +0 unless protected), and, new in this edition, a redlined Needle. Story losses never touch your queue or your inventory.
 - **Business:** free to play. Stripe-sold Gilded Cogs buy time savers and cosmetics. Nothing is exclusive to paying players, and no story is ever sold.
 
 **Design pillars.**
@@ -66,11 +67,9 @@ The Brass Gazette prints the day's Gauge Reading on its front page. It is always
 - **Steam is rationed.** Every workshop draws steam from the Kettle's mains through a metered Boiler, and the Board licenses the hours. That is why a Tinker's work stops when the Boiler runs dry, and why Boiler licenses are worth paying for. It is also the in-world reason for the 12-hour offline cap.
 - **The dead go up the flue.** There is no ground to bury anyone in. Kettleport's dead are carried to the Cinderworks and given to the furnaces with a short service and a long whistle. Helping keep the city aloft is the highest honour a citizen can earn. Asking about the soot is considered rude.
 
-The Storyline section holds the truth and the schedule for revealing it. The short version, for the team only: the city did not escape the Boil. The city is the Boil.
-
 ### Daily life
 
-Kettleport runs on tea. Water is the one thing the city has too much of, every corner has a public urn, and a good Tea Blender is treated like a minor saint. Time is kept by the Great Whistle, which sounds the hours from the Kettle-heart; nobody admits that it sometimes sounds a note that is not on the hour.
+Kettleport runs on tea. Water is the one thing the city has too much of, every corner has a public urn, and a good Tea Blender is treated like a minor saint.
 
 The money is the Crown, a heavy brass coin stamped with a gauge needle. Gilded Cogs are Counting-House certificates that most citizens hold and few understand. Weather arrives from two directions: fog rises from the Scald, and storms roll down from the Thunderhead, where the sky is full of lightning and people who want to sell it to you.
 
@@ -84,7 +83,6 @@ The city is stacked like an upturned wedding cake. Gaugehill sits on top, the Ke
 | The Polytechnic | District | Prologue, I | Professor Brassbuckle's lecture halls and Hester Vane's sealed laboratory |
 | The Brass Exchange | District | All | The trading floor and the Counting-House, where Silas Tallow keeps the books and collects Arrears |
 | The Lowvents | District | I, II | Stokers' tenements on the bottom rim, hot fog, the Stokers' Fellowship hall |
-| Chapel of the Steady Flame | District | II | Whistled hymns, Deacon Hale, and an archive of very old whistle notation |
 | Gaugehill | District | II, III | The Board's chamber, the Great Gauges, Gauger headquarters, the Valve Gaol |
 | Rustmoor Scrapyards | Combat zone, levels 1 to 20 | I | The city's tip, slung on chains off the outer rim; Rust Rats and Scrapjaw |
 | Cinderworks Foundry | Combat zone, levels 20 to 45 | II | The furnaces around the Kettle-heart; Soot Wraiths and Old Bellows |
@@ -100,12 +98,12 @@ Kettleport is grim and funny in the same breath. The rules below live in the sty
 - Short and specific: a storylet's description runs 120 words at most, each option 25, each outcome 150. A "No. 4 spanner" beats "an old tool".
 - Dry wit over gore. Terrible things happen offstage and are described by their aftermath.
 - Victorian register without pastiche: no "forsooth", no modern slang, no real-world politics.
-- Nobody explains the mystery. Truth arrives in fragments: a ledger page, a whistle note, two gauges that disagree.
+- Nobody explains the mystery.
 - Banned outright: "tapestry", "testament to", "delve", "a sense of", "little did you know", and any sentence that explains its own joke.
 
 ### Visual language
 
-The draft's 48×48 pixel sprites in brass, copper, and verdigris stay. The story adds 40 reusable 96×96 vignettes, one per character and location, rather than unique art per storylet, which would not fit a semester. The Needles show on screen as well as on the character sheet: Scald reddens the frame's edges, Haze adds a slow shimmer to the UI as it climbs, Notice puts a Gauger's whistle in the corner, and Arrears tarnishes the Crown icon.
+The draft's 48×48 pixel sprites in brass, copper, and verdigris stay. The story adds 40 reusable 96×96 vignettes, one per character and location, rather than unique art per storylet, which would not fit a semester.
 
 ## 3. Factions and Characters
 
@@ -118,7 +116,6 @@ Eight factions want something from Kettleport's Tinkers, and every one of them i
 | The Board of Gauges | Lord Septimus Gauntlett, First Gauge | Gaugehill | A calm city that keeps rising | Panic, and anyone who reads a gauge for themselves | Gaugehill storylets, the Board's Ballast deliberations, formal dress |
 | The Stokers' Fellowship | Mother Agatha Ash | The Lowvents | Safe vents, fair steam, no Ballast Day for the Lowvents | Being next | Fellowship hall, the Stokers' oral history, soot-black work coats |
 | The Counting-House | Silas Tallow | The Brass Exchange | Your business, your debts, stable prices | Anything it cannot put a price on | Private ledgers, debt-forgiveness storylets, a gilded monocle |
-| The Chapel of the Steady Flame | Deacon Prosper Hale | The Chapel | The flame kept and the faithful calm | The Great Whistle falling silent | The hymnal archive, the first whistle notations |
 | The Gaugers | Inspector Mabel Rook | Gaugehill | Order, and quietly, the truth | What the city will do once it knows | Case files, ways to lower Notice, a Gauger's whistle |
 | The Polytechnic | Professor Ottoline Brassbuckle | The Polytechnic | Answers and funding, in that order | Hester's research falling into the Board's hands | Hester's sealed laboratory, research storylets |
 | The Vapourists | The Diver (masked) | Nowhere you can find | To go down the Downpipe and see | The Board, and being right | Illegal diving gear schematics (story items), the Fathom Ambition's later chapters |
@@ -192,9 +189,7 @@ Every fact the story can check is a quality, a named integer on the player's rec
 | Skills | Tinkering, Tea Blending, Aetherics | 1 to 100 | The idle loop, unchanged from the draft |
 | Items | Brass Ingot, Safety Valve, Ledger Page 1 | 0 to any | Drops, crafting, storylets |
 | Favour | Stokers' Fellowship, the Board | 0 to 7 | Work Orders, storylets, Guild Contracts |
-| Needles | Scald, Arrears, Notice, Haze | 0 to 8 | Failed or risky storylets |
 | Progress | Act I progress, Ambition: the Lantern | 0 to 100 | Storylets |
-| Lore | Whistle notations, Ledger Pages collected | 0 to 24 | Storylets, boss first-kills, rare drops |
 | Flags | Gave Page 1 to Inkwell, Partnered with the Baron | 0 or 1 | Choices |
 
 ### Storylets
@@ -248,9 +243,8 @@ The Needles are the story's risks, drawn as four small dials on the character sh
 | Scald | Fail physical risks: vents, furnaces, rooftops | Rest, Cooking rations used in story | The Infirmary of St. Pinion | Recover over several storylets, or charm the night nurse |
 | Arrears | Borrow, bribe, or lose a deal | Paying Crowns at the Counting-House | The Debtors' Gallery | Pay, work it off, or find Tallow a secret worth more than your debt |
 | Notice | Break locks, meet Vapourists, ask the wrong questions | Inspector Rook's goodwill, lying low | The Valve Gaol | Talk, bribe (raising Arrears), or break out with Tinkering |
-| Haze | Listen to the Whistle, read Downpipe capsules, translate | Calming teas from Tea Blending, Chapel services | The Quiet Rooms, a sanatorium in Gaugehill | Recover, or stay and learn notations taught nowhere else |
 
-Two rules keep Needles fair in an idle game. First, they only touch the story: a redlined Tinker keeps smelting, fighting, and trading as normal. Second, curiosity has a price but is never a trap. Some Whistle notations can only be learned in the Quiet Rooms, so a few players will redline Haze on purpose.
+Two rules keep Needles fair in an idle game. First, they only touch the story: a redlined Tinker keeps smelting, fighting, and trading as normal. Second, curiosity has a price but is never a trap.
 
 Paying off Arrears in Crowns is also a new Crown sink, and the Assayer tracks it alongside Calibrating and Exchange tax.
 
@@ -294,7 +288,6 @@ Sixteen skills, each levelled 1 to 100, feed the loop. Each one is also a story 
 | Tinkering | Production | Instruments, rifles, keys | Locks, machines, the Polytechnic |
 | Tailoring | Production | Coats and goggles | Disguise, dress, getting into Gaugehill |
 | Cooking | Production | Healing rations | Hospitality, lowering Scald |
-| Tea Blending | Production | Buff teas and tonics | Persuasion, the Chapel, lowering Haze |
 | Calibrating | Special | Gear +1 to +20 | Reading gauges, catching lies in numbers |
 | Vitality | Combat | Hit points | Enduring heat and hard nights |
 | Pressure | Combat | Steam-driven force | Pushing people and valves |
@@ -325,7 +318,6 @@ Gear is how a Tinker feels stronger between sessions (amended 30 October 2026, a
 | Zone | Levels | Monsters | Boss and drop | Act | Ledger Pages |
 | --- | --- | --- | --- | --- | --- |
 | Rustmoor Scrapyards | 1 to 20 | Rust Rats | Scrapjaw: Scrapjaw's Cleaver, Ledger Page 1 | I | 1 boss, 4 drops |
-| Cinderworks Foundry | 20 to 45 | Soot Wraiths | Old Bellows: Bellows Plate, a Whistle notation | II | 1 boss, 4 drops |
 | Thunderhead Reach | 45 to 70 | Storm Harpies | The Lightning Baron: Coil Staff, Gondola Schematic | III | 1 boss, 4 drops |
 | Dreadnought Hangar | 70+, 5 players | The Board's marines | The Iron Dreadnought: its armour set | IV, after the capstone | Not in the capstone |
 
@@ -403,12 +395,11 @@ By the end of the week she is about level 12 in Rustmoor, halfway through Act I,
 
 ### Month three
 
-Ada beat the Lightning Baron around week six and has read the last capsule. Her day now has three kinds of goals. Calibrating her Coil Staff toward +10 is a long Crown sink and a leaderboard. The Lantern Ambition's middle chapters ask for Scavenging levels she has neglected, and she has deliberately redlined Haze once to learn a notation in the Quiet Rooms. Her guild is fighting for the Stokers' side in the Reckoning, and the Gazette prints the standings every morning.
+Her day now has three kinds of goals. Calibrating her Coil Staff toward +10 is a long Crown sink and a leaderboard. Her guild is fighting for the Stokers' side in the Reckoning, and the Gazette prints the standings every morning.
 
 ### Comfort and access
 
 - System text scaling applies to all story text, and every storylet works with a screen reader.
-- Reduced-motion settings turn off the Haze shimmer and the Scald vignette.
 - Needle dials use shape and position as well as colour.
 - Ledger Page text is blurred in chat by default, so nobody is spoiled by a guildmate.
 - Every storylet shows its Nerve cost and odds before you commit, with no hidden rolls.
@@ -767,15 +758,12 @@ The Chronicler writes this from game data and the canon. Only the Board's Gauge 
 | Gilded Cogs | The premium currency, bought with money in Cog Crates that are bound to the buyer (amended 30 October 2026) |
 | Keepsake | A story item bound to the player |
 | Ledger Pages | Pages of Hester Vane's notebook; 24 in the capstone |
-| Needles | Scald, Arrears, Notice, and Haze: the story's four risks, 0 to 8 each |
 | Nerve | The story's action budget: 10, refilling 1 every 36 minutes |
 | Pneumatic Post | Short storylet letters, up to 3 held, 1 arriving every 2 hours |
 | Quality | Any named number on a player's record that the story can check |
 | Reckoning | A season's server-wide decision, settled by pledged Work Orders and Guild Contracts |
 | Scald | The sea of boiling vapour below the city, and the Needle for burns |
-| Steeped | The people who live in the Scald |
 | Storylet | One small scene with requirements, options, and outcomes |
-| Whistle notation | A transcribed note of the Great Whistle; enough of them let you translate it |
 
 ### D. Sources
 

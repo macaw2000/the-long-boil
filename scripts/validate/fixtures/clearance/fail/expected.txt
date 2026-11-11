@@ -1,12 +1,19 @@
-FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 77 carries marker layer-number
-FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 78 carries marker layer-range
-FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 78 carries marker layer-word
-FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 79 carries marker act-number
-FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 79 carries marker act-numeral
-FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 79 carries marker act-range
-FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 80 carries marker hides-column
-FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 81 carries marker guarded-word-act-2
-FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 86 carries marker layer-row
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 100 carries marker hard-limit-capsule
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 101 carries marker hard-limit-hearth
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 102 carries marker hard-limit-haze
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 103 carries marker hard-limit-notation
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 104 carries marker hard-limit-off-hour
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 88 carries marker layer-number
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 89 carries marker layer-range
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 89 carries marker layer-word
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 90 carries marker act-number
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 90 carries marker act-numeral
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 90 carries marker act-range
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 91 carries marker hides-column
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 92 carries marker guarded-word-act-2
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 97 carries marker layer-row
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 98 carries marker team-only
+FAIL clearance/above-layer-1 docs/canon/slices/gdd-cleared.md : line 99 carries marker hard-limit-steeped
 FAIL clearance/no-header docs/canon/slices/reveals-layer1.md : the generated-file header is missing; run python3 scripts/canon/cut_clearance.py
-FAIL clearance/stale docs/canon/slices/gdd-cleared.md : differs from a fresh cut from line 77; run python3 scripts/canon/cut_clearance.py
+FAIL clearance/stale docs/canon/slices/gdd-cleared.md : differs from a fresh cut from line 88; run python3 scripts/canon/cut_clearance.py
 FAIL clearance/stale docs/canon/slices/reveals-layer1.md : differs from a fresh cut from line 2; run python3 scripts/canon/cut_clearance.py

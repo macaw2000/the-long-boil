@@ -1876,6 +1876,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(
 import check_reveal
 import cut_clearance
 GUARDED = check_reveal.REVEAL_WORDS[0][1][0]
+# The clearance cut's Act I hard-limit words, one form each, taken from the cut
+# so this file never has to spell them.
+HARD_LIMIT = {name.split("-", 2)[2].replace("-", ""): forms[0].capitalize()
+              for name, forms, _limit in cut_clearance.HARD_LIMIT_WORDS}
 CLIENT = "engine/packages/client/"
 CLIENT_GLOSSARY = 'export const glossary = {\n  boiler: "Your workshop\'s steam.",\n};\n'
 CLIENT_GUIDE = ('export function Guide() {\n  return <Text style={ui.card}>Press Start.</Text>;\n}\n')
@@ -1947,6 +1951,21 @@ A plain line with no marker.
 ## 2. World
 
 Safe world line.
+
+Safe sentence kept, by Mrs. Fixture. The %(steeped)s are a FIXTURE-SECRET sentence. Another safe sentence kept.
+
+- Safe list sentence kept. The FIXTURE-SECRET %(capsule)s sentence!
+
+A safe sentence kept. The FIXTURE-SECRET %(offhour)s, and the %(hearth)s.
+
+%(haze)s alone, on a FIXTURE-SECRET line.
+
+The short version, for the team only: FIXTURE-SECRET.
+
+| Term | Meaning |
+| --- | --- |
+| Safe term | Kept |
+| %(notation)s | FIXTURE-SECRET glossary entry |
 
 Later, in Act IV, there is a FIXTURE-SECRET.
 
@@ -2043,7 +2062,7 @@ Sits in Act II.
 ### B. After the samples
 
 Safe appendix line.
-""" % {"word": GUARDED.capitalize()}
+""" % dict(HARD_LIMIT, word=GUARDED.capitalize())
 
 REVEALS = """# The reveal schedule, Layers 1 to 3
 
@@ -2090,7 +2109,9 @@ A %s line.
 | --- | --- |
 | 1 | Allowed |
 | 2 | Not allowed |
-""" % GUARDED, reveals_slice=GOOD_REVEALS_SLICE.replace(cut_clearance.GENERATED_LINE, "A hand edit."))
+For the team only.
+%s
+""" % (GUARDED, "\n".join("A %s line." % forms[-1] for _n, forms, _l in cut_clearance.HARD_LIMIT_WORDS)), reveals_slice=GOOD_REVEALS_SLICE.replace(cut_clearance.GENERATED_LINE, "A hand edit."))
 # clearance fail: the sources moved on and nobody regenerated.
 clearance("clearance/fail-stale/", gdd=GDD.replace("Safe world line.", "A newer world line."),
           reveals=REVEALS.replace("Preface line with no marker.", "A newer preface."))

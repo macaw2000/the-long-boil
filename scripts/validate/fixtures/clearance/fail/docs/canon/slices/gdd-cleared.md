@@ -2,7 +2,8 @@
 GENERATED FILE. Do not edit by hand.
 Source: docs/gdd.md, cut by scripts/canon/cut_clearance.py.
 Regenerate with: python3 scripts/canon/cut_clearance.py
-Cleared for Layer 1. Source lines removed, by rule: G1 16, G2 2, G3 1, G4 6, G5 4, G6 6.
+Cleared for Layer 1. Source lines removed, by rule: G1 16, G2 2, G3 1, G4 6, G5 4, G6 7, G7 2.
+Source lines kept in part, by rule: G7 3.
 The rules are in the docstring of that script.
 -->
 
@@ -15,6 +16,16 @@ A plain line with no marker.
 ## 2. World
 
 Safe world line.
+
+Safe sentence kept, by Mrs. Fixture. Another safe sentence kept.
+
+- Safe list sentence kept.
+
+A safe sentence kept.
+
+| Term | Meaning |
+| --- | --- |
+| Safe term | Kept |
 
 ## 3. Factions
 
@@ -84,3 +95,10 @@ A knock line.
 | --- | --- |
 | 1 | Allowed |
 | 2 | Not allowed |
+For the team only.
+A steeped line.
+A capsules line.
+A hearths line.
+A haze line.
+A whistle notes line.
+A not on the hour line.

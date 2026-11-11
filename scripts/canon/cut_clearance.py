@@ -29,8 +29,19 @@ gdd.md:
   G4  In Appendix A, a sample subsection with a marker anywhere in it is removed
       whole, because it is a sample from a later act.
   G5  Anywhere else, a heading with a marker removes its whole subsection.
-  G6  Anywhere else, a line with a marker is removed: a paragraph, a list item
-      or a table row, whole.
+  G6  Anywhere else, a line with a marker other than a hard-limit word is
+      removed: a paragraph, a list item or a table row, whole.
+  G7  Anywhere else, a line whose only markers are hard-limit words (see
+      HARD_LIMIT_WORDS): a table row, a glossary entry included, is removed
+      whole; in a paragraph, list item or quote, each sentence carrying one is
+      removed, and the line goes if no sentence is left.
+
+Markers are of two kinds. The layer and act markers, the hiding column and
+"for the team only" say outright that a line is above the clearance. The
+hard-limit words are the things docs/canon/slices/act1.md's "Hard limits for
+this slice" forbid in Act I (inspector, work order 040, 10 November 2026: the
+cut let them through because it guarded only the knock words). Both kinds
+count everywhere a marker counts: R2, G4, G5 and the final scan.
 
 Fail closed: if a required heading, table or row is missing, or the output
 still carries a marker, the script writes nothing and exits 1. Output is built
@@ -74,7 +85,36 @@ MARKERS = (
     ("act-number", re.compile(r"\bActs?\s+(?:[2-9]|two|three|four|five)\b", re.I)),
     ("act-range", re.compile(r"\bActs?\s+I" + _JOIN + r"(?:II|III|IV|V)\b")),
     ("hides-column", re.compile(re.escape(HIDES_COLUMN))),
+    # The GDD flags its spoilers for the team; agents are not the team.
+    ("team-only", re.compile(r"\bfor the team only\b", re.I)),
 )
+
+# The hard limits of docs/canon/slices/act1.md, as word forms. The limits are
+# prose, so the forms live here, each with the limit it enforces. Forms match
+# case-insensitively as whole words; a space in a form matches any run of
+# whitespace. "Steeped" also matches tea being steeped: the cut fails safe.
+# check_reveal's word guards (the knock words) are added in line_markers.
+HARD_LIMIT_WORDS = (
+    ("hard-limit-steeped", ("steeped",), "No Steeped"),
+    ("hard-limit-capsule", ("capsule", "capsules"), "no capsules"),
+    ("hard-limit-hearth", ("hearth", "hearths"), "No Hearth"),
+    ("hard-limit-haze", ("haze",),
+     "Haze does not exist yet: it enters in Act II with the Whistle. Do not reference it."),
+    ("hard-limit-notation", ("notation", "notations", "whistle note", "whistle notes"),
+     "No Whistle notation"),
+    ("hard-limit-off-hour", ("off-hour", "off hour", "off the hour", "not on the hour"),
+     "no off-hour note"),
+)
+
+
+def _word_pattern(forms):
+    alternatives = "|".join(re.escape(f).replace("\\ ", r"\s+")
+                            for f in sorted(forms, key=len, reverse=True))
+    return re.compile(r"(?<![A-Za-z])(?:%s)(?![A-Za-z])" % alternatives, re.I)
+
+
+HARD_LIMITS = tuple((name, _word_pattern(forms)) for name, forms, _limit in HARD_LIMIT_WORDS)
+HARD_LIMIT_NAMES = frozenset(name for name, _p in HARD_LIMITS)
 
 
 class CutError(Exception):
@@ -97,7 +137,38 @@ def line_markers(line):
     for act, pattern in _guards():
         if pattern.search(line):
             found.append("guarded-word-act-%d" % act)
+    found.extend(name for name, pattern in HARD_LIMITS if pattern.search(line))
     return found
+
+
+# A list item's or quote's lead-in, kept when its sentences are redacted.
+_LEAD = re.compile(r"^(\s*(?:[-*+]|\d+\.)\s+|\s*>\s*)")
+# Words ending in a full stop that do not end a sentence.
+_NOT_AN_END = re.compile(r"(?:^|\s)(?:Mr|Mrs|Ms|Dr|St|No|e\.g|i\.e|etc)\.$")
+
+
+def sentences(text):
+    """text split after each . ! or ? (and any closing quote, bracket or
+    emphasis) that is followed by whitespace, except after a short title."""
+    parts, start = [], 0
+    for match in re.finditer(r"[.!?][\"'”’)*_]*(?=\s)", text):
+        if _NOT_AN_END.search(text[start:match.end()].rstrip("\"'”’)*_")):
+            continue
+        parts.append(text[start:match.end()].strip())
+        start = match.end()
+    tail = text[start:].strip()
+    if tail:
+        parts.append(tail)
+    return [p for p in parts if p]
+
+
+def redact_sentences(line):
+    """The line with every sentence carrying a marker removed, or None when
+    nothing is left of it."""
+    match = _LEAD.match(line)
+    lead = match.group(1) if match else ""
+    kept = [s for s in sentences(line[len(lead):]) if not line_markers(s)]
+    return lead + " ".join(kept) if kept else None
 
 
 def _cells(line):
@@ -141,6 +212,11 @@ class _Cut:
         self.path = path
         self.lines = text.split("\n")
         self.dropped = {}  # index -> rule
+        self.shortened = {}  # index -> rule, for a line kept in part
+
+    def shorten(self, index, text, rule):
+        self.lines[index] = text
+        self.shortened.setdefault(index, rule)
 
     def drop(self, index, rule):
         self.dropped.setdefault(index, rule)
@@ -197,24 +273,31 @@ class _Cut:
             out.pop()
         return out
 
-    def by_rule(self):
+    def by_rule(self, shortened=False):
         rules = {}
-        for index, rule in sorted(self.dropped.items()):
+        source = self.shortened if shortened else self.dropped
+        for index, rule in sorted(source.items()):
+            if shortened and index in self.dropped:
+                continue
             rules.setdefault(rule, []).append(index + 1)
         return rules
 
 
+def _counts(rules):
+    return ", ".join("%s %d" % (rule, len(lines)) for rule, lines in sorted(rules.items()))
+
+
 def _header(source, cut):
-    counts = ", ".join("%s %d" % (rule, len(lines))
-                       for rule, lines in sorted(cut.by_rule().items()))
-    return ["<!--",
-            GENERATED_LINE,
-            "Source: %s, cut by scripts/canon/cut_clearance.py." % source,
-            "Regenerate with: python3 scripts/canon/cut_clearance.py",
-            "Cleared for Layer %d. Source lines removed, by rule: %s." % (CLEARED_LAYER, counts),
-            "The rules are in the docstring of that script.",
-            "-->",
-            ""]
+    lines = ["<!--",
+             GENERATED_LINE,
+             "Source: %s, cut by scripts/canon/cut_clearance.py." % source,
+             "Regenerate with: python3 scripts/canon/cut_clearance.py",
+             "Cleared for Layer %d. Source lines removed, by rule: %s."
+             % (CLEARED_LAYER, _counts(cut.by_rule()))]
+    shortened = cut.by_rule(shortened=True)
+    if shortened:
+        lines.append("Source lines kept in part, by rule: %s." % _counts(shortened))
+    return lines + ["The rules are in the docstring of that script.", "-->", ""]
 
 
 def _finish(cut, slice_path, body):
@@ -317,9 +400,24 @@ def cut_gdd(text):
     for index, level in cut.headings():
         if index not in cut.dropped and line_markers(cut.lines[index]):
             cut.drop_span(index, cut.span_end(index, level), "G5")
+    # G6: a line that says outright it is above the clearance goes whole.
+    # G7: a line that only names a hard-limit word loses that row or sentence.
     for index, line in enumerate(cut.lines):
-        if index not in cut.dropped and line_markers(line):
+        if index in cut.dropped:
+            continue
+        found = line_markers(line)
+        if not found:
+            continue
+        if not set(found) <= HARD_LIMIT_NAMES:
             cut.drop(index, "G6")
+        elif line.startswith("|"):
+            cut.drop(index, "G7")
+        else:
+            kept = redact_sentences(line)
+            if kept is None or line_markers(kept):
+                cut.drop(index, "G7")
+            else:
+                cut.shorten(index, kept, "G7")
     return cut, _finish(cut, GDD_SLICE, cut.kept())
 
 
@@ -337,7 +435,8 @@ def build(root):
     reveals, reveals_text = cut_reveals(_read(root, REVEALS_SOURCE))
     gdd, gdd_text = cut_gdd(_read(root, GDD_SOURCE))
     return ({REVEALS_SLICE: reveals_text, GDD_SLICE: gdd_text},
-            {REVEALS_SOURCE: reveals.by_rule(), GDD_SOURCE: gdd.by_rule()})
+            {REVEALS_SOURCE: reveals.by_rule(), GDD_SOURCE: gdd.by_rule(),
+             GDD_SOURCE + " (kept in part)": gdd.by_rule(shortened=True)})
 
 
 def write(root, outputs):
