@@ -83,8 +83,8 @@ afterAll(async () => {
 describe("the leaderboards", () => {
   it("ranks total level, best first, and marks your own row", async () => {
     const view = await board(cog, "total");
-    expect(view.boards).toEqual(expect.arrayContaining(["total", "net_worth", "guilds", "cooking", "tea_blending", "aetherics"]));
-    expect(view.boards).toHaveLength(19);
+    // A skill has a tab only once an action trains it: cooking is in the game, tea blending and aetherics are not.
+    expect(view.boards).toEqual(["total", "net_worth", "guilds", "prospecting", "scavenging", "smithing", "tinkering", "tailoring", "cooking"]);
     expect(view.rows.map((row: { name: string }) => row.name)).toEqual(["Ada", "Bram", "Cog"]);
     expect(view.rows[0]).toMatchObject({ rank: 1, value: await expectedTotal(ada), you: false });
     expect(view.you).toMatchObject({ rank: 3, name: "Cog", value: await expectedTotal(cog), you: true });

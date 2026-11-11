@@ -14,7 +14,7 @@ GDD section 6, Leaderboards: "Total level, each skill, net worth, and guilds", a
 
 | Layer | What it wrote |
 | --- | --- |
-| Server | `leaderboards.ts`: 19 boards (total level, net worth, guilds, and the sixteen skills) ranked from the existing tables, with no migration. Equal scores share a rank. Each reply holds the top 100 and the caller's own row wherever it falls. A fully banned account never appears and does not count toward its guild. |
+| Server | `leaderboards.ts`: 19 boards (total level, net worth, guilds, and the sixteen skills) ranked from the existing tables, with no migration. It can answer all 19, but a skill gets a tab only once an action in the content trains it (a change I made by hand, below). Equal scores share a rank. Each reply holds the top 100 and the caller's own row wherever it falls. A fully banned account never appears and does not count toward its guild. |
 | Route | `GET /tinkers/:id/leaderboards/:board` in `api.ts`, behind the same sign-in check as the other Tinker routes |
 | Tests | `leaderboards.test.ts`: six tests through the API against a real PostgreSQL database |
 | Client | `Leaderboards.tsx`, the screen; `api.leaderboard` and its types in the client's `api.ts`; a row in the side navigation |
@@ -49,6 +49,7 @@ The agent's code passed the gate on its first round (typecheck, all 242 tests, a
 | Removed the agent's seventh tab from the phone's bottom bar; on a phone the boards open from a button on the Guild tab | Six tabs already fill a phone's width |
 | Skill names with two words read "Tea blending", not "Tea_blending" | The agent used `titleCase` alone |
 | XP is shown as a whole number | Stored XP can carry a fraction |
+| Tabs only for skills the game trains (`shownBoards`), nine now, not nineteen | Ten of the sixteen skills have no action yet, so their boards would sit empty |
 
 Still open: the side navigation shows `#` where the Leaderboards icon will go, because that art is not drawn yet.
 

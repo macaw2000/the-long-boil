@@ -15,9 +15,18 @@ import { BadRequest } from "./tinkers.js";
 /** How many rows a board shows; the caller's own row comes too when it is lower. */
 export const BOARD_SIZE = 100;
 
-/** Every board: total level, net worth, guilds, then each of the GDD's sixteen skills. */
+/** Every board the server can answer: total level, net worth, guilds, then each of the GDD's sixteen skills. */
 export const BOARDS = ["total", "net_worth", "guilds", ...rules.GDD_SKILLS] as const;
 export type Board = (typeof BOARDS)[number];
+
+/**
+ * The boards a player is shown: a skill gets a tab once an action in the
+ * content trains it, so a skill the game has not released has no empty board.
+ */
+export function shownBoards(content: GameContent): Board[] {
+  const trained = new Set([...content.rules.actions.values()].map((action) => action.skill));
+  return BOARDS.filter((board) => !(rules.GDD_SKILLS as readonly string[]).includes(board) || trained.has(board));
+}
 
 export interface BoardRow {
   rank: number;
@@ -168,5 +177,5 @@ export async function leaderboard(db: Db, content: GameContent, tinkerId: number
     mine = own ? Number(own.guild_id) : null;
   } else entries = await skillBoard(db, content, board);
   const rows = ranked(entries, mine);
-  return { board: board as Board, boards: [...BOARDS], size: BOARD_SIZE, rows: rows.slice(0, BOARD_SIZE), you: rows.find((row) => row.you) ?? null };
+  return { board: board as Board, boards: shownBoards(content), size: BOARD_SIZE, rows: rows.slice(0, BOARD_SIZE), you: rows.find((row) => row.you) ?? null };
 }
