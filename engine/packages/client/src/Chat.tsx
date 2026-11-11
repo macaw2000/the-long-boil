@@ -185,6 +185,8 @@ export interface ChatProps {
   onInvite?: (other: number) => void;
   /** Opens another Tinker's inspect card. */
   onInspect?: (other: number) => void;
+  /** Asks for a tab from outside (the ledger's "Read guild chat"); a new `ask` brings it forward. */
+  focus?: { channel: ChatChannel; ask: number };
 }
 
 export function Chat({
@@ -195,6 +197,7 @@ export function Chat({
   connected,
   onInvite,
   onInspect,
+  focus,
   docked,
 }: ChatProps & {
   /** Docked along the foot of the desktop screen, where it may be folded down to its tabs. */
@@ -216,6 +219,13 @@ export function Chat({
     docked?.onFold(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [whispers.open]);
+
+  useEffect(() => {
+    if (!focus) return;
+    setWhich(focus.channel);
+    docked?.onFold(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus?.ask]);
 
   // A guild room that has gone (left or disbanded) falls back to the city.
   useEffect(() => {

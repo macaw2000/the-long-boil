@@ -124,3 +124,52 @@ export async function setMute(db: Db, tinkerId: number, otherTinkerId: number, m
     await db.query("DELETE FROM chat_mutes WHERE account_id = $1 AND muted_account_id = $2", [accountId, other.accountId]);
   }
 }
+
+/** The guild's talk since a Tinker was last present, for the While You Were Away ledger. */
+export interface GuildActivity {
+  guild: string;
+  /** Messages from other members, muted senders left out. */
+  count: number;
+  /** Who spoke, most messages first, at most three. */
+  from: string[];
+  /** How many more spoke than are named. */
+  others: number;
+  last: { name: string; text: string } | null;
+  /** Who pinned the notice, if one went up meanwhile. */
+  notice: string | null;
+}
+
+export async function guildActivity(db: Db, tinkerId: number, since: Date): Promise<GuildActivity | null> {
+  const guild = (
+    await db.query(
+      `SELECT g.id, g.name, g.notice_at, n.name AS notice_by, t.account_id FROM guild_members m JOIN guilds g ON g.id = m.guild_id
+       JOIN tinkers t ON t.id = m.tinker_id LEFT JOIN tinkers n ON n.id = g.notice_by WHERE m.tinker_id = $1`,
+      [tinkerId],
+    )
+  ).rows[0];
+  if (!guild) return null;
+  const messages = (
+    await db.query(
+      `SELECT t.name, m.body FROM chat_messages m JOIN tinkers t ON t.id = m.tinker_id
+       WHERE m.channel = $1 AND m.at > $2 AND m.account_id <> $3
+         AND m.account_id NOT IN (SELECT muted_account_id FROM chat_mutes WHERE account_id = $3)
+         AND m.removed_at IS NULL AND m.account_id NOT IN (SELECT id FROM accounts WHERE ban IS NOT NULL)
+       ORDER BY m.id`,
+      [`chat:guild:${guild.id}`, since, guild.account_id],
+    )
+  ).rows;
+  const notice = guild.notice_at && guild.notice_at > since && guild.notice_by ? (guild.notice_by as string) : null;
+  if (!messages.length && !notice) return null;
+  const tally = new Map<string, number>();
+  for (const message of messages) tally.set(message.name, (tally.get(message.name) ?? 0) + 1);
+  const speakers = [...tally].sort((a, b) => b[1] - a[1]).map(([name]) => name);
+  const last = messages.at(-1);
+  return {
+    guild: guild.name,
+    count: messages.length,
+    from: speakers.slice(0, 3),
+    others: Math.max(0, speakers.length - 3),
+    last: last ? { name: last.name, text: last.body } : null,
+    notice,
+  };
+}

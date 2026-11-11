@@ -8,7 +8,7 @@ import { connect, migrate } from "../src/db.js";
 
 const db = connect(process.env.PGDATABASE_TEST ?? "long_boil_test");
 const content = loadContent();
-const clock = Date.UTC(2026, 9, 22, 8, 0, 0);
+let clock = Date.UTC(2026, 9, 22, 8, 0, 0);
 const open = buildApi({ db, content, now: () => clock, trading: { level: 0, days: 0 } });
 const gated = buildApi({ db, content, now: () => clock });
 
@@ -121,6 +121,24 @@ describe("founding a guild", () => {
     expect(guildChat).toEqual(["Owls only."]);
     const city = (await call("GET", `/tinkers/${outsider}/chat`)).body.messages.map((m: { text: string }) => m.text);
     expect(city).not.toContain("Owls only.");
+  });
+
+  it("tells a member at check-in what the guild said while they were away", async () => {
+    const cog = (await call("GET", `/tinkers/${bram}/guild`)).body.guild.members.find((m: { name: string }) => m.name === "Cog").tinkerId;
+    await db.query("UPDATE tinkers SET resolved_to = $2 WHERE id = $1", [cog, new Date(clock - 3_600_000)]);
+    clock += 5_000;
+    await call("POST", `/tinkers/${bram}/chat`, { text: "Smelting tonight.", channel: "guild" });
+    const back = (await call("POST", `/tinkers/${cog}/check-in`)).body;
+    expect(back.guildActivity).toEqual({
+      guild: "Owls of the Iron",
+      count: 2,
+      from: ["Bram"],
+      others: 0,
+      last: { name: "Bram", text: "Smelting tonight." },
+      notice: null,
+    });
+    expect((await call("POST", `/tinkers/${cog}/check-in`)).body.guildActivity).toBeNull();
+    expect((await call("POST", `/tinkers/${bram}/check-in`)).body.guildActivity).toBeNull();
   });
 });
 

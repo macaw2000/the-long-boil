@@ -206,6 +206,16 @@ export interface Outcome {
   trades: TradeNote[];
 }
 
+/** What the guild said since the Tinker was last present (packages/server/src/chat.ts), told at a check-in. */
+export interface GuildActivity {
+  guild: string;
+  count: number;
+  from: string[];
+  others: number;
+  last: { name: string; text: string } | null;
+  notice: string | null;
+}
+
 export type Side = "buy" | "sell";
 
 export interface OptionView {
@@ -508,7 +518,7 @@ export const api = {
     request<{ tinkers: { id: number; name: string }[] }>("GET", `/accounts/${encodeURIComponent(login)}/tinkers`),
   createTinker: (login: string, name: string) => request<Outcome>("POST", "/tinkers", { login, name }),
   resetTinker: (id: number, name: string, newName?: string) => request<Outcome>("POST", `/tinkers/${id}/reset`, { name, newName }),
-  checkIn: (id: number) => request<Outcome>("POST", `/tinkers/${id}/check-in`),
+  checkIn: (id: number) => request<Outcome & { guildActivity: GuildActivity | null }>("POST", `/tinkers/${id}/check-in`),
   look: (id: number) => request<Outcome>("GET", `/tinkers/${id}`),
   setQueue: (id: number, queue: QueueEntry[]) => request<Outcome>("PUT", `/tinkers/${id}/queue`, { queue }),
   equip: (id: number, item: string) => request<Outcome>("PUT", `/tinkers/${id}/weapon`, { item }),

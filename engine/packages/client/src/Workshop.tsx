@@ -8,7 +8,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { ActionBar } from "./ActionBar";
-import { api, gameNow, setClockOffset, type Content, type GuildView, type Ledger as LedgerData, type Notice, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
+import { api, gameNow, setClockOffset, type ChatChannel, type Content, type GuildActivity, type GuildView, type Ledger as LedgerData, type Notice, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
 import { Backdrop } from "./Backdrop";
 import { Chat, ChatDock, channelOf, useChat, useWhispers, type ChatProps } from "./Chat";
 import { Bills, Exchange } from "./Exchange";
@@ -53,7 +53,9 @@ function rationsNote(ledger: LedgerData, content: Content): string | undefined {
 
 export function Workshop({ content, tinkerId, admin, onLeave }: { content: Content; tinkerId: number; admin: boolean; onLeave: () => void }) {
   const [tinker, setTinker] = useState<Tinker | null>(null);
-  const [away, setAway] = useState<{ ledger: LedgerData; trades: TradeNote[] } | null>(null);
+  const [away, setAway] = useState<{ ledger: LedgerData; trades: TradeNote[]; guild: GuildActivity | null } | null>(null);
+  // A chat tab asked for from outside the chat, as the ledger's "Read guild chat" does.
+  const [chatFocus, setChatFocus] = useState<{ channel: ChatChannel; ask: number } | undefined>(undefined);
   // Back from Stripe's checkout: open at the shop, which says how it went.
   const [checkoutReturn] = useState(takeCheckoutReturn);
   const [guide, setGuideState] = useState<GuideState>(() => loadGuide(tinkerId));
@@ -175,9 +177,9 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         .checkIn(tinkerId)
         .then((outcome) => {
           apply(outcome);
-          const { ledger, trades } = outcome;
-          if (ledger.lines.length || ledger.stalls.length || ledger.boilerDryAt !== null || trades.length) {
-            setAway({ ledger, trades });
+          const { ledger, trades, guildActivity } = outcome;
+          if (ledger.lines.length || ledger.stalls.length || ledger.boilerDryAt !== null || trades.length || guildActivity) {
+            setAway({ ledger, trades, guild: guildActivity });
           }
         })
         .catch((reason: Error) => setError(reason.message)),
@@ -440,6 +442,14 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     setAway(null);
   };
 
+  // The ledger's guild line: the notice is on the Guild tab, the talk in the guild's chat.
+  const readGuild = () => {
+    if (away?.guild?.count) {
+      setChatFocus((was) => ({ channel: "guild", ask: (was?.ask ?? 0) + 1 }));
+      if (!wide) setPlace("chat");
+    } else setPlace("guild");
+  };
+
   const equipWeapon = (item: string) => {
     setNewGear(null);
     return run(api.equip(tinkerId, item));
@@ -511,6 +521,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     connected,
     onInvite: inviteToGuild,
     onInspect: setInspecting,
+    focus: chatFocus,
   };
 
   const skillPlace = place.startsWith("skill:") ? place.slice("skill:".length) : null;
@@ -687,7 +698,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           {/* On a phone it heads the page instead, which scrolls under it, so the card never leaves the page a sliver. */}
           {!wide && guidance}
           {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
-          {away && <Ledger ledger={away.ledger} trades={away.trades} name={name} job={(id) => jobTitle(content, id, name)} note={guide.acknowledged.includes(RATIONS_SEEN) ? undefined : rationsLine} onClose={closeLedger} />}
+          {away && <Ledger ledger={away.ledger} trades={away.trades} guild={away.guild} onGuildChat={readGuild} name={name} job={(id) => jobTitle(content, id, name)} note={guide.acknowledged.includes(RATIONS_SEEN) ? undefined : rationsLine} onClose={closeLedger} />}
           {page}
           {recent.length > 0 && skillPlace !== null && (
             <View style={ui.panel}>

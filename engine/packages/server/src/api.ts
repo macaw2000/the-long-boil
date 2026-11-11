@@ -14,7 +14,7 @@ import Fastify, { type FastifyInstance } from "fastify";
 import { reminderNoticeSeen, remindersOf, remindersOff, setReminders } from "./reminders.js";
 import { liftBan, overview, player, players, purchases, removeMessage, setBan, touchAccount, type Ban, type BanKind } from "./admin.js";
 import { Unauthorized, tokenOf, type Auth } from "./auth.js";
-import { mutedAccounts, recentChat, say, setMute, whisperInbox, whisperTo } from "./chat.js";
+import { guildActivity, mutedAccounts, recentChat, say, setMute, whisperInbox, whisperTo } from "./chat.js";
 import type { GameContent } from "./content-loader.js";
 import type { Db } from "./db.js";
 import { chooseSeal, discardOffer, readDesk, turnIn } from "./work_orders.js";
@@ -395,9 +395,13 @@ export function buildApi({
     async (request) => resetTinker(db, content, Number(request.params.id), request.body.name, now(), request.body.newName),
   );
 
-  app.post<{ Params: { id: string } }>("/tinkers/:id/check-in", async (request) =>
-    checkIn(db, content, Number(request.params.id), now()),
-  );
+  // A check-in also says what the guild talked about since the Tinker was last present (its resolved_to before this).
+  app.post<{ Params: { id: string } }>("/tinkers/:id/check-in", async (request) => {
+    const id = Number(request.params.id);
+    const last = (await db.query("SELECT resolved_to FROM tinkers WHERE id = $1", [id])).rows[0]?.resolved_to as Date | undefined;
+    const outcome = await checkIn(db, content, id, now());
+    return { ...outcome, guildActivity: last ? await guildActivity(db, id, last) : null };
+  });
 
   app.put<{ Params: { id: string }; Body: { queue: { actionId: string; remaining: number }[] } }>(
     "/tinkers/:id/queue",
