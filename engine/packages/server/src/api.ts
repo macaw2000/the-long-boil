@@ -27,7 +27,6 @@ import {
   foundGuild,
   guildChannel,
   inviteToGuild,
-  pledgeToGuild,
   readGuild,
   removeMember,
   renameGuild,
@@ -641,52 +640,46 @@ export function buildApi({
     return outcome.view;
   };
   const idOf = (params: { id: string }) => Number(params.id);
-  app.get<{ Params: { id: string } }>("/tinkers/:id/guild", async (request) => (await readGuild(db, content, idOf(request.params), now(), gate(request))).view);
-  app.post<{ Params: { id: string }; Body: { name: string; crowns: number } }>(
+  app.get<{ Params: { id: string } }>("/tinkers/:id/guild", async (request) => (await readGuild(db, content, idOf(request.params), now())).view);
+  app.post<{ Params: { id: string }; Body: { name: string } }>(
     "/tinkers/:id/guild",
-    { schema: { body: { type: "object", required: ["name", "crowns"], properties: { name: { type: "string", maxLength: 80 }, crowns: { type: "integer", minimum: 1 } } } } },
-    async (request) => guildDone(idOf(request.params), await foundGuild(db, content, idOf(request.params), request.body.name, request.body.crowns, now(), gate(request))),
-  );
-  app.post<{ Params: { id: string; guild: string }; Body: { crowns: number } }>(
-    "/tinkers/:id/guilds/:guild/pledge",
-    { schema: { body: { type: "object", required: ["crowns"], properties: { crowns: { type: "integer", minimum: 1 } } } } },
-    async (request) =>
-      guildDone(idOf(request.params), await pledgeToGuild(db, content, idOf(request.params), Number(request.params.guild), request.body.crowns, now(), gate(request))),
+    { schema: { body: { type: "object", required: ["name"], properties: { name: { type: "string", maxLength: 80 } } } } },
+    async (request) => guildDone(idOf(request.params), await foundGuild(db, content, idOf(request.params), request.body.name, now())),
   );
   app.post<{ Params: { id: string; guild: string } }>("/tinkers/:id/guilds/:guild/apply", async (request) =>
-    guildDone(idOf(request.params), await applyToGuild(db, content, idOf(request.params), Number(request.params.guild), now(), gate(request))),
+    guildDone(idOf(request.params), await applyToGuild(db, content, idOf(request.params), Number(request.params.guild), now())),
   );
   app.post<{ Params: { id: string; guild: string } }>("/tinkers/:id/guilds/:guild/accept", async (request) =>
-    guildDone(idOf(request.params), await acceptInvite(db, content, idOf(request.params), Number(request.params.guild), now(), gate(request))),
+    guildDone(idOf(request.params), await acceptInvite(db, content, idOf(request.params), Number(request.params.guild), now())),
   );
   app.delete<{ Params: { id: string; guild: string; other: string } }>("/tinkers/:id/guilds/:guild/requests/:other", async (request) =>
     guildDone(
       idOf(request.params),
-      await dropRequest(db, content, idOf(request.params), Number(request.params.guild), Number(request.params.other), now(), gate(request)),
+      await dropRequest(db, content, idOf(request.params), Number(request.params.guild), Number(request.params.other), now()),
     ),
   );
   app.post<{ Params: { id: string; other: string } }>("/tinkers/:id/guild/invite/:other", async (request) =>
-    guildDone(idOf(request.params), await inviteToGuild(db, content, idOf(request.params), Number(request.params.other), now(), gate(request))),
+    guildDone(idOf(request.params), await inviteToGuild(db, content, idOf(request.params), Number(request.params.other), now())),
   );
   app.post<{ Params: { id: string; other: string } }>("/tinkers/:id/guild/applications/:other/accept", async (request) =>
-    guildDone(idOf(request.params), await acceptApplication(db, content, idOf(request.params), Number(request.params.other), now(), gate(request))),
+    guildDone(idOf(request.params), await acceptApplication(db, content, idOf(request.params), Number(request.params.other), now())),
   );
   app.put<{ Params: { id: string; other: string }; Body: { rank: "leader" | "officer" | "member" } }>(
     "/tinkers/:id/guild/members/:other/rank",
     { schema: { body: { type: "object", required: ["rank"], properties: { rank: { enum: ["leader", "officer", "member"] } } } } },
     async (request) =>
-      guildDone(idOf(request.params), await setRank(db, content, idOf(request.params), Number(request.params.other), request.body.rank, now(), gate(request))),
+      guildDone(idOf(request.params), await setRank(db, content, idOf(request.params), Number(request.params.other), request.body.rank, now())),
   );
   app.delete<{ Params: { id: string; other: string } }>("/tinkers/:id/guild/members/:other", async (request) =>
-    guildDone(idOf(request.params), await removeMember(db, content, idOf(request.params), Number(request.params.other), now(), gate(request))),
+    guildDone(idOf(request.params), await removeMember(db, content, idOf(request.params), Number(request.params.other), now())),
   );
   app.post<{ Params: { id: string }; Body: { name: string } }>(
     "/tinkers/:id/guild/rename",
     { schema: { body: { type: "object", required: ["name"], properties: { name: { type: "string", maxLength: 80 } } } } },
-    async (request) => guildDone(idOf(request.params), await renameGuild(db, content, idOf(request.params), request.body.name, now(), gate(request))),
+    async (request) => guildDone(idOf(request.params), await renameGuild(db, content, idOf(request.params), request.body.name, now())),
   );
   app.post<{ Params: { id: string } }>("/tinkers/:id/guild/disband", async (request) =>
-    guildDone(idOf(request.params), await disbandGuild(db, content, idOf(request.params), now(), gate(request))),
+    guildDone(idOf(request.params), await disbandGuild(db, content, idOf(request.params), now())),
   );
 
   type ChannelName = "city" | "trade" | "help" | "guild" | "whisper";

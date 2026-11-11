@@ -8,8 +8,7 @@ import { connect, migrate } from "../src/db.js";
 
 const db = connect(process.env.PGDATABASE_TEST ?? "long_boil_test");
 const content = loadContent();
-const DAY = 24 * 3_600_000;
-let clock = Date.UTC(2026, 9, 22, 8, 0, 0);
+const clock = Date.UTC(2026, 9, 22, 8, 0, 0);
 const open = buildApi({ db, content, now: () => clock, trading: { level: 0, days: 0 } });
 const gated = buildApi({ db, content, now: () => clock });
 
@@ -43,39 +42,22 @@ describe("founding a guild", () => {
   let bram: number;
   let guildId: number;
 
-  it("waits for the trading gate", async () => {
-    const newcomer = await tinker("g-new@example.com", "New", 100_000);
-    const view = await call("GET", `/tinkers/${newcomer}/guild`, undefined, gated);
-    expect(view.body.locked).toMatch(/total level/);
-    expect((await call("POST", `/tinkers/${newcomer}/guild`, { name: "Too Soon", crowns: 50_000 }, gated)).status).toBe(400);
-  });
-
-  it("opens a charter with at least 50,000 Crowns and a fair name", async () => {
-    ada = await tinker("g-ada@example.com", "Ada", 300_000);
-    expect((await call("POST", `/tinkers/${ada}/guild`, { name: "Iron Owls", crowns: 49_999 })).body.error).toMatch(/at least 50,000/);
-    expect((await call("POST", `/tinkers/${ada}/guild`, { name: "Owls #1", crowns: 50_000 })).body.error).toMatch(/letters/);
-    const founded = await call("POST", `/tinkers/${ada}/guild`, { name: "  Iron   Owls ", crowns: 100_000 });
+  it("is free, at once, and open to a brand-new Tinker", async () => {
+    ada = await tinker("g-ada@example.com", "Ada", 300);
+    expect((await call("POST", `/tinkers/${ada}/guild`, { name: "Owls #1" }, gated)).body.error).toMatch(/letters/);
+    const founded = await call("POST", `/tinkers/${ada}/guild`, { name: "  Iron   Owls " }, gated);
     expect(founded.status).toBe(200);
-    expect(founded.body.guild).toMatchObject({ name: "Iron Owls", status: "charter", pledged: 100_000, rank: "leader" });
+    expect(founded.body.guild).toMatchObject({ name: "Iron Owls", rank: "leader" });
+    expect(founded.body.guild.formedAt).not.toBeNull();
     guildId = founded.body.guild.id;
-    expect(await purse(ada)).toBe(200_000);
-    const other = await tinker("g-copy@example.com", "Copy", 100_000);
-    expect((await call("POST", `/tinkers/${other}/guild`, { name: "iron owls", crowns: 50_000 })).body.error).toMatch(/taken/);
-  });
-
-  it("forms when pledges pay the fee in full, and takes no more", async () => {
-    bram = await tinker("g-bram@example.com", "Bram", 500_000);
-    expect((await call("POST", `/tinkers/${bram}/guilds/${guildId}/pledge`, { crowns: 400_001 })).body.error).toMatch(/only 400,000 more/);
-    const pledged = await call("POST", `/tinkers/${bram}/guilds/${guildId}/pledge`, { crowns: 400_000 });
-    expect(pledged.status).toBe(200);
-    const formed = (await call("GET", `/tinkers/${ada}/guild`)).body.guild;
-    expect(formed.status).toBe("active");
-    expect(formed.formedAt).not.toBeNull();
-    expect((await call("POST", `/tinkers/${bram}/guilds/${guildId}/pledge`, { crowns: 1 })).body.error).toMatch(/already formed/);
+    expect(await purse(ada)).toBe(300);
+    const other = await tinker("g-copy@example.com", "Copy");
+    expect((await call("POST", `/tinkers/${other}/guild`, { name: "iron owls" })).body.error).toMatch(/taken/);
   });
 
   it("lets Tinkers in by application or invitation, one guild per account", async () => {
-    const applied = await call("POST", `/tinkers/${bram}/guilds/${guildId}/apply`);
+    bram = await tinker("g-bram@example.com", "Bram", 50_000);
+    const applied = await call("POST", `/tinkers/${bram}/guilds/${guildId}/apply`, undefined, gated);
     expect(applied.body.applications).toEqual([{ guildId, name: "Iron Owls", status: "active" }]);
     const leaderSees = (await call("GET", `/tinkers/${ada}/guild`)).body.guild.requests;
     expect(leaderSees).toEqual([expect.objectContaining({ tinkerId: bram, kind: "application" })]);
@@ -91,8 +73,7 @@ describe("founding a guild", () => {
 
     // A second Tinker on Cog's account cannot join another guild.
     const alt = (await call("POST", "/tinkers", { login: "g-cog@example.com", name: "Cog Two" })).body.tinker.id;
-    await db.query("UPDATE tinkers SET crowns = 60000 WHERE id = $1", [alt]);
-    expect((await call("POST", `/tinkers/${alt}/guild`, { name: "Second Guild", crowns: 50_000 })).body.error).toMatch(/already in a guild/);
+    expect((await call("POST", `/tinkers/${alt}/guild`, { name: "Second Guild" })).body.error).toMatch(/already in a guild/);
   });
 
   it("keeps the leader from walking out, and hands leadership on", async () => {
@@ -122,29 +103,24 @@ describe("founding a guild", () => {
   });
 });
 
-describe("a charter that does not fill", () => {
-  it("refunds every pledge after 14 days", async () => {
-    const dee = await tinker("g-dee@example.com", "Dee", 80_000);
-    const eli = await tinker("g-eli@example.com", "Eli", 30_000);
-    const founded = (await call("POST", `/tinkers/${dee}/guild`, { name: "Short Lived", crowns: 60_000 })).body.guild;
-    await call("POST", `/tinkers/${eli}/guilds/${founded.id}/pledge`, { crowns: 25_000 });
-    expect(await purse(dee)).toBe(20_000);
-    expect(await purse(eli)).toBe(5_000);
-    clock += 14 * DAY;
+describe("a charter from when guilds cost a fee", () => {
+  it("forms on the next guild step and refunds every pledge", async () => {
+    const dee = await tinker("g-dee@example.com", "Dee", 20_000);
+    const eli = await tinker("g-eli@example.com", "Eli", 5_000);
+    const charter = (
+      await db.query("INSERT INTO guilds (name, status, pledged, created_at, charter_ends) VALUES ('Old Charter', 'charter', 85000, $1, $1) RETURNING id", [new Date(clock)])
+    ).rows[0].id;
+    await db.query("INSERT INTO guild_members (guild_id, tinker_id, account_id, rank, joined_at) SELECT $1, id, account_id, 'leader', $3 FROM tinkers WHERE id = $2", [
+      charter,
+      dee,
+      new Date(clock),
+    ]);
+    await db.query("INSERT INTO guild_pledges (guild_id, tinker_id, crowns, at) VALUES ($1, $2, 60000, $4), ($1, $3, 25000, $4)", [charter, dee, eli, new Date(clock)]);
     const after = await call("GET", `/tinkers/${dee}/guild`);
-    expect(after.body.guild).toBeNull();
-    expect(after.body.guilds.map((g: { name: string }) => g.name)).not.toContain("Short Lived");
+    expect(after.body.guild).toMatchObject({ name: "Old Charter", rank: "leader" });
     expect(await purse(dee)).toBe(80_000);
     expect(await purse(eli)).toBe(30_000);
     const logged = await db.query("SELECT payload FROM events WHERE tinker_id = $1 AND type = 'guild_pledge_refunded'", [eli]);
-    expect(logged.rows[0].payload).toMatchObject({ crowns: 25_000, why: "expired" });
-  });
-
-  it("refunds when its leader abandons it", async () => {
-    const fay = await tinker("g-fay@example.com", "Fay", 50_000);
-    await call("POST", `/tinkers/${fay}/guild`, { name: "Second Thoughts", crowns: 50_000 });
-    expect(await purse(fay)).toBe(0);
-    expect((await call("POST", `/tinkers/${fay}/guild/disband`)).body.guild).toBeNull();
-    expect(await purse(fay)).toBe(50_000);
+    expect(logged.rows[0].payload).toMatchObject({ crowns: 25_000, why: "free" });
   });
 });

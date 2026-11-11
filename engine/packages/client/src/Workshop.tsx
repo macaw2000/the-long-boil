@@ -10,7 +10,7 @@ import { Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } fro
 import { ActionBar } from "./ActionBar";
 import { api, gameNow, setClockOffset, type Content, type GuildView, type Ledger as LedgerData, type Notice, type Outcome, type QueueEntry, type Tinker, type TradeNote } from "./api";
 import { Backdrop } from "./Backdrop";
-import { Chat, channelOf, useChat, useWhispers } from "./Chat";
+import { Chat, ChatDock, channelOf, useChat, useWhispers, type ChatProps } from "./Chat";
 import { Bills, Exchange } from "./Exchange";
 import { duration, namer, titleCase, tradeLine } from "./format";
 import { Glow } from "./Glow";
@@ -477,16 +477,14 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     </Glow>
   ) : null;
 
-  const chatPanel = (
-    <Chat
-      tinkerId={tinkerId}
-      rooms={{ city: chat, trade, help, guild: guildView?.guild ? guildChat : null }}
-      whispers={whispers}
-      guildName={guildView?.guild?.name}
-      connected={connected}
-      onInvite={inviteToGuild}
-    />
-  );
+  const chatProps: ChatProps = {
+    tinkerId,
+    rooms: { city: chat, trade, help, guild: guildView?.guild ? guildChat : null },
+    whispers,
+    guildName: guildView?.guild?.name,
+    connected,
+    onInvite: inviteToGuild,
+  };
 
   const skillPlace = place.startsWith("skill:") ? place.slice("skill:".length) : null;
   const page =
@@ -520,7 +518,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
             <Text style={ui.buttonText}>Leaderboards</Text>
           </Pressable>
         )}
-        <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} crownsHeld={tinker.crowns} />
+        <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} />
       </View>
     ) : place === "leaderboards" ? (
       <Leaderboards tinkerId={tinkerId} />
@@ -536,7 +534,9 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         {loadout}
       </View>
     ) : (
-      <View style={{ height: 520 }}>{chatPanel}</View>
+      <View style={{ height: 520 }}>
+        <Chat {...chatProps} />
+      </View>
     );
 
   return (
@@ -650,6 +650,9 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
             <CanisterDrop drops={canisters} />
           </View>
         )}
+        {/* On desktop chat is docked beneath the page and the right column, the full width of both. */}
+        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, flexDirection: "row" }}>
         <View style={{ flex: 1 }}>
         {/* On desktop the guide, or after it the next goal, is pinned above the page so it never scrolls away. */}
         {wide && <View style={{ paddingHorizontal: 16, paddingTop: 16, maxWidth: 900, width: "100%", alignSelf: "center" }}>{guidance}</View>}
@@ -675,9 +678,11 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           <ScrollView style={{ width: 330, flexGrow: 0 }} contentContainerStyle={{ padding: 16, paddingLeft: 0, gap: 12 }}>
             <Stores content={content} tinker={tinker} name={name} />
             {loadout}
-            {shown("chat") && <View style={{ height: 460 }}>{chatPanel}</View>}
           </ScrollView>
         )}
+        </View>
+        {wide && shown("chat") && <ChatDock {...chatProps} />}
+        </View>
       </View>
       {!wide && (
         <BottomBar place={place} workPlace={workPlace} onPlace={setPlace} badges={badges} lit={litPlaces} guided={guidedPlace} shown={shown} />

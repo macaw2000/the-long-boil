@@ -389,8 +389,8 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent, now =
  * queue, story, Work Orders, open Exchange orders); what Cogs bought stays
  * (Cogs, the Cog Shop's upgrades and crates still on their way). The event
  * log is append-only, so the reset is logged, not erased. A Tinker in a guild,
- * or with Crowns pledged to a charter, must leave or be refunded first, so no
- * guild loses a member or a pledge without its own rules running.
+ * or with Crowns still pledged to an old charter, must leave or be refunded
+ * first, so no guild loses a member or a pledge without its own rules running.
  */
 export async function resetTinker(db: Db, content: GameContent, tinkerId: number, confirmName: string, now: number, newName?: string): Promise<Outcome> {
   const name = newName?.trim();
@@ -407,7 +407,7 @@ export async function resetTinker(db: Db, content: GameContent, tinkerId: number
        WHERE p.tinker_id = $1 AND p.refunded_at IS NULL AND g.status = 'charter'`,
       [tinkerId],
     );
-    if (pledged.rowCount) throw new BadRequest("your Crowns are pledged to a charter; withdraw them before starting over");
+    if (pledged.rowCount) throw new BadRequest("your Crowns are pledged to an old guild charter; open the Guild tab to have them refunded first");
 
     for (const table of ["inventory", "skills", "queue", "qualities", "guild_requests"]) {
       await tx.query(`DELETE FROM ${table} WHERE tinker_id = $1`, [tinkerId]);

@@ -1,12 +1,15 @@
-// Chat (build plan milestones 8 and 10; GDD section 7 puts it on the right of
-// the desktop screen). Five tabs: Kettleport for general talk, Trade for
+// Chat (build plan milestones 8 and 10). On desktop it is docked along the
+// foot of the screen, as in Milky Way Idle, with a handle to drag it taller
+// or shorter and a button to fold it down to its tabs; on a phone it is a
+// place of its own. Five tabs: Kettleport for general talk, Trade for
 // buying and selling, Help for new Tinkers' questions, the guild's own channel
 // for members, and Whispers, private conversations between two Tinkers.
 // History loads once per channel; new messages arrive over the live
-// connection. Anyone else's messages can be muted, for this account only.
+// connection. Tapping a name offers whisper, mute and invite. Anyone else's
+// messages can be muted, for this account only.
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { PanResponder, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { api, type ChatChannel, type ChatMessage, type WhisperConversation } from "./api";
 import { colors, ui } from "./theme";
 
@@ -171,14 +174,7 @@ const EMPTY: Record<ChatChannel, string> = {
   whisper: "No whispers yet.",
 };
 
-export function Chat({
-  tinkerId,
-  rooms,
-  whispers,
-  guildName,
-  connected,
-  onInvite,
-}: {
+export interface ChatProps {
   tinkerId: number;
   /** The rooms this Tinker reads; guild is null outside a guild. */
   rooms: { city: ChatState; trade: ChatState; help: ChatState; guild: ChatState | null };
@@ -187,8 +183,23 @@ export function Chat({
   connected: boolean;
   /** Set when this Tinker may invite to its guild. */
   onInvite?: (other: number) => void;
+}
+
+export function Chat({
+  tinkerId,
+  rooms,
+  whispers,
+  guildName,
+  connected,
+  onInvite,
+  docked,
+}: ChatProps & {
+  /** Docked along the foot of the desktop screen, where it may be folded down to its tabs. */
+  docked?: { folded: boolean; onFold: (folded: boolean) => void };
 }) {
   const [which, setWhich] = useState<ChatChannel>("city");
+  const [picked, setPicked] = useState<number | null>(null);
+  const folded = docked?.folded ?? false;
   const room = which === "whisper" ? null : which === "guild" ? rooms.guild : rooms[which];
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -201,7 +212,8 @@ export function Chat({
   }, [which, rooms.guild]);
 
   const shown = which === "whisper" ? (whispers.open !== null ? whispers.thread : []) : (room?.messages ?? []);
-  const markRead = room?.markRead;
+  // A folded dock reads nothing: its unread counts stay until it opens.
+  const markRead = folded ? undefined : room?.markRead;
   useEffect(() => {
     markRead?.();
     scroll.current?.scrollToEnd({ animated: true });
@@ -234,6 +246,7 @@ export function Chat({
       .catch((reason: Error) => setError(reason.message));
 
   const whisperTo = (other: number, name: string) => {
+    setPicked(null);
     setWhich("whisper");
     whispers.openWith(other, name);
   };
@@ -249,114 +262,222 @@ export function Chat({
   const inInbox = which === "whisper" && whispers.open === null;
   const openName = whispers.conversations.find((entry) => entry.id === whispers.open)?.name;
 
+  const choose = (channel: ChatChannel) => {
+    setWhich(channel);
+    setPicked(null);
+    if (folded) docked?.onFold(false);
+  };
+  const wire = <Text style={[ui.muted, { fontSize: 11, color: connected ? colors.verdigris : colors.scald }]}>{connected ? "● on the wire" : "○ reconnecting…"}</Text>;
+  const tabBar = (
+    <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 4, flexShrink: 1 }} accessibilityRole="tablist">
+      {tabs.map((tab) => (
+        <Pressable
+          key={tab.channel}
+          onPress={() => choose(tab.channel)}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: which === tab.channel }}
+          style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 4, borderWidth: 1, borderColor: which === tab.channel ? colors.brass : colors.panelEdge }}
+        >
+          <Text style={[ui.muted, { fontSize: 12, color: which === tab.channel ? colors.brass : colors.muted }]}>
+            {tab.label}
+            {(which !== tab.channel || folded) && tab.unread > 0 ? <Text style={{ color: colors.verdigris }}> {tab.unread}</Text> : null}
+          </Text>
+        </Pressable>
+      ))}
+    </View>
+  );
+
+  if (docked) {
+    // The dock's head: tabs on the left, the wire and the fold on the right.
+    const head = (
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+        <Text style={[ui.heading, { fontSize: 15 }]}>Chat</Text>
+        {tabBar}
+        <View style={{ marginLeft: "auto", flexDirection: "row", alignItems: "center", gap: 10 }}>
+          {wire}
+          <Pressable onPress={() => docked.onFold(!folded)} accessibilityRole="button" accessibilityLabel={folded ? "Open chat" : "Fold chat away"} hitSlop={8}>
+            <Text style={[ui.text, { color: colors.brass, fontSize: 20, lineHeight: 20 }]}>{folded ? "▴" : "▾"}</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+    if (folded) return <View style={{ paddingHorizontal: 12, paddingVertical: 6 }}>{head}</View>;
+    return <View style={{ flex: 1, paddingHorizontal: 12, paddingTop: 6, paddingBottom: 8, gap: 6 }}>{head}{body()}</View>;
+  }
+
   return (
     <View style={[ui.panel, { flex: 1, minHeight: 320 }]}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
         <Text style={ui.heading}>Chat</Text>
-        <Text style={[ui.muted, { fontSize: 11, color: connected ? colors.verdigris : colors.scald }]}>{connected ? "● on the wire" : "○ reconnecting…"}</Text>
+        {wire}
       </View>
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 4 }} accessibilityRole="tablist">
-        {tabs.map((tab) => (
-          <Pressable
-            key={tab.channel}
-            onPress={() => setWhich(tab.channel)}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: which === tab.channel }}
-            style={{ paddingHorizontal: 7, paddingVertical: 3, borderRadius: 4, borderWidth: 1, borderColor: which === tab.channel ? colors.brass : colors.panelEdge }}
-          >
-            <Text style={[ui.muted, { fontSize: 12, color: which === tab.channel ? colors.brass : colors.muted }]}>
-              {tab.label}
-              {which !== tab.channel && tab.unread > 0 ? <Text style={{ color: colors.verdigris }}> {tab.unread}</Text> : null}
-            </Text>
+      {tabBar}
+      {body()}
+    </View>
+  );
+
+  function body() {
+    return (
+      <>
+        {which === "whisper" && whispers.open !== null && (
+          <Pressable onPress={whispers.close} accessibilityRole="button">
+            <Text style={[ui.muted, { fontSize: 12 }]}>‹ All whispers · with <Text style={{ color: colors.brass }}>{openName}</Text></Text>
           </Pressable>
-        ))}
-      </View>
+        )}
 
-      {which === "whisper" && whispers.open !== null && (
-        <Pressable onPress={whispers.close} accessibilityRole="button">
-          <Text style={[ui.muted, { fontSize: 12 }]}>‹ All whispers · with <Text style={{ color: colors.brass }}>{openName}</Text></Text>
-        </Pressable>
-      )}
-
-      <ScrollView ref={scroll} style={{ flex: 1, maxHeight: 520 }} contentContainerStyle={{ gap: 6 }}>
-        {inInbox ? (
-          whispers.conversations.length === 0 ? (
-            <Text style={ui.muted}>No whispers yet. Tap "whisper" beside a name in any room to start one.</Text>
-          ) : (
-            whispers.conversations.map((entry) => (
-              <Pressable key={entry.id} onPress={() => whispers.openWith(entry.id, entry.name)} accessibilityRole="button" style={{ paddingVertical: 4, borderBottomWidth: 1, borderBottomColor: colors.panelEdge }}>
-                <Text style={[ui.text, { fontWeight: "700", color: entry.unread ? colors.verdigris : colors.ink }]}>
-                  {entry.name}
-                  {entry.unread ? ` · ${entry.unread} new` : ""}
-                </Text>
-                {entry.last && (
-                  <Text style={ui.muted} numberOfLines={1}>
-                    {entry.last.tinker.id === tinkerId ? "You: " : ""}
-                    {entry.last.text}
+        <ScrollView ref={scroll} style={{ flex: 1, maxHeight: docked ? undefined : 520 }} contentContainerStyle={{ gap: 3 }}>
+          {inInbox ? (
+            whispers.conversations.length === 0 ? (
+              <Text style={ui.muted}>No whispers yet. Tap a name in any room to whisper to them.</Text>
+            ) : (
+              whispers.conversations.map((entry) => (
+                <Pressable key={entry.id} onPress={() => whispers.openWith(entry.id, entry.name)} accessibilityRole="button" style={{ paddingVertical: 4, borderBottomWidth: 1, borderBottomColor: colors.panelEdge }}>
+                  <Text style={[ui.text, { fontWeight: "700", color: entry.unread ? colors.verdigris : colors.ink }]}>
+                    {entry.name}
+                    {entry.unread ? ` · ${entry.unread} new` : ""}
                   </Text>
-                )}
-              </Pressable>
-            ))
-          )
-        ) : (
-          <>
-            {shown.length === 0 && <Text style={ui.muted}>{EMPTY[which]}</Text>}
-            {shown.map((message) => {
-              const mine = message.tinker.id === tinkerId;
-              return (
-                <View key={message.id} style={{ gap: 1 }}>
-                  <View style={{ flexDirection: "row", gap: 6, alignItems: "baseline", flexWrap: "wrap" }}>
-                    <Text style={[ui.number, { fontSize: 11, color: colors.muted }]}>{clockTime(message.at)}</Text>
-                    <Text style={[ui.text, { color: mine ? colors.brass : colors.copper, fontWeight: "700" }]}>{message.tinker.name}</Text>
-                    {!mine && which !== "whisper" && (
-                      <Pressable onPress={() => whisperTo(message.tinker.id, message.tinker.name)} accessibilityRole="button" accessibilityLabel={`Whisper to ${message.tinker.name}`}>
-                        <Text style={[ui.muted, { fontSize: 11 }]}>whisper</Text>
-                      </Pressable>
-                    )}
-                    {!mine && (
-                      <Pressable onPress={() => mute(message.tinker.id, true)} accessibilityRole="button" accessibilityLabel={`Mute ${message.tinker.name}`}>
-                        <Text style={[ui.muted, { fontSize: 11 }]}>mute</Text>
-                      </Pressable>
-                    )}
-                    {!mine && onInvite && which !== "guild" && which !== "whisper" && (
-                      <Pressable onPress={() => onInvite(message.tinker.id)} accessibilityRole="button" accessibilityLabel={`Invite ${message.tinker.name} to the guild`}>
-                        <Text style={[ui.muted, { fontSize: 11, color: colors.verdigris }]}>invite</Text>
-                      </Pressable>
+                  {entry.last && (
+                    <Text style={ui.muted} numberOfLines={1}>
+                      {entry.last.tinker.id === tinkerId ? "You: " : ""}
+                      {entry.last.text}
+                    </Text>
+                  )}
+                </Pressable>
+              ))
+            )
+          ) : (
+            <>
+              {shown.length === 0 && <Text style={ui.muted}>{EMPTY[which]}</Text>}
+              {shown.map((message) => {
+                const mine = message.tinker.id === tinkerId;
+                const open = picked === message.id;
+                const actions = [
+                  ...(which !== "whisper" ? [{ label: "whisper", tone: colors.brass, act: () => whisperTo(message.tinker.id, message.tinker.name) }] : []),
+                  ...(onInvite && which !== "guild" && which !== "whisper" ? [{ label: "invite to guild", tone: colors.verdigris, act: () => (setPicked(null), onInvite(message.tinker.id)) }] : []),
+                  { label: "mute", tone: colors.scald, act: () => (setPicked(null), mute(message.tinker.id, true)) },
+                ];
+                return (
+                  <View key={message.id} style={{ gap: 2 }}>
+                    <Text style={[ui.text, { lineHeight: 19 }]} selectable>
+                      <Text style={[ui.number, { fontSize: 11, color: colors.muted }]}>{clockTime(message.at)} </Text>
+                      <Text
+                        onPress={mine ? undefined : () => setPicked(open ? null : message.id)}
+                        accessibilityRole={mine ? undefined : "button"}
+                        accessibilityLabel={mine ? undefined : `${message.tinker.name}: whisper, invite or mute`}
+                        style={{ color: mine ? colors.brass : colors.copper, fontWeight: "700" }}
+                      >
+                        {message.tinker.name}
+                      </Text>
+                      <Text style={{ color: colors.muted }}>: </Text>
+                      {message.text}
+                    </Text>
+                    {open && !mine && (
+                      <View style={{ flexDirection: "row", gap: 6, paddingLeft: 40 }}>
+                        {actions.map((action) => (
+                          <Pressable
+                            key={action.label}
+                            onPress={action.act}
+                            accessibilityRole="button"
+                            accessibilityLabel={`${action.label} ${message.tinker.name}`}
+                            style={{ borderWidth: 1, borderColor: action.tone, borderRadius: 4, paddingHorizontal: 6, paddingVertical: 1 }}
+                          >
+                            <Text style={[ui.muted, { fontSize: 11, color: action.tone }]}>{action.label}</Text>
+                          </Pressable>
+                        ))}
+                      </View>
                     )}
                   </View>
-                  <Text style={ui.text} selectable>
-                    {message.text}
-                  </Text>
-                </View>
-              );
-            })}
-          </>
-        )}
-      </ScrollView>
-      {rooms.city.muted.length > 0 && (
-        <Pressable onPress={() => rooms.city.muted.forEach((other) => mute(other, false))} accessibilityRole="button">
-          <Text style={[ui.muted, { fontSize: 11 }]}>{rooms.city.muted.length} muted · unmute all</Text>
-        </Pressable>
-      )}
-      {error && <Text style={[ui.muted, { color: colors.scald }]}>{error}</Text>}
-      {!inInbox && (
-        <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
-          <TextInput
-            value={draft}
-            onChangeText={(text) => setDraft([...text].slice(0, MAX_CHARS).join(""))}
-            onSubmitEditing={send}
-            placeholder={which === "whisper" ? `Whisper to ${openName ?? "them"}` : PLACEHOLDERS[which]}
-            placeholderTextColor={colors.muted}
-            accessibilityLabel="Chat message"
-            style={[ui.input, { flex: 1, fontFamily: undefined }]}
-            blurOnSubmit={false}
-          />
-          <Pressable onPress={send} accessibilityRole="button" style={[ui.button, { opacity: draft.trim() && !sending ? 1 : 0.5 }]}>
-            <Text style={ui.buttonText}>Say</Text>
+                );
+              })}
+            </>
+          )}
+        </ScrollView>
+        {rooms.city.muted.length > 0 && (
+          <Pressable onPress={() => rooms.city.muted.forEach((other) => mute(other, false))} accessibilityRole="button">
+            <Text style={[ui.muted, { fontSize: 11 }]}>{rooms.city.muted.length} muted · unmute all</Text>
           </Pressable>
+        )}
+        {error && <Text style={[ui.muted, { color: colors.scald }]}>{error}</Text>}
+        {!inInbox && (
+          <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
+            <TextInput
+              value={draft}
+              onChangeText={(text) => setDraft([...text].slice(0, MAX_CHARS).join(""))}
+              onSubmitEditing={send}
+              placeholder={which === "whisper" ? `Whisper to ${openName ?? "them"}` : PLACEHOLDERS[which]}
+              placeholderTextColor={colors.muted}
+              accessibilityLabel="Chat message"
+              style={[ui.input, { flex: 1, fontFamily: undefined }]}
+              blurOnSubmit={false}
+            />
+            <Pressable onPress={send} accessibilityRole="button" style={[ui.button, { opacity: draft.trim() && !sending ? 1 : 0.5 }]}>
+              <Text style={ui.buttonText}>Say</Text>
+            </Pressable>
+          </View>
+        )}
+        {!inInbox && left <= 40 && <Text style={[ui.number, { fontSize: 11, color: left <= 10 ? colors.scald : colors.muted }]}>{left} left</Text>}
+      </>
+    );
+  }
+}
+
+const DOCK_KEY = "long-boil.chat.dock";
+const DOCK_MIN = 140;
+
+function loadDock(): { height: number; folded: boolean } {
+  try {
+    const saved = globalThis.localStorage?.getItem(DOCK_KEY);
+    if (saved) return JSON.parse(saved) as { height: number; folded: boolean };
+  } catch {
+    // Fall through to the default.
+  }
+  return { height: 240, folded: false };
+}
+
+/** Chat docked along the foot of the desktop screen: drag the handle to size it, fold it to its tabs. This browser remembers both. */
+export function ChatDock(props: ChatProps) {
+  const [dock, setDock] = useState(loadDock);
+  const max = Math.max(DOCK_MIN, Math.round(useWindowDimensions().height * 0.6));
+  const height = Math.min(max, Math.max(DOCK_MIN, dock.height));
+  const live = useRef({ height, max });
+  live.current = { height, max };
+  const from = useRef(height);
+
+  useEffect(() => {
+    try {
+      globalThis.localStorage?.setItem(DOCK_KEY, JSON.stringify(dock));
+    } catch {
+      // Without storage the dock opens at its default next time.
+    }
+  }, [dock]);
+
+  const handle = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderGrant: () => {
+          from.current = live.current.height;
+        },
+        onPanResponderMove: (_, drag) =>
+          setDock((was) => ({ ...was, height: Math.min(live.current.max, Math.max(DOCK_MIN, from.current - drag.dy)) })),
+      }),
+    [],
+  );
+
+  return (
+    <View style={{ height: dock.folded ? undefined : height, borderTopWidth: 1, borderTopColor: colors.brassDim, backgroundColor: "rgba(20, 16, 12, 0.94)" }}>
+      {!dock.folded && (
+        <View
+          {...handle.panHandlers}
+          accessibilityLabel="Drag to resize chat"
+          // cursor and userSelect are react-native-web's, missing from the native types.
+          style={[{ height: 10, marginTop: -5, alignItems: "center", justifyContent: "center" }, { cursor: "ns-resize", userSelect: "none" } as object]}
+        >
+          <View style={{ width: 48, height: 4, borderRadius: 2, backgroundColor: colors.brassDim }} />
         </View>
       )}
-      {!inInbox && left <= 40 && <Text style={[ui.number, { fontSize: 11, color: left <= 10 ? colors.scald : colors.muted }]}>{left} left</Text>}
+      <Chat {...props} docked={{ folded: dock.folded, onFold: (folded) => setDock((was) => ({ ...was, folded })) }} />
     </View>
   );
 }

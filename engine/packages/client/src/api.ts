@@ -334,23 +334,18 @@ export type ShopOutcome = Outcome & { shop: ShopView };
 export type GuildRank = "leader" | "officer" | "member";
 
 export interface GuildView {
-  locked: string | null;
   guild: {
     id: number;
     name: string;
-    status: "charter" | "active";
-    pledged: number;
-    fee: number;
-    charterEnds: string;
-    formedAt: string | null;
+    formedAt: string;
     rank: GuildRank;
-    members: { tinkerId: number; name: string; rank: GuildRank; totalLevel: number; lastSeen: string; pledged: number; workOrders: number }[];
+    members: { tinkerId: number; name: string; rank: GuildRank; totalLevel: number; lastSeen: string; workOrders: number }[];
     requests: { tinkerId: number; name: string; kind: "invite" | "application"; at: string }[];
   } | null;
   invites: { guildId: number; name: string; status: string }[];
   applications: { guildId: number; name: string; status: string }[];
-  guilds: { id: number; name: string; status: string; members: number; pledged: number; charterEnds: string }[];
-  rules: { fee: number; founderMin: number; maxMembers: number; renameCrowns: number };
+  guilds: { id: number; name: string; members: number }[];
+  rules: { maxMembers: number; renameCrowns: number };
 }
 
 /** One row of a leaderboard (packages/server/src/leaderboards.ts): a Tinker, or a guild on the guild board. */
@@ -536,8 +531,7 @@ export const api = {
     request<{ message: ChatMessage }>("POST", `/tinkers/${id}/chat`, { text, channel, ...(to ? { to } : {}) }),
   whispers: (id: number) => request<{ conversations: WhisperConversation[] }>("GET", `/tinkers/${id}/whispers`),
   guild: (id: number) => request<GuildView>("GET", `/tinkers/${id}/guild`),
-  foundGuild: (id: number, name: string, crowns: number) => request<GuildView>("POST", `/tinkers/${id}/guild`, { name, crowns }),
-  pledge: (id: number, guild: number, crowns: number) => request<GuildView>("POST", `/tinkers/${id}/guilds/${guild}/pledge`, { crowns }),
+  foundGuild: (id: number, name: string) => request<GuildView>("POST", `/tinkers/${id}/guild`, { name }),
   applyToGuild: (id: number, guild: number) => request<GuildView>("POST", `/tinkers/${id}/guilds/${guild}/apply`),
   acceptInvite: (id: number, guild: number) => request<GuildView>("POST", `/tinkers/${id}/guilds/${guild}/accept`),
   dropRequest: (id: number, guild: number, other: number) => request<GuildView>("DELETE", `/tinkers/${id}/guilds/${guild}/requests/${other}`),
