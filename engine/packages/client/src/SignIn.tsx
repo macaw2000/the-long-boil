@@ -266,6 +266,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
 
   // Before signing in, the page goes on below the painting to show what the game is.
   const showcase = showcaseBeforeSignIn(signedIn, tinkers);
+  const music = useThemeSong();
   const seeInside = () => scroller.current?.scrollTo({ y: showcaseTop.current, animated: true });
 
   return (
@@ -275,6 +276,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
         <>
           <View style={{ width: "100%", aspectRatio: SPLASH_ASPECT, overflow: "hidden" }}>
             <LivingSplash still={still} />
+            <MusicToggle on={music.on} onPress={music.toggle} low />
           </View>
           <View style={{ width: "100%", paddingHorizontal: 16, marginTop: -28 }}>{panel}</View>
         </>
@@ -283,6 +285,7 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
         // the middle of the picture where the eye lands, not down at the edge.
         <View style={{ width: "100%", height, alignItems: "center", padding: 16, backgroundColor: colors.soot, overflow: "hidden" }}>
           <LivingSplash still={still} />
+          <MusicToggle on={music.on} onPress={music.toggle} />
           <View style={{ flex: 2 }} />
           {panel}
           <View style={{ flex: 0.4, justifyContent: "flex-end", paddingBottom: 8 }}>
@@ -301,6 +304,72 @@ export function SignIn({ signedIn, onEnter }: { signedIn: boolean; onEnter: (log
 
 /** Before signing in, the page goes on below the painting to show what the game is. */
 const showcaseBeforeSignIn = (signedIn: boolean, tinkers: unknown[] | null) => (cognitoEnabled ? !signedIn : tinkers === null);
+
+const MUSIC_KEY = "long-boil.music";
+
+/**
+ * The theme, the Kettle Waltz, looping quietly while the splash is up. It is
+ * on unless the player has turned it off, which the browser remembers. A
+ * browser will not start sound before the page is touched, so the song waits
+ * for the first press or key if it must. Nothing is fetched while it is off.
+ */
+function useThemeSong() {
+  const [on, setOn] = useState(() => globalThis.localStorage?.getItem(MUSIC_KEY) !== "off");
+  const song = useRef<HTMLAudioElement | null>(null);
+  useEffect(() => {
+    if (Platform.OS !== "web" || !on) return;
+    if (!song.current) {
+      song.current = new Audio(art("audio/kettle-waltz.mp3"));
+      song.current.loop = true;
+      song.current.volume = 0.4;
+    }
+    const audio = song.current;
+    const start = () => void audio.play().catch(() => undefined);
+    start();
+    globalThis.addEventListener("pointerdown", start, { once: true });
+    globalThis.addEventListener("keydown", start, { once: true });
+    return () => {
+      globalThis.removeEventListener("pointerdown", start);
+      globalThis.removeEventListener("keydown", start);
+      audio.pause();
+    };
+  }, [on]);
+  const toggle = () => {
+    globalThis.localStorage?.setItem(MUSIC_KEY, on ? "off" : "on");
+    setOn(!on);
+  };
+  return { on, toggle };
+}
+
+/** The splash's sound switch: in the top corner, or low on a phone, where the corner holds the title. Its icons are not drawn yet. */
+function MusicToggle({ on, onPress, low = false }: { on: boolean; onPress: () => void; low?: boolean }) {
+  if (Platform.OS !== "web") return null;
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="switch"
+      accessibilityState={{ checked: on }}
+      accessibilityLabel="Music"
+      style={{
+        position: "absolute",
+        ...(low ? { bottom: 36, left: 12 } : { top: 12, right: 12 }),
+        zIndex: 2,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 6,
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 16,
+        borderWidth: 1,
+        borderColor: on ? colors.brass : colors.brassDim,
+        backgroundColor: "rgba(20, 16, 12, 0.72)",
+      }}
+    >
+      <Text style={[ui.text, { fontSize: 15, color: on ? colors.brass : colors.muted }]}>♪</Text>
+      <Text style={[ui.text, { fontSize: 13, color: on ? colors.ink : colors.muted }]}>{on ? "Music on" : "Music off"}</Text>
+    </Pressable>
+  );
+}
 
 function useReducedMotion() {
   const [reduced, setReduced] = useState(false);
