@@ -29,6 +29,8 @@ export interface GuildView {
     notice: { text: string; by: string; at: string } | null;
     rank: rules.GuildRank;
     members: GuildMemberView[];
+    /** What the guild and its members did lately, newest first. */
+    activity: GuildActivityEntry[];
     /** Invitations out and applications in; shown to those who may answer them. */
     requests: { tinkerId: number; name: string; kind: "invite" | "application"; at: string }[];
   } | null;
@@ -37,6 +39,70 @@ export interface GuildView {
   /** Every guild, largest first, to apply to. */
   guilds: { id: number; name: string; members: number }[];
   rules: { maxMembers: number; renameCrowns: number; noticeMax: number };
+}
+
+/** One line of the Guild tab's recent activity. */
+export type GuildActivityEntry = { at: string; tinker: { id: number; name: string } } & (
+  | { kind: "founded" | "joined" | "left" | "removed" | "notice" }
+  | { kind: "renamed"; name: string }
+  | { kind: "rank"; rank: rules.GuildRank; by: string }
+  | { kind: "level"; skill: string; level: number }
+  | { kind: "boss"; monster: string }
+);
+
+/** How many lines the activity keeps. */
+export const GUILD_ACTIVITY = 30;
+/** Level-ups worth telling the guild about: every fifth level. */
+const MILESTONE = 5;
+
+/**
+ * The guild's recent activity, from the event log: comings and goings, ranks,
+ * renames and notices (logged with the guild's id), and, for members while in
+ * the guild, every fifth level and each boss's first fall to them.
+ */
+async function readActivity(tx: Tx, guildId: number): Promise<GuildActivityEntry[]> {
+  const rows = (
+    await tx.query(
+      `(SELECT e.tinker_id, t.name, e.type, e.at, e.payload, b.name AS by_name
+        FROM events e JOIN tinkers t ON t.id = e.tinker_id LEFT JOIN tinkers b ON b.id = (e.payload->>'by')::bigint
+        WHERE e.payload->>'guild' = $4
+          AND e.type IN ('guild_founded', 'guild_joined', 'guild_left', 'guild_renamed', 'guild_rank', 'guild_notice')
+        ORDER BY e.at DESC LIMIT $2)
+       UNION ALL
+       (SELECT e.tinker_id, t.name, e.type, e.at, e.payload, NULL
+        FROM guild_members m JOIN events e ON e.tinker_id = m.tinker_id AND e.at >= m.joined_at JOIN tinkers t ON t.id = m.tinker_id
+        WHERE m.guild_id = $1
+          AND ((e.type = 'level_up' AND (e.payload->>'level')::int % $3 = 0)
+            OR (e.type = 'boss_attempted' AND (e.payload->>'won')::boolean AND NOT EXISTS (
+                  SELECT 1 FROM events f WHERE f.tinker_id = e.tinker_id AND f.type = 'boss_attempted' AND (f.payload->>'won')::boolean
+                    AND f.payload->>'monsterId' = e.payload->>'monsterId' AND (f.at, f.seq) < (e.at, e.seq))))
+        ORDER BY e.at DESC LIMIT $2)
+       ORDER BY at DESC LIMIT $2`,
+      [guildId, GUILD_ACTIVITY, MILESTONE, String(guildId)],
+    )
+  ).rows;
+  return rows.map((row): GuildActivityEntry => {
+    const base = { at: row.at.toISOString(), tinker: { id: Number(row.tinker_id), name: row.name as string } };
+    const payload = row.payload;
+    switch (row.type) {
+      case "guild_founded":
+        return { ...base, kind: "founded" };
+      case "guild_joined":
+        return { ...base, kind: "joined" };
+      case "guild_left":
+        return { ...base, kind: payload.removed ? "removed" : "left" };
+      case "guild_renamed":
+        return { ...base, kind: "renamed", name: payload.name };
+      case "guild_rank":
+        return { ...base, kind: "rank", rank: payload.rank, by: row.by_name };
+      case "guild_notice":
+        return { ...base, kind: "notice" };
+      case "level_up":
+        return { ...base, kind: "level", skill: payload.skill, level: Number(payload.level) };
+      default:
+        return { ...base, kind: "boss", monster: payload.monsterId };
+    }
+  });
 }
 
 /** Membership changes, for the live connection to pass on (guild chat follows membership). */
@@ -150,6 +216,7 @@ async function readView(tx: Tx, content: GameContent, tinkerId: number): Promise
       notice: row.notice ? { text: row.notice, by: row.notice_name, at: row.notice_at.toISOString() } : null,
       rank: mine.rank,
       members: views,
+      activity: await readActivity(tx, mine.guildId),
       requests,
     };
   }
@@ -305,12 +372,14 @@ export function setRank(db: Db, content: GameContent, tinkerId: number, otherId:
     const target = await membership(tx, otherId);
     if (!target || target.guildId !== mine.guildId) throw new rules.GuildRefusal("that Tinker is not in your guild");
     if (otherId === tinkerId) throw new rules.GuildRefusal("the leader's rank changes only by handing leadership on");
+    if (target.rank === rank) return;
     if (rank === "leader") {
       await tx.query("UPDATE guild_members SET rank = 'officer' WHERE tinker_id = $1", [tinkerId]);
       await tx.query("UPDATE guild_members SET rank = 'leader' WHERE tinker_id = $1", [otherId]);
     } else {
       await tx.query("UPDATE guild_members SET rank = $2 WHERE tinker_id = $1", [otherId, rank]);
     }
+    await logFor(tx, content, otherId, [{ type: "guild_rank", at: now, payload: { guild: mine.guildId, rank, by: tinkerId, crowns: 0, items: {} } }]);
     touched.add(otherId);
   });
 }
@@ -375,6 +444,7 @@ export function setNotice(db: Db, content: GameContent, tinkerId: number, text: 
       notice ? new Date(now) : null,
       notice ? tinkerId : null,
     ]);
+    if (notice) await logFor(tx, content, tinkerId, [{ type: "guild_notice", at: now, payload: { guild: mine.guildId, crowns: 0, items: {} } }]);
     for (const row of (await tx.query("SELECT tinker_id FROM guild_members WHERE guild_id = $1", [mine.guildId])).rows) touched.add(Number(row.tinker_id));
   });
 }

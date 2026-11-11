@@ -140,6 +140,33 @@ describe("founding a guild", () => {
     expect((await call("POST", `/tinkers/${cog}/check-in`)).body.guildActivity).toBeNull();
     expect((await call("POST", `/tinkers/${bram}/check-in`)).body.guildActivity).toBeNull();
   });
+
+  it("keeps a feed of the guild's comings, goings, ranks, notices and members' feats", async () => {
+    const cog = (await call("GET", `/tinkers/${bram}/guild`)).body.guild.members.find((m: { name: string }) => m.name === "Cog").tinkerId;
+    const log = async (type: string, payload: object) => {
+      const seq = Number((await db.query("SELECT last_seq FROM tinkers WHERE id = $1", [cog])).rows[0].last_seq) + 1;
+      await db.query("INSERT INTO events (tinker_id, seq, type, at, payload, content_version) VALUES ($1, $2, $3, $4, $5, 'test')", [cog, seq, type, new Date(clock), payload]);
+      await db.query("UPDATE tinkers SET last_seq = $2 WHERE id = $1", [cog, seq]);
+    };
+    clock += 1_000;
+    await log("level_up", { skill: "smithing", level: 9 });
+    await log("level_up", { skill: "smithing", level: 10 });
+    clock += 1_000;
+    await log("boss_attempted", { monsterId: "monster.rustmoor.scrapjaw", won: true });
+    clock += 1_000;
+    await log("boss_attempted", { monsterId: "monster.rustmoor.scrapjaw", won: true });
+    clock += 1_000;
+    await call("PUT", `/tinkers/${bram}/guild/notice`, { text: "Welcome." });
+    const activity = (await call("GET", `/tinkers/${cog}/guild`)).body.guild.activity;
+    const lines = activity.map((entry: { kind: string; tinker: { name: string } }) => `${entry.tinker.name} ${entry.kind}`);
+    expect(lines.slice(0, 3)).toEqual(["Bram notice", "Cog boss", "Cog level"]);
+    expect(activity[2]).toMatchObject({ skill: "smithing", level: 10 });
+    expect(lines.filter((line: string) => line === "Cog boss")).toHaveLength(1);
+    expect(activity).toContainEqual(expect.objectContaining({ kind: "rank", rank: "officer", by: "Bram", tinker: expect.objectContaining({ name: "Cog" }) }));
+    expect(activity).toContainEqual(expect.objectContaining({ kind: "left", tinker: expect.objectContaining({ name: "Ada" }) }));
+    expect(activity).toContainEqual(expect.objectContaining({ kind: "renamed", name: "Owls of the Iron" }));
+    expect(activity.at(-1)).toMatchObject({ kind: "founded", tinker: { name: "Ada" } });
+  });
 });
 
 describe("a charter from when guilds cost a fee", () => {

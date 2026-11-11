@@ -556,7 +556,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
             <Text style={ui.buttonText}>Leaderboards</Text>
           </Pressable>
         )}
-        <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} onInspect={setInspecting} />
+        <Guild tinkerId={tinkerId} content={content} view={guildView} setView={setGuildView} onInspect={setInspecting} />
       </View>
     ) : place === "leaderboards" ? (
       <Leaderboards tinkerId={tinkerId} onInspect={setInspecting} />

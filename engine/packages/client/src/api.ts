@@ -343,6 +343,15 @@ export type ShopOutcome = Outcome & { shop: ShopView };
 
 export type GuildRank = "leader" | "officer" | "member";
 
+/** One line of a guild's recent activity (packages/server/src/guilds.ts). */
+export type GuildActivityEntry = { at: string; tinker: { id: number; name: string } } & (
+  | { kind: "founded" | "joined" | "left" | "removed" | "notice" }
+  | { kind: "renamed"; name: string }
+  | { kind: "rank"; rank: GuildRank; by: string }
+  | { kind: "level"; skill: string; level: number }
+  | { kind: "boss"; monster: string }
+);
+
 export interface GuildView {
   guild: {
     id: number;
@@ -351,6 +360,7 @@ export interface GuildView {
     notice: { text: string; by: string; at: string } | null;
     rank: GuildRank;
     members: { tinkerId: number; name: string; rank: GuildRank; totalLevel: number; lastSeen: string; workOrders: number }[];
+    activity: GuildActivityEntry[];
     requests: { tinkerId: number; name: string; kind: "invite" | "application"; at: string }[];
   } | null;
   invites: { guildId: number; name: string; status: string }[];

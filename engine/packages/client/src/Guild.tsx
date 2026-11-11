@@ -2,12 +2,16 @@
 // phone tabs). Without a guild: invitations, the guilds to apply to, and a
 // name box to found one, free and at once. In one: the guild, its notice
 // board (pinned by the leader or an officer, for members who come by at
-// different times), the roster, requests to answer, and the leader's controls.
+// different times), recent activity (comings and goings, ranks, every fifth
+// level, first boss kills), the roster, requests to answer, and the leader's
+// controls.
 
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
-import { api, gameNow, type GuildRank, type GuildView } from "./api";
-import { duration } from "./format";
+import { api, gameNow, type Content, type GuildActivityEntry, type GuildRank, type GuildView } from "./api";
+import { duration, titleCase } from "./format";
+import { MonsterPicture, SkillIcon } from "./SkillView";
+import { UiIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
 const RANKS: Record<GuildRank, string> = { leader: "Leader", officer: "Officer", member: "Member" };
@@ -24,13 +28,92 @@ function SmallButton({ label, onPress, tone = colors.brass }: { label: string; o
   );
 }
 
+/** How long ago, as the activity and the notice say it. */
+function ago(at: string): string {
+  const ms = gameNow() - new Date(at).getTime();
+  return ms < 60_000 ? "just now" : `${duration(ms)} ago`;
+}
+
+const ACTIVITY_SHOWN = 8;
+
+function ActivityLine({ entry, content, onInspect }: { entry: GuildActivityEntry; content: Content; onInspect: (other: number) => void }) {
+  const who = (
+    <Text onPress={() => onInspect(entry.tinker.id)} accessibilityRole="button" style={{ color: colors.copper, fontWeight: "700" }}>
+      {entry.tinker.name}
+    </Text>
+  );
+  let icon = <UiIcon name="guild" size={22} />;
+  let line;
+  switch (entry.kind) {
+    case "founded":
+      line = <>{who} founded the guild</>;
+      break;
+    case "joined":
+      line = <>{who} joined</>;
+      break;
+    case "left":
+      line = <>{who} left</>;
+      break;
+    case "removed":
+      line = <>{who} was removed</>;
+      break;
+    case "notice":
+      line = <>{who} pinned a notice</>;
+      break;
+    case "renamed":
+      line = (
+        <>
+          {who} renamed the guild <Text style={{ color: colors.brass }}>{entry.name}</Text>
+        </>
+      );
+      break;
+    case "rank":
+      line =
+        entry.rank === "leader" ? (
+          <>
+            {entry.by} handed leadership to {who}
+          </>
+        ) : (
+          <>
+            {entry.by} made {who} {entry.rank === "officer" ? "an officer" : "a member again"}
+          </>
+        );
+      break;
+    case "level":
+      icon = <SkillIcon skill={entry.skill} size={22} />;
+      line = (
+        <>
+          {who} reached {titleCase(entry.skill.replace("_", " "))} <Text style={{ color: colors.verdigris, fontWeight: "700" }}>{entry.level}</Text>
+        </>
+      );
+      break;
+    case "boss":
+      icon = <MonsterPicture id={entry.monster} size={22} />;
+      line = (
+        <>
+          {who} beat <Text style={{ color: colors.brass }}>{content.monsters.find((monster) => monster.id === entry.monster)?.name ?? "a boss"}</Text> for the first time
+        </>
+      );
+      break;
+  }
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 8, paddingVertical: 3 }}>
+      <View style={{ width: 22, alignItems: "center" }}>{icon}</View>
+      <Text style={[ui.text, { flex: 1 }]}>{line}</Text>
+      <Text style={[ui.muted, { fontSize: 11 }]}>{ago(entry.at)}</Text>
+    </View>
+  );
+}
+
 export function Guild({
   tinkerId,
   view,
   setView,
   onInspect,
+  content,
 }: {
   tinkerId: number;
+  content: Content;
   view: GuildView | null;
   setView: (view: GuildView) => void;
   onInspect: (other: number) => void;
@@ -39,6 +122,7 @@ export function Guild({
   const [name, setName] = useState("");
   const [rename, setRename] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
+  const [allActivity, setAllActivity] = useState(false);
   const [confirming, setConfirming] = useState<string | null>(null);
 
   if (!view) return <Text style={ui.muted}>Opening the guild hall…</Text>;
@@ -102,11 +186,23 @@ export function Guild({
                 {guild.notice.text}
               </Text>
               <Text style={[ui.muted, { fontSize: 12 }]}>
-                {guild.notice.by}, {gameNow() - new Date(guild.notice.at).getTime() < 60_000 ? "just now" : `${duration(gameNow() - new Date(guild.notice.at).getTime())} ago`}
+                {guild.notice.by}, {ago(guild.notice.at)}
               </Text>
             </>
           ) : (
             <Text style={ui.muted}>{answers ? "Nothing pinned. Leave word for members who come by later." : "Nothing pinned yet."}</Text>
+          )}
+        </View>
+
+        <View style={[ui.panel, { gap: 2 }]}>
+          <Text style={ui.heading}>Recent activity</Text>
+          {(allActivity ? guild.activity : guild.activity.slice(0, ACTIVITY_SHOWN)).map((entry, index) => (
+            <ActivityLine key={`${entry.at}-${index}`} entry={entry} content={content} onInspect={onInspect} />
+          ))}
+          {guild.activity.length > ACTIVITY_SHOWN && (
+            <Pressable onPress={() => setAllActivity(!allActivity)} accessibilityRole="button">
+              <Text style={[ui.muted, { fontSize: 12, color: colors.brass }]}>{allActivity ? "Show less" : `Show all ${guild.activity.length}`}</Text>
+            </Pressable>
           )}
         </View>
 
