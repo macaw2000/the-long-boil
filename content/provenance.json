@@ -1726,7 +1726,7 @@
       "type": "storylet",
       "path": "content/storylets/act1.lowvents.who_feeds_it.json",
       "pointer": null,
-      "revision": 2,
+      "revision": 4,
       "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
       "status": "drafted",
       "drafted_by": "claude",
@@ -1734,7 +1734,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-11T04:36:28Z",
+        "run": "2026-11-11T05:08:47Z",
         "checks": [
           "fixtures",
           "schema",
@@ -1756,8 +1756,8 @@
       },
       "review": {
         "by": "inspector",
-        "verdict": "fail",
-        "notes": "Work order 040, 10 November 2026: inspector reviewed the whole scene at revision 2 and failed it: (a) the brick-mark scale (a hand's width a year) contradicts canon's 40/70 fathoms; (b) option 2's label conflicts with what_you_do_with_it; (c) Tallow's \"two Crowns a shift\" is off the game's Crown scale. Inspector also questions authorship: GDD section 9 reserves the first storylet of each Ambition for Jeremy and work order 024 names Jeremy as writer, but drafted_by is \"claude\"; left unchanged pending evidence. Not approved."
+        "verdict": "pass",
+        "notes": "Work order 040, 10 November 2026: inspector passed revision 4 as a whole scene. Revision 3 (scrivener) fixed the three revision-2 fails: brick-mark scale, option 2 label, Tallow's wage set by the assayer at 30 Crowns; inspector failed revision 3 on option index 2 only (contradiction with two_columns; fog not tied to the Scald). Revision 4 (scrivener) applied the inspector's wording and rewrote the Tallow note. Authorship question settled: work order 024 section 3 records Jeremy's decision (10 November 2026) that the Ambition openers stand as Claude drafts, so drafted_by stays \"claude\". Not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -1795,6 +1795,16 @@
         {
           "at": "2026-11-11T04:44:55Z",
           "status": "drafted",
+          "by": "inspector"
+        },
+        {
+          "at": "2026-11-11T05:08:47Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-11T05:09:30Z",
+          "status": "reviewed",
           "by": "inspector"
         }
       ],

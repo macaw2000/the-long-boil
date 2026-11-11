@@ -1,6 +1,6 @@
 {
   "schema": "storylet/1",
-  "revision": 2,
+  "revision": 4,
   "id": "act1.lowvents.who_feeds_it",
   "act": 1,
   "location": "lowvents",
@@ -10,7 +10,7 @@
     "ambition.ember": "==1"
   },
   "nerve": 1,
-  "description": "Mother Ash meets you at the bottom of the Lowvents stair with a shovel, which she hands you, and a slate, which she does not. On the slate are the Stokers' shifts for the Foundry fires: names, hours, and a column of Crowns paid against each. The names run down the slate. The Crowns do not run very far at all. \"You asked who it belongs to,\" she says. \"Start by finding out who does it.\"",
+  "description": "Mother Ash meets you at the bottom of the Lowvents stair with a shovel, which she hands you, and a slate, which she does not. On the slate are the Stokers' shifts for the Foundry fires and the Lowvents furnaces: names, hours, and a column of Crowns paid against each. The names run down the slate. The Crowns do not run very far at all. \"You asked who it belongs to,\" she says. \"Start by finding out who does it.\"",
   "options": [
     {
       "label": "Take a shift on the Lowvents' own furnace, and feed it till the shift bell.",
@@ -35,8 +35,8 @@
     {
       "label": "Take the slate to Silas Tallow and ask what the House pays a Stoker.",
       "success": {
-        "text": "\"Two Crowns a shift, less the House's commission,\" says Silas Tallow, \"which is a very fair rate for work nobody else will do.\" He tells you the price of coal, of bread and of a Lowvents lease, all without being asked. By the time he finishes, you have worked out that a Stoker's week buys a Stoker's week, and not an hour more. He sees you do the sum, and smiles.",
-        "note": "The Counting-House pays a Stoker two Crowns a shift, less the House's commission.",
+        "text": "\"Thirty Crowns a shift, less the House's commission,\" says Silas Tallow, \"which is a very fair rate for work nobody else will do.\" He tells you the price of coal, of bread and of a Lowvents lease, all without being asked. By the time he finishes, you have worked out that a Stoker's week buys a Stoker's week, and not an hour more. He sees you do the sum, and smiles.",
+        "note": "The Counting-House pays a Stoker thirty Crowns a shift. After the Counting-House's commission, that covers coal, bread and lease, and nothing more. A Stoker's week buys a Stoker's week.",
         "changes": {
           "favour.counting_house": "+1",
           "ambition.ember": 5
@@ -44,13 +44,13 @@
       }
     },
     {
-      "label": "Tell Mother Ash the Gazette had the columns first, and ask whether the Lowvents believed them.",
+      "label": "Tell Mother Ash the Gazette has Hester's columns now, and ask whether the Lowvents ever believed its Gauge Reading.",
       "requires": {
         "flag.page_to_inkwell": "==1"
       },
       "success": {
-        "text": "\"Believed them?\" Mother Ash takes the slate back. \"We read the Gazette to see what the Board wants us to think. Then we look out of the window.\" She shows you the bottom rim, where every family has a mark scratched in the brick, a hand's width apart, each a year newer than the last. Nobody in the Lowvents needed Hester to tell them. They needed someone to write it down where Gaugehill would see.",
-        "note": "Every Lowvents family scratches a mark in the bottom rim's brick each year, a hand's width apart: the Lowvents' own record, kept against the Gazette's figures.",
+        "text": "\"Believed it?\" Mother Ash takes the slate back. \"We read the Gazette to see what the Board wants us to think. Then we look out of the window.\" She shows you the bottom rim, where every family scratches a line in the brick each year, at the highest the Scald's fog came. For eleven years the Gauge Reading has said 5,280 feet and steady. The lines have climbed every year of it. Nobody in the Lowvents needed Hester to tell them. They needed someone to write it down where Gaugehill would see.",
+        "note": "Each year, Lowvents families mark the bottom rim's brick where the Scald's fog reaches. The marks climb; the Gauge Reading has said 5,280 feet for eleven years.",
         "changes": {
           "favour.stokers": "+1",
           "ambition.ember": 5

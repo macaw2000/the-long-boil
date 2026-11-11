@@ -22,6 +22,8 @@ This is a brief, not a commission: the slots the engine already gives each piece
 
 ## 3. The first scene of each Ambition: four scenes
 
+**Decided 10 November 2026:** the four openers on main (`act1.brass_exchange.gauntletts_question`, `act1.rustmoor.where_she_went`, `act1.lowvents.who_feeds_it`, `act1.polytechnic.how_deep`) were drafted by Claude in commit `0a07291`, not by Jeremy. Jeremy: they stand as Claude drafts, and go through the scrivener, educator and inspector like any other draft. The rest of this work order stays Jeremy's.
+
 - **Each opens on** its own Ambition: `"ambition.gauge": "==1"` and so on, and `"act1.progress": "==100"`.
 - **Each moves** its Ambition on, for example to `5`, so the opener plays once. What comes after is later work.
 - **Leans on** what the GDD's table says each Ambition uses (the Gauge: Exchange and Board Favour; the Lantern: combat, Scavenging, Ledger Pages; the Ember: Smithing and Stokers' Favour; the Fathom: Tinkering and Vapourist Favour).
