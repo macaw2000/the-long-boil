@@ -223,6 +223,8 @@ Pixel art sprite for a steampunk idle game, "The Long Boil". Limited palette: br
 
 ## 16. Leaderboards, sound and Haze (1 sheet, 2 by 2), 10 November 2026
 
+Done: `leaderboards.jpeg` is in the game as the interface icons `leaderboards`, `sound_on`, `sound_off` and `haze`.
+
 The Leaderboards row in the side list shows a `#`, the splash's music switch shows a `♪`, and Haze is the one Needle with no icon (Scald, Arrears and Notice have theirs). One small sheet, 64 by 64 each, matching the interface icons. Attach `art/splash.jpg` and `art/concepts/sheets/cog-shop.jpeg`. Save as `art/concepts/sheets/leaderboards.jpeg`.
 
 ```
@@ -230,6 +232,18 @@ Pixel art sprite for a steampunk idle game, "The Long Boil". Limited palette: br
 ```
 
 ## 17. The Cinderworks: gear, tools, monsters and its background (8 images), 10 November 2026
+
+Drawn 10 November and in the game, except the Soot Wraiths, which need the redraw below:
+
+- **Sheets K to O:** all 76 icons are in. Sheet K came back with a name painted under each of its four cuirasses; the import cuts the foot off those cells. Several felt boots on Sheet M came out brown leather, not grey felt, and are used as they are.
+- **Old Bellows:** in the game. Its last two frames were drawn facing right, so the import turns them round.
+- **Background:** in `art/bg/cinderworks.jpg`, behind Cinderworks fights. It was made from a fuller prompt than the first one logged here, now below, with `rustmoor-bg.jpeg` and `workshop-bg.jpeg` attached.
+- **Soot Wraiths:** not used. The sheet has six columns, not five; in three rows the second idle frame runs across two cells; the Wisp grows to the Drifter's size when it attacks; the Overman's row has its name painted in; and the wraiths are tan and brown, not soot black.
+
+**Soot Wraiths redraw** (attach the first `soot-wraiths.jpeg` and `rust-rats.jpeg`; save over `art/concepts/sheets/soot-wraiths.jpeg`):
+```
+Redraw the attached sheet of four smoke creatures, keeping their shapes and characters but fixing five things. (1) The grid is exactly 5 columns by 4 rows, twenty equal cells, with every creature drawn wholly inside its own cell, centred, with clear magenta space on all four sides. Nothing touches or crosses a cell edge, and no trailing smoke reaches into the next cell. (2) Each row is one creature in five frames, left to right: idle 1, idle 2 (the same pose with its smoke curling a different way), attack 1 (rearing up), attack 2 (lunging), defeated (a small heap of soot with a last curl of smoke). (3) Each creature stays the same size in all five of its frames. Row 1, the Wisp, is small in every frame, about a third of the cell's height, and never grows a body or arms. Row 2, the Drifter, is tall and thin with long arms and a short smoke tail. Row 3, the Billow, is a big round cloud glowing ember orange inside. Row 4, the Overman, is the largest, broad-shouldered, in a flat cap and apron, holding a lit lantern. (4) They are made of soot: bodies of near-black charcoal #2B2522 and dark grey smoke, with pale grey highlights on the curls and two small ember-orange #E0702E eyes. No tan, no brown, no yellow. The Overman's cap, shirt and apron are the same dark soot as his body, a shape in smoke rather than clothes. (5) No text, no names, no labels, no gridlines. All face left. Same crisp pixel-art style, 1-pixel dark outline and hard edges as the other attached sheet (the rats). FORMAT: one image (5:4 aspect ratio), divided into an exact 5 by 4 grid of equal cells. One sprite per cell, centred, the same baseline in every cell of a row. The background is one flat solid colour, pure magenta #FF00FF, filling every cell edge to edge: no checkerboard, no transparency pattern, no gradient, no shadow on the background, no gridlines, no borders, no labels, no text, no numbers.
+```
 
 Not urgent: none of it shows until Act II opens. Work order 034 left 76 Cinderworks pieces and tools on the fallback crate, the four Soot Wraiths and Old Bellows have no sprites, and the Foundry has no background. Five item sheets, two monster sheets and one painting cover all of it.
 
@@ -274,7 +288,15 @@ Pixel art sprite for a steampunk idle game, "The Long Boil". Limited palette: br
 
 **Background, `cinderworks`:**
 ```
-The Cinderworks Foundry: the inside of a vast iron foundry, rows of furnaces glowing ember orange against soot-black girders, enormous leather bellows pumping, ladles of molten metal on chains, smoke drifting under a high roof. Wide 16:9, 1920 by 1080, painterly, soft focus, low contrast, muted, no creatures, no people, no text.
+Paint a new background in exactly the same painting style, softness, level of detail and muted contrast as the two attached images. It is a companion to them for the same game, so it must look like the same artist painted it.
+
+Steampunk idle game concept art for "The Long Boil." Floating sky-island world of brass and copper, verdigris patina, coal soot, warm steam haze. Palette: brass, copper, verdigris green, soot black, cream, small accents of ember orange. Cozy and whimsical, lovingly repaired machines, rivets and gauges. Not grimdark, no gore.
+
+Subject: the Cinderworks Foundry, the inside of a vast old iron foundry. Rows of round riveted furnaces down the left and right sides, their doors glowing ember orange. Enormous pleated leather bellows pumping beside them. Ladles of molten metal hanging on chains from soot-black roof girders. Brass pipes and pressure gauges along the walls. Warm smoke and steam drifting under a high roof, with a few shafts of dusty light. The machines are old, patched and well looked after, not ruined.
+
+Composition: wide 16:9, 1920 by 1080. Keep the furnaces, bellows and ladles toward the left and right edges and the top. The middle of the picture is open floor and soft drifting smoke, with nothing detailed or bright in it, because the game's interface sits there. Ember orange against soot black, but dim overall: the glow is low and warm, not blazing.
+
+Painterly, soft focus, low contrast, muted. No people, no creatures, no figures in the smoke, no text, no lettering, no numbers on the gauges, no watermark. Not photorealistic.
 ```
 
 ## Order of work

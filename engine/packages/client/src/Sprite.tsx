@@ -199,9 +199,14 @@ const POSE: Record<string, string> = {
   cooking: "cook",
 };
 
+/** The zone an id belongs to: "cinderworks" for monster.cinderworks.old_bellows. */
+export function zoneOf(id: string): string {
+  return id.split(".")[1] ?? "";
+}
+
 /**
  * The scene above the bench. Idle, the Tinker stands in the workshop. At a
- * job, the Tinker works it. In a fight, the scene moves to Rustmoor: the
+ * job, the Tinker works it. In a fight, the scene moves to the monster's zone: the
  * monster's health drains over each kill, it flinches at every swing, and it
  * falls when the kill lands, then the next one comes on.
  */
@@ -291,7 +296,7 @@ export function Scene({ tinker, content, progress, working }: { tinker: Tinker; 
       }}
     >
       <Image
-        source={(fighting ? backgrounds.rustmoor : backgrounds.workshop) as number}
+        source={(fighting ? (backgrounds[zoneOf(monster!.id)] ?? backgrounds.rustmoor) : backgrounds.workshop) as number}
         resizeMode="cover"
         style={{ position: "absolute", left: 0, right: 0, width: "100%", height: SCENE_HEIGHT }}
         accessibilityIgnoresInvertColors

@@ -731,6 +731,22 @@ def main() -> None:
         for anim, frames in {"idle": ["idle0", "idle1"], "attack": ["attack0", "attack1"], "dead": ["dead"]}.items()
     }
 
+    # Monsters outside Rustmoor have no placeholder: real art, or the client's own stand-in.
+    if (REAL / "old_bellows_idle0.png").exists():
+        index["characters"]["monster.cinderworks.old_bellows"] = {
+            "idle": ["old_bellows_idle0", "old_bellows_idle1"],
+            "attack": ["old_bellows_attack0", "old_bellows_attack1"],
+            "dead": ["old_bellows_dead"],
+        }
+
+    for variant in ("soot_wraith_wisp", "soot_wraith_drifter", "soot_wraith_billow", "soot_wraith_overman"):
+        if (REAL / f"{variant}_idle0.png").exists():
+            index["characters"][f"monster.cinderworks.{variant}"] = {
+                "idle": [f"{variant}_idle0", f"{variant}_idle1"],
+                "attack": [f"{variant}_attack0", f"{variant}_attack1"],
+                "dead": [f"{variant}_dead"],
+            }
+
     items = [item["id"] for item in json.loads(ITEMS.read_text())["items"]]
     for item in items + ["fallback"]:
         index["icons"][item] = save(f"icon_{item.split('.')[-1]}", icon(item), 2)
@@ -742,6 +758,8 @@ def main() -> None:
 
     index["backgrounds"]["workshop"] = save("bg_workshop", workshop_background(), 3)
     index["backgrounds"]["rustmoor"] = save("bg_rustmoor", rustmoor_background(), 3)
+    if (REAL / "bg_cinderworks.png").exists():
+        index["backgrounds"]["cinderworks"] = "bg_cinderworks"
 
     def req(name: str) -> str:
         if (REAL / f"{name}.png").exists():

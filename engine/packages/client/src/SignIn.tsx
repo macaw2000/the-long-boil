@@ -9,6 +9,7 @@ import { AccessibilityInfo, Animated, Easing, Image, Linking, Platform, Pressabl
 import { api } from "./api";
 import { art } from "./art";
 import { cognitoEnabled, providers, signOut, startSignIn, type Provider } from "./auth";
+import { UiIcon } from "./Sprite";
 import { TapInput } from "./TapInput";
 import { forgetGuide } from "./Workshop";
 import { colors, ui } from "./theme";
@@ -341,7 +342,7 @@ function useThemeSong() {
   return { on, toggle };
 }
 
-/** The splash's sound switch: in the top corner, or low on a phone, where the corner holds the title. Its icons are not drawn yet. */
+/** The splash's sound switch: in the top corner, or low on a phone, where the corner holds the title. A gramophone horn, corked when off. */
 function MusicToggle({ on, onPress, low = false }: { on: boolean; onPress: () => void; low?: boolean }) {
   if (Platform.OS !== "web") return null;
   return (
@@ -365,7 +366,7 @@ function MusicToggle({ on, onPress, low = false }: { on: boolean; onPress: () =>
         backgroundColor: "rgba(20, 16, 12, 0.72)",
       }}
     >
-      <Text style={[ui.text, { fontSize: 15, color: on ? colors.brass : colors.muted }]}>♪</Text>
+      <UiIcon name={on ? "sound_on" : "sound_off"} size={22} />
       <Text style={[ui.text, { fontSize: 13, color: on ? colors.ink : colors.muted }]}>{on ? "Music on" : "Music off"}</Text>
     </Pressable>
   );

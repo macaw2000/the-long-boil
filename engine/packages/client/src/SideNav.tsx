@@ -22,8 +22,8 @@ export interface PlaceBadge {
   tone?: string;
 }
 
-/** Each place's icon, from the interface sheets: the Post's canister, the Exchange's scale, a guild's shield, the shop's bell. */
-const PLACE_ICONS: Partial<Record<Place | "work", string>> = { story: "post", exchange: "exchange", guild: "guild", chat: "chat", stores: "boiler", shop: "shop" };
+/** Each place's icon, from the interface sheets: the Post's canister, the Exchange's scale, a guild's shield, the shop's bell, the boards' podium. */
+const PLACE_ICONS: Partial<Record<Place | "work", string>> = { story: "post", exchange: "exchange", guild: "guild", chat: "chat", stores: "boiler", shop: "shop", leaderboards: "leaderboards" };
 
 export function skillsOf(content: Content): string[] {
   const present = new Set(content.actions.map((action) => action.skill));
@@ -68,12 +68,12 @@ export function SideNav({
           </View>
         </NavRow>
       ))}
-      {/* The boards open with the rest of the city, at the visit after the Prologue; their icon is not drawn yet. */}
+      {/* The boards open with the rest of the city, at the visit after the Prologue. */}
       {shown("leaderboards") && (
         <NavRow active={place === "leaderboards"} lit={false} guided={false} onPress={() => onPlace("leaderboards")}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <View style={{ width: 26, height: 26, alignItems: "center", justifyContent: "center" }}>
-              <Text style={[ui.number, { color: colors.brass, fontSize: 16 }]}>#</Text>
+            <View style={{ width: 26, height: 26 }}>
+              <UiIcon name={PLACE_ICONS.leaderboards!} size={26} />
             </View>
             <Text style={[ui.text, { fontSize: 15, color: place === "leaderboards" ? colors.brass : colors.ink }]}>Leaderboards</Text>
           </View>

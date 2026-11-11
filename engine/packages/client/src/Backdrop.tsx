@@ -19,14 +19,19 @@ const PAINTINGS: Record<string, string> = {
   chat: "bg/sprocket_row.jpg",
 };
 
-function paintingFor(place: Place): string {
+/** A zone's own painting behind its fights, where one is drawn; Rustmoor's otherwise. */
+const FIGHT_PAINTINGS: Record<string, string> = { cinderworks: "bg/cinderworks.jpg" };
+
+function paintingFor(place: Place, zone?: string): string {
+  if (place === "skill:fight" && zone && FIGHT_PAINTINGS[zone]) return FIGHT_PAINTINGS[zone]!;
   return PAINTINGS[place] ?? (place.startsWith("skill:") ? PAINTINGS.skill! : PAINTINGS.story!);
 }
 
-export function Backdrop({ place }: { place: Place }) {
+/** `zone` is where the Tinker is fighting, if anywhere. */
+export function Backdrop({ place, zone }: { place: Place; zone?: string }) {
   return (
     <View pointerEvents="none" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.soot }}>
-      <Image source={{ uri: art(paintingFor(place)) }} resizeMode="cover" style={{ width: "100%", height: "100%", opacity: 0.5 }} />
+      <Image source={{ uri: art(paintingFor(place, zone)) }} resizeMode="cover" style={{ width: "100%", height: "100%", opacity: 0.5 }} />
       <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(27, 23, 18, 0.45)" }} />
     </View>
   );

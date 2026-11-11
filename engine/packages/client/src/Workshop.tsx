@@ -29,7 +29,7 @@ import { Admin } from "./Admin";
 import { BottomBar, SideNav, SkillStrip, type Place, type PlaceBadge } from "./SideNav";
 import { Shop, takeCheckoutReturn } from "./Shop";
 import { SkillView } from "./SkillView";
-import { ItemIcon, Scene } from "./Sprite";
+import { ItemIcon, Scene, zoneOf } from "./Sprite";
 import { Stores } from "./Stores";
 import { Story } from "./Story";
 import { colors, ui } from "./theme";
@@ -541,7 +541,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
 
   return (
     <View style={{ flex: 1 }}>
-      <Backdrop place={place} />
+      <Backdrop place={place} zone={head?.actionId.startsWith("monster.") ? zoneOf(head.actionId) : undefined} />
       <ScaldVignette scald={tinker.story.needles["needle.scald"] ?? 0} />
       <ActionBar
         content={content}

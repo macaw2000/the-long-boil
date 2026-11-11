@@ -101,7 +101,7 @@ def fit_icon(cell: Image.Image, size: int = ICON, margin: float = 0.06) -> Image
     return canvas
 
 
-def fit_frames(frames: list[Image.Image], size: int, margin: float = 0.05, flip: bool = False) -> list[Image.Image]:
+def fit_frames(frames: list[Image.Image], size: int, margin: float = 0.05, flip: bool = False, shrink: float = 1.0) -> list[Image.Image]:
     """
     A character's frames at one scale, centred across and standing on one
     ground line, so the animation does not jump. The scale is set by the
@@ -112,7 +112,7 @@ def fit_frames(frames: list[Image.Image], size: int, margin: float = 0.05, flip:
     widest = max(art.width for art in arts)
     tallest = max(art.height for art in arts)
     room = size * (1 - 2 * margin)
-    scale = min(room / widest, room / tallest)
+    scale = min(room / widest, room / tallest) * shrink
     out = []
     for art in arts:
         if flip:
@@ -304,10 +304,37 @@ GEAR = {
                            "silk_favour", "quilted_pincushion", "silk_tape_measure", "garnet_rosette",
                            "brass_needle_case", "iron_needle_case", "steel_needle_case", "clockwork_needle_case",
                            "umbrella_silk", "quilted_silk", None, None]),
+    # The Cinderworks' gear and tools (art request 17).
+    "cinderworks-k.jpeg": (4, 4, ["bronze_fire_rake", "firebox_poker", "plate_sledge", "tapping_bar",
+                                  "bronze_blunderbuss", "steam_rifle", "gauged_steam_rifle", "injector_rifle",
+                                  "bronze_arc_rod", "induction_coil", "leyden_rod", "tuyere_lance",
+                                  "bellows_plate", "bronze_cuirass", "nickel_steel_cuirass", "boiler_plate_cuirass"]),
+    "cinderworks-l.jpeg": (4, 4, ["bronze_damper_shield", "felt_splash_guard", "nickel_steel_targe", "studded_splash_guard",
+                                  "boiler_plate_shield", "glass_eyed_fire_screen", "manganese_tower_shield", "quilted_casting_mat",
+                                  "bronze_gauntlets", "slag_wool_mittens", "nickel_steel_gauntlets", "studded_felt_gloves",
+                                  "boiler_plate_gauntlets", "tuyere_cuffed_gloves", "manganese_gauntlets", "casters_mitts"]),
+    "cinderworks-m.jpeg": (4, 4, ["bronze_sabatons", "felt_overshoes", "nickel_steel_sabatons", "studded_felt_boots",
+                                  "boiler_plate_sabatons", "tuyere_toed_boots", "clinker_shod_sabatons", "opal_buckled_boots",
+                                  "slag_felt_favour", "bronze_square", "beaded_felt_armband", "valve_key_ring",
+                                  "smoked_loupe", "manganese_plumb_bob", "tuyere_rosette", "pyrometer_fob"]),
+    "cinderworks-n.jpeg": (4, 4, ["casters_apron", "tuyere_collared_coat", "clinker_barred_cuirass", "bronze_kettle_hat",
+                                  "slag_felt_hood", "nickel_steel_sallet", "manganese_helm", "clinker_helm",
+                                  "bronze_pick", "nickel_steel_pick", "manganese_pick", "opal_tipped_pick",
+                                  "bronze_tongs", "nickel_steel_tongs", "manganese_tongs", "crucible_tongs"]),
+    "cinderworks-o.jpeg": (4, 3, ["bronze_salvage_hook", "nickel_steel_salvage_hook", "manganese_salvage_hook", "clinker_hook",
+                                  "bronze_driver_roll", "nickel_steel_driver_roll", "manganese_driver_roll", "instrument_makers_roll",
+                                  "bronze_needle_case", "nickel_steel_needle_case", "manganese_needle_case", "cast_iron_needle_case"]),
 }
+# Cells Gemini painted a name under: the share of the cell's foot cut away with it. Sheet K named its four cuirasses.
+LABELLED = {"cinderworks-k.jpeg": ({12, 13, 14, 15}, 0.2)}
+# Art request 16: the interface icons that were still a "#", a "♪" and nothing.
+SHEET_UI = ["leaderboards", "sound_on", "sound_off", "haze"]
 LEDGER_PAGES = ["ledger_page_1", "ledger_page_drop_1", "ledger_page_drop_2", "ledger_page_drop_3", "ledger_page_drop_4"]
 
 RATS = ["rust_rat_runt", "rust_rat_scrounger", "rust_rat_tinplate", "rust_rat_gaffer"]
+# The Soot Wraiths (art request 17), one a row. The Wisp is drawn small beside the rest, so its frames are shrunk
+# to a share of the slot, standing on the same ground line.
+WRAITHS = {"soot_wraith_wisp": 0.5, "soot_wraith_drifter": 1.0, "soot_wraith_billow": 1.0, "soot_wraith_overman": 1.0}
 FRAMES = ["idle0", "idle1", "attack0", "attack1", "dead"]
 
 # The Tinker sheet, two frames a pose: the client's pose names. Redrawn on 27 October in the
@@ -329,7 +356,7 @@ COG_SHOP_UI = ["cogs", "shop", "boost"]
 
 VIGNETTES = ["sprocket_row", "rustmoor", "lowvents", "polytechnic", "brass_exchange", "infirmary"]
 
-BACKGROUNDS = ["workshop", "rustmoor", "sprocket_row", "brass_exchange", "guildhall"]
+BACKGROUNDS = ["workshop", "rustmoor", "sprocket_row", "brass_exchange", "guildhall", "cinderworks"]
 
 
 def sheet(name: str) -> Image.Image:
@@ -359,9 +386,12 @@ def main() -> None:
     save(fit_icon(redrawn.crop(content_box(redrawn))), "skill_tailoring")
 
     for file, (cols, rows, items) in GEAR.items():
-        for item, cell in zip(items, cells(without_gridlines(keyed(sheet(file))), cols, rows)):
+        labelled, foot = LABELLED.get(file, (set(), 0))
+        for index, (item, cell) in enumerate(zip(items, cells(without_gridlines(keyed(sheet(file))), cols, rows))):
             if item is None:
                 continue
+            if index in labelled:
+                cell = cell.crop((0, 0, cell.width, round(cell.height * (1 - foot))))
             save(fit_icon(cell), f"icon_{item}")
             written += 1
 
@@ -389,6 +419,18 @@ def main() -> None:
     scrapjaw = [keyed(cell) for cell in cells(sheet("scrapjaw.jpeg"), 3, 2, inset=0.01)][:5]
     for frame_name, frame in zip(FRAMES, fit_frames(scrapjaw, BOSS, flip=True)):
         save(frame, f"scrapjaw_{frame_name}")
+        written += 1
+    # The wraiths lunge right, like the rats, and stand on the right facing the Tinker, so they are turned round.
+    wraith_cells = cells(without_gridlines(keyed(sheet("soot-wraiths.jpeg"))), 5, 4, inset=0.01)
+    for row, (variant, shrink) in enumerate(WRAITHS.items()):
+        for frame_name, frame in zip(FRAMES, fit_frames(wraith_cells[row * 5:row * 5 + 5], CHARACTER, flip=True, shrink=shrink)):
+            save(frame, f"{variant}_{frame_name}")
+            written += 1
+    # Old Bellows faces left, as asked, in its first three frames; its last two were drawn facing right.
+    bellows = cells(without_gridlines(keyed(sheet("old-bellows.jpeg"))), 3, 2, inset=0.01)[:5]
+    bellows[3:] = [frame.transpose(Image.FLIP_LEFT_RIGHT) for frame in bellows[3:]]
+    for frame_name, frame in zip(FRAMES, fit_frames(bellows, BOSS)):
+        save(frame, f"old_bellows_{frame_name}")
         written += 1
 
     # Gemini's thin gridlines run into the cells and the feet reach the cells' edges, so the
@@ -431,6 +473,10 @@ def main() -> None:
         save(icon, f"ui_{name}")
         written += 1
 
+    for name, cell in zip(SHEET_UI, cells(without_gridlines(keyed(sheet("leaderboards.jpeg"))), 2, 2, inset=0.01)):
+        save(fit_icon(cell), f"ui_{name}")
+        written += 1
+
     # Each vignette is a framed picture with its place's name painted below; keep the picture, square.
     for place, cell in zip(VIGNETTES, cells(sheet("story-vignettes.jpeg"), 3, 2, inset=0.02)):
         picture = cell.crop((0, 0, cell.width, round(cell.height * 0.86)))
@@ -446,7 +492,7 @@ def main() -> None:
         painting = sheet(f"{place}-bg.jpeg")
         painting.save(PAINTINGS / f"{place}.jpg", quality=82, optimize=True, progressive=True)
         written += 1
-        if place in ("workshop", "rustmoor"):
+        if place in ("workshop", "rustmoor", "cinderworks"):
             # The scene is 2.5 wide to 1 high; take the band where the floor is.
             width = painting.width
             height = round(width / 2.5)
