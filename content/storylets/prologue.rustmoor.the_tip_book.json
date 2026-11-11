@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "prologue.rustmoor.the_tip_book",
   "act": 0,
   "location": "rustmoor",
@@ -15,6 +16,7 @@
       "label": "Give Professor Brassbuckle as your next of kin.",
       "success": {
         "text": "The tip-keeper writes it down without comment, and leaves a space under it for the ruler, which is somehow worse than comment. Word of it reaches the Polytechnic ahead of you. Brassbuckle does not mention it, but a parcel from the Polytechnic comes with a note in her hand, \"Come back in one piece,\" underlined twice, and an extra Ration.",
+        "note": "Everyone going onto the Rustmoor heaps signs the tip book at the gate, and signs out coming back. A name never signed out is someone who did not come back.",
         "changes": {
           "item.rustmoor.rustmoor_ration": "+1",
           "prologue.progress": 50
@@ -25,6 +27,7 @@
       "label": "Write \"No. 9 Sprocket Row\" for your next of kin.",
       "success": {
         "text": "\"A workshop,\" says the tip-keeper. \"Can't say I've had that one.\" He writes it in anyway, in capitals. \"If you're the fifth,\" he says, \"we'll send your spanner home.\" He means it kindly, and to show it he gives you a Ration from inside the second coat.",
+        "note": "Everyone going onto the Rustmoor heaps signs the tip book at the gate, and signs out coming back. A name never signed out is someone who did not come back.",
         "changes": {
           "item.rustmoor.rustmoor_ration": "+1",
           "prologue.progress": 50

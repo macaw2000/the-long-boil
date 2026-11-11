@@ -282,7 +282,7 @@ export interface LoadoutWeapon extends Weapon {
 
 export interface StoryOutcome extends Outcome {
   view: StoryView;
-  played: { scene: string; success: boolean; text: string; odds: number | null; roll: number | null } | null;
+  played: { scene: string; success: boolean; text: string; note: string | null; odds: number | null; roll: number | null } | null;
 }
 
 export interface MarketView {
@@ -438,6 +438,12 @@ export interface LedgerPage {
   text: string | null;
 }
 
+/** The Commonplace Book (server commonplace.ts): each note found, oldest first, and only the pages held. */
+export interface CommonplaceBook {
+  notes: { scene: string; sender: string | null; note: string; at: number }[];
+  pages: LedgerPage[];
+}
+
 /** A browser cannot give a WebSocket headers, so the sign-in token rides in the query. */
 export async function liveUrl(tinkerId: number): Promise<string> {
   const token = await bearerToken();
@@ -524,6 +530,7 @@ export const api = {
     removeMessage: (message: number) => request<{ channel: string }>("DELETE", `/admin/chat/${message}`),
   },
   pages: (id: number) => request<{ pages: LedgerPage[] }>("GET", `/tinkers/${id}/pages`),
+  commonplace: (id: number) => request<CommonplaceBook>("GET", `/tinkers/${id}/commonplace`),
   listTinkers: (login: string) =>
     request<{ tinkers: { id: number; name: string }[] }>("GET", `/accounts/${encodeURIComponent(login)}/tinkers`),
   createTinker: (login: string, name: string) => request<Outcome>("POST", "/tinkers", { login, name }),

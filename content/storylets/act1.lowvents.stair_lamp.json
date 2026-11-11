@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "act1.lowvents.stair_lamp",
   "act": 1,
   "location": "lowvents",
@@ -14,6 +15,7 @@
       "challenge": { "quality": "tinkering", "difficulty": 8 },
       "success": {
         "text": "The jet is furred with soot as thick as felt. You clear it with a hairpin borrowed from the dark, and the lamp catches with a soft cough and a circle of yellow light. The door on the landing opens a crack, and a hand sets a folded ribbon on the rail beside you, one of the last Ballast Day's. Every drawer on the stair has one, kept forty-one years by somebody who did not attend.",
+        "note": "The last Ballast Day was forty-one years ago, and was marked with commemorative ribbons. Every household on the Lowvents stair still keeps one.",
         "changes": { "needle.scald": "-1", "item.rustmoor.ballast_day_ribbon": "+1" }
       },
       "failure": {

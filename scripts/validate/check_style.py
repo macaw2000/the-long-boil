@@ -2,10 +2,11 @@
 
 For every storylet and letter:
 
-- the description is at most 120 words, each option label at most 25, and
-  each outcome's text at most 150 (docs/canon/style.md, Limits; a word is a
-  whitespace-separated run, the same count as the schema keyword maxWords);
-- no description, label or outcome text contains a banned word or phrase.
+- the description is at most 120 words, each option label at most 25,
+  each outcome's text at most 150 and its Commonplace Book note, if any, at
+  most 30 (docs/canon/style.md, Limits; a word is a whitespace-separated run,
+  the same count as the schema keyword maxWords);
+- no description, label, outcome text or note contains a banned word or phrase.
   The banned list is every double-quoted string in the "## Banned" section
   of docs/canon/style.md, read at run time so the list cannot drift from
   canon, plus "the player" (style.md, Voice: "You", never "the player").
@@ -54,6 +55,7 @@ CHECK = "style"
 DESCRIPTION_MAX_WORDS = 120
 LABEL_MAX_WORDS = 25
 OUTCOME_MAX_WORDS = 150
+NOTE_MAX_WORDS = 30
 
 # Work order 021, part 1: "a word limit of 40 for a line and 4 for a button".
 GUIDE_LINE_MAX_WORDS = 40
@@ -116,6 +118,9 @@ def _fields(data):
             if isinstance(outcome.get("text"), str):
                 out.append(("/options/%d/%s/text" % (index, key), outcome["text"],
                             OUTCOME_MAX_WORDS))
+            if isinstance(outcome.get("note"), str):
+                out.append(("/options/%d/%s/note" % (index, key), outcome["note"],
+                            NOTE_MAX_WORDS))
     return out
 
 

@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "act1.brass_exchange.rooks_question",
   "act": 1,
   "location": "brass_exchange",
@@ -12,6 +13,7 @@
       "label": "Tell her the truth: you took a reading, and it disagreed with the Gazette by 40 fathoms.",
       "success": {
         "text": "Rook writes it down without comment, then reads it back to you, and it sounds worse in her voice. She asks to borrow Mother Ash's pocket gauge, as evidence. It will be returned, she says, in due course, which at Gaugehill is a unit of time. You hand it over. Somebody in the Lowvents will hear about that by supper.",
+        "note": "Inspector Rook is the Gaugers' most honest officer. The Gaugers keep order from Gaugehill; the Board of Gauges, under Lord Gauntlett, decides how high the city flies.",
         "changes": {
           "favour.gaugers": "+1",
           "favour.stokers": "-1",
@@ -24,6 +26,7 @@
       "label": "Tell her you were mending a vent for Mother Ash, and nothing more.",
       "success": {
         "text": "\"A vent,\" says Rook. \"Of course.\" She writes that down too, in the same neat hand, and underlines nothing. Then she thanks you for your time, touches her hat, and walks away in the direction of somewhere you were planning to go next.",
+        "note": "Inspector Rook is the Gaugers' most honest officer. The Gaugers keep order from Gaugehill; the Board of Gauges, under Lord Gauntlett, decides how high the city flies.",
         "changes": {
           "needle.notice": "+2",
           "flag.rook_evaded": 1,
@@ -35,6 +38,7 @@
       "label": "Excuse yourself into the crowd on the trading floor and leave by the coal door.",
       "success": {
         "text": "The trading floor swallows you gladly, and the coal door lets you out into an alley at the cost of one shin, barked hard on the chute. You limp home the long way round. Rook does not follow. She does not, you suspect, need to.",
+        "note": "Inspector Rook is the Gaugers' most honest officer. The Gaugers keep order from Gaugehill; the Board of Gauges, under Lord Gauntlett, decides how high the city flies.",
         "changes": {
           "needle.notice": "+1",
           "needle.scald": "+1",

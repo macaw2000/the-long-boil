@@ -122,6 +122,8 @@ export type Changes = Record<string, string | number>;
 export interface Outcome {
   text: string;
   changes: Changes;
+  /** A lore fact, written into the Commonplace Book when this outcome is played (GDD section 5). */
+  note?: string;
 }
 
 export interface StoryOption {

@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "prologue.polytechnic.the_lift_lecture",
   "act": 0,
   "location": "polytechnic",
@@ -15,6 +16,7 @@
       "label": "Take careful notes, and ask a good question about how the great gauges are read.",
       "success": {
         "text": "It is a very good question, and Brassbuckle answers it for twenty minutes, with diagrams, in a way that makes the whole room late for dinner. Afterwards she lends you her own notes on the great gauges. They are in three colours of ink and better than any book in the library.",
+        "note": "The Board of Gauges reads the city's great pressure gauges every morning and says how high Kettleport will fly. The boiling sea below the city is called the Scald.",
         "changes": {
           "favour.polytechnic": "+1",
           "prologue.progress": 70
@@ -25,6 +27,7 @@
       "label": "Ask how far the Scald has climbed since the town first rose.",
       "success": {
         "text": "The lecture hall goes quiet, the way a room does when someone says a thing out loud that everyone has thought. \"Further than it did,\" says Brassbuckle, \"and never as far as the city can climb. That is the whole of engineering, and the whole of this course.\" Several students look at you on the way out. One of them nods.",
+        "note": "The Board of Gauges reads the city's great pressure gauges every morning and says how high Kettleport will fly. The boiling sea below the city is called the Scald.",
         "changes": {
           "prologue.progress": 70
         }

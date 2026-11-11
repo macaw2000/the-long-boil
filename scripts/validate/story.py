@@ -74,7 +74,8 @@ def outcomes(option):
 
 def prose_fields(data):
     """(pointer, text) for each prose field the player reads: the
-    description, each option label and each outcome text, leniently: a
+    description, each option label, each outcome text and each outcome's
+    Commonplace Book note, leniently: a
     field that is missing or not a string is skipped (the schema check's to
     report)."""
     out = []
@@ -86,6 +87,8 @@ def prose_fields(data):
         for key, outcome in outcomes(option):
             if isinstance(outcome.get("text"), str):
                 out.append(("/options/%d/%s/text" % (index, key), outcome["text"]))
+            if isinstance(outcome.get("note"), str):
+                out.append(("/options/%d/%s/note" % (index, key), outcome["note"]))
     return out
 
 

@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "act1.lowvents.who_feeds_it",
   "act": 1,
   "location": "lowvents",
@@ -35,6 +36,7 @@
       "label": "Take the slate to Silas Tallow and ask what the House pays a Stoker.",
       "success": {
         "text": "\"Two Crowns a shift, less the House's commission,\" says Silas Tallow, \"which is a very fair rate for work nobody else will do.\" He tells you the price of coal, of bread and of a Lowvents lease, all without being asked. By the time he finishes, you have worked out that a Stoker's week buys a Stoker's week, and not an hour more. He sees you do the sum, and smiles.",
+        "note": "The Counting-House pays a Stoker two Crowns a shift, less the House's commission.",
         "changes": {
           "favour.counting_house": "+1",
           "ambition.ember": 5
@@ -48,6 +50,7 @@
       },
       "success": {
         "text": "\"Believed them?\" Mother Ash takes the slate back. \"We read the Gazette to see what the Board wants us to think. Then we look out of the window.\" She shows you the bottom rim, where every family has a mark scratched in the brick, a hand's width apart, each a year newer than the last. Nobody in the Lowvents needed Hester to tell them. They needed someone to write it down where Gaugehill would see.",
+        "note": "Every Lowvents family scratches a mark in the bottom rim's brick each year, a hand's width apart: the Lowvents' own record, kept against the Gazette's figures.",
         "changes": {
           "favour.stokers": "+1",
           "ambition.ember": 5

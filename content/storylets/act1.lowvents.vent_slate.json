@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "act1.lowvents.vent_slate",
   "act": 1,
   "location": "lowvents",
@@ -14,10 +15,12 @@
       "challenge": { "quality": "smithing", "difficulty": 14 },
       "success": {
         "text": "It has been there longest because it is in a cupboard under a stair, behind a family's coal. You patch it on your knees by lamplight and come out with soot to the elbow. Mother Ash rubs the top line off the slate with her thumb and does not look at you while she does it, which is how you know.",
+        "note": "Mother Ash's slate, by the Fellowship hall door, lists every hissing vent in the Lowvents in the order it began. A mended vent is rubbed out.",
         "changes": { "favour.stokers": "+1" }
       },
       "failure": {
         "text": "The seam has rotted further than the slate let on, and the patch tears out with the first rivet, taking a jet of steam across your forearm. The family whose cupboard it is fetch a bowl of cold water without being asked. They have done it before. The vent stays on the slate, at the top.",
+        "note": "Mother Ash's slate, by the Fellowship hall door, lists every hissing vent in the Lowvents in the order it began. A mended vent is rubbed out.",
         "changes": { "needle.scald": "+2" }
       }
     },
@@ -26,6 +29,7 @@
       "requires": { "item.rustmoor.brass_ingot": ">=20" },
       "success": {
         "text": "The Stoker counting rivets stops counting, counts your ingots instead, and writes a figure on the back of the slate where Mother Ash will see it. Nobody says thank you. Nobody in the Lowvents ever does. Next time you come down the stair, a Stoker you do not know stands aside for you on the landing.",
+        "note": "Mother Ash's slate, by the Fellowship hall door, lists every hissing vent in the Lowvents in the order it began. A mended vent is rubbed out.",
         "changes": { "item.rustmoor.brass_ingot": "-20", "favour.stokers": "+1" }
       }
     }

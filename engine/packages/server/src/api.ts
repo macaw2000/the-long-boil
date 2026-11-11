@@ -49,6 +49,7 @@ import {
 import { inspect } from "./inspect.js";
 import { leaderboard } from "./leaderboards.js";
 import { readLedgerPages } from "./pages.js";
+import { readCommonplace } from "./commonplace.js";
 import { BadSignature, MAX_CRATES, type Payments } from "./payments.js";
 import { buyUpgrade, grantCrates, openCrates, readShop, rememberStripeCustomer, revokeCrates, stripeCustomerOf } from "./shop.js";
 import { devSetStory, discardLetter, payDebt, playStory, readStory } from "./story.js";
@@ -525,6 +526,9 @@ export function buildApi({
 
   // Hester's Ledger: the pages this Tinker holds can be read; the rest are only counted.
   app.get<{ Params: { id: string } }>("/tinkers/:id/pages", async (request) => readLedgerPages(db, content, Number(request.params.id)));
+
+  // The Commonplace Book (GDD section 5): the lore this Tinker has uncovered and the pages it holds, to read again.
+  app.get<{ Params: { id: string } }>("/tinkers/:id/commonplace", async (request) => readCommonplace(db, content, Number(request.params.id)));
 
   // Inspecting another Tinker: guild, skills and gear, open to every player.
   app.get<{ Params: { id: string; other: string } }>("/tinkers/:id/inspect/:other", async (request) => inspect(db, content, Number(request.params.other)));

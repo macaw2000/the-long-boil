@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "prologue.sprocket_row.brass_plate",
   "act": 0,
   "location": "sprocket_row",
@@ -15,6 +16,7 @@
       "label": "Hold up the plate and ask Brassbuckle why Hester kept it.",
       "success": {
         "text": "Brassbuckle looks at the plate for exactly as long as it takes to decide not to. Then she asks whether you have oiled the Boiler's feed pump, whether the rats have been at the Rations, and whether you have eaten. By the time you have answered all three, the plate is back on the bench and the conversation is somewhere near the price of copper.",
+        "note": "A brass plate from Hester Vane's workbench bears a scratched gauge reading. It does not match the Board's Gauge Reading, printed each morning in the Brass Gazette.",
         "changes": {
           "flag.asked_brassbuckle_plate": 1,
           "prologue.progress": 100
@@ -25,6 +27,7 @@
       "label": "Slip the plate into your waistcoat pocket and say nothing.",
       "success": {
         "text": "The plate goes into your pocket and sits there, heavier than a playing card has any right to be. Brassbuckle's shoulders come down an inch. She hands you a No. 4 spanner and points at the Boiler's feed pump, and neither of you mentions the Gazette.",
+        "note": "A brass plate from Hester Vane's workbench bears a scratched gauge reading. It does not match the Board's Gauge Reading, printed each morning in the Brass Gazette.",
         "changes": {
           "flag.kept_brass_plate": 1,
           "prologue.progress": 100

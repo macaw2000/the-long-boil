@@ -19,6 +19,7 @@ Kettleport is grim and funny in the same breath.
 | Storylet description | 120 words |
 | Each option label | 25 words |
 | Each outcome | 150 words |
+| Each Commonplace Book note | 30 words |
 | Item flavour text | 1 sentence (longer belongs to the scrivener, not the draftsman) |
 
 ## Banned

@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "act1.rustmoor.rat_nests",
   "act": 1,
   "location": "rustmoor",
@@ -20,6 +21,7 @@
       },
       "success": {
         "text": "Under the mangle, folded into the nest's floor like insulation, you find gauge charts: long ruled sheets of fathoms, torn across so that no column survives whole. You work them free one by one and are over the fence with an armful before the first squeak comes back down the gantry.",
+        "note": "Everything thrown off Gaugehill lands in Rustmoor sooner or later, Board paperwork included.",
         "changes": {
           "act1.progress": 20
         }
@@ -35,6 +37,7 @@
       "label": "Smoke the nest out with an oily rag first, and search it at leisure.",
       "success": {
         "text": "The rag catches better than you meant it to. When the smoke clears you have no eyebrows to speak of and the nest to yourself. Folded into its floor are gauge charts, ruled sheets of fathoms torn across and scorched at the corners, no column whole. You take every scrap.",
+        "note": "Everything thrown off Gaugehill lands in Rustmoor sooner or later, Board paperwork included.",
         "changes": {
           "needle.scald": "+1",
           "act1.progress": 20

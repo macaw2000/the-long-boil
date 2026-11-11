@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "act1.rustmoor.tipping_hour",
   "act": 1,
   "location": "rustmoor",
@@ -20,6 +21,7 @@
       },
       "success": {
         "text": "You reach the ash sacks while the heap is still deciding which way is down. Gaugehill burns its coal half through and throws the rest away, so the sacks hold clinker, cinders and, for anyone quick, whole lumps nobody upstairs could be bothered to poke. You are quick. You come down black to the elbows with three good lumps in your pockets, and the heap settles behind you as if it had not noticed.",
+        "note": "Gaugehill burns its coal half through and throws the rest away. The carts tip it onto Rustmoor at dusk.",
         "changes": {
           "item.rustmoor.coal": "+3"
         }

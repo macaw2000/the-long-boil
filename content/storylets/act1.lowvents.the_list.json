@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "act1.lowvents.the_list",
   "act": 1,
   "location": "lowvents",
@@ -12,6 +13,7 @@
       "label": "Ask Pip how a list that does not exist gets written.",
       "success": {
         "text": "\"In pencil,\" says Pip. It is the only joke you hear in the Lowvents all evening, and neither of you laughs at it. Pip will not say who holds the pencil, or what it writes after the names.",
+        "note": "On a Ballast Day the Board empties a district and drops it into the Scald so the rest of the city can rise. In the Lowvents, \"review\" means Ballast.",
         "changes": { "act1.progress": 10 }
       }
     },
@@ -19,6 +21,7 @@
       "label": "Say nothing, and stand with Pip until the lamps on the stair go down.",
       "success": {
         "text": "You stand. Pip stands. The lamps go down one landing at a time, from the top, like a city closing its eyes. When the last one is out Pip says, \"Mind the third step,\" and goes in. It is, you gather, a kind of thank-you.",
+        "note": "On a Ballast Day the Board empties a district and drops it into the Scald so the rest of the city can rise. In the Lowvents, \"review\" means Ballast.",
         "changes": { "act1.progress": 10 }
       }
     }

@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "act1.infirmary.ward_book",
   "act": 1,
   "location": "infirmary",
@@ -12,6 +13,7 @@
       "label": "Sign the ward book on account, and take whatever bed is going.",
       "success": {
         "text": "The bed that is going stands beside a radiator that bangs all night and never once gets warm. You sleep anyway, the flat black sleep of the scalded, under a blanket stencilled ST. P. In the morning the sister shows you your line in the ward book. There is a figure at the end of it, and the figure has already been carried forward.",
+        "note": "The Infirmary of St. Pinion mends anyone, but not for nothing. Its beds are reckoned by the night.",
         "changes": { "needle.arrears": "+2", "flag.in_st_pinion": 1 }
       }
     },
@@ -20,6 +22,7 @@
       "requires": { "item.rustmoor.rustmoor_ration": ">=20" },
       "success": {
         "text": "The ward kitchen takes your Rations without counting them, which at St. Pinion's is a compliment. That night you eat one of them back, warmed, off a tin plate, in a bed with clean sheets and a view of a wall. Nobody enters anything against your name. The sister, passing, tells you to keep still. You keep still.",
+        "note": "The Infirmary of St. Pinion mends anyone, but not for nothing. Its beds are reckoned by the night.",
         "changes": { "item.rustmoor.rustmoor_ration": "-20", "flag.in_st_pinion": 1 }
       }
     }

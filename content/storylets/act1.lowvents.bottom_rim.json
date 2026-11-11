@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "act1.lowvents.bottom_rim",
   "act": 1,
   "location": "lowvents",
@@ -19,6 +20,7 @@
       },
       "success": {
         "text": "The patch goes on flat and the rivets close clean, and the vent stops hissing for the first time in a week. Mother Ash nods once, which in the Lowvents is a medal. Then, leaning over the rim with her pocket gauge, you take the Scald's reading for yourself. It disagrees with the Gazette by 40 fathoms.",
+        "note": "A reading of the Scald taken from the Lowvents' bottom rim with a Stokers' pocket gauge disagrees with the Gazette's figure by 40 fathoms.",
         "changes": {
           "favour.stokers": "+1",
           "act1.progress": 30,
@@ -27,6 +29,7 @@
       },
       "failure": {
         "text": "The seam opens wider the moment you put a rivet to it, and the vent empties a week's worth of steam straight into your sleeve. Mother Ash has the sheet off you and the vent shut before you have finished swearing. Afterwards, nursing your arm at the rim, you take the Scald's reading with her pocket gauge. It disagrees with the Gazette by 40 fathoms.",
+        "note": "A reading of the Scald taken from the Lowvents' bottom rim with a Stokers' pocket gauge disagrees with the Gazette's figure by 40 fathoms.",
         "changes": {
           "needle.scald": "+2",
           "act1.progress": 30,
@@ -38,6 +41,7 @@
       "label": "Take your reading from the rim and leave the vent to someone with thicker gloves.",
       "success": {
         "text": "Mother Ash watches you pass the vent without a word, which says plenty. At the rim you hold her pocket gauge out over the Scald and wait for the needle to settle. It settles 40 fathoms away from the Gazette's figure, and stays there no matter how hard you look at it.",
+        "note": "A reading of the Scald taken from the Lowvents' bottom rim with a Stokers' pocket gauge disagrees with the Gazette's figure by 40 fathoms.",
         "changes": {
           "act1.progress": 30,
           "flag.own_reading": 1

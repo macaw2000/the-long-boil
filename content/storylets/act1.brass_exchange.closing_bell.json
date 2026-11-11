@@ -1,5 +1,6 @@
 {
   "schema": "storylet/1",
+  "revision": 2,
   "id": "act1.brass_exchange.closing_bell",
   "act": 1,
   "location": "brass_exchange",
@@ -22,12 +23,14 @@
       },
       "success": {
         "text": "You run the floor the way the old runners do, along the backs of the brokers' benches where nobody stands, and reach the vault grille with the bell still ringing. The vault clerk counts your bundle and enters two lines against your name in red ink, which at the Counting-House is the colour of good news.",
+        "note": "The Counting-House does not pay its runners in Crowns. It sets their running against whatever they owe it.",
         "changes": {
           "needle.arrears": "-2"
         }
       },
       "failure": {
         "text": "A broker steps back from his bench to make a point with his whole arm, and you and the slips part company in a white burst over the floor. You gather them on your knees while the bell finishes. The vault clerk takes them late, enters them late, and enters you as well: one line, in black ink, for lateness.",
+        "note": "The Counting-House does not pay its runners in Crowns. It sets their running against whatever they owe it.",
         "changes": {
           "needle.arrears": "+1"
         }
@@ -40,6 +43,7 @@
       },
       "success": {
         "text": "The floor after close is a field of torn slips, orange peel and the odd broker's glove. You sweep it in long rows under the price board while the flaps clatter down one by one, and by the last row your back has set like a hinge and the brass dust off the floor is in your eyes and the back of your throat. The chief clerk inspects your work, finds a slip under a bench, holds it up without comment, and enters one line against your name all the same.",
+        "note": "The Counting-House does not pay its runners in Crowns. It sets their running against whatever they owe it.",
         "changes": {
           "needle.arrears": "-1",
           "needle.scald": "+1"

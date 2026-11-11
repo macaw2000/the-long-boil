@@ -7,6 +7,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { api, type LedgerPage, type Outcome, type SceneView, type StoryOutcome, type StoryView } from "./api";
+import { Commonplace, PageText } from "./Commonplace";
 import { titleCase } from "./format";
 import { Glow } from "./Glow";
 import { OddsDial } from "./Juice";
@@ -65,6 +66,9 @@ export function Story({
   const [played, setPlayed] = useState<StoryOutcome["played"]>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // The Commonplace Book, read in place of the tab until closed; it is offered once a note is in it.
+  const [reading, setReading] = useState(false);
+  const [noted, setNoted] = useState(false);
   // A stop reached while the tab is open, for the road to mark; opening the tab is no arrival.
   const passed = useRef<number | null>(null);
   const [arrived, setArrived] = useState<{ label: string | null; count: number }>({ label: null, count: 0 });
@@ -89,6 +93,10 @@ export function Story({
   }, [tinkerId, take]);
 
   useEffect(() => {
+    api.commonplace(tinkerId).then((book) => setNoted(book.notes.length > 0), () => undefined);
+  }, [tinkerId]);
+
+  useEffect(() => {
     refresh();
     const timer = setInterval(refresh, REFRESH_MS);
     return () => clearInterval(timer);
@@ -100,12 +108,14 @@ export function Story({
       .then((result) => {
         take(result);
         if (result.played) setPlayed(result.played);
+        if (result.played?.note) setNoted(true);
       })
       .catch((reason: Error) => setError(reason.message))
       .finally(() => setBusy(false));
   };
 
   if (!view) return <Text style={ui.muted}>{error ?? "Sorting the post…"}</Text>;
+  if (reading) return <Commonplace tinkerId={tinkerId} onClose={() => setReading(false)} />;
 
   // Beats waiting only on visits, of either count (record.visits_since_prologue opens Act I).
   // The road says what its own next scene waits on, so Coming up does not say it again.
@@ -140,6 +150,12 @@ export function Story({
             </View>
           )}
           <GlossedText text={played.text} style={[ui.text, { lineHeight: 21 }]} />
+          {played.note && (
+            <Pressable onPress={() => setReading(true)} accessibilityRole="button" style={{ marginTop: 8, gap: 2 }}>
+              <Text style={[ui.muted, { color: colors.brass }]}>Noted in your Commonplace Book</Text>
+              <Text style={[ui.text, { fontStyle: "italic" }]}>{played.note}</Text>
+            </Pressable>
+          )}
         </View>
       )}
 
@@ -225,6 +241,12 @@ export function Story({
       </Glow>
 
       {notebookFound && <HestersLedger pages={pages} />}
+
+      {noted && (
+        <Pressable onPress={() => setReading(true)} accessibilityRole="button" style={[ui.button, { alignSelf: "flex-start" }]}>
+          <Text style={ui.buttonText}>Read the Commonplace Book</Text>
+        </Pressable>
+      )}
 
       {(visitOnly.length > 0 || waiting.length > 0 || view.cooling.length > 0) && (
         <View style={ui.panel}>
@@ -366,26 +388,3 @@ function HestersLedger({ pages }: { pages: LedgerPage[] }) {
   );
 }
 
-/** A page's text in Hester's hand. A line with tabs in it is a ruled row: its cells line up in columns. */
-function PageText({ text }: { text: string }) {
-  const hand = [ui.text, { lineHeight: 21, fontStyle: "italic" as const }];
-  return (
-    <View>
-      {text.split("\n").map((line, i) =>
-        line.includes("\t") ? (
-          <View key={i} style={{ flexDirection: "row", maxWidth: 320 }}>
-            {line.split("\t").map((cell, j) => (
-              <Text key={j} style={[hand, { flex: 1, fontVariant: ["tabular-nums"] }]}>
-                {cell}
-              </Text>
-            ))}
-          </View>
-        ) : (
-          <Text key={i} style={hand}>
-            {line}
-          </Text>
-        ),
-      )}
-    </View>
-  );
-}
