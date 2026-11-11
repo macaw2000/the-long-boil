@@ -38,10 +38,15 @@ function detailText(board: string, row: LeaderboardRow): string | null {
   return `${Math.floor(row.detail).toLocaleString()} XP`;
 }
 
-function Row({ board, row }: { board: string; row: LeaderboardRow }) {
+function Row({ board, row, onInspect }: { board: string; row: LeaderboardRow; onInspect: (other: number) => void }) {
   const detail = detailText(board, row);
+  // A Tinker's row opens their inspect card; the guild board's rows are guilds.
   return (
-    <View style={{ flexDirection: "row", alignItems: "baseline", gap: 10, paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: colors.panelEdge }}>
+    <Pressable
+      onPress={board === "guilds" ? undefined : () => onInspect(row.id)}
+      accessibilityRole={board === "guilds" ? undefined : "button"}
+      style={{ flexDirection: "row", alignItems: "baseline", gap: 10, paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: colors.panelEdge }}
+    >
       <Text style={[ui.number, { width: 40, textAlign: "right" }]}>{row.rank}</Text>
       <Text numberOfLines={1} style={[ui.text, { flex: 1, fontWeight: "700", color: row.you ? colors.brass : colors.ink }]}>
         {row.name}
@@ -49,11 +54,11 @@ function Row({ board, row }: { board: string; row: LeaderboardRow }) {
       </Text>
       <Text style={ui.number}>{valueText(board, row)}</Text>
       {detail !== null && <Text style={[ui.muted, { fontSize: 12, width: 120, textAlign: "right" }]}>{detail}</Text>}
-    </View>
+    </Pressable>
   );
 }
 
-export function Leaderboards({ tinkerId }: { tinkerId: number }) {
+export function Leaderboards({ tinkerId, onInspect }: { tinkerId: number; onInspect: (other: number) => void }) {
   const [board, setBoard] = useState("total");
   const [view, setView] = useState<LeaderboardView | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -115,11 +120,11 @@ export function Leaderboards({ tinkerId }: { tinkerId: number }) {
           {shown && shown.rows.length === 0 && (
             <Text style={ui.muted}>{board === "guilds" ? "No guild has formed yet." : "Nobody has trained this yet."}</Text>
           )}
-          {shown?.rows.map((row) => <Row key={row.id} board={board} row={row} />)}
+          {shown?.rows.map((row) => <Row key={row.id} board={board} row={row} onInspect={onInspect} />)}
           {youBelow && (
             <>
               <Text style={[ui.muted, { textAlign: "center" }]}>…</Text>
-              <Row board={board} row={youBelow} />
+              <Row board={board} row={youBelow} onInspect={onInspect} />
             </>
           )}
         </View>

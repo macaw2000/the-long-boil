@@ -1,7 +1,8 @@
 // The Guild tab (build plan milestone 10; GDD section 7 lists Guild among the
 // phone tabs). Without a guild: invitations, the guilds to apply to, and a
-// name box to found one, free and at once. In one: the guild, the roster,
-// requests to answer, and the leader's controls.
+// name box to found one, free and at once. In one: the guild, its notice
+// board (pinned by the leader or an officer, for members who come by at
+// different times), the roster, requests to answer, and the leader's controls.
 
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
@@ -27,14 +28,17 @@ export function Guild({
   tinkerId,
   view,
   setView,
+  onInspect,
 }: {
   tinkerId: number;
   view: GuildView | null;
   setView: (view: GuildView) => void;
+  onInspect: (other: number) => void;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [rename, setRename] = useState("");
+  const [notice, setNotice] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<string | null>(null);
 
   if (!view) return <Text style={ui.muted}>Opening the guild hall…</Text>;
@@ -45,6 +49,7 @@ export function Guild({
         setView(next);
         setError(null);
         setName("");
+        setNotice(null);
         setConfirming(null);
       })
       .catch((reason: Error) => setError(reason.message));
@@ -67,13 +72,53 @@ export function Guild({
           {guild.members.length === 1 && <Text style={ui.muted}>Just you so far. Tap a name in chat to invite them in.</Text>}
         </View>
 
+        <View style={[ui.panel, { gap: 6 }]}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+            <Text style={ui.heading}>Notice board</Text>
+            {answers && notice === null && <SmallButton label={guild.notice ? "Edit" : "Pin a notice"} onPress={() => setNotice(guild.notice?.text ?? "")} />}
+          </View>
+          {notice !== null ? (
+            <View style={{ gap: 6 }}>
+              <TextInput
+                value={notice}
+                onChangeText={(text) => setNotice([...text].slice(0, view.rules.noticeMax).join(""))}
+                multiline
+                numberOfLines={4}
+                placeholder="Plans, a welcome, what the guild is after…"
+                placeholderTextColor={colors.muted}
+                accessibilityLabel="Guild notice"
+                style={[ui.input, { minHeight: 90, textAlignVertical: "top", fontFamily: undefined }]}
+              />
+              <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
+                <SmallButton label="Pin it" tone={colors.verdigris} onPress={() => act(api.setNotice(tinkerId, notice))} />
+                {guild.notice && <SmallButton label="Take it down" tone={colors.scald} onPress={() => act(api.setNotice(tinkerId, ""))} />}
+                <SmallButton label="Cancel" tone={colors.muted} onPress={() => setNotice(null)} />
+                <Text style={[ui.number, { fontSize: 11, color: colors.muted, marginLeft: "auto" }]}>{view.rules.noticeMax - [...notice].length} left</Text>
+              </View>
+            </View>
+          ) : guild.notice ? (
+            <>
+              <Text style={ui.text} selectable>
+                {guild.notice.text}
+              </Text>
+              <Text style={[ui.muted, { fontSize: 12 }]}>
+                {guild.notice.by}, {gameNow() - new Date(guild.notice.at).getTime() < 60_000 ? "just now" : `${duration(gameNow() - new Date(guild.notice.at).getTime())} ago`}
+              </Text>
+            </>
+          ) : (
+            <Text style={ui.muted}>{answers ? "Nothing pinned. Leave word for members who come by later." : "Nothing pinned yet."}</Text>
+          )}
+        </View>
+
         <View style={ui.panel}>
           <Text style={ui.heading}>Roster</Text>
           {guild.members.map((member) => {
             const self = member.tinkerId === tinkerId;
             return (
               <View key={member.tinkerId} style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap", paddingVertical: 4, borderBottomWidth: 1, borderBottomColor: colors.panelEdge }}>
-                <Text style={[ui.text, { fontWeight: "700", color: self ? colors.brass : colors.ink, minWidth: 110 }]}>{member.name}</Text>
+                <Pressable onPress={() => onInspect(member.tinkerId)} accessibilityRole="button" accessibilityLabel={`Inspect ${member.name}`} style={{ minWidth: 110 }}>
+                  <Text style={[ui.text, { fontWeight: "700", color: self ? colors.brass : colors.ink }]}>{member.name}</Text>
+                </Pressable>
                 <Text style={[ui.muted, { fontSize: 12, minWidth: 60, color: member.rank === "leader" ? colors.brass : colors.muted }]}>{RANKS[member.rank]}</Text>
                 <Text style={[ui.number, { fontSize: 12 }]}>Total {member.totalLevel}</Text>
                 <Text style={[ui.muted, { fontSize: 12 }]}>seen {duration(Math.max(0, gameNow() - new Date(member.lastSeen).getTime()))} ago</Text>

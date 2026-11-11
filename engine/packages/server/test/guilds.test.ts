@@ -92,6 +92,27 @@ describe("founding a guild", () => {
     expect(await purse(bram)).toBe(before - 10_000);
   });
 
+  it("pins a notice that every member reads, kept by the leader and officers", async () => {
+    const cog = (await call("GET", `/tinkers/${bram}/guild`)).body.guild.members.find((m: { name: string }) => m.name === "Cog").tinkerId;
+    expect((await call("PUT", `/tinkers/${cog}/guild/notice`, { text: "Hello" })).body.error).toMatch(/member cannot/);
+    expect((await call("PUT", `/tinkers/${bram}/guild/notice`, { text: "x".repeat(501) })).body.error).toMatch(/at most 500/);
+    await call("PUT", `/tinkers/${bram}/guild/notice`, { text: "  Smelting night on Friday. Bring coal.  " });
+    expect((await call("GET", `/tinkers/${cog}/guild`)).body.guild.notice).toMatchObject({ text: "Smelting night on Friday. Bring coal.", by: "Bram" });
+    await call("PUT", `/tinkers/${bram}/guild/members/${cog}/rank`, { rank: "officer" });
+    expect((await call("PUT", `/tinkers/${cog}/guild/notice`, { text: "" })).body.guild.notice).toBeNull();
+  });
+
+  it("lets anyone inspect a Tinker's guild, skills and gear, but not their purse", async () => {
+    const stranger = await tinker("g-look@example.com", "Look");
+    const seen = (await call("GET", `/tinkers/${stranger}/inspect/${bram}`)).body;
+    expect(seen).toMatchObject({ id: bram, name: "Bram", guild: { id: guildId, name: "Owls of the Iron", rank: "leader" }, weapon: null, worn: {} });
+    expect(seen.skills.length).toBeGreaterThan(0);
+    expect(seen.totalLevel).toBeGreaterThan(0);
+    expect(seen).not.toHaveProperty("crowns");
+    expect((await call("GET", `/tinkers/${stranger}/inspect/${ada}`)).body.guild).toBeNull();
+    expect((await call("GET", `/tinkers/${stranger}/inspect/999999`)).status).toBe(404);
+  });
+
   it("keeps guild chat to its members", async () => {
     const outsider = await tinker("g-out@example.com", "Out");
     expect((await call("POST", `/tinkers/${outsider}/chat`, { text: "Let me in", channel: "guild" })).status).toBe(400);

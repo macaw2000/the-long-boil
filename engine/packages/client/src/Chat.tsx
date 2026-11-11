@@ -183,6 +183,8 @@ export interface ChatProps {
   connected: boolean;
   /** Set when this Tinker may invite to its guild. */
   onInvite?: (other: number) => void;
+  /** Opens another Tinker's inspect card. */
+  onInspect?: (other: number) => void;
 }
 
 export function Chat({
@@ -192,6 +194,7 @@ export function Chat({
   guildName,
   connected,
   onInvite,
+  onInspect,
   docked,
 }: ChatProps & {
   /** Docked along the foot of the desktop screen, where it may be folded down to its tabs. */
@@ -205,6 +208,14 @@ export function Chat({
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const scroll = useRef<ScrollView>(null);
+
+  // A whisper opened from elsewhere (an inspect card) brings the Whispers tab forward, and opens a folded dock.
+  useEffect(() => {
+    if (whispers.open === null) return;
+    setWhich("whisper");
+    docked?.onFold(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [whispers.open]);
 
   // A guild room that has gone (left or disbanded) falls back to the city.
   useEffect(() => {
@@ -265,6 +276,8 @@ export function Chat({
   const choose = (channel: ChatChannel) => {
     setWhich(channel);
     setPicked(null);
+    // Leaving the Whispers tab closes the thread, so a whisper asked for from elsewhere always brings it back.
+    if (channel !== "whisper") whispers.close();
     if (folded) docked?.onFold(false);
   };
   const wire = <Text style={[ui.muted, { fontSize: 11, color: connected ? colors.verdigris : colors.scald }]}>{connected ? "● on the wire" : "○ reconnecting…"}</Text>;
@@ -352,6 +365,7 @@ export function Chat({
                 const mine = message.tinker.id === tinkerId;
                 const open = picked === message.id;
                 const actions = [
+                ...(onInspect ? [{ label: "inspect", tone: colors.ink, act: () => (setPicked(null), onInspect(message.tinker.id)) }] : []),
                   ...(which !== "whisper" ? [{ label: "whisper", tone: colors.brass, act: () => whisperTo(message.tinker.id, message.tinker.name) }] : []),
                   ...(onInvite && which !== "guild" && which !== "whisper" ? [{ label: "invite to guild", tone: colors.verdigris, act: () => (setPicked(null), onInvite(message.tinker.id)) }] : []),
                   { label: "mute", tone: colors.scald, act: () => (setPicked(null), mute(message.tinker.id, true)) },
@@ -363,7 +377,7 @@ export function Chat({
                       <Text
                         onPress={mine ? undefined : () => setPicked(open ? null : message.id)}
                         accessibilityRole={mine ? undefined : "button"}
-                        accessibilityLabel={mine ? undefined : `${message.tinker.name}: whisper, invite or mute`}
+                        accessibilityLabel={mine ? undefined : `${message.tinker.name}: inspect, whisper, invite or mute`}
                         style={{ color: mine ? colors.brass : colors.copper, fontWeight: "700" }}
                       >
                         {message.tinker.name}

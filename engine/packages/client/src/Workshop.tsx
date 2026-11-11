@@ -16,6 +16,7 @@ import { duration, namer, titleCase, tradeLine } from "./format";
 import { Glow } from "./Glow";
 import { actedMark, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, queuedMs, revealed, type GuideAction, type GuideState, type Target } from "./Guide";
 import { Guild } from "./Guild";
+import { Inspect } from "./Inspect";
 import { skillOpen } from "@long-boil/rules";
 import { jobTitle, skillOf, startFirst } from "./jobs";
 import { CanisterDrop, Floaters, ScaldVignette, useFloaters } from "./Juice";
@@ -252,6 +253,28 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
             .catch((reason: Error) => setError(reason.message))
       : undefined;
 
+  // A notice pinned since this Tinker last opened the Guild tab counts on the Guild badge until it is read.
+  const noticeAt = guildView?.guild?.notice?.at ?? null;
+  const [noticeSeen, setNoticeSeen] = useState(() => {
+    try {
+      return globalThis.localStorage?.getItem(`long-boil.notice.${tinkerId}`) ?? null;
+    } catch {
+      return null;
+    }
+  });
+  useEffect(() => {
+    if (place !== "guild" || !noticeAt || noticeAt === noticeSeen) return;
+    setNoticeSeen(noticeAt);
+    try {
+      globalThis.localStorage?.setItem(`long-boil.notice.${tinkerId}`, noticeAt);
+    } catch {
+      // Without storage the notice counts as read for this visit only.
+    }
+  }, [place, noticeAt, noticeSeen, tinkerId]);
+
+  // Another Tinker's inspect card, opened from chat, the roster or a board.
+  const [inspecting, setInspecting] = useState<number | null>(null);
+
   const connected = useLive(
     tinkerId,
     useCallback(
@@ -437,7 +460,10 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       ? { count: 1, label: "!", tone: colors.copper }
       : { count: tinker.workOrders, tone: colors.verdigris },
     guild: {
-      count: (guildView?.invites.length ?? 0) + (guildView?.guild?.requests.filter((request) => request.kind === "application").length ?? 0),
+      count:
+        (guildView?.invites.length ?? 0) +
+        (guildView?.guild?.requests.filter((request) => request.kind === "application").length ?? 0) +
+        (noticeAt && noticeAt !== noticeSeen && place !== "guild" ? 1 : 0),
       tone: colors.verdigris,
     },
     chat: place === "chat" ? undefined : { count: chat.unread + trade.unread + help.unread + guildChat.unread + whispers.unread, tone: colors.verdigris },
@@ -484,6 +510,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     guildName: guildView?.guild?.name,
     connected,
     onInvite: inviteToGuild,
+    onInspect: setInspecting,
   };
 
   const skillPlace = place.startsWith("skill:") ? place.slice("skill:".length) : null;
@@ -518,10 +545,10 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
             <Text style={ui.buttonText}>Leaderboards</Text>
           </Pressable>
         )}
-        <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} />
+        <Guild tinkerId={tinkerId} view={guildView} setView={setGuildView} onInspect={setInspecting} />
       </View>
     ) : place === "leaderboards" ? (
-      <Leaderboards tinkerId={tinkerId} />
+      <Leaderboards tinkerId={tinkerId} onInspect={setInspecting} />
     ) : place === "exchange" ? (
       <View style={{ gap: 12 }}>
         {tinker.story.debts.length > 0 && <Bills tinker={tinker} act={run} payGuided={at === "pay"} />}
@@ -686,6 +713,21 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       </View>
       {!wide && (
         <BottomBar place={place} workPlace={workPlace} onPlace={setPlace} badges={badges} lit={litPlaces} guided={guidedPlace} shown={shown} />
+      )}
+      {inspecting !== null && (
+        <Inspect
+          tinkerId={tinkerId}
+          otherId={inspecting}
+          content={content}
+          name={name}
+          onClose={() => setInspecting(null)}
+          onWhisper={(other, otherName) => {
+            setInspecting(null);
+            whispers.openWith(other, otherName);
+            if (!wide) setPlace("chat");
+          }}
+          onInvite={inviteToGuild}
+        />
       )}
       {newGear && !step && (
         <NewGear item={newGear} content={content} tinker={tinker} name={name} onEquip={equipWeapon} onClose={() => setNewGear(null)} />

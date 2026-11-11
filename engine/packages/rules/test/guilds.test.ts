@@ -13,7 +13,9 @@ describe("guild rules", () => {
   it("lets officers bring people in and the leader do the rest", () => {
     expect(mayAct("officer", "invite")).toBe(true);
     expect(mayAct("officer", "accept")).toBe(true);
+    expect(mayAct("officer", "notice")).toBe(true);
     expect(mayAct("officer", "remove")).toBe(false);
+    expect(mayAct("member", "notice")).toBe(false);
     expect(mayAct("member", "invite")).toBe(false);
     expect(mayAct("leader", "disband")).toBe(true);
   });

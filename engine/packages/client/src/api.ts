@@ -338,6 +338,7 @@ export interface GuildView {
     id: number;
     name: string;
     formedAt: string;
+    notice: { text: string; by: string; at: string } | null;
     rank: GuildRank;
     members: { tinkerId: number; name: string; rank: GuildRank; totalLevel: number; lastSeen: string; workOrders: number }[];
     requests: { tinkerId: number; name: string; kind: "invite" | "application"; at: string }[];
@@ -345,7 +346,22 @@ export interface GuildView {
   invites: { guildId: number; name: string; status: string }[];
   applications: { guildId: number; name: string; status: string }[];
   guilds: { id: number; name: string; members: number }[];
-  rules: { maxMembers: number; renameCrowns: number };
+  rules: { maxMembers: number; renameCrowns: number; noticeMax: number };
+}
+
+/** Another Tinker looked over (packages/server/src/inspect.ts): guild, skills and gear, never their purse. */
+export interface InspectView {
+  id: number;
+  name: string;
+  since: string;
+  totalLevel: number;
+  skills: { skill: string; level: number; xp: number }[];
+  weapon: string | null;
+  armour: string | null;
+  worn: Record<string, string>;
+  tools: Record<string, string>;
+  bossesBeaten: number;
+  guild: { id: number; name: string; rank: GuildRank } | null;
 }
 
 /** One row of a leaderboard (packages/server/src/leaderboards.ts): a Tinker, or a guild on the guild board. */
@@ -541,6 +557,8 @@ export const api = {
   removeMember: (id: number, other: number) => request<GuildView>("DELETE", `/tinkers/${id}/guild/members/${other}`),
   renameGuild: (id: number, name: string) => request<GuildView>("POST", `/tinkers/${id}/guild/rename`, { name }),
   disbandGuild: (id: number) => request<GuildView>("POST", `/tinkers/${id}/guild/disband`),
+  setNotice: (id: number, text: string) => request<GuildView>("PUT", `/tinkers/${id}/guild/notice`, { text }),
+  inspect: (id: number, other: number) => request<InspectView>("GET", `/tinkers/${id}/inspect/${other}`),
   leaderboard: (id: number, board: string) => request<LeaderboardView>("GET", `/tinkers/${id}/leaderboards/${encodeURIComponent(board)}`),
   mute: (id: number, other: number) => request<ChatView>("PUT", `/tinkers/${id}/mutes/${other}`),
   unmute: (id: number, other: number) => request<ChatView>("DELETE", `/tinkers/${id}/mutes/${other}`),

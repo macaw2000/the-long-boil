@@ -61,7 +61,7 @@ export const STYLE_COLOURS: Record<string, string> = {
 const PORTRAIT = 192;
 
 /** The Tinker as the paperdoll shows it: holding the equipped weapon, breathing. */
-function Portrait({ weapon, flash, size }: { weapon: string | null; flash: Animated.Value; size: number }) {
+export function Portrait({ weapon, flash, size }: { weapon: string | null; flash: Animated.Value; size: number }) {
   const reduced = useReducedMotion();
   const [frame, setFrame] = useState(0);
   useEffect(() => {
@@ -89,7 +89,7 @@ function Portrait({ weapon, flash, size }: { weapon: string | null; flash: Anima
   );
 }
 
-function Slot({ label, item, empty, tierLevel, pop, small }: { label: string; item: string | null; empty: string; tierLevel?: number; pop?: Animated.Value; small?: boolean }) {
+export function Slot({ label, item, empty, tierLevel, pop, small }: { label: string; item: string | null; empty: string; tierLevel?: number; pop?: Animated.Value; small?: boolean }) {
   const tier = tierLevel === undefined ? null : gearTier(tierLevel, item);
   const box = small ? 52 : 64;
   return (

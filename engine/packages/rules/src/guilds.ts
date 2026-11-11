@@ -5,9 +5,10 @@
 
 export const GUILD_MAX_MEMBERS = 30;
 export const GUILD_RENAME_CROWNS = 10_000;
+export const GUILD_NOTICE_MAX = 500;
 
 export type GuildRank = "leader" | "officer" | "member";
-export type GuildAct = "invite" | "accept" | "promote" | "remove" | "hand_on" | "disband" | "rename";
+export type GuildAct = "invite" | "accept" | "promote" | "remove" | "hand_on" | "disband" | "rename" | "notice";
 
 export class GuildRefusal extends Error {}
 
@@ -23,10 +24,10 @@ export function cleanGuildName(raw: string): string {
   return raw.trim().replace(/\s+/g, " ");
 }
 
-/** What each rank may do. The leader does everything; officers bring people in. */
+/** What each rank may do. The leader does everything; officers bring people in and keep the notice board. */
 export function mayAct(rank: GuildRank, act: GuildAct): boolean {
   if (rank === "leader") return true;
-  if (rank === "officer") return act === "invite" || act === "accept";
+  if (rank === "officer") return act === "invite" || act === "accept" || act === "notice";
   return false;
 }
 

@@ -25,6 +25,8 @@ export interface GuildView {
     id: number;
     name: string;
     formedAt: string;
+    /** The pinned notice, or null when none is. */
+    notice: { text: string; by: string; at: string } | null;
     rank: rules.GuildRank;
     members: GuildMemberView[];
     /** Invitations out and applications in; shown to those who may answer them. */
@@ -34,7 +36,7 @@ export interface GuildView {
   applications: { guildId: number; name: string; status: string }[];
   /** Every guild, largest first, to apply to. */
   guilds: { id: number; name: string; members: number }[];
-  rules: { maxMembers: number; renameCrowns: number };
+  rules: { maxMembers: number; renameCrowns: number; noticeMax: number };
 }
 
 /** Membership changes, for the live connection to pass on (guild chat follows membership). */
@@ -112,7 +114,7 @@ async function readView(tx: Tx, content: GameContent, tinkerId: number): Promise
   const mine = await membership(tx, tinkerId);
   let guild: GuildView["guild"] = null;
   if (mine) {
-    const row = (await one(tx, "SELECT * FROM guilds WHERE id = $1", [mine.guildId]))!;
+    const row = (await one(tx, "SELECT g.*, t.name AS notice_name FROM guilds g LEFT JOIN tinkers t ON t.id = g.notice_by WHERE g.id = $1", [mine.guildId]))!;
     const members = (
       await tx.query(
         `SELECT m.tinker_id, t.name, m.rank, m.work_orders, t.resolved_to
@@ -145,6 +147,7 @@ async function readView(tx: Tx, content: GameContent, tinkerId: number): Promise
       id: Number(row.id),
       name: row.name,
       formedAt: row.formed_at.toISOString(),
+      notice: row.notice ? { text: row.notice, by: row.notice_name, at: row.notice_at.toISOString() } : null,
       rank: mine.rank,
       members: views,
       requests,
@@ -166,7 +169,7 @@ async function readView(tx: Tx, content: GameContent, tinkerId: number): Promise
     invites: await asked("invite"),
     applications: await asked("application"),
     guilds,
-    rules: { maxMembers: rules.GUILD_MAX_MEMBERS, renameCrowns: rules.GUILD_RENAME_CROWNS },
+    rules: { maxMembers: rules.GUILD_MAX_MEMBERS, renameCrowns: rules.GUILD_RENAME_CROWNS, noticeMax: rules.GUILD_NOTICE_MAX },
   };
 }
 
@@ -354,6 +357,23 @@ export function renameGuild(db: Db, content: GameContent, tinkerId: number, name
     await tx.query("UPDATE guilds SET name = $2 WHERE id = $1", [mine.guildId, rules.cleanGuildName(name)]);
     await logFor(tx, content, tinkerId, [
       { type: "guild_renamed", at: now, payload: { guild: mine.guildId, name: rules.cleanGuildName(name), crowns: -rules.GUILD_RENAME_CROWNS, items: {} } },
+    ]);
+    for (const row of (await tx.query("SELECT tinker_id FROM guild_members WHERE guild_id = $1", [mine.guildId])).rows) touched.add(Number(row.tinker_id));
+  });
+}
+
+/** The leader or an officer pins a notice for the guild, or clears it with an empty one. */
+export function setNotice(db: Db, content: GameContent, tinkerId: number, text: string, now: number) {
+  return guildOp(db, content, tinkerId, now, async (tx, touched) => {
+    const mine = await actorIn(tx, tinkerId, "notice");
+    const notice = text.trim();
+    if ([...notice].length > rules.GUILD_NOTICE_MAX) throw new rules.GuildRefusal(`a notice is at most ${rules.GUILD_NOTICE_MAX} characters`);
+    await lockGuild(tx, mine.guildId);
+    await tx.query("UPDATE guilds SET notice = $2, notice_at = $3, notice_by = $4 WHERE id = $1", [
+      mine.guildId,
+      notice,
+      notice ? new Date(now) : null,
+      notice ? tinkerId : null,
     ]);
     for (const row of (await tx.query("SELECT tinker_id FROM guild_members WHERE guild_id = $1", [mine.guildId])).rows) touched.add(Number(row.tinker_id));
   });

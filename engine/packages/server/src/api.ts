@@ -30,6 +30,7 @@ import {
   readGuild,
   removeMember,
   renameGuild,
+  setNotice,
   setRank,
   type GuildOutcome,
 } from "./guilds.js";
@@ -45,6 +46,7 @@ import {
   sellToCollector,
   type TradingRules,
 } from "./market.js";
+import { inspect } from "./inspect.js";
 import { leaderboard } from "./leaderboards.js";
 import { readLedgerPages } from "./pages.js";
 import { BadSignature, MAX_CRATES, type Payments } from "./payments.js";
@@ -520,6 +522,9 @@ export function buildApi({
   // Hester's Ledger: the pages this Tinker holds can be read; the rest are only counted.
   app.get<{ Params: { id: string } }>("/tinkers/:id/pages", async (request) => readLedgerPages(db, content, Number(request.params.id)));
 
+  // Inspecting another Tinker: guild, skills and gear, open to every player.
+  app.get<{ Params: { id: string; other: string } }>("/tinkers/:id/inspect/:other", async (request) => inspect(db, content, Number(request.params.other)));
+
   // The leaderboards (GDD section 6), open to every player. Named by Tinker so the caller's own row, or guild, can be marked.
   app.get<{ Params: { id: string; board: string } }>("/tinkers/:id/leaderboards/:board", async (request) =>
     leaderboard(db, content, Number(request.params.id), request.params.board),
@@ -677,6 +682,11 @@ export function buildApi({
     "/tinkers/:id/guild/rename",
     { schema: { body: { type: "object", required: ["name"], properties: { name: { type: "string", maxLength: 80 } } } } },
     async (request) => guildDone(idOf(request.params), await renameGuild(db, content, idOf(request.params), request.body.name, now())),
+  );
+  app.put<{ Params: { id: string }; Body: { text: string } }>(
+    "/tinkers/:id/guild/notice",
+    { schema: { body: { type: "object", required: ["text"], properties: { text: { type: "string", maxLength: 2000 } } } } },
+    async (request) => guildDone(idOf(request.params), await setNotice(db, content, idOf(request.params), request.body.text, now())),
   );
   app.post<{ Params: { id: string } }>("/tinkers/:id/guild/disband", async (request) =>
     guildDone(idOf(request.params), await disbandGuild(db, content, idOf(request.params), now())),
