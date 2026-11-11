@@ -7,7 +7,7 @@
       "path": "content/storylets/act1.brass_exchange.closing_bell.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/023-act1-repeatable-scenes.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -291,7 +291,7 @@
       "path": "content/storylets/act1.brass_exchange.foundry_pass.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -448,7 +448,7 @@
       "path": "content/storylets/act1.brass_exchange.rooks_question.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -478,7 +478,7 @@
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Work order 040, 10 November 2026: revision 2 adds a Commonplace Book note on outcome(s); educator cold-read the notes, inspector reviewed them. Not approved."
+        "notes": "Work order 040, 10 November 2026: revision 2 adds a Commonplace Book note on outcome(s); educator cold-read the notes. The note was later replaced with the Gaugers note; inspector re-reviewed that current text and passed it. Not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -877,7 +877,7 @@
       "path": "content/storylets/act1.infirmary.night_nurse.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/020-act1-curios-and-the-infirmary.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -961,7 +961,7 @@
       "path": "content/storylets/act1.infirmary.ward_book.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/020-act1-curios-and-the-infirmary.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -1045,7 +1045,7 @@
       "path": "content/storylets/act1.lowvents.bottom_rim.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/037-first-day.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -1283,7 +1283,7 @@
       "path": "content/storylets/act1.lowvents.stair_lamp.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/019-act1-district-storylets.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -1407,7 +1407,7 @@
       "path": "content/storylets/act1.lowvents.the_list.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/037-first-day.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -1521,7 +1521,7 @@
       "path": "content/storylets/act1.lowvents.vent_slate.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/019-act1-district-storylets.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -1727,8 +1727,8 @@
       "path": "content/storylets/act1.lowvents.who_feeds_it.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/024-act1-spine-by-jeremy.md",
+      "status": "drafted",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
       "patch": null,
@@ -1754,7 +1754,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "fail",
+        "notes": "Work order 040, 10 November 2026: inspector reviewed the whole scene at revision 2 and failed it: (a) the brick-mark scale (a hand's width a year) contradicts canon's 40/70 fathoms; (b) option 2's label conflicts with what_you_do_with_it; (c) Tallow's \"two Crowns a shift\" is off the game's Crown scale. Inspector also questions authorship: GDD section 9 reserves the first storylet of each Ambition for Jeremy and work order 024 names Jeremy as writer, but drafted_by is \"claude\"; left unchanged pending evidence. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -1787,6 +1791,11 @@
           "at": "2026-11-11T04:36:28Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-11T04:44:55Z",
+          "status": "drafted",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -2287,7 +2296,7 @@
       "path": "content/storylets/act1.rustmoor.gate_brazier.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/019-act1-district-storylets.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -2492,7 +2501,7 @@
       "path": "content/storylets/act1.rustmoor.rat_nests.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/037-first-day.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -2697,7 +2706,7 @@
       "path": "content/storylets/act1.rustmoor.scrapjaws_den.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -2852,7 +2861,7 @@
       "path": "content/storylets/act1.rustmoor.tipping_hour.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/023-act1-repeatable-scenes.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -3641,7 +3650,7 @@
       "path": "content/storylets/act1.sprocket_row.two_columns.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/018-act1-spine-and-post.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -25095,7 +25104,7 @@
       "path": "content/storylets/prologue.polytechnic.the_lift_lecture.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/037-first-day.md",
       "status": "reviewed",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
@@ -25358,8 +25367,8 @@
       "path": "content/storylets/prologue.rustmoor.the_first_nest.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/037-first-day.md",
+      "status": "reviewed",
       "drafted_by": "claude",
       "model": "claude-opus-5-5",
       "patch": null,
@@ -25387,8 +25396,8 @@
       },
       "review": {
         "by": "inspector",
-        "verdict": "fail",
-        "notes": "Work order 040, 10 November 2026: revision 2 adds a Commonplace Book note on outcome(s); educator cold-read the notes, inspector reviewed them. Inspector failed the note; the lead session then applied the inspector's own replacement text word for word. That replacement text is validated (this row) but has no inspector pass verdict on file, so the row is held at validated. Not approved."
+        "verdict": "pass",
+        "notes": "Work order 040, 10 November 2026: revision 2 adds a Commonplace Book note on outcome(s); educator cold-read the notes. Inspector failed the first note; the inspector's own replacement text was applied word for word, and the inspector then reviewed the applied replacement and passed it. Not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -25462,6 +25471,11 @@
           "at": "2026-11-11T04:36:28Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-11T04:44:55Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -25472,7 +25486,7 @@
       "path": "content/storylets/prologue.rustmoor.the_tip_book.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
+      "work_order": "docs/work-orders/037-first-day.md",
       "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
@@ -25735,8 +25749,8 @@
       "path": "content/storylets/prologue.sprocket_row.brass_plate.json",
       "pointer": null,
       "revision": 2,
-      "work_order": "docs/work-orders/040-commonplace-notes.md",
-      "status": "validated",
+      "work_order": "docs/work-orders/037-first-day.md",
+      "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
@@ -25764,8 +25778,8 @@
       },
       "review": {
         "by": "inspector",
-        "verdict": "fail",
-        "notes": "Work order 040, 10 November 2026: revision 2 adds a Commonplace Book note on outcome(s); educator cold-read the notes, inspector reviewed them. Inspector failed the note; the lead session then applied the inspector's own replacement text word for word. That replacement text is validated (this row) but has no inspector pass verdict on file, so the row is held at validated. Not approved."
+        "verdict": "pass",
+        "notes": "Work order 040, 10 November 2026: revision 2 adds a Commonplace Book note on outcome(s); educator cold-read the notes. Inspector failed the first note; the inspector's own replacement text was applied word for word, and the inspector then reviewed the applied replacement and passed it. Not approved."
       },
       "approved_by": null,
       "approved_at": null,
@@ -25874,6 +25888,11 @@
           "at": "2026-11-11T04:36:28Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-11T04:44:55Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
