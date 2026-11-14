@@ -68,7 +68,7 @@ Measured by the Act I walk (three days, 2, 3 and 4 check-ins a day): the scene p
 
 ## The GDD
 
-`docs/gdd.md` is above the lead session's clearance (the hook that guards it stopped the read), so it is not edited here. These are the amendments, for Jeremy to make and then recut the slice with `python3 scripts/canon/cut_clearance.py`:
+`docs/gdd.md` is above the lead session's clearance (the hook that guards it stopped the read), so the lead session wrote these amendments as a script that prints no line of the file, and Jeremy ran it and recut the slice (13 November 2026). Section 7's first session is now "The first day (three sittings)". What was applied:
 
 1. **Section 7, "What the screen shows"**, add: "A level gained is a banner over the page with the skill, the level and what it gave. Coming back, the While You Were Away ledger is a haul: each thing made with its icon and its count, each level gained, and one press to collect. A fight far beyond a Tinker shows the weapon or level it wants, not a time, and a zone not yet open shows no tiles. A few moments have a sound: the valve, a thing landing in the Stores, a rat going down, a level, the tube."
 2. **Section 7, "The first session (about 20 minutes)"** still describes the session from before work order 037. Replace it with the first day in three sittings from `docs/first-day-plan.md`, with sitting 1 as it now stands: the valve; spanners; who you are; rats in the workshop; the first fight; five rats and the tube rattling; then leave it running, with a card saying what will be waiting. About 8 to 10 minutes.

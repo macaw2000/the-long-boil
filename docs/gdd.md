@@ -380,7 +380,7 @@ Logging off leaves 12 hours of steam, shown as a pressure gauge; at zero your Ti
 
 ### Combat
 
-Combat is automatic: pick a zone, a loadout, and triggers ("eat a Ration below 40% HP"), then watch or walk away. Monsters are weak to Melee, Marksmanship, or Aetherics, so loadouts matter. A knockout respawns in 60 seconds and resumes the queue, so offline hours are never wasted. Bosses are fought on purpose: a boss attempt is a separate queue item, and a lost fight spends the attempt and pays no XP. Attempts can be queued again, so a boss pays XP no faster than the zone's best monster; players come back for its drop, not its XP. A boss's first-kill reward replaces its ordinary drop roll on that kill. A loadout fills seven gear slots, Weapon, Off-hand, Head, Body, Hands, Feet and a Charm, and its focus is the weapon's style: Melee, Marksmanship or Aetherics. A Tinker who outlevels a monster still takes its usual time per kill, so fighting easy monsters is safe but no faster on levels alone; gear better than a Tinker's own level calls for, from any zone, can cut a kill to three quarters of its usual time, but never a boss fight (amended 30 October 2026). The reward for levelling is reaching harder ones. A boss fight allows at most 3 Rations, and a boss is all but unbeatable without them, so Cooking matters from Act I. Every attack style has a weapon at levels 1, 5, 10 and 15 in Rustmoor, so a Tinker can start in any style, though each boss rewards the style it is weak to. Armour is worn by combat level, the Tinker's highest attack style, so it keeps pace with weapons; every zone has armour for each slot, Smithing's metal and Tailoring's cloth and leather, and Tailoring is open from the first day, so a new Tinker has something to put on in the first session (amended 30 October 2026); the Cinderworks adds Tailoring's coats and goggles.
+Combat is automatic: pick a zone, a loadout, and triggers ("eat a Ration below 40% HP"), then watch or walk away. Monsters are weak to Melee, Marksmanship, or Aetherics, so loadouts matter. A knockout respawns in 60 seconds and resumes the queue, so offline hours are never wasted. Bosses are fought on purpose: a boss attempt is a separate queue item, and a lost fight spends the attempt and pays no XP. Attempts can be queued again, so a boss pays XP no faster than the zone's best monster; players come back for its drop, not its XP. A boss's first-kill reward replaces its ordinary drop roll on that kill. A loadout fills seven gear slots, Weapon, Off-hand, Head, Body, Hands, Feet and a Charm, and its focus is the weapon's style: Melee, Marksmanship or Aetherics. A Tinker who outlevels a monster still takes its usual time per kill, so fighting easy monsters is safe but no faster on levels alone; gear better than a Tinker's own level calls for, from any zone, can cut a kill to three quarters of its usual time, but never a boss fight (amended 30 October 2026). The reward for levelling is reaching harder ones, so the Fight page shows what a harder monster wants, not how slow it would be today (amended 13 November 2026). A boss fight allows at most 3 Rations, and a boss is all but unbeatable without them, so Cooking matters from Act I. Every attack style has a weapon at levels 1, 5, 10 and 15 in Rustmoor, so a Tinker can start in any style, though each boss rewards the style it is weak to. Armour is worn by combat level, the Tinker's highest attack style, so it keeps pace with weapons; every zone has armour for each slot, Smithing's metal and Tailoring's cloth and leather, and Tailoring is open from the first day, so a new Tinker has something to put on in the first session (amended 30 October 2026); the Cinderworks adds Tailoring's coats and goggles.
 
 ### Gear and tools
 
@@ -437,20 +437,30 @@ Desktop puts skills on the left, your Tinker at work in the centre, and chat on 
 
 Phones use a bottom tab bar with five tabs: Workshop, Story, Exchange, Guild, and Tinker. The Story tab carries a badge when letters are waiting. A storylet is a card: a 96×96 vignette, the description, and up to four option buttons, each showing its Nerve cost and, for challenges, its odds.
 
-### The first session (about 20 minutes)
+A level gained is a banner over the page, with the skill, the level and what it gave. Coming back, the While You Were Away ledger is a haul: each thing made with its icon and its count, each level gained, and one press to collect. A fight far beyond a Tinker shows the weapon or level it wants, not a time, and a zone not yet open shows no tiles. A few moments have a sound: the valve, a thing landing in the Stores, a rat going down, a level, the tube (amended 13 November 2026).
 
-1. Ada signs in with Discord. The first screen is a solicitor's letter on Sprocket Row: No. 9 is hers, contents included.
-2. Professor Brassbuckle peels the Gauger tape off the Boiler. The Boiler gauge fills to 12 hours, and a one-line tip explains that this is how long her Tinker works without her.
-3. Brassbuckle walks her through Prospecting copper, smelting brass, and tinkering a Brass Spanner. She leaves her 50 Brass Ingots and a crate of Rations from the workshop's old stock, so Ada queues 50 more spanners and watches the first few land.
-4. Pip Tumbler's first letter arrives: a bill for the workshop's back rent. The Arrears dial twitches to life, at 0, with a tip.
-5. Rust Rats have been raiding the Row. Ada equips the spanner, sets one trigger ("eat a Ration below 40% HP"), and wins her first fight in Rustmoor.
-6. She sells the rats' scrap at the Counting-House window and pays the bill.
-7. Clearing out the workbench, she finds a brass plate scratched with a gauge reading that does not match today's Gazette. Brassbuckle changes the subject.
-8. The game asks her to queue 12 hours of work and come back. Her Nerve sits at 10 and a letter is already on its way.
+### The first day (three sittings)
+
+Playtesters who had never played an idle game kept none of a twenty-minute first session, so the first day is three sittings, each screen teaching one thing (amended 13 November 2026; the full plan is `docs/first-day-plan.md`).
+
+**The first sitting, at No. 9 (about 8 minutes).**
+
+1. Ada signs in with Discord. The first screen is a solicitor's letter: No. 9 Sprocket Row, in a city that rides on steam above a boiling sea, is hers, contents included.
+2. The workshop is dim and the Boiler gauge reads cold. Professor Brassbuckle has her open the valve. The Boiler shudders, vents and holds, and the gauge climbs to 12 hours, which is how long her Tinker works without her.
+3. She sets the bench to make Brass Spanners from 50 Brass Ingots of old stock, and the first lands in under a minute.
+4. While they turn she plays her first scene, which is about her: Hester's apprentice, a relative named in her will, or a stranger Hester chose.
+5. The second scene: Rust Rats come up through the floor for her new spanners, and one bites.
+6. She equips a spanner and follows them down to Rustmoor for her first fight, which runs by itself.
+7. Brassbuckle asks for five rats. At the fifth a third scene opens: the brass tube over the bench rattles, and nothing comes out of it yet.
+8. She queues the night's fights and leaves it running. A card says what will be waiting: the night's work, a tally of it, and whatever is in the tube.
+
+**The second sitting, on the Row (a few hours later).** The While You Were Away ledger, as a haul to collect. Pip Tumbler's bill for a year of Hester's back rent, 1,400 Crowns. Her first sale, of Rat Scrap at the Counting-House window. Pip brings a receipt and finds the binding of Hester's notebook, every page torn out. The neighbours say the rats have robbed the whole Row. She makes and wears her first armour.
+
+**The third sitting, in the city (the next day).** She signs the Polytechnic's register, where a skill check first shows its odds, goes down to Rustmoor by the gate, and hears why the city flies. Clearing out the workbench, she finds a brass plate scratched with a gauge reading that does not match today's Gazette. Brassbuckle changes the subject. Act I opens at her next visit.
 
 ### A normal check-in (about 4 minutes)
 
-1. **0:00** The While You Were Away ledger: 400 Brass Ingots smelted, 2 Rust Rat kills short of a level, one Exchange order filled.
+1. **0:00** The While You Were Away ledger, as a haul to collect: 400 Brass Ingots smelted, 2 Rust Rat kills short of a level, one Exchange order filled.
 2. **0:30** She sells the ingots she will not use and requeues: Smithing, then Rustmoor.
 3. **1:00** Three letters wait. One is a Stoker asking for 20 of those ingots, with a favour attached. She agrees.
 4. **1:45** She spends 6 Nerve on Act I: two scenes in the Lowvents, one failed Smithing check (Scald rises to 2), one success.
@@ -480,6 +490,7 @@ She is waiting for Act IV the way Fallen London players wait for a new season: i
 - Needle dials use shape and position as well as colour.
 - Ledger Page text is blurred in chat by default, so nobody is spoiled by a guildmate.
 - Every storylet shows its Nerve cost and odds before you commit, with no hidden rolls.
+- Sound can be turned off from the top bar, and nothing plays while the tab is hidden. Every animation stops when the system asks for reduced motion (amended 13 November 2026).
 
 ## 8. Monetization and Fairness
 
