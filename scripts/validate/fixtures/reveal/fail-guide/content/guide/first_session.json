@@ -75,6 +75,11 @@
    "id": "rations",
    "speaker": "A fixture professor",
    "line": "Rations knocked from the crate."
+  },
+  {
+   "id": "first_haul",
+   "speaker": "A fixture professor",
+   "line": "brass brass brass"
   }
  ]
 }

@@ -164,16 +164,34 @@ export function CanisterDrop({ drops }: { drops: number }) {
  * The Boiler as a round brass pressure gauge, 0 to 12 hours, its needle
  * falling as the steam runs down and puffs of steam venting near empty.
  */
-export function Gauge({ fraction, size = 58 }: { fraction: number; size?: number }) {
+export function Gauge({ fraction, size = 58, cold = false }: { fraction: number; size?: number; /** Not lit yet: the needle rests at nought, and climbs when this turns false. */ cold?: boolean }) {
   const reduced = useReducedMotion();
-  const clamped = Math.max(0, Math.min(1, fraction));
+  const clamped = cold ? 0 : Math.max(0, Math.min(1, fraction));
   const needle = useSpring(clamped, reduced);
   const sweep = 240; // degrees, from -120 to +120
-  const venting = clamped < 0.2;
+  // Lighting: for a couple of seconds after a cold Boiler takes, the gauge shudders and vents.
+  const [lighting, setLighting] = useState(false);
+  const wasCold = useRef(cold);
+  const shudder = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    const lit = wasCold.current && !cold;
+    wasCold.current = cold;
+    if (!lit || reduced) return;
+    setLighting(true);
+    shudder.setValue(1);
+    Animated.timing(shudder, { toValue: 0, duration: 1100, easing: Easing.out(Easing.quad), useNativeDriver: NATIVE }).start();
+    const timer = setTimeout(() => setLighting(false), 2400);
+    return () => clearTimeout(timer);
+  }, [cold, reduced, shudder]);
+  const venting = lighting || (!cold && clamped < 0.2);
   const ticks = Array.from({ length: 13 }, (_, hour) => -sweep / 2 + (sweep * hour) / 12);
 
   return (
-    <View style={{ width: size, height: size }} accessibilityRole="image" accessibilityLabel={`Boiler gauge, ${Math.round(clamped * 12)} of 12 hours`}>
+    <Animated.View
+      style={{ width: size, height: size, transform: [{ translateX: shudder.interpolate({ inputRange: [0, 0.2, 0.4, 0.6, 0.8, 1], outputRange: [0, -2, 2, -3, 3, 0] }) }] }}
+      accessibilityRole="image"
+      accessibilityLabel={cold ? "Boiler gauge, cold" : `Boiler gauge, ${Math.round(clamped * 12)} of 12 hours`}
+    >
       <View
         style={{
           position: "absolute",
@@ -207,7 +225,7 @@ export function Gauge({ fraction, size = 58 }: { fraction: number; size?: number
       </Animated.View>
       <View style={{ position: "absolute", left: size / 2 - 4, top: size / 2 - 4, width: 8, height: 8, borderRadius: 4, backgroundColor: colors.brassDim }} />
       {venting && !reduced && [0, 1, 2].map((puff) => <SteamPuff key={puff} delay={puff * 450} left={size * 0.7} />)}
-    </View>
+    </Animated.View>
   );
 }
 
@@ -312,6 +330,104 @@ export function CountUp({ value, style, suffix = "" }: { value: number; style?: 
   );
 }
 
+/** A number that counts up from nothing as it appears: a haul being tallied. */
+export function Tally({ value, style, delay = 150 }: { value: number; style?: StyleProp<TextStyle>; delay?: number }) {
+  const [shown, setShown] = useState(0);
+  useEffect(() => {
+    const timer = setTimeout(() => setShown(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return <CountUp value={shown} style={style} />;
+}
+
+export interface LevelUp {
+  id: number;
+  skill: string;
+  level: number;
+  /** What the level gave, in a line. */
+  line: string;
+}
+
+let levelUpId = 0;
+
+/** Levels just gained, each shown as a banner for a few seconds, a few at a time. */
+export function useLevelUps(): [LevelUp[], (skill: string, level: number, line: string) => void, (id: number) => void] {
+  const [ups, setUps] = useState<LevelUp[]>([]);
+  const add = (skill: string, level: number, line: string) => setUps((list) => [...list, { id: ++levelUpId, skill, level, line }]);
+  const remove = (id: number) => setUps((list) => list.filter((up) => up.id !== id));
+  return [ups, add, remove];
+}
+
+const BANNERS_AT_ONCE = 2;
+
+/**
+ * A level gained is the thing a player works for, so it is said where it
+ * cannot be missed: a banner over the page, with sparks, naming the skill,
+ * the level and what it gave. Further levels wait their turn.
+ */
+export function LevelUps({ ups, onDone, icon, title }: { ups: LevelUp[]; onDone: (id: number) => void; icon: (skill: string) => ReactNode; title: (skill: string) => string }) {
+  if (ups.length === 0) return null;
+  return (
+    <View pointerEvents="none" style={{ position: "absolute", top: 12, left: 0, right: 0, alignItems: "center", gap: 8, zIndex: 30 }}>
+      {ups.slice(0, BANNERS_AT_ONCE).map((up) => (
+        <LevelBanner key={up.id} up={up} onDone={onDone} icon={icon} title={title} />
+      ))}
+    </View>
+  );
+}
+
+function LevelBanner({ up, onDone, icon, title }: { up: LevelUp; onDone: (id: number) => void; icon: (skill: string) => ReactNode; title: (skill: string) => string }) {
+  const reduced = useReducedMotion();
+  const show = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    const animation = Animated.sequence([
+      reduced
+        ? Animated.timing(show, { toValue: 1, duration: 0, useNativeDriver: NATIVE })
+        : Animated.spring(show, { toValue: 1, friction: 5, tension: 120, useNativeDriver: NATIVE }),
+      Animated.delay(3200),
+      Animated.timing(show, { toValue: 0, duration: 350, useNativeDriver: NATIVE }),
+    ]);
+    animation.start(() => onDone(up.id));
+    return () => animation.stop();
+    // Each banner plays once, from when it mounts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return (
+    <Animated.View style={{ opacity: show.interpolate({ inputRange: [0, 0.3, 1], outputRange: [0, 1, 1] }), transform: [{ scale: show.interpolate({ inputRange: [0, 1], outputRange: [0.7, 1] }) }] }}>
+      <Sparks bursts={0} onMount>
+        <View
+          accessibilityRole="alert"
+          accessibilityLabel={`${title(up.skill)} reached level ${up.level}. ${up.line}`}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 12,
+            paddingVertical: 10,
+            paddingHorizontal: 18,
+            borderRadius: 8,
+            borderWidth: 2,
+            borderColor: "#f2c14e",
+            backgroundColor: "rgba(27, 23, 18, 0.96)",
+            shadowColor: "#f2c14e",
+            shadowOpacity: 0.6,
+            shadowRadius: 14,
+            maxWidth: 440,
+          }}
+        >
+          {icon(up.skill)}
+          <View style={{ flexShrink: 1, gap: 2 }}>
+            <Text style={{ color: colors.verdigris, fontFamily: fonts.serif, fontSize: 11, letterSpacing: 1.5 }}>LEVEL UP</Text>
+            <Text style={{ color: "#f2c14e", fontFamily: fonts.serif, fontSize: 22, fontWeight: "700" }}>
+              {title(up.skill)} {up.level}
+            </Text>
+            <Text style={{ color: colors.ink, fontFamily: fonts.serif, fontSize: 13 }}>{up.line}</Text>
+          </View>
+        </View>
+      </Sparks>
+    </Animated.View>
+  );
+}
+
 export interface Floater {
   id: number;
   text: string;
@@ -342,7 +458,7 @@ export function Floaters({
   icon?: (item: string) => ReactNode;
 }) {
   return (
-    <View pointerEvents="none" style={{ position: "absolute", top: 0, right: 12, alignItems: "flex-end", gap: 2, zIndex: 10 }}>
+    <View pointerEvents="none" style={{ position: "absolute", top: 10, right: 12, alignItems: "flex-end", gap: 2, zIndex: 10 }}>
       {floaters.map((floater, index) => (
         <FloatingText key={floater.id} floater={floater} order={index} onDone={onDone} icon={icon} />
       ))}
@@ -382,6 +498,11 @@ function FloatingText({
         flexDirection: "row",
         alignItems: "center",
         gap: 4,
+        // A dark plate behind it: brass text over the scene's pale wall could not be read.
+        backgroundColor: "rgba(27, 23, 18, 0.88)",
+        borderRadius: 12,
+        paddingVertical: 2,
+        paddingHorizontal: 8,
         opacity: rise.interpolate({ inputRange: [0, 0.15, 0.75, 1], outputRange: [0, 1, 1, 0] }),
         transform: [
           { translateY: reduced ? 0 : rise.interpolate({ inputRange: [0, 1], outputRange: [10, -36] }) },
@@ -407,11 +528,11 @@ function FloatingText({
 }
 
 /** A burst of brass sparks around its children; bump `bursts` to fire another. */
-export function Sparks({ bursts, children }: { bursts: number; children: ReactNode }) {
+export function Sparks({ bursts, children, onMount = false }: { bursts: number; children: ReactNode; /** Fire once as it appears, too. */ onMount?: boolean }) {
   const reduced = useReducedMotion();
   const burst = useRef(new Animated.Value(0)).current;
   const angles = useRef(Array.from({ length: 10 }, (_, i) => (i / 10) * 2 * Math.PI + Math.random() * 0.4)).current;
-  const first = useRef(true);
+  const first = useRef(!onMount);
   useEffect(() => {
     if (first.current) {
       first.current = false;

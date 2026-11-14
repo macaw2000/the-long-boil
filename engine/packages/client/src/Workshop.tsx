@@ -14,14 +14,15 @@ import { Chat, ChatDock, channelOf, useChat, useWhispers, type ChatProps } from 
 import { Bills, Exchange } from "./Exchange";
 import { duration, namer, titleCase, tradeLine } from "./format";
 import { Glow } from "./Glow";
-import { actedMark, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, queuedMs, revealed, type GuideAction, type GuideState, type Target } from "./Guide";
+import { actedMark, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, queuedMs, rest, restLine, revealed, SendOff, type GuideAction, type GuideState, type Target } from "./Guide";
 import { Guild } from "./Guild";
 import { Inspect } from "./Inspect";
 import { skillOpen } from "@long-boil/rules";
 import { jobTitle, skillOf, startFirst } from "./jobs";
-import { CanisterDrop, Floaters, ScaldVignette, useFloaters } from "./Juice";
+import { CanisterDrop, Floaters, LevelUps, ScaldVignette, useFloaters, useLevelUps } from "./Juice";
 import { Leaderboards } from "./Leaderboards";
 import { Ledger, STALL_REASONS } from "./Ledger";
+import { levelLine } from "./levels";
 import { useLive } from "./live";
 import { Loadout } from "./Loadout";
 import { NewGear } from "./NewGear";
@@ -29,7 +30,8 @@ import { ReminderNotice } from "./ActionBar";
 import { Admin } from "./Admin";
 import { BottomBar, SideNav, SkillStrip, type Place, type PlaceBadge } from "./SideNav";
 import { Shop, takeCheckoutReturn } from "./Shop";
-import { SkillView } from "./SkillView";
+import { SkillIcon, SkillView } from "./SkillView";
+import { play } from "./sound";
 import { ItemIcon, Scene, zoneOf } from "./Sprite";
 import { Stores } from "./Stores";
 import { Story } from "./Story";
@@ -95,43 +97,60 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const wide = useWindowDimensions().width >= 900;
 
   const [floaters, addFloater, removeFloater] = useFloaters();
+  const [levelUps, addLevelUp, removeLevelUp] = useLevelUps();
   const [skillBursts, setSkillBursts] = useState<Record<string, number>>({});
+  // The end of the first sitting: what the workshop will do while the player is gone (Guide.tsx, SendOff).
+  const [sendOff, setSendOff] = useState(false);
+  // When a visit next counts for the story, for the send-off and the goal bar's quiet line.
+  const [nextVisitAt, setNextVisitAt] = useState<string | null>(null);
   const [canisters, setCanisters] = useState(0);
   // A weapon seen in the stores for the first time, shown off until equipped or put aside.
   const [newGear, setNewGear] = useState<string | null>(null);
   const previous = useRef<Tinker | null>(null);
 
-  // What changed since the last look, as things the player can watch arrive.
+  // What changed since the last look, as things the player can watch and hear arrive.
+  // Coming back is quiet here: the While You Were Away ledger shows that haul itself.
   const celebrate = useCallback(
-    (next: Tinker) => {
+    (next: Tinker, quiet = false) => {
       const before = previous.current;
       previous.current = next;
-      if (!before) return;
+      if (!before || quiet) return;
       const count = (tinker: Tinker) => {
         const totals = new Map<string, number>();
         for (const stack of tinker.inventory) totals.set(stack.item, (totals.get(stack.item) ?? 0) + stack.qty);
         return totals;
       };
       const was = count(before);
+      let landed = false;
       for (const [item, qty] of count(next)) {
         const gained = qty - (was.get(item) ?? 0);
         if (gained > 0) addFloater(`+${gained.toLocaleString()} ${name(item)}`, colors.brass, item);
         if (gained > 0 && !was.get(item) && content.weapons.some((weapon) => weapon.item === item)) setNewGear(item);
+        landed ||= gained > 0;
       }
+      // One sound for what landed: a rat going down, or brass on the bench.
+      if (landed) play(before.queue[0]?.actionId.startsWith("monster.") ? "thud" : "clink");
       const gainedCrowns = next.crowns - before.crowns;
       if (gainedCrowns > 0) addFloater(`+${gainedCrowns.toLocaleString()} Crowns`, colors.brass);
+      let levelled = false;
       for (const skill of next.skills) {
         const old = before.skills.find((entry) => entry.skill === skill.skill)?.level ?? 1;
         if (skill.level > old) {
-          addFloater(`${titleCase(skill.skill)} ${skill.level}!`, colors.verdigris);
+          // A level is what the work is for: a banner over the page, not a line of small text in a corner.
+          addLevelUp(skill.skill, skill.level, levelLine(skill.skill, skill.level, content, next, name));
           setSkillBursts((bursts) => ({ ...bursts, [skill.skill]: (bursts[skill.skill] ?? 0) + 1 }));
+          levelled = true;
         }
       }
-      if (next.story.letters > before.story.letters) setCanisters((drops) => drops + 1);
+      if (levelled) setTimeout(() => play("level"), 180);
+      if (next.story.letters > before.story.letters) {
+        setCanisters((drops) => drops + 1);
+        play("tube");
+      }
     },
-    // addFloater is stable in effect: it only appends to state.
+    // addFloater and addLevelUp are stable in effect: they only append to state.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [name],
+    [name, content],
   );
 
   const noteRecent = useCallback(
@@ -157,8 +176,8 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   // Opening the workshop goes to whatever the Tinker is busy at, once; after that the player moves.
   const placed = useRef(checkoutReturn !== null);
   const apply = useCallback(
-    (outcome: Outcome) => {
-      celebrate(outcome.tinker);
+    (outcome: Outcome, quiet = false) => {
+      celebrate(outcome.tinker, quiet);
       setTinker(outcome.tinker);
       setError(null);
       if (!placed.current) {
@@ -176,7 +195,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       api
         .checkIn(tinkerId)
         .then((outcome) => {
-          apply(outcome);
+          apply(outcome, true);
           const { ledger, trades, guildActivity } = outcome;
           if (ledger.lines.length || ledger.stalls.length || ledger.boilerDryAt !== null || trades.length || guildActivity) {
             setAway({ ledger, trades, guild: guildActivity });
@@ -311,6 +330,28 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     };
   }, [lookAgain]);
 
+  // The moment a go should land by this clock, look: the spanner arrives as the bar fills, not up to
+  // five seconds after, with the count wrapped back to "54s to the next" in between.
+  useEffect(() => {
+    if (!tinker) return;
+    const head = tinker.queue[0];
+    if (!head || new Date(tinker.steamUntil).getTime() <= gameNow()) return;
+    const each =
+      tinker.headMs ??
+      1000 * (content.actions.find((action) => action.id === head.actionId)?.seconds ?? content.monsters.find((monster) => monster.id === head.actionId)?.seconds_per_kill ?? 0);
+    if (each <= 0) return;
+    const elapsed = tinker.progressMs + Math.max(0, gameNow() - new Date(tinker.resolvedTo).getTime());
+    const timer = setTimeout(lookAgain, Math.max(250, each - (elapsed % each) + 120));
+    return () => clearTimeout(timer);
+  }, [tinker, content, lookAgain]);
+
+  // When a visit next counts for the story: asked for when the story or the visit count moves.
+  const storyMark = tinker ? `${tinker.story.qualities["prologue.progress"] ?? 0}:${tinker.story.qualities["act1.progress"] ?? 0}:${tinker.story.qualities["record.check_ins"] ?? 0}` : null;
+  useEffect(() => {
+    if (storyMark === null) return;
+    api.story(tinkerId).then((result) => setNextVisitAt(result.view.nextVisitAt), () => undefined);
+  }, [tinkerId, storyMark]);
+
   const run = (call: Promise<Outcome>) =>
     call
       .then((outcome) => {
@@ -436,6 +477,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     ? new Set<Place>()
     : new Set<Place>([...(lit as Set<Target>)].map(placeOf).filter((value): value is Place => value !== null && value !== place));
   const goal = coaching ? null : nextGoal(tinker, content, now, name, guide, saleLeft);
+  const resting = rest(tinker, content, now, name, nextVisitAt);
   const rationsLine = away ? rationsNote(away.ledger, content) : undefined;
   const closeLedger = () => {
     if (rationsLine && !guide.acknowledged.includes(RATIONS_SEEN)) setGuide({ ...guide, acknowledged: [...guide.acknowledged, RATIONS_SEEN] });
@@ -458,7 +500,12 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const guideAction = (action: GuideAction) => {
     if (action.kind === "equip") equipWeapon(action.item);
     else if (action.kind === "wear") run(api.wear(tinkerId, action.item));
-    else if (step) setGuide({ ...guide, acknowledged: [...guide.acknowledged, step.id] });
+    else if (step) {
+      // The valve is the first thing a player does: it is heard, and the workshop answers (Scene, Gauge).
+      if (step.id === "boiler") play("valve");
+      if (step.id === "come_back") setSendOff(true);
+      setGuide({ ...guide, acknowledged: [...guide.acknowledged, step.id] });
+    }
   };
 
   const badges: Partial<Record<Place, PlaceBadge>> = {
@@ -490,7 +537,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
 
   const scene = (
     <View>
-      <Scene tinker={tinker} content={content} progress={headProgress} working={Boolean(working)} />
+      <Scene tinker={tinker} content={content} progress={headProgress} working={Boolean(working)} cold={step?.id === "boiler"} />
       <Floaters floaters={floaters} onDone={removeFloater} icon={(item) => <ItemIcon item={item} size={22} />} />
     </View>
   );
@@ -501,8 +548,10 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       <ReminderNotice />
       {step && coaching ? (
       <GuideCard step={step} content={content} coaching={coaching} onAction={guideAction} onSkip={() => setGuide({ ...guide, skipped: true })} />
+    ) : sendOff ? (
+      <SendOff at={resting} now={now} onClose={() => setSendOff(false)} />
     ) : (
-      <GoalBar goal={goal} road={tinker.story.road} onGo={setPlace} onReplay={() => setGuide({ acknowledged: [], skipped: false, opened: true, seen: guide.seen })} />
+      <GoalBar goal={goal} road={tinker.story.road} quiet={restLine(resting, now)} onGo={setPlace} onReplay={() => setGuide({ acknowledged: [], skipped: false, opened: true, seen: guide.seen })} />
       )}
     </View>
   );
@@ -591,6 +640,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         headSeconds={goMs / 1000}
         lit={lit}
         guided={coaching !== null}
+        cold={step?.id === "boiler"}
         shown={shown}
         onRemove={(slot) => setQueue(tinker.queue.filter((_, index) => index !== slot))}
         onAdd={() => setPlace(guidedPlace ?? (place.startsWith("skill:") ? place : workPlace))}
@@ -694,6 +744,10 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         <View style={{ flex: 1 }}>
         {/* On desktop the guide, or after it the next goal, is pinned above the page so it never scrolls away. */}
         {wide && <View style={{ paddingHorizontal: 16, paddingTop: 16, maxWidth: 900, width: "100%", alignSelf: "center" }}>{guidance}</View>}
+        {/* Level-ups show over the top of the page, under the pinned guide, so neither hides the other's words. */}
+        <View style={{ zIndex: 30 }}>
+          <LevelUps ups={levelUps} onDone={removeLevelUp} icon={(skill) => <SkillIcon skill={skill} size={40} />} title={titleCase} />
+        </View>
         <ScrollView ref={pageScroll} style={{ flex: 1 }} contentContainerStyle={{ padding: 16, gap: 12, maxWidth: 900, width: "100%", alignSelf: "center" }}>
           {/* On a phone it heads the page instead, which scrolls under it, so the card never leaves the page a sliver. */}
           {!wide && guidance}

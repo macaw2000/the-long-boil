@@ -73,6 +73,11 @@
       "id": "rations",
       "speaker": "Professor Brassbuckle",
       "line": "Do not fret over Rations. You eat one by yourself when the bites add up. If you run out, no lasting harm: each time the rats lay you flat you lose a minute, then get up and fight on."
+    },
+    {
+      "id": "first_haul",
+      "speaker": "Professor Brassbuckle",
+      "line": "One rat proves nothing; any fool may be lucky once. Beat five, and bring up what they drop. I shall mind the Boiler, by which I mean I shall sit down."
     }
   ]
 }

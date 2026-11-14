@@ -74,6 +74,11 @@
    "id": "rations",
    "speaker": "A fixture professor",
    "line": "A fixture card says where to press."
+  },
+  {
+   "id": "first_haul",
+   "speaker": "A fixture professor",
+   "line": "A fixture card says where to press."
   }
  ]
 }

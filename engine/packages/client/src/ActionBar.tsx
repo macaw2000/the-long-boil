@@ -13,6 +13,7 @@ import { Glow } from "./Glow";
 import { Badge, CountUp, Gauge, SteamTube } from "./Juice";
 import { ItemIcon, UiIcon } from "./Sprite";
 import { MonsterPicture } from "./SkillView";
+import { useSound } from "./sound";
 import { Term } from "./Term";
 import { colors, ui } from "./theme";
 
@@ -27,6 +28,7 @@ export function ActionBar({
   headSeconds,
   lit,
   guided,
+  cold = false,
   shown,
   onRemove,
   onAdd,
@@ -46,6 +48,8 @@ export function ActionBar({
   lit: Set<string>;
   /** The lit part is the guide's one pointer, drawn stronger. */
   guided: boolean;
+  /** The Boiler is not lit yet: the gauge rests at nought until the valve is opened. */
+  cold?: boolean;
   /** Whether the guide has opened a reading yet: "nerve", "crowns", "cogs", or a needle's name. */
   shown: (feature: string) => boolean;
   onRemove: (slot: number) => void;
@@ -151,9 +155,9 @@ export function ActionBar({
         <Glow active={lit.has("boiler")} guide={guided}>
           <Term term="boiler">
             <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-              <Gauge fraction={Math.max(0, steamLeft) / (tinker.upgrades.boilerHours * 3_600_000)} size={36} />
-              <Text style={[ui.number, { color: steamLeft > 2 * 3_600_000 ? colors.ink : colors.scald }]}>
-                {steamLeft > 0 ? duration(steamLeft) : "dry"}
+              <Gauge fraction={Math.max(0, steamLeft) / (tinker.upgrades.boilerHours * 3_600_000)} size={36} cold={cold} />
+              <Text style={[ui.number, { color: cold ? colors.muted : steamLeft > 2 * 3_600_000 ? colors.ink : colors.scald }]}>
+                {cold ? "cold" : steamLeft > 0 ? duration(steamLeft) : "dry"}
               </Text>
             </View>
           </Term>
@@ -217,6 +221,7 @@ export function ActionBar({
             <Text style={[ui.muted, { fontSize: 12 }]}>{tinker.name} · leave</Text>
           </Pressable>
           <ReminderSwitch />
+          <SoundSwitch />
         </View>
       </View>
     </View>
@@ -254,6 +259,18 @@ export function JobPicture({ content, id, size }: { content: Content; id: string
   if (content.monsters.some((monster) => monster.id === id)) return <MonsterPicture id={id} size={size} />;
   const output = content.actions.find((action) => action.id === id)?.outputs[0]?.item;
   return <ItemIcon item={output ?? "item.fallback"} size={size} />;
+}
+
+/** The workshop's sounds, on unless turned off; the browser remembers (sound.ts). */
+function SoundSwitch() {
+  const sound = useSound();
+  if (!sound.available) return null;
+  return (
+    <Pressable onPress={sound.toggle} accessibilityRole="switch" accessibilityState={{ checked: sound.on }} accessibilityLabel="Sound" style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+      <UiIcon name={sound.on ? "sound_on" : "sound_off"} size={14} />
+      <Text style={[ui.muted, { fontSize: 12 }]}>Sound: {sound.on ? "on" : "off"}</Text>
+    </Pressable>
+  );
 }
 
 /** Email reminders, on by default (work order 039); not shown to an account with no email. */

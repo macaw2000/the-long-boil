@@ -28,7 +28,8 @@
 // Work order 037 (the assayer, 3 November 2026): the Prologue is ten scenes over three visits
 // (record.check_ins >= 1, 2, 3), and Act I's first beats wait on record.visits_since_prologue.
 // - First sitting, as the guide now runs it: queue 5 Brass Spanners, play who_you_are while they run, watch
-//   the first spanner land, play rats_in_the_workshop, equip the spanner, fight 10 Runts, queue the night.
+//   the first spanner land, play rats_in_the_workshop, equip the spanner, fight 10 Runts, play the_first_haul
+//   (work order 041: it opens at five rats' Umbrella Silk), queue the night.
 //   No selling, no bill and no armour in it (the plan's sitting 1). The old 2-minute copper prelude is gone:
 //   the guide never asks for it. SIM_FIRST_TAILOR now defaults to 0, since the first armour is a goal line
 //   in sitting 2; the later sittings' gear pick makes and wears it.
@@ -221,8 +222,8 @@ for (const k of Object.keys(FORCE)) if (FORCE[k] === undefined || FORCE[k] === "
 const FIRST_PAY = process.env.SIM_FIRST_PAY ?? "now";
 const GIVE_BLADE = process.env.SIM_GIVE_BLADE === "1";
 const AMBITIONS = ["ambition.gauge", "ambition.lantern", "ambition.ember", "ambition.fathom"];
-// Work order 037: ten scenes over three visits, in prologue.progress order.
-const PROLOGUE = ["prologue.sprocket_row.who_you_are", "prologue.sprocket_row.rats_in_the_workshop", "prologue.sprocket_row.back_rent", "prologue.sprocket_row.the_receipt", "prologue.sprocket_row.the_neighbours", "prologue.polytechnic.the_register", "prologue.rustmoor.the_tip_book", "prologue.rustmoor.the_first_nest", "prologue.polytechnic.the_lift_lecture", "prologue.sprocket_row.brass_plate"];
+// Work order 037: ten scenes over three visits, in prologue.progress order; work order 041 adds the_first_haul to the first.
+const PROLOGUE = ["prologue.sprocket_row.who_you_are", "prologue.sprocket_row.rats_in_the_workshop", "prologue.sprocket_row.the_first_haul", "prologue.sprocket_row.back_rent", "prologue.sprocket_row.the_receipt", "prologue.sprocket_row.the_neighbours", "prologue.polytechnic.the_register", "prologue.rustmoor.the_tip_book", "prologue.rustmoor.the_first_nest", "prologue.polytechnic.the_lift_lecture", "prologue.sprocket_row.brass_plate"];
 // The first-session guide's step rules, copied from engine/packages/client/src/Guide.tsx (the client imports
 // react-native, so the sim cannot import it). "boiler" and "come_back" are taken as pressed when the player does them.
 const GUIDE = [
@@ -233,6 +234,7 @@ const GUIDE = [
   ["rats_in_the_workshop", (t) => (t.story.qualities["prologue.progress"] ?? 0) >= 8],
   ["equip", (t) => t.weapon !== null],
   ["rats", (t) => t.crowns > 0 || (t.story.qualities["prologue.progress"] ?? 0) >= 10],
+  ["first_haul", (t) => (t.story.qualities["prologue.progress"] ?? 0) >= 9],
   ["come_back", (t, ack) => ack && t.queue.length > 0],
 ];
 const guideStep = (t, acked) => GUIDE.find(([id, done]) => !done(t, acked.includes(id)))?.[0] ?? "(done)";
@@ -839,6 +841,8 @@ async function runCadence(perDay) {
   clock += 14 * MIN;
   await ok("GET", `/tinkers/${main}`);
   await g("14 minutes of fighting");
+  // Work order 041: five rats' silk opens the sitting's third scene, which the guide asks for before come_back.
+  await playOne("prologue.sprocket_row.the_first_haul", "story pass after five rats");
   void FIRST_PAY;
   // Work order 037: the guide's come_back step says "Press Fill, then Start" on Rust Rat Runt until 11 h is queued.
   // Fill counts floor(BOILER_SECONDS / seconds each), seconds from the fight outlook (client jobs.ts countFor).

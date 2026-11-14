@@ -190,6 +190,47 @@ function boltPoints(puff: Puff): { x: number; y: number }[] {
   });
 }
 
+/** A cold Boiler taking the pressure: steam bursts from its seams and rolls up the wall. It plays once. */
+function SteamBurst() {
+  const t = useRef(new Animated.Value(0)).current;
+  const puffs = useRef(
+    Array.from({ length: 10 }, (_, index) => ({
+      x: (index % 5) * 22 - 44 + Math.random() * 10,
+      at: 0.01 + index * 0.045,
+      size: 24 + Math.random() * 22,
+      drift: Math.random() * 44 - 22,
+    })),
+  ).current;
+  useEffect(() => {
+    Animated.timing(t, { toValue: 1, duration: 2400, easing: Easing.out(Easing.quad), useNativeDriver: false }).start();
+    // Plays once from when it mounts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return (
+    <View pointerEvents="none" style={{ position: "absolute", right: "16%", top: 70 }}>
+      {puffs.map((puff, index) => (
+        <Animated.View
+          key={index}
+          style={{
+            position: "absolute",
+            left: puff.x,
+            width: puff.size,
+            height: puff.size,
+            borderRadius: puff.size / 2,
+            backgroundColor: colors.steam,
+            opacity: t.interpolate({ inputRange: [0, puff.at, puff.at + 0.12, 1], outputRange: [0, 0, 0.75, 0] }),
+            transform: [
+              { translateY: t.interpolate({ inputRange: [0, puff.at, 1], outputRange: [0, 0, -96] }) },
+              { translateX: t.interpolate({ inputRange: [0, 1], outputRange: [0, puff.drift] }) },
+              { scale: t.interpolate({ inputRange: [0, puff.at, 1], outputRange: [0.4, 0.4, 2.1] }) },
+            ],
+          }}
+        />
+      ))}
+    </View>
+  );
+}
+
 /** What the Tinker does with each skill's work. */
 const POSE: Record<string, string> = {
   smithing: "hammer",
@@ -210,7 +251,20 @@ export function zoneOf(id: string): string {
  * monster's health drains over each kill, it flinches at every swing, and it
  * falls when the kill lands, then the next one comes on.
  */
-export function Scene({ tinker, content, progress, working }: { tinker: Tinker; content: Content; progress: number; working: boolean }) {
+export function Scene({
+  tinker,
+  content,
+  progress,
+  working,
+  cold = false,
+}: {
+  tinker: Tinker;
+  content: Content;
+  progress: number;
+  working: boolean;
+  /** The Boiler has not been lit: the workshop is dim until the valve is opened, then it shudders and fills with steam. */
+  cold?: boolean;
+}) {
   const head = tinker.queue[0];
   const monster = head ? content.monsters.find((candidate) => candidate.id === head.actionId) : undefined;
   const action = head ? content.actions.find((candidate) => candidate.id === head.actionId) : undefined;
@@ -240,6 +294,25 @@ export function Scene({ tinker, content, progress, working }: { tinker: Tinker; 
   const [puffs, setPuffs] = useState<Puff[]>([]);
   const lastSwing = useRef(progress);
   const shake = useRef(new Animated.Value(0)).current;
+
+  // The valve: the dim lifts, the scene shudders, and the Boiler vents.
+  const dim = useRef(new Animated.Value(cold ? 1 : 0)).current;
+  const wasCold = useRef(cold);
+  const [bursts, setBursts] = useState(0);
+  useEffect(() => {
+    const lit = wasCold.current && !cold;
+    wasCold.current = cold;
+    if (cold) dim.setValue(1);
+    if (!lit) return;
+    if (reduced) {
+      dim.setValue(0);
+      return;
+    }
+    Animated.timing(dim, { toValue: 0, duration: 1400, useNativeDriver: false }).start();
+    shake.setValue(1);
+    Animated.timing(shake, { toValue: 0, duration: 700, useNativeDriver: false }).start();
+    setBursts((count) => count + 1);
+  }, [cold, reduced, dim, shake]);
 
   // Each beat of work or a fight lands with something to see.
   useEffect(() => {
@@ -315,8 +388,10 @@ export function Scene({ tinker, content, progress, working }: { tinker: Tinker; 
           {!falling && <HealthBar fraction={1 - progress} width={boss ? 160 : 90} />}
         </View>
       )}
+      <Animated.View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, backgroundColor: "rgba(10, 12, 20, 0.58)", opacity: dim }} />
+      {bursts > 0 && <SteamBurst key={bursts} />}
       {!working && head && <Text style={[ui.muted, { position: "absolute", right: 10, bottom: 8 }]}>The Boiler is dry.</Text>}
-      {!head && <Text style={[ui.muted, { position: "absolute", right: 10, bottom: 8, color: colors.ink }]}>Idle. Queue some work.</Text>}
+      {!head && <Text style={[ui.muted, { position: "absolute", right: 10, bottom: 8, color: colors.ink }]}>{cold ? "The Boiler is cold." : "Idle. Queue some work."}</Text>}
       {puffs.map((puff) => (
         <PuffView key={puff.id} puff={puff} onDone={(id) => setPuffs((list) => list.filter((entry) => entry.id !== id))} />
       ))}

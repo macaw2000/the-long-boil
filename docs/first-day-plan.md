@@ -47,9 +47,13 @@ Revised 3 November 2026 after the educator's baseline (the Ledger below): the bi
 | 4 | **The Story tab**: scenes are choices; each costs Nerve, which refills | Play scene 1 while the spanners run | **Who you are.** Why No. 9 came to you: you choose Hester's apprentice, a relative named in her will, or a stranger. Hester left in the middle of a job and never came back. | Hester Vane | "No. 9 was Hester's. She vanished, and it's mine because I was her [apprentice / relative / the stranger she chose]." |
 | 5 | (story only) | Play scene 2 | **Rats in the workshop.** Scratching under the floor: Rust Rats, which take metal, have come for your spanners. One bites. Choice: grab a spanner, or barricade and save the rest. | Rust Rats | "Rats come for metal, and they're coming for mine." |
 | 6 | **A fight**: equip a weapon and your Tinker fights on its own | Equip the spanner, fight a Rust Rat Runt | The rats bolt down a hole in the floor to the scrapyards below. You follow. Rats drop scrap and the odd Crown: keep them. | Rustmoor (where the fight happens) | "My Tinker fights by itself with what I give it." |
-| 7 | **Coming back**: the work goes on while you are away | Queue the night's work, press Leave it running | Brassbuckle leaves you the keys. The brass tube over the bench rattles: something is on its way. | (none) | "I come back later and there's more." |
+| 6a | (nothing new: the fight again, with a goal) | Beat five Rust Rats; a meter counts them | (goal line only: "One rat proves nothing.") | (none) | "I beat five rats and brought up what they dropped." |
+| 6b | (story only) | Play scene 3 | **The first haul.** You come up with the silk and the scrap. The brass tube over the bench rattles and nothing comes out. Brassbuckle leaves the keys on the bench. | the Pneumatic Post | "Something is coming down that tube." |
+| 7 | **Coming back**: the work goes on while you are away | Queue the night's work, press Leave it running | A card says what will be waiting: the night's rats, the tally, and whatever is in the tube. | (none) | "I come back later and there's more." |
 
-Three mechanics (the Boiler, a job, a fight) and the Story tab; two scenes; four new names. Rations, Crowns as money, selling and armour all wait. The Needles stay hidden.
+Three mechanics (the Boiler, a job, a fight) and the Story tab; three scenes; five new names. Rations, Crowns as money, selling and armour all wait. The Needles stay hidden.
+
+Steps 6a and 6b were added on 13 November 2026 (work order 041). Timed in a browser, the sitting ended at the first kill, about four minutes in, with nothing won and nothing to wait for; the educator's readers had called its ending flat (6 of 6, third check). It now runs about 8 minutes at a brisk pace and ends on the tube. The same work order makes the sitting's moments easier to see and hear (the valve, a level, the return) and changes no rule or number.
 
 ### Sitting 2: the Row (a few hours later)
 
@@ -138,6 +142,15 @@ The Great Kettle and the Lift move to Act I. So do the Exchange, guilds, the Nee
 36. **Later pages are named by their own titles**, such as "Hester's Torn Page: No. 9, accounts", to be settled across the drop pages before the first Cinderworks page is drafted; decision 27 stands until then (Jeremy, 5 November 2026).
 37. **Hester's "the line comes first" stays** at 4 Crowns against 350 (Jeremy, 5 November 2026).
 38. **The Friday runner in `drop_3` stays open**: canon does not say whether it is Pip (Jeremy, 5 November 2026).
+
+## Open after work order 041
+
+For Jeremy, after playing it:
+
+- **Five rats or ten.** Built at five (about four more minutes of fighting after the first kill). Ten was the first proposal; it doubles the wait and adds no moment.
+- **"The Pneumatic Post" in sitting 1.** Scene 3 says the name a sitting before Pip's letter does. It is the scene's one new term.
+- **The first steam burst** (a faster first ten minutes) is held until playtesters have seen this version.
+- **GDD section 7** still describes the session from before this plan; the amendments are in `docs/work-orders/041-first-sitting-feel.md`.
 
 ## Measuring it
 

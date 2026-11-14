@@ -57,9 +57,12 @@ function prologue(tinker: Tinker): number {
   return tinker.story.qualities["prologue.progress"] ?? 0;
 }
 
-// The first sitting's two scenes take prologue.progress to these (content/storylets/prologue.sprocket_row.*).
+// The first sitting's three scenes take prologue.progress to these (content/storylets/prologue.sprocket_row.*).
 const FIRST_SCENE_DONE = 4;
 const RATS_SCENE_DONE = 8;
+const HAUL_SCENE_DONE = 9;
+/** Umbrella Silk the third scene, the_first_haul, asks for: one falls with every rat, so it counts the rats beaten. */
+export const HAUL_RATS = 5;
 /** prologue.progress when the brass plate, the third sitting's last scene, is next. */
 const PLATE_FROM = 70;
 
@@ -72,8 +75,9 @@ export interface Step {
 }
 
 // The first sitting only (docs/first-day-plan.md): the Boiler, a job, the first
-// two scenes, a fight, and coming back. The bill, selling, armour and the rest
-// of the Prologue come in later sittings as goal lines (nextGoal), not steps.
+// two scenes, a fight, a first haul with a scene to close it, and coming back.
+// The bill, selling, armour and the rest of the Prologue come in later
+// sittings as goal lines (nextGoal), not steps.
 const STEPS: Step[] = [
   {
     id: "boiler",
@@ -109,6 +113,13 @@ const STEPS: Step[] = [
     id: "rats",
     fallback: "Each Rust Rat you beat drops scrap, a Crown or two, and Umbrella Silk.",
     done: (tinker) => tinker.crowns > 0 || prologue(tinker) >= 10,
+  },
+  {
+    // The sitting ended at the first kill, about four minutes in, with nothing won (work order 041): a goal
+    // to fight for and a scene to close on. A Tinker who left before this step existed is past it.
+    id: "first_haul",
+    fallback: "One rat proves nothing. Beat five, and bring up what they drop.",
+    done: (tinker, _, all) => prologue(tinker) >= HAUL_SCENE_DONE || all.includes("come_back"),
   },
   {
     id: "come_back",
@@ -248,6 +259,11 @@ function toJob(context: GuideContext, place: Place, placeName: string, job: stri
   return { hint: "Press Start.", at: "start" };
 }
 
+/** Open Story, then play the scene: the two presses every scene takes. */
+function toScene(context: GuideContext, open = "Open Story."): Pick<Coaching, "hint" | "at"> {
+  return context.place === "story" ? { hint: "Play the scene under Open to you, and pick an answer.", at: "scenes" } : { hint: open, at: "place:story" };
+}
+
 /** What the player should press now, worked out from the step and where they are. */
 export function coach(step: Step, tinker: Tinker, context: GuideContext): Coaching {
   const fighting = tinker.queue.some((entry) => entry.actionId === RUNT);
@@ -262,9 +278,7 @@ export function coach(step: Step, tinker: Tinker, context: GuideContext): Coachi
     }
     case "who_you_are":
     case "rats_in_the_workshop":
-      return context.place === "story"
-        ? { hint: "Play the scene under Open to you, and pick an answer.", at: "scenes" }
-        : { hint: "Open Story.", at: "place:story" };
+      return toScene(context);
     case "equip":
       return { hint: "Equip your Brass Spanner.", at: "card", action: { label: "Equip Brass Spanner", kind: "equip", item: SPANNER } };
     case "rats":
@@ -273,6 +287,14 @@ export function coach(step: Step, tinker: Tinker, context: GuideContext): Coachi
         return { hint: `You are fighting a Rust Rat. The first win lands in about ${left}s.`, at: "bench" };
       }
       return toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt");
+    case "first_haul": {
+      const beaten = Math.min(HAUL_RATS, held(tinker, SILK));
+      const goal = { label: "Rust Rats beaten", have: beaten, need: HAUL_RATS, unit: "" };
+      if (beaten >= HAUL_RATS) return { ...toScene(context, "Five rats down. Open Story: something has come of it."), goal };
+      if (!fighting) return { ...toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt"), goal };
+      const left = Math.max(1, Math.ceil(context.nextInMs / 1000));
+      return { hint: `Beat ${HAUL_RATS} Rust Rats. The next one falls in about ${left}s.`, at: "bench", goal };
+    }
     case "come_back": {
       if (context.queuedMs >= NIGHT_MS) return { hint: "All set. Press Leave it running.", at: "card", action: { label: context.button ?? "Leave it running", kind: "acknowledge" } };
       // A playtester queued an hour and came back puzzled by "twelve hours": fill the night with fights, which need nothing.
@@ -463,14 +485,27 @@ export function RoadDots({ road, onPress }: { road: RoadView; onPress: () => voi
 }
 
 /** After the guide, one line saying what to do next, and a way back into the guide. */
-export function GoalBar({ goal, road, onGo, onReplay }: { goal: Goal | null; road: RoadView | null; onGo: (place: Place) => void; onReplay: () => void }) {
+export function GoalBar({
+  goal,
+  road,
+  quiet = "All in hand. The workshop runs while you are away.",
+  onGo,
+  onReplay,
+}: {
+  goal: Goal | null;
+  road: RoadView | null;
+  /** The line when nothing wants doing: until when the workshop runs, and when the story goes on (restLine). */
+  quiet?: string;
+  onGo: (place: Place) => void;
+  onReplay: () => void;
+}) {
   return (
     <View style={[ui.panel, { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 8, paddingHorizontal: 12 }]}>
       {road && <RoadDots road={road} onPress={() => onGo("story")} />}
       <Text style={[ui.muted, { fontSize: 11, letterSpacing: 1, color: colors.brass }]}>NEXT</Text>
       <Text style={[ui.text, { flex: 1 }]}>
         {goal?.speaker && <Text style={{ color: colors.brass }}>{goal.speaker}: </Text>}
-        {goal ? goal.text : "All in hand. The workshop runs while you are away."}
+        {goal ? goal.text : quiet}
       </Text>
       {goal?.place && (
         <Pressable onPress={() => onGo(goal.place!)} accessibilityRole="button" style={[ui.button, { paddingHorizontal: 12, paddingVertical: 4 }]}>
@@ -486,3 +521,76 @@ export function GoalBar({ goal, road, onGo, onReplay }: { goal: Goal | null; roa
 
 /** The guide's own glow colour: brighter than the brass the rest of the screen is drawn in. */
 export const GOLD = "#f2c14e";
+
+const clock = (at: number) => new Date(at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+/** What a Tinker leaving now comes back to: how long the queue and the Boiler run, and when the story goes on. */
+export interface Rest {
+  /** When the bench stops: the queue's end or the Boiler's, whichever is first. */
+  workUntil: number;
+  /** The queue outlasts the Boiler's steam. */
+  boilerFirst: boolean;
+  /** When a visit next counts for the story, if scenes wait on one. */
+  storyAt: number | null;
+  /** The job at work, by name, and how many goes are queued. */
+  job: string | null;
+  goes: number;
+}
+
+export function rest(tinker: Tinker, content: Content, now: number, name: (id: string) => string, nextVisitAt: string | null): Rest {
+  const steamUntil = new Date(tinker.steamUntil).getTime();
+  const queueEnds = now + queuedMs(tinker, content);
+  const head = tinker.queue[0];
+  const visit = nextVisitAt ? new Date(nextVisitAt).getTime() : null;
+  // Only a scene that waits on a visit makes the time worth saying.
+  const waitsOnVisit = tinker.story.road?.next?.state === "waiting" && tinker.story.road.next.needs.some(([need]) => need.startsWith("record."));
+  return {
+    workUntil: Math.min(steamUntil, queueEnds),
+    boilerFirst: steamUntil <= queueEnds,
+    storyAt: waitsOnVisit ? visit : null,
+    job: head ? (content.monsters.find((monster) => monster.id === head.actionId)?.name ?? name(content.actions.find((action) => action.id === head.actionId)?.outputs[0]?.item ?? head.actionId)) : null,
+    goes: head?.remaining ?? 0,
+  };
+}
+
+/** The goal bar's line when nothing wants doing: a calm status and when it changes, never bare "All in hand". */
+export function restLine(at: Rest, now: number): string {
+  const work = at.workUntil > now ? `All in hand. The bench has work until ${clock(at.workUntil)}.` : "All in hand.";
+  const story = at.storyAt === null ? "" : at.storyAt > now ? ` The story goes on when you are next back, after ${clock(at.storyAt)}.` : " The story goes on when you are next back.";
+  return work + story;
+}
+
+/**
+ * The end of the first sitting. "All in hand" read flat to every cold reader
+ * and left nothing to come back for: the card says what the workshop will do
+ * while the player is gone, when the story goes on, and that the tab can close.
+ */
+export function SendOff({ at, now, onClose }: { at: Rest; now: number; onClose: () => void }) {
+  const waiting = [
+    at.job && at.goes > 0 ? `${at.goes.toLocaleString()} × ${at.job} on the bench, working until ${clock(at.workUntil)}${at.boilerFirst ? ", when the Boiler runs down" : ""}.` : null,
+    "Everything it makes will be in your Stores, with a tally of the lot.",
+    at.storyAt !== null && at.storyAt > now ? `Whatever is in the tube. The story goes on after ${clock(at.storyAt)}.` : "Whatever is in the tube.",
+  ].filter((line): line is string => line !== null);
+  return (
+    <View style={[ui.panel, { borderColor: GOLD, borderWidth: 2, flexDirection: "row", gap: 12, alignItems: "flex-start", padding: 12 }]}>
+      <Image
+        source={BRASSBUCKLE}
+        style={{ width: 56, height: 56, borderRadius: 28, borderWidth: 2, borderColor: colors.brass, backgroundColor: colors.soot }}
+        accessibilityLabel="Professor Brassbuckle"
+      />
+      <View style={{ flex: 1, gap: 6 }}>
+        <Text style={{ color: GOLD, fontFamily: fonts.serif, fontSize: 17, fontWeight: "700", lineHeight: 23 }}>No. 9 is running. You can go.</Text>
+        <Text style={ui.muted}>Waiting for you when you come back:</Text>
+        {waiting.map((line) => (
+          <Text key={line} style={[ui.text, { lineHeight: 20 }]}>
+            • {line}
+          </Text>
+        ))}
+        <Text style={[ui.muted, { fontSize: 12 }]}>Close the tab whenever you like: the workshop does not need you watching. Stay, and the rats keep falling.</Text>
+        <Pressable onPress={onClose} accessibilityRole="button" style={[ui.button, { alignSelf: "flex-start", paddingHorizontal: 16 }]}>
+          <Text style={ui.buttonText}>Right</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+}

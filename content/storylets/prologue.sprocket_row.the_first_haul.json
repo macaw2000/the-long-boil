@@ -1,0 +1,34 @@
+{
+  "schema": "storylet/1",
+  "id": "prologue.sprocket_row.the_first_haul",
+  "act": 0,
+  "location": "sprocket_row",
+  "reveal_layer": 0,
+  "requires": {
+    "prologue.progress": "==8",
+    "record.check_ins": ">=1",
+    "item.rustmoor.umbrella_silk": ">=5"
+  },
+  "nerve": 1,
+  "description": "You come up through the hole in the floor with an armful of black silk, a pocketful of scrap, and a good many small holes in your stockings. Professor Brassbuckle has not moved from the stool by the Boiler. She looks at the silk, and at the state of your ankles, and passes no remark on either. Then the brass tube over the bench rattles, once, from one end to the other, and is still. Nothing comes out of it. \"That will be the Pneumatic Post,\" says Brassbuckle. \"It has noticed that somebody lives here.\"",
+  "options": [
+    {
+      "label": "Put your ear to the tube, and listen for what is coming.",
+      "success": {
+        "text": "The brass is warm against your ear. A long way off in the pipe something is travelling, with a sound like a marble rolling down a drain in another house. It stops, and thinks, and comes on again. Brassbuckle watches you listen. \"It has a long way to come,\" she says, \"and it stops at every bend to be sure of the address. It will be here by the time you are back.\" She gets up, and puts the keys of No. 9 on the bench beside the silk. \"In my experience the Post brings the bills first, and the good news when it remembers.\"",
+        "changes": {
+          "prologue.progress": 9
+        }
+      }
+    },
+    {
+      "label": "Leave the tube to its business, and lay out your silk and scrap on the bench.",
+      "success": {
+        "text": "The silk goes on the bench in a black heap, and the scrap beside it in a brown one. Both heaps are yours: not left to you, not contents included, but fetched. Behind you the tube rattles again. Brassbuckle gets up and puts the keys of No. 9 down next to the silk. \"Ten scraps of that make a pair of hand-wraps,\" she says, \"which your wrists will want before long. As for the tube, whatever it is bringing will be here by the time you are back. It has never yet brought anything that would not keep.\"",
+        "changes": {
+          "prologue.progress": 9
+        }
+      }
+    }
+  ]
+}

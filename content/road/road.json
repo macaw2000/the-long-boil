@@ -14,6 +14,12 @@
           "label": "The First Bite"
         },
         {
+          "at": 9,
+          "scene": "prologue.sprocket_row.the_first_haul",
+          "label": "The Tube Rattles",
+          "hint": "Beat five Rust Rats in Rustmoor."
+        },
+        {
           "at": 30,
           "scene": "prologue.sprocket_row.the_neighbours",
           "label": "The Row Has Opinions"

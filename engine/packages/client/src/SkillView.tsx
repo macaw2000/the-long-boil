@@ -2,7 +2,11 @@
 // layout: the skill's level, the Tinker at work, and the skill's jobs as
 // tiles. Choosing a tile shows what it takes and gives, a count (about an
 // hour by default, with quick spans), and Start or Add to queue. The fights
-// are a page of their own, one tile per Rustmoor monster.
+// are a page of their own, one tile per Rustmoor monster. A zone the story
+// has not opened shows no tiles at all, only a count once the whole screen
+// is open: on the first day more than half the Tinkering tiles and half the
+// monsters were the Cinderworks', locked. A fight far beyond the Tinker says
+// what it wants, not how many minutes a kill would take today.
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Image, Pressable, Text, TextInput, View } from "react-native";
@@ -48,7 +52,8 @@ function startNote(tinker: Tinker, content: Content, id: string, full: boolean, 
 }
 
 export function SkillIcon({ skill, size = 24 }: { skill: string; size?: number }) {
-  const drawn = skillIconSource(skill);
+  // The seven combat skills have no jobs and no icon of their own: they are the fight's.
+  const drawn = skillIconSource(COMBAT_SKILLS.some(([combat]) => combat === skill) ? FIGHT : skill);
   if (drawn !== undefined) return <Image source={drawn} style={{ width: size, height: size }} accessibilityIgnoresInvertColors />;
   if (skill === FIGHT) return <MonsterPicture id="monster.rustmoor.rust_rat_runt" size={size} />;
   return <ItemIcon item={SKILL_ICONS[skill] ?? "item.fallback"} size={size} />;
@@ -100,8 +105,14 @@ export function SkillView({
   const xp = tinker.skills.find((entry) => entry.skill === skill)?.xp ?? 0;
   const progress = fight ? null : levelProgress(content, xp, level);
 
-  const actions = content.actions.filter((action) => action.skill === skill).sort((a, b) => a.level_required - b.level_required);
-  const monsters = [...content.monsters].sort((a, b) => a.level - b.level);
+  const everyAction = content.actions.filter((action) => action.skill === skill).sort((a, b) => a.level_required - b.level_required);
+  const everyMonster = [...content.monsters].sort((a, b) => a.level - b.level);
+  const open = (id: string) => zoneOpen(id, tinker.story.qualities);
+  const actions = everyAction.filter((action) => open(action.id));
+  const monsters = everyMonster.filter((monster) => open(monster.id));
+  const beyond = fight ? everyMonster.length - monsters.length : everyAction.length - actions.length;
+  // The Foundry Pass is Act I's word: it is not named while the first day is still teaching the bench.
+  const passNamed = (tinker.story.qualities["record.visits_since_prologue"] ?? 0) >= 1;
 
   const choose = (id: string) => {
     setChosen(id);
@@ -146,34 +157,35 @@ export function SkillView({
           {fight
             ? monsters.map((monster) => {
                 const outlook = planner.fights.get(monster.id);
-                const closed = !zoneOpen(monster.id, tinker.story.qualities);
-                const line = closed
-                  ? FOUNDRY_PASS_LINE
-                  : !outlook
+                const wants = outlook?.ready ? outmatched(content, tinker, monster, outlook.seconds, name) : null;
+                const line = !outlook
                   ? `Level ${monster.level}`
                   : !outlook.ready
                     ? notReadyText(outlook.reason)
                     : monster.boss && outlook.winChance !== null
-                      ? `${Math.round(outlook.winChance * 100)}% to win`
-                      : `${seconds(outlook.seconds)} a kill`;
+                      ? // "0% to win" on the first day read as a wall; a boss out of reach says only what it is.
+                        outlook.winChance < 0.05
+                        ? `Boss · level ${monster.level}`
+                        : `${Math.round(outlook.winChance * 100)}% to win`
+                      : wants
+                        ? `Level ${monster.level} · ${wants.short}`
+                        : `${seconds(outlook.seconds)} a kill`;
                 return (
                   <Tile
                     key={monster.id}
                     guided={guided(monster.id)}
                     selected={chosen === monster.id}
-                    locked={closed}
+                    locked={false}
                     onPress={() => choose(monster.id)}
                     picture={<MonsterPicture id={monster.id} size={64} />}
                     title={monster.name}
                     line={line}
-                    explain={closed ? (raise) => <FoundryPassNote onOpenChange={raise} /> : undefined}
                     accent={monster.boss ? colors.copper : undefined}
                   />
                 );
               })
             : actions.map((action) => {
-                const closed = !zoneOpen(action.id, tinker.story.qualities);
-                const locked = closed || level < action.level_required;
+                const locked = level < action.level_required;
                 return (
                   <Tile
                     key={action.id}
@@ -183,13 +195,13 @@ export function SkillView({
                     onPress={() => choose(action.id)}
                     picture={<ItemIcon item={action.outputs[0]?.item ?? "item.fallback"} size={40} />}
                     title={jobTitle(content, action.id, name)}
-                    line={closed ? FOUNDRY_PASS_LINE : locked ? `Level ${action.level_required}` : seconds(action.seconds)}
-                    explain={closed ? (raise) => <FoundryPassNote onOpenChange={raise} /> : undefined}
+                    line={locked ? `Level ${action.level_required}` : seconds(action.seconds)}
                   />
                 );
               })}
         </View>
       </Glow>
+      {beyond > 0 && passNamed && <FoundryPassNote count={beyond} />}
 
       {chosen !== null && (
         <JobDetail
@@ -216,24 +228,56 @@ export function SkillView({
   );
 }
 
-const FOUNDRY_PASS_LINE = "Opens with the Foundry Pass";
-
-/** A zone-locked tile's line, with what the Foundry Pass is and that it is earned, not sold. */
-function FoundryPassNote({ onOpenChange }: { onOpenChange?: (open: boolean) => void }) {
+/** How many tiles a closed zone holds back, in one line, with what the Foundry Pass is and that it is earned, not sold. */
+function FoundryPassNote({ count }: { count: number }) {
   return (
-    <Term term="foundry_pass" onOpenChange={onOpenChange}>
-      <Text style={[ui.muted, { fontSize: 11, textAlign: "center", textDecorationLine: "underline", textDecorationStyle: "dotted" }]}>
-        {FOUNDRY_PASS_LINE} ⓘ
-      </Text>
-    </Term>
+    <View style={{ alignSelf: "flex-start", zIndex: 50 }}>
+      <Term term="foundry_pass">
+        <Text style={[ui.muted, { fontSize: 12, textDecorationLine: "underline", textDecorationStyle: "dotted" }]}>
+          {count} more {count === 1 ? "opens" : "open"} with the Foundry Pass ⓘ
+        </Text>
+      </Term>
+    </View>
   );
+}
+
+const article = (noun: string) => (/^[aeiou]/i.test(noun) ? "an" : "a");
+
+/** A kill this many times a monster's usual time means the Tinker is not yet a match for it. */
+const OUTMATCHED = 2;
+
+/**
+ * What a monster far beyond the Tinker wants, in place of "13m 48s a kill":
+ * the best weapon of the style in hand that a Tinker of the monster's level
+ * would carry, or that style's level when the weapon is already held. Levels
+ * alone buy no speed against easy monsters (GDD section 6), so this line is
+ * where a player sees what getting stronger is for.
+ */
+function outmatched(content: Content, tinker: Tinker, monster: Content["monsters"][number], kill: number, name: (id: string) => string): { short: string; long: string } | null {
+  if (monster.boss || kill <= OUTMATCHED * monster.seconds_per_kill) return null;
+  const inHand = content.weapons.find((weapon) => weapon.item === tinker.weapon);
+  if (!inHand) return null;
+  const styleLevel = tinker.skills.find((entry) => entry.skill === inHand.style)?.level ?? 1;
+  const better = content.weapons
+    .filter((weapon) => weapon.style === inHand.style && weapon.level_required <= monster.level && weapon.power > inHand.power && zoneOpen(weapon.item, tinker.story.qualities))
+    .sort((a, b) => b.power - a.power)[0];
+  const style = titleCase(inHand.style);
+  if (better) {
+    const weapon = name(better.item);
+    const ready = styleLevel >= better.level_required;
+    return {
+      short: `wants ${article(weapon)} ${weapon}`,
+      long: `${article(weapon) === "an" ? "An" : "A"} ${weapon} would make far shorter work of it. It needs ${style} ${better.level_required}: ${ready ? "you have that" : `you are ${style} ${styleLevel}`}.`,
+    };
+  }
+  if (styleLevel < monster.level) return { short: `wants ${style} ${monster.level}`, long: `It is a match for ${style} ${monster.level}: you are ${style} ${styleLevel}.` };
+  return null;
 }
 
 function Tile({
   picture,
   title,
   line,
-  explain,
   selected,
   locked,
   guided,
@@ -243,17 +287,14 @@ function Tile({
   picture: ReactNode;
   title: string;
   line: string;
-  /** Shown in place of line, undimmed, when the line explains itself (Term.tsx). */
-  explain?: (raise: (open: boolean) => void) => ReactNode;
   selected: boolean;
   locked: boolean;
   guided: boolean;
   accent?: string;
   onPress: () => void;
 }) {
-  const [raised, setRaised] = useState(false);
   return (
-    <Glow active={guided} guide style={{ zIndex: raised ? 50 : 0 }}>
+    <Glow active={guided} guide>
     <Pressable
       onPress={onPress}
       disabled={locked}
@@ -283,7 +324,7 @@ function Tile({
           {title}
         </Text>
       </View>
-      {explain ? explain(setRaised) : <Text style={[ui.muted, { fontSize: 11, textAlign: "center", opacity: locked ? 0.45 : 1 }]}>{line}</Text>}
+      <Text style={[ui.muted, { fontSize: 11, textAlign: "center", opacity: locked ? 0.45 : 1 }]}>{line}</Text>
     </Pressable>
     </Glow>
   );
@@ -331,6 +372,7 @@ function JobDetail({
   const warning = planner.startWarning(id);
   const each = planner.secondsEach(id);
   const full = tinker.queue.length >= tinker.upgrades.queueSlots;
+  const wants = monster && planner.fights.get(id)?.ready ? outmatched(content, tinker, monster, each, name) : null;
 
   return (
     <View ref={panel} style={[ui.panel, { borderColor: colors.brass, gap: 10 }]}>
@@ -365,9 +407,10 @@ function JobDetail({
       {monster && (
         <Text style={ui.muted}>
           Level {monster.level} · weak to {monster.weakness}
-          {monster.boss ? " · a boss: one attempt at a time" : ` · about ${seconds(each)} a kill`}
+          {monster.boss ? " · a boss: one attempt at a time" : ` · about ${seconds(each)} a kill${wants ? " with what you hold" : ""}`}
         </Text>
       )}
+      {wants && <Text style={[ui.text, { color: colors.brass }]}>{wants.long}</Text>}
 
       {!planner.isBoss(id) && (
         <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 6 }}>

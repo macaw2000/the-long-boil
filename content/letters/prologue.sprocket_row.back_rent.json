@@ -5,7 +5,7 @@
   "location": "sprocket_row",
   "reveal_layer": 0,
   "requires": {
-    "prologue.progress": "==8",
+    "prologue.progress": "==9",
     "record.check_ins": ">=2"
   },
   "nerve": 1,

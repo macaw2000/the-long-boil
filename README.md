@@ -19,7 +19,7 @@ The Prologue and Act I are playable end to end. A new Tinker trains skills, figh
 | The idle loop | 16 skills, an action queue, and the Boiler, which runs your queue for 12 hours offline. Offline resolution is proven equal to step-by-step replay. |
 | Combat | Automatic fights with three attack styles and weaknesses, Rations, knockouts, and Scrapjaw as a boss attempt |
 | Gear and tools | Seven gear slots and a tool for each gathering and crafting skill. Smithing's metal ladder and, since work order 032, Tailoring's cloth ladder from day one. |
-| Story | 51 storylets, 8 Pneumatic Post letters and 5 Ledger Pages across the Prologue and Act I. Nerve, the four Needles, Favour with eight factions, and an Ambition chosen at the end of Act I. |
+| Story | 52 storylets, 8 Pneumatic Post letters and 5 Ledger Pages across the Prologue and Act I. Nerve, the four Needles, Favour with eight factions, and an Ambition chosen at the end of Act I. |
 | The city | The Brass Exchange (an order book, collectors and the grocer), live updates over WebSocket, chat, guilds, and Work Orders |
 | Money | The Cog Shop: Gilded Cogs, Cog Crates and four time savers, with Stripe Checkout in test mode |
 | Admin | A console for running the playtest: sign-ups, who's active and online, revenue, a story funnel, every player and purchase, chat removal, and chat or full bans |

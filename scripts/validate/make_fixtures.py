@@ -1369,7 +1369,7 @@ put("style/fail-canon/" + STP + "door.json", GOOD_PROLOGUE)
 GUIDE_ID = "prologue.sprocket_row.first_session_guide"
 GUIDE_STEPS = ("boiler", "queue_spanners", "who_you_are", "first_spanner", "rats_in_the_workshop", "equip",
                "rats", "come_back", "pips_bill", "pay_bill", "first_armour", "brass_plate",
-               "sale_done", "rations")
+               "sale_done", "rations", "first_haul")
 GUIDE_BUTTONS = ("boiler", "come_back")
 GDP = "content/guide/first_session.json"
 def gstep(ident, line="A fixture card says where to press.", button=None, speaker="A fixture professor"):
@@ -1388,7 +1388,7 @@ put("schema/pass/" + GDP, GOOD_GUIDE)
 # of order; a button where none is allowed (equip); a blank speaker and a
 # blank line; a field the schema does not know; a missing line; a button on a
 # goal line (sale_done); a blank line on the last goal line (rations); a
-# fifteenth step; a guide/1 file under content/letters/ (and with no steps); a non-guide file
+# sixteenth step; a guide/1 file under content/letters/ (and with no steps); a non-guide file
 # under content/guide/.
 GS = "schema/fail-guide/"
 put(GS + GDP, guide([
@@ -1405,6 +1405,7 @@ put(GS + GDP, guide([
     dict(gstep("brass_plate"), glow="workbench"),
     gstep("sale_done", button="Fixture button"),
     gstep("rations", line=" "),
+    gstep("first_haul"),
     gstep("fixture_extra")], ident="prologue.sprocket_row.fixture_guide"))
 # schema fail-guide-lines: a card is one line, so a line or a button with a
 # line break (\n or \r) fails; a speaker with one does not.
@@ -1416,10 +1417,10 @@ put("schema/fail-guide-lines/" + GDP, guide([
     for i in GUIDE_STEPS]))
 put(GS + "content/letters/guide.json", guide([], ident="prologue.sprocket_row.fixture_stray_guide"))
 # schema fail-guide-short: the old twelve steps, in order, with the last two
-# goal lines missing; and fail-guide-swapped: all fourteen with those two
-# swapped. Both goal lines are required, in their order.
+# goal lines and first_haul missing; and fail-guide-swapped: all fifteen with
+# those two goal lines swapped. Both goal lines are required, in their order.
 put("schema/fail-guide-short/" + GDP, guide(GOOD_GUIDE["steps"][:12]))
-put("schema/fail-guide-swapped/" + GDP, guide(GOOD_GUIDE["steps"][:12] + [gstep("rations"), gstep("sale_done")]))
+put("schema/fail-guide-swapped/" + GDP, guide(GOOD_GUIDE["steps"][:12] + [gstep("rations"), gstep("sale_done"), gstep("first_haul")]))
 put(GS + "content/guide/notes.json", {"schema": "start/1", "id": "start.global.inventory", "inventory": [], "crowns": 0})
 
 # style pass: every line exactly 40 words and both buttons exactly 4;

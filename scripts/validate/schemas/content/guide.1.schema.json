@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "guide/1",
   "title": "First-session guide, version 1",
-  "description": "The one file content/guide/first_session.json (work order 021, part 1): Professor Brassbuckle's card at each step of GDD section 7's first session, shown in the client beside the control the step wants pressed. 'id' is the file-level id prologue.sprocket_row.first_session_guide. 'steps' holds exactly fourteen steps, by position, with these ids in this order, each once (the client depends on them): the first sitting's eight guide steps boiler, queue_spanners, who_you_are, first_spanner, rats_in_the_workshop, equip, rats, come_back, then six lines the client shows on the goal bar after the guided steps, pips_bill, pay_bill, first_armour, brass_plate, sale_done, rations (work order 037; first_armour added by work order 032). The goal-bar lines are never guide-card steps: the client's STEPS holds only the first eight. Each step is {id, speaker, line, button}: speaker, free text; line, the card's text; button, the label of the card's own button, required on boiler and come_back and not allowed on any other step. Each text field is a string with at least one non-space character. When a step is done is the client's rule, not content. The word limits (40 for a line, 4 for a button) and the banned list are the style check's; the reveal-word guard reads the line and button as act 0 (the reveal check's); that the file is content/guide/first_session.json is the schema check's. The step ids are not content ids: 'steps' is exempt from id collection (lib.ID_EXEMPT_KEYS, Jeremy's answer to work order 021), so the file takes one register row, for its file id. A card is one line: 'line' and 'button' may not contain a line break (Jeremy's answer to work order 021). 'revision' is optional and exists only so a register row's revision can match the file. prefixItems is validated by this repo's validator: one schema per position.",
+  "description": "The one file content/guide/first_session.json (work order 021, part 1): Professor Brassbuckle's card at each step of GDD section 7's first session, shown in the client beside the control the step wants pressed. 'id' is the file-level id prologue.sprocket_row.first_session_guide. 'steps' holds exactly fifteen steps, by position, with these ids in this order, each once (the client depends on them): eight of the first sitting's guide steps, boiler, queue_spanners, who_you_are, first_spanner, rats_in_the_workshop, equip, rats, come_back, then six lines the client shows on the goal bar after the guided steps, pips_bill, pay_bill, first_armour, brass_plate, sale_done, rations (work order 037; first_armour added by work order 032), then first_haul, the first sitting's ninth guide step, which the client shows between rats and come_back (work order 041; it sits last in the file so no earlier position moves). The goal-bar lines are never guide-card steps: the client's STEPS holds the first eight and first_haul. Each step is {id, speaker, line, button}: speaker, free text; line, the card's text; button, the label of the card's own button, required on boiler and come_back and not allowed on any other step. Each text field is a string with at least one non-space character. When a step is done is the client's rule, not content. The word limits (40 for a line, 4 for a button) and the banned list are the style check's; the reveal-word guard reads the line and button as act 0 (the reveal check's); that the file is content/guide/first_session.json is the schema check's. The step ids are not content ids: 'steps' is exempt from id collection (lib.ID_EXEMPT_KEYS, Jeremy's answer to work order 021), so the file takes one register row, for its file id. A card is one line: 'line' and 'button' may not contain a line break (Jeremy's answer to work order 021). 'revision' is optional and exists only so a register row's revision can match the file. prefixItems is validated by this repo's validator: one schema per position.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -23,8 +23,8 @@
     },
     "steps": {
       "type": "array",
-      "minItems": 14,
-      "maxItems": 14,
+      "minItems": 15,
+      "maxItems": 15,
       "prefixItems": [
         {
           "$ref": "#/$defs/step_boiler"
@@ -67,6 +67,9 @@
         },
         {
           "$ref": "#/$defs/step_rations"
+        },
+        {
+          "$ref": "#/$defs/step_first_haul"
         }
       ]
     }
@@ -292,6 +295,26 @@
       "properties": {
         "id": {
           "const": "rations"
+        },
+        "speaker": {
+          "$ref": "#/$defs/text"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_first_haul": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "first_haul"
         },
         "speaker": {
           "$ref": "#/$defs/text"

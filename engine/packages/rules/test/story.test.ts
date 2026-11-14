@@ -35,9 +35,9 @@ function fresh(seed = 1): { tinker: TinkerState; story: StoryState } {
   return { tinker: newTinker({}, 0, 0, seed), story: newStory(0) };
 }
 
-/** A Tinker at the second visit with the first sitting's two scenes played: Pip's bill opens now (work order 037). */
+/** A Tinker at the second visit with the first sitting's three scenes played: Pip's bill opens now (work orders 037 and 041). */
 function atBill(seed = 1): { tinker: TinkerState; story: StoryState } {
-  return { tinker: newTinker({}, 0, 0, seed), story: { ...newStory(0), qualities: { "prologue.progress": 8, "record.check_ins": 2 } } };
+  return { tinker: newTinker({}, 0, 0, seed), story: { ...newStory(0), qualities: { "prologue.progress": 9, "record.check_ins": 2 } } };
 }
 
 /** A test letter with the old bill's risk: Tinkering 1 against 6 (10% odds), Arrears +2 on a failure. */
@@ -271,11 +271,17 @@ describe("the first storylets, end to end", () => {
       );
     const visible = () => availableStorylets(tinker, story, content).map((scene) => scene.id).filter(spine);
 
-    // The first day in three sittings (work order 037): two scenes, then the bill and the Row, then the city.
+    // The first day in three sittings (work orders 037 and 041): three scenes, then the bill and the Row, then the city.
     expect(visible()).toEqual(["prologue.sprocket_row.who_you_are"]);
     play("storylet", "prologue.sprocket_row.who_you_are", 0);
     expect(story.qualities["flag.origin_apprentice"]).toBe(1);
     play("storylet", "prologue.sprocket_row.rats_in_the_workshop", 0);
+    // The third scene waits on five rats' silk, so the sitting has a fight to win before it closes.
+    expect(visible()).toEqual([]);
+    tinker.inventory["item.rustmoor.umbrella_silk"] = 5;
+    expect(visible()).toEqual(["prologue.sprocket_row.the_first_haul"]);
+    play("storylet", "prologue.sprocket_row.the_first_haul", 0);
+    expect(story.qualities["prologue.progress"]).toBe(9);
     expect(story.hand).toEqual([]);
     play("letter", LETTER, 0);
     expect(backRentOwed(story)).toBe(1400);
@@ -350,35 +356,35 @@ describe("the road (work order 038)", () => {
 
   it("names only the stops reached, so nothing ahead reaches the client", () => {
     const view = road({ "prologue.progress": 30, "record.check_ins": 2 });
-    expect(view.stops.map((stop) => stop.reached)).toEqual([true, true, false]);
-    expect(view.stops[1]!.label).toBeTruthy();
-    expect(view.stops[2]!.label).toBeNull();
-    expect(view.passed).toBe(2);
-    expect(view.lastLabel).toBe(view.stops[1]!.label);
+    expect(view.stops.map((stop) => stop.reached)).toEqual([true, true, true, false]);
+    expect(view.stops[2]!.label).toBeTruthy();
+    expect(view.stops[3]!.label).toBeNull();
+    expect(view.passed).toBe(3);
+    expect(view.lastLabel).toBe(view.stops[2]!.label);
   });
 
   it("moves on to Act I once the first day is done, keeping the count", () => {
     const view = road({ "prologue.progress": 100, "act1.progress": 40, "record.visits_since_prologue": 1 });
     expect(view.goal).toContain("Foundry Pass");
     expect(view.stops.filter((stop) => stop.reached)).toHaveLength(3);
-    expect(view.passed).toBe(6);
+    expect(view.passed).toBe(7);
   });
 
   it("keeps the finished first day up until the next visit, with no Act I words", () => {
     const view = road({ "prologue.progress": 100 });
-    expect(view.stops.map((stop) => stop.reached)).toEqual([true, true, true]);
+    expect(view.stops.map((stop) => stop.reached)).toEqual([true, true, true, true]);
     expect(view.goal).toBeNull();
     expect(view.next).toBeNull();
-    expect(view.passed).toBe(3);
+    expect(view.passed).toBe(4);
   });
 
   it("has every stop's scene, and has a next scene at every step of the main story", () => {
     for (const section of content.road) {
       for (const stop of section.stops) expect(content.storylets.has(stop.scene)).toBe(true);
     }
-    const prologueSteps = [0, 4, 8, 10, 20, 30, 40, 50, 60, 70];
+    const prologueSteps = [0, 4, 8, 9, 10, 20, 30, 40, 50, 60, 70];
     for (const step of prologueSteps) {
-      const hand = step === 8 ? ["prologue.sprocket_row.back_rent"] : [];
+      const hand = step === 9 ? ["prologue.sprocket_row.back_rent"] : [];
       const view = road({ "prologue.progress": step, "record.check_ins": 3 }, { hand });
       expect(view.next, `prologue ${step}`).not.toBeNull();
     }
