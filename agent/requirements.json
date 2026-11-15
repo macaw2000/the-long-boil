@@ -488,24 +488,6 @@
       ]
     },
     {
-      "id": "reduced_motion",
-      "name": "Reduced motion",
-      "gdd": {
-        "section": "Comfort and access",
-        "quote": "Reduced-motion settings turn off the Haze shimmer and the Scald vignette"
-      },
-      "keywords": "reduced.motion",
-      "player_value": 2,
-      "effort": 1,
-      "evidence": [
-        {
-          "layer": "client",
-          "pattern": "reduce.?motion",
-          "what": "motion that respects the setting"
-        }
-      ]
-    },
-    {
       "id": "page_blur",
       "name": "Ledger Page text blurred in chat",
       "gdd": {
