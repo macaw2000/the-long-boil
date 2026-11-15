@@ -25626,13 +25626,13 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-14T02:31:17Z",
+        "run": "2026-11-14T04:06:42Z",
         "checks": [
           "fixtures",
           "schema",
@@ -25652,7 +25652,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass (work order 041, second review, 14 Nov 2026): text unchanged, requires ==9; reads right after the_first_haul. The late-play seam is softer now the scene promises no timing. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -25755,6 +25759,16 @@
           "at": "2026-11-14T02:31:17Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-14T04:06:42Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-14T04:06:43Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -25920,13 +25934,13 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/037-first-day.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-14T02:31:17Z",
+        "run": "2026-11-14T04:06:42Z",
         "checks": [
           "fixtures",
           "schema",
@@ -25946,7 +25960,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes (work order 041, second review, 14 Nov 2026), first_haul line only: in voice, stool joke gone; the other fourteen lines unchanged since the review of 5 Nov. The client hint beneath it no longer repeats the watching clause. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -26114,6 +26132,21 @@
           "at": "2026-11-14T02:31:17Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-14T04:06:42Z",
+          "status": "drafted",
+          "by": "orchestrator"
+        },
+        {
+          "at": "2026-11-14T04:06:42Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-14T04:06:43Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -26312,13 +26345,13 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/041-first-sitting-feel.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "orchestrator",
       "model": "claude-fable-5-2",
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-14T02:31:17Z",
+        "run": "2026-11-14T04:06:42Z",
         "checks": [
           "fixtures",
           "schema",
@@ -26338,7 +26371,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes (work order 041, second review, 14 Nov 2026): the inspector's first reveal question is closed at Layer 1 (no warmth, pipe or thinking). The listening gesture in option 1, 'an armful' for three scraps and the manner-only choice are left to Jeremy. Five invented facts listed for him in the work order. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -26351,6 +26388,21 @@
           "at": "2026-11-14T02:31:17Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-14T04:06:42Z",
+          "status": "drafted",
+          "by": "orchestrator"
+        },
+        {
+          "at": "2026-11-14T04:06:42Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-14T04:06:43Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null
@@ -26912,13 +26964,13 @@
       "pointer": null,
       "revision": null,
       "work_order": "docs/work-orders/038-the-road.md",
-      "status": "validated",
+      "status": "reviewed",
       "drafted_by": "scrivener",
       "model": null,
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-11-14T02:31:17Z",
+        "run": "2026-11-14T04:06:42Z",
         "checks": [
           "fixtures",
           "schema",
@@ -26938,7 +26990,11 @@
         ],
         "waiver": null
       },
-      "review": null,
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass (work order 041, second review, 14 Nov 2026), the stop at 9 only: label 'The Tube Rattles' and the hint, which matches the scene's >=3. The other stops unchanged since the review of 6 Nov, whose four notes for Jeremy stand. Not approved."
+      },
       "approved_by": null,
       "approved_at": null,
       "history": [
@@ -26966,6 +27022,21 @@
           "at": "2026-11-14T02:31:17Z",
           "status": "validated",
           "by": "validators"
+        },
+        {
+          "at": "2026-11-14T04:06:42Z",
+          "status": "drafted",
+          "by": "orchestrator"
+        },
+        {
+          "at": "2026-11-14T04:06:42Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-14T04:06:43Z",
+          "status": "reviewed",
+          "by": "inspector"
         }
       ],
       "retirement": null

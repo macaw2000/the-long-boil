@@ -590,6 +590,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         onStart={(entry) => setQueue(startFirst(tinker.queue, entry, tinker.upgrades.queueSlots, content))}
         onQueue={(entry) => setQueue([...tinker.queue, entry].slice(0, tinker.upgrades.queueSlots))}
         onGrocer={() => setPlace("exchange")}
+        skillShown={(candidate) => shown(`skill:${candidate}`)}
       />
     ) : place === "admin" && admin ? (
       <Admin />

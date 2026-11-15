@@ -29,7 +29,7 @@
 // (record.check_ins >= 1, 2, 3), and Act I's first beats wait on record.visits_since_prologue.
 // - First sitting, as the guide now runs it: queue 5 Brass Spanners, play who_you_are while they run, watch
 //   the first spanner land, play rats_in_the_workshop, equip the spanner, fight 10 Runts, play the_first_haul
-//   (work order 041: it opens at five rats' Umbrella Silk), queue the night.
+//   (work order 041: it opens at three rats' Umbrella Silk), queue the night.
 //   No selling, no bill and no armour in it (the plan's sitting 1). The old 2-minute copper prelude is gone:
 //   the guide never asks for it. SIM_FIRST_TAILOR now defaults to 0, since the first armour is a goal line
 //   in sitting 2; the later sittings' gear pick makes and wears it.
@@ -841,8 +841,8 @@ async function runCadence(perDay) {
   clock += 14 * MIN;
   await ok("GET", `/tinkers/${main}`);
   await g("14 minutes of fighting");
-  // Work order 041: five rats' silk opens the sitting's third scene, which the guide asks for before come_back.
-  await playOne("prologue.sprocket_row.the_first_haul", "story pass after five rats");
+  // Work order 041: three rats' silk opens the sitting's third scene, which the guide asks for before come_back.
+  await playOne("prologue.sprocket_row.the_first_haul", "story pass after three rats");
   void FIRST_PAY;
   // Work order 037: the guide's come_back step says "Press Fill, then Start" on Rust Rat Runt until 11 h is queued.
   // Fill counts floor(BOILER_SECONDS / seconds each), seconds from the fight outlook (client jobs.ts countFor).

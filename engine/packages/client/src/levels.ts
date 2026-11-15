@@ -14,7 +14,7 @@ const DOES: Record<string, string> = {
   vitality: "More hit points: you last longer in a fight.",
   fortitude: "Every bite hurts a little less.",
   pressure: "Every hit lands a little harder, whatever you hold.",
-  precision: "Truer aim, and more crits.",
+  precision: "Truer aim, and more telling blows.",
 };
 
 function some(names: string[]): string {

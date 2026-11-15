@@ -78,6 +78,7 @@ export function SkillView({
   onStart,
   onQueue,
   onGrocer,
+  skillShown,
 }: {
   skill: string;
   content: Content;
@@ -96,6 +97,8 @@ export function SkillView({
   onQueue: (entry: QueueEntry) => void;
   /** Goes to the grocer's counter, for an ingredient no skill makes. */
   onGrocer: () => void;
+  /** Whether a skill's page is open on the screen yet: a weapon made at one that is not cannot be asked for. */
+  skillShown: (skill: string) => boolean;
 }) {
   const planner = usePlanner(content, tinker, name);
   const setChosen = onChoose;
@@ -157,7 +160,7 @@ export function SkillView({
           {fight
             ? monsters.map((monster) => {
                 const outlook = planner.fights.get(monster.id);
-                const wants = outlook?.ready ? outmatched(content, tinker, monster, outlook.seconds, name) : null;
+                const wants = outlook?.ready ? outmatched(content, tinker, monster, outlook.seconds, name, skillShown) : null;
                 const line = !outlook
                   ? `Level ${monster.level}`
                   : !outlook.ready
@@ -213,6 +216,7 @@ export function SkillView({
           count={count}
           setCount={setCount}
           startGuided={guideAt === "start"}
+          skillShown={skillShown}
           onStart={(entry) => {
             setChosen(null);
             onStart(entry);
@@ -253,7 +257,14 @@ const OUTMATCHED = 2;
  * alone buy no speed against easy monsters (GDD section 6), so this line is
  * where a player sees what getting stronger is for.
  */
-function outmatched(content: Content, tinker: Tinker, monster: Content["monsters"][number], kill: number, name: (id: string) => string): { short: string; long: string } | null {
+function outmatched(
+  content: Content,
+  tinker: Tinker,
+  monster: Content["monsters"][number],
+  kill: number,
+  name: (id: string) => string,
+  skillShown: (skill: string) => boolean,
+): { short: string; long: string } | null {
   if (monster.boss || kill <= OUTMATCHED * monster.seconds_per_kill) return null;
   const inHand = content.weapons.find((weapon) => weapon.item === tinker.weapon);
   if (!inHand) return null;
@@ -265,9 +276,12 @@ function outmatched(content: Content, tinker: Tinker, monster: Content["monsters
   if (better) {
     const weapon = name(better.item);
     const ready = styleLevel >= better.level_required;
+    const maker = content.actions.find((action) => action.outputs.some((output) => output.item === better.item))?.skill;
+    // Named before its bench is open, a crowbar sent readers to the Exchange to look for one: until then it is only "for later".
+    if (!maker || !skillShown(maker)) return { short: "for later", long: "A monster for later: it wants a better weapon than this bench can make yet." };
     return {
       short: `wants ${article(weapon)} ${weapon}`,
-      long: `${article(weapon) === "an" ? "An" : "A"} ${weapon} would make far shorter work of it. It needs ${style} ${better.level_required}: ${ready ? "you have that" : `you are ${style} ${styleLevel}`}.`,
+      long: `${article(weapon) === "an" ? "An" : "A"} ${weapon}, made at ${titleCase(maker)}, would make far shorter work of it. It needs ${style} ${better.level_required}: ${ready ? "you have that" : `you are ${style} ${styleLevel}`}.`,
     };
   }
   if (styleLevel < monster.level) return { short: `wants ${style} ${monster.level}`, long: `It is a match for ${style} ${monster.level}: you are ${style} ${styleLevel}.` };
@@ -340,6 +354,7 @@ function JobDetail({
   count,
   setCount,
   startGuided,
+  skillShown,
   onStart,
   onQueue,
   onGrocer,
@@ -353,6 +368,7 @@ function JobDetail({
   setCount: (count: string) => void;
   /** The guide points at Start. */
   startGuided: boolean;
+  skillShown: (skill: string) => boolean;
   onStart: (entry: QueueEntry) => void;
   onQueue: (entry: QueueEntry) => void;
   /** Goes to the grocer's counter, for an ingredient no skill makes. */
@@ -372,7 +388,7 @@ function JobDetail({
   const warning = planner.startWarning(id);
   const each = planner.secondsEach(id);
   const full = tinker.queue.length >= tinker.upgrades.queueSlots;
-  const wants = monster && planner.fights.get(id)?.ready ? outmatched(content, tinker, monster, each, name) : null;
+  const wants = monster && planner.fights.get(id)?.ready ? outmatched(content, tinker, monster, each, name, skillShown) : null;
 
   return (
     <View ref={panel} style={[ui.panel, { borderColor: colors.brass, gap: 10 }]}>

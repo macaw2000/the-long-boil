@@ -2,7 +2,7 @@
 // Coming back to what the workshop made is the reward the whole game turns
 // on, so it is shown as a haul, not a report: each thing made with its icon
 // and a count that runs up, each level gained as a chip, and one press to
-// collect it. The XP behind the levels waits on a press of its own.
+// take stock of it. The XP behind the levels waits on a press of its own.
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
@@ -175,7 +175,8 @@ export function Ledger({
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <Sparks bursts={collected}>
           <Pressable onPress={haul ? collect : onClose} accessibilityRole="button" style={[ui.button, { paddingHorizontal: 22, paddingVertical: 9 }, haul && { backgroundColor: GOLD }]}>
-            <Text style={[ui.buttonText, { fontSize: 15 }]}>{haul ? "Collect" : "Put it aside"}</Text>
+            {/* "Collect" made half of the cold readers fear the haul was lost unless pressed: the button only closes the tally. */}
+            <Text style={[ui.buttonText, { fontSize: 15 }]}>{haul ? "Take stock" : "Put it aside"}</Text>
           </Pressable>
         </Sparks>
         {haul && <Text style={[ui.muted, { fontSize: 12 }]}>It is all in your Stores already.</Text>}

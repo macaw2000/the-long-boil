@@ -36,13 +36,13 @@ const ids = (scenes: { id: string }[]) => scenes.map((scene) => scene.id);
 const HAUL = "prologue.sprocket_row.the_first_haul";
 const SILK = "item.rustmoor.umbrella_silk";
 
-/** Five rats' silk in the stores, as five kills leave it: the first sitting's third scene waits on it (work order 041). */
-const fiveRats = (id: number) => db.query("INSERT INTO inventory (tinker_id, item, bound, qty) VALUES ($1, $2, false, 5)", [id, SILK]);
+/** Three rats' silk in the stores, as three kills leave it: the first sitting's third scene waits on it (work order 041). */
+const threeRats = (id: number) => db.query("INSERT INTO inventory (tinker_id, item, bound, qty) VALUES ($1, $2, false, 3)", [id, SILK]);
 
 /** Plays a new Tinker's first sitting, then opens the second visit, so Pip's bill is in hand. */
 async function toTheBill(id: number) {
   await call("POST", `/tinkers/${id}/check-in`);
-  await fiveRats(id);
+  await threeRats(id);
   for (const scene of ["prologue.sprocket_row.who_you_are", "prologue.sprocket_row.rats_in_the_workshop", HAUL])
     await call("POST", `/tinkers/${id}/story`, { kind: "storylet", scene, option: 0 });
   clock += HOUR;
@@ -90,10 +90,10 @@ describe("the first session's story", () => {
     expect(ids(who.body.view.storylets)).toEqual(["prologue.sprocket_row.rats_in_the_workshop"]);
     const rats = await call("POST", `/tinkers/${id}/story`, { kind: "storylet", scene: "prologue.sprocket_row.rats_in_the_workshop", option: 0 });
     expect(rats.body.view).toMatchObject({ nerve: 8, letters: [], storylets: [] });
-    // The third scene waits on five rats beaten, and the road says so in the player's words.
-    expect(rats.body.view.upcoming).toEqual([{ id: HAUL, location: "sprocket_row", needs: [[SILK, ">=5", 0]] }]);
-    expect(rats.body.view.road.next).toMatchObject({ state: "waiting", scene: HAUL, hint: "Beat five Rust Rats in Rustmoor." });
-    await fiveRats(id);
+    // The third scene waits on three rats beaten, and the road says so in the player's words.
+    expect(rats.body.view.upcoming).toEqual([{ id: HAUL, location: "sprocket_row", needs: [[SILK, ">=3", 0]] }]);
+    expect(rats.body.view.road.next).toMatchObject({ state: "waiting", scene: HAUL, hint: "Beat three Rust Rats in Rustmoor." });
+    await threeRats(id);
     expect(ids((await call("GET", `/tinkers/${id}/story`)).body.view.storylets)).toEqual([HAUL]);
     const haul = await call("POST", `/tinkers/${id}/story`, { kind: "storylet", scene: HAUL, option: 0 });
     expect(haul.body.view).toMatchObject({ nerve: 7, letters: [], storylets: [] });

@@ -1,5 +1,6 @@
 // The workshop's few sounds: the valve, a thing landing in the stores, a rat
-// going down, a level gained, the brass tube. Each is a moment worth hearing
+// going down, a level gained, the brass tube. The valve and the tube are air
+// and a rattle; nothing strikes anything (work order 041). Each is a moment worth hearing
 // once, never a loop. They are made in the browser from tones and hiss, so
 // there is nothing to fetch; a phone build without Web Audio stays silent.
 // Off is remembered, and nothing plays while the tab is out of sight: a
@@ -93,9 +94,9 @@ function hiss(ctx: AudioContext, at: number, length: number, from: number, to: n
 }
 
 const SOUNDS: Record<Sound, (ctx: AudioContext, at: number) => void> = {
-  // The valve: a knock in the pipes, then a long breath of steam.
+  // The valve: steam, a rush of it and then a long breath. Only steam: nothing strikes anything.
   valve: (ctx, at) => {
-    tone(ctx, at, 0.22, 110, 55, "sine", 0.3);
+    hiss(ctx, at, 0.5, 900, 2600, "bandpass", 0.14);
     hiss(ctx, at + 0.08, 1.4, 5200, 1400, "highpass", 0.16);
   },
   // Brass on brass: something lands in the stores.
@@ -112,11 +113,11 @@ const SOUNDS: Record<Sound, (ctx: AudioContext, at: number) => void> = {
   level: (ctx, at) => {
     [523.25, 659.25, 783.99, 1046.5].forEach((pitch, index) => tone(ctx, at + index * 0.085, index === 3 ? 0.5 : 0.2, pitch, pitch, "triangle", 0.12));
   },
-  // The Pneumatic Post: air down the pipe, and the canister knocks home.
+  // The Pneumatic Post: air down the tube, and the brass rattles as it arrives.
   tube: (ctx, at) => {
     hiss(ctx, at, 0.42, 380, 2600, "bandpass", 0.2);
-    tone(ctx, at + 0.4, 0.2, 130, 70, "sine", 0.3);
-    tone(ctx, at + 0.41, 0.09, 1250, 1250, "triangle", 0.05);
+    // Uneven and unpitched in effect: a rattle, never a run of notes.
+    [[0, 1310], [0.05, 1240], [0.1, 1335], [0.16, 1265]].forEach(([after, pitch]) => tone(ctx, at + 0.38 + after!, 0.05, pitch!, pitch!, "triangle", 0.05));
   },
 };
 

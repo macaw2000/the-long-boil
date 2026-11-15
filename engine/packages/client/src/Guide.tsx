@@ -62,7 +62,7 @@ const FIRST_SCENE_DONE = 4;
 const RATS_SCENE_DONE = 8;
 const HAUL_SCENE_DONE = 9;
 /** Umbrella Silk the third scene, the_first_haul, asks for: one falls with every rat, so it counts the rats beaten. */
-export const HAUL_RATS = 5;
+export const HAUL_RATS = 3;
 /** prologue.progress when the brass plate, the third sitting's last scene, is next. */
 const PLATE_FROM = 70;
 
@@ -75,7 +75,8 @@ export interface Step {
 }
 
 // The first sitting only (docs/first-day-plan.md): the Boiler, a job, the first
-// two scenes, a fight, a first haul with a scene to close it, and coming back.
+// two scenes, a fight, the night's work queued, a first haul with a scene to
+// close it, and coming back.
 // The bill, selling, armour and the rest of the Prologue come in later
 // sittings as goal lines (nextGoal), not steps.
 const STEPS: Step[] = [
@@ -118,7 +119,7 @@ const STEPS: Step[] = [
     // The sitting ended at the first kill, about four minutes in, with nothing won (work order 041): a goal
     // to fight for and a scene to close on. A Tinker who left before this step existed is past it.
     id: "first_haul",
-    fallback: "One rat proves nothing. Beat five, and bring up what they drop.",
+    fallback: "One rat proves nothing. Set the night's rats going, then beat three and bring up what they drop.",
     done: (tinker, _, all) => prologue(tinker) >= HAUL_SCENE_DONE || all.includes("come_back"),
   },
   {
@@ -259,6 +260,14 @@ function toJob(context: GuideContext, place: Place, placeName: string, job: stri
   return { hint: "Press Start.", at: "start" };
 }
 
+/** A playtester queued an hour and came back puzzled by "twelve hours": fill the night with fights, which need nothing. */
+function fillNight(context: GuideContext): Pick<Coaching, "hint" | "at"> {
+  const hours = Math.floor(context.queuedMs / 3_600_000);
+  const job = toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt");
+  const press = job.at === "start" ? "Press Fill, then Start now." : job.hint;
+  return { ...job, hint: `Your queue has work for ${hours ? `${hours}h` : "under an hour"} of the Boiler's twelve. ${press}` };
+}
+
 /** Open Story, then play the scene: the two presses every scene takes. */
 function toScene(context: GuideContext, open = "Open Story."): Pick<Coaching, "hint" | "at"> {
   return context.place === "story" ? { hint: "Play the scene under Open to you, and pick an answer.", at: "scenes" } : { hint: open, at: "place:story" };
@@ -290,18 +299,18 @@ export function coach(step: Step, tinker: Tinker, context: GuideContext): Coachi
     case "first_haul": {
       const beaten = Math.min(HAUL_RATS, held(tinker, SILK));
       const goal = { label: "Rust Rats beaten", have: beaten, need: HAUL_RATS, unit: "" };
-      if (beaten >= HAUL_RATS) return { ...toScene(context, "Five rats down. Open Story: something has come of it."), goal };
+      if (beaten >= HAUL_RATS) return { ...toScene(context, "Three rats down. Open Story: something has come of it."), goal };
+      // The night's work first (the educator, work order 041): a player who leaves during the count
+      // then leaves twelve hours queued, not one, and the presses fill some of the wait.
+      if (context.queuedMs < NIGHT_MS) return { ...fillNight(context), goal };
       if (!fighting) return { ...toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt"), goal };
       const left = Math.max(1, Math.ceil(context.nextInMs / 1000));
-      return { hint: `Beat ${HAUL_RATS} Rust Rats. The next one falls in about ${left}s.`, at: "bench", goal };
+      // Readers took the count for an order to watch; her line above says they fall whether you watch or not.
+      return { hint: `Beat ${HAUL_RATS} Rust Rats. The next falls in about ${left}s.`, at: "bench", goal };
     }
     case "come_back": {
       if (context.queuedMs >= NIGHT_MS) return { hint: "All set. Press Leave it running.", at: "card", action: { label: context.button ?? "Leave it running", kind: "acknowledge" } };
-      // A playtester queued an hour and came back puzzled by "twelve hours": fill the night with fights, which need nothing.
-      const hours = Math.floor(context.queuedMs / 3_600_000);
-      const job = toJob(context, `skill:${FIGHT}`, "Fight", RUNT, "Rust Rat Runt");
-      const press = job.at === "start" ? "Press Fill, then Start now." : job.hint;
-      return { ...job, hint: `Your queue has work for ${hours ? `${hours}h` : "under an hour"} of the Boiler's twelve. ${press}` };
+      return fillNight(context);
     }
     default:
       return { hint: step.fallback, at: "card" };
@@ -535,12 +544,18 @@ export interface Rest {
   /** The job at work, by name, and how many goes are queued. */
   job: string | null;
   goes: number;
+  /** The job waiting behind it, if any: readers took "Start now" to have wiped it. */
+  behind: { job: string; goes: number } | null;
+  /** A letter has already come: the tube is not still to wait for. */
+  letterIn: boolean;
 }
 
 export function rest(tinker: Tinker, content: Content, now: number, name: (id: string) => string, nextVisitAt: string | null): Rest {
   const steamUntil = new Date(tinker.steamUntil).getTime();
   const queueEnds = now + queuedMs(tinker, content);
   const head = tinker.queue[0];
+  const next = tinker.queue[1];
+  const title = (id: string) => content.monsters.find((monster) => monster.id === id)?.name ?? name(content.actions.find((action) => action.id === id)?.outputs[0]?.item ?? id);
   const visit = nextVisitAt ? new Date(nextVisitAt).getTime() : null;
   // Only a scene that waits on a visit makes the time worth saying.
   const waitsOnVisit = tinker.story.road?.next?.state === "waiting" && tinker.story.road.next.needs.some(([need]) => need.startsWith("record."));
@@ -548,8 +563,10 @@ export function rest(tinker: Tinker, content: Content, now: number, name: (id: s
     workUntil: Math.min(steamUntil, queueEnds),
     boilerFirst: steamUntil <= queueEnds,
     storyAt: waitsOnVisit ? visit : null,
-    job: head ? (content.monsters.find((monster) => monster.id === head.actionId)?.name ?? name(content.actions.find((action) => action.id === head.actionId)?.outputs[0]?.item ?? head.actionId)) : null,
+    job: head ? title(head.actionId) : null,
     goes: head?.remaining ?? 0,
+    behind: next ? { job: title(next.actionId), goes: next.remaining } : null,
+    letterIn: tinker.story.letters > 0,
   };
 }
 
@@ -568,8 +585,14 @@ export function restLine(at: Rest, now: number): string {
 export function SendOff({ at, now, onClose }: { at: Rest; now: number; onClose: () => void }) {
   const waiting = [
     at.job && at.goes > 0 ? `${at.goes.toLocaleString()} × ${at.job} on the bench, working until ${clock(at.workUntil)}${at.boilerFirst ? ", when the Boiler runs down" : ""}.` : null,
+    at.behind ? `${at.behind.goes.toLocaleString()} × ${at.behind.job} still queued behind that, for when there is steam to spare.` : null,
     "Everything it makes will be in your Stores, with a tally of the lot.",
-    at.storyAt !== null && at.storyAt > now ? `Whatever is in the tube. The story goes on after ${clock(at.storyAt)}.` : "Whatever is in the tube.",
+    // A player who comes to this late already has the letter: it is not still on its way.
+    at.letterIn
+      ? "The letter in Story keeps until you answer it."
+      : at.storyAt !== null && at.storyAt > now
+        ? `Whatever is in the tube. The story goes on after ${clock(at.storyAt)}.`
+        : "Whatever is in the tube.",
   ].filter((line): line is string => line !== null);
   return (
     <View style={[ui.panel, { borderColor: GOLD, borderWidth: 2, flexDirection: "row", gap: 12, alignItems: "flex-start", padding: 12 }]}>

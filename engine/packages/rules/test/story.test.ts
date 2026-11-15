@@ -276,9 +276,9 @@ describe("the first storylets, end to end", () => {
     play("storylet", "prologue.sprocket_row.who_you_are", 0);
     expect(story.qualities["flag.origin_apprentice"]).toBe(1);
     play("storylet", "prologue.sprocket_row.rats_in_the_workshop", 0);
-    // The third scene waits on five rats' silk, so the sitting has a fight to win before it closes.
+    // The third scene waits on three rats' silk, so the sitting has a fight to win before it closes.
     expect(visible()).toEqual([]);
-    tinker.inventory["item.rustmoor.umbrella_silk"] = 5;
+    tinker.inventory["item.rustmoor.umbrella_silk"] = 3;
     expect(visible()).toEqual(["prologue.sprocket_row.the_first_haul"]);
     play("storylet", "prologue.sprocket_row.the_first_haul", 0);
     expect(story.qualities["prologue.progress"]).toBe(9);
