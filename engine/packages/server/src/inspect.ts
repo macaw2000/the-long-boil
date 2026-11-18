@@ -98,3 +98,34 @@ export async function find(db: Db, content: GameContent, name: string): Promise<
   }
   return { found };
 }
+
+/**
+ * The Tinker a chat command names, for /w and /profile: the longest run of
+ * leading words that is some Tinker's whole name, whatever its case, and the
+ * words left over. Names may hold spaces, so "/w Ada Bell hello" finds "Ada
+ * Bell" before "Ada". Names are not unique; when two Tinkers share the one
+ * matched, neither is picked and `shared` says how many there are.
+ */
+export async function named(
+  db: Db,
+  text: string,
+): Promise<{ tinker: { id: number; name: string } | null; rest: string; shared: number }> {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  const tries = words.map((_, at) => words.slice(0, at + 1).join(" ").toLowerCase());
+  if (!tries.length) return { tinker: null, rest: "", shared: 0 };
+  const rows = (
+    await db.query(
+      `SELECT t.id, t.name, lower(regexp_replace(t.name, '\\s+', ' ', 'g')) AS key FROM tinkers t JOIN accounts a ON a.id = t.account_id
+       WHERE lower(t.name) LIKE $2 AND lower(regexp_replace(t.name, '\\s+', ' ', 'g')) = ANY($1) AND (a.ban IS NULL OR a.ban <> 'full')`,
+      [tries, `${tries[0]!.replace(/[\\%_]/g, "\\$&")}%`],
+    )
+  ).rows;
+  for (let at = tries.length - 1; at >= 0; at--) {
+    const matches = rows.filter((row) => row.key === tries[at]);
+    if (!matches.length) continue;
+    const rest = words.slice(at + 1).join(" ");
+    if (matches.length > 1) return { tinker: null, rest, shared: matches.length };
+    return { tinker: { id: Number(matches[0].id), name: matches[0].name }, rest, shared: 1 };
+  }
+  return { tinker: null, rest: words.join(" "), shared: 0 };
+}

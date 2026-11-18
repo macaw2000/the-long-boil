@@ -111,4 +111,19 @@ describe("a Tinker's looks", () => {
     expect((await call("GET", `/tinkers/${other}/find?name=l`)).body.found).toEqual([]);
     expect((await call("GET", `/tinkers/${other}/find?name=100%25`)).body.found).toEqual([]);
   });
+
+  it("finds the Tinker a chat command names by whole name, longest first, and not when two share it", async () => {
+    const named = async (login: string, name: string) => (await call("POST", "/tinkers", { login, name })).body.tinker.id as number;
+    const ada = await named("named-ada@example.com", "Adaline");
+    const bell = await named("named-bell@example.com", "Adaline Bell");
+    await named("named-twin-1@example.com", "Twin_Cog");
+    await named("named-twin-2@example.com", "twin_cog");
+    const look = async (text: string) => (await call("GET", `/tinkers/${ada}/named?text=${encodeURIComponent(text)}`)).body;
+    expect(await look("adaline  hello there")).toEqual({ tinker: { id: ada, name: "Adaline" }, rest: "hello there", shared: 1 });
+    expect(await look("Adaline Bell hello")).toEqual({ tinker: { id: bell, name: "Adaline Bell" }, rest: "hello", shared: 1 });
+    expect(await look("Adal hello")).toEqual({ tinker: null, rest: "Adal hello", shared: 0 });
+    expect(await look("twin_cog hi")).toEqual({ tinker: null, rest: "hi", shared: 2 });
+    expect(await look("Twin%Cog hi")).toMatchObject({ tinker: null, shared: 0 });
+    expect(await look("")).toEqual({ tinker: null, rest: "", shared: 0 });
+  });
 });

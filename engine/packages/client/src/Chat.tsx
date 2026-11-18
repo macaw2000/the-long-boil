@@ -6,7 +6,10 @@
 // for members, and Whispers, private conversations between two Tinkers.
 // History loads once per channel; new messages arrive over the live
 // connection. Tapping a name offers whisper, mute and invite. Anyone else's
-// messages can be muted, for this account only.
+// messages can be muted, for this account only. Typed commands do the same
+// by name: /w name message whispers, /r message replies to the last
+// whisper, /profile name inspects, and /help (or the ? by Say) lists them;
+// "//" sends a message that starts with a slash.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PanResponder, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
@@ -66,6 +69,8 @@ export interface WhisperState {
   open: number | null;
   thread: ChatMessage[];
   unread: number;
+  /** Who /r replies to: the last Tinker to whisper this one. */
+  replyTo: { id: number; name: string } | null;
   receive: (message: ChatMessage) => void;
   openWith: (other: number, name: string) => void;
   close: () => void;
@@ -83,13 +88,17 @@ export function useWhispers(tinkerId: number): WhisperState {
   const [inbox, setInbox] = useState<WhisperState["conversations"]>([]);
   const [open, setOpen] = useState<number | null>(null);
   const [thread, setThread] = useState<ChatMessage[]>([]);
+  const [lastFrom, setLastFrom] = useState<{ id: number; name: string } | null>(null);
   const openRef = useRef<number | null>(null);
   openRef.current = open;
 
   const reload = useCallback(() => {
     api
       .whispers(tinkerId)
-      .then(({ conversations }: { conversations: WhisperConversation[] }) =>
+      .then(({ conversations }: { conversations: WhisperConversation[] }) => {
+        // Before any whisper arrives live, /r goes to the latest who whispered last, else the latest conversation.
+        const latest = conversations.find((conversation) => conversation.last.tinker.id !== tinkerId) ?? conversations[0];
+        if (latest) setLastFrom((known) => known ?? latest.with);
         setInbox((known) =>
           conversations.map((conversation) => ({
             id: conversation.with.id,
@@ -97,8 +106,8 @@ export function useWhispers(tinkerId: number): WhisperState {
             last: conversation.last,
             unread: known.find((entry) => entry.id === conversation.with.id)?.unread ?? 0,
           })),
-        ),
-      )
+        );
+      })
       .catch(() => undefined);
   }, [tinkerId]);
   useEffect(reload, [reload]);
@@ -121,6 +130,7 @@ export function useWhispers(tinkerId: number): WhisperState {
       const other = partnerIn(message.channel, tinkerId);
       const mine = message.tinker.id === tinkerId;
       const viewing = openRef.current === other;
+      if (!mine) setLastFrom({ id: other, name: message.tinker.name });
       if (viewing) setThread((list) => (list.some((known) => known.id === message.id) ? list : [...list, message].slice(-KEEP)));
       setInbox((list) => {
         const rest = list.filter((entry) => entry.id !== other);
@@ -137,6 +147,7 @@ export function useWhispers(tinkerId: number): WhisperState {
     open,
     thread,
     unread: inbox.reduce((sum, entry) => sum + entry.unread, 0),
+    replyTo: lastFrom,
     receive,
     openWith,
     close: useCallback(() => setOpen(null), []),
@@ -158,6 +169,22 @@ function clockTime(at: string): string {
   return `${String(time.getHours()).padStart(2, "0")}:${String(time.getMinutes()).padStart(2, "0")}`;
 }
 
+/** The chat commands, as /help and the ? by Say list them. */
+const COMMANDS: { usage: string; does: string }[] = [
+  { usage: "/w name message", does: "Whisper to a Tinker. Leave out the message to open the conversation." },
+  { usage: "/r message", does: "Reply to whoever whispered you last." },
+  { usage: "/profile name", does: "Look a Tinker over: guild, skills and gear." },
+  { usage: "/help", does: "Show this list." },
+];
+const HINT = "/w name message · /r message · /profile name · /help";
+
+/** A typed command split into its word and the rest, or null for an ordinary message. */
+function commandIn(text: string): { word: string; rest: string } | null {
+  if (!text.startsWith("/") || text.startsWith("//")) return null;
+  const [, word = "", rest = ""] = /^\/(\S*)\s*([\s\S]*)$/.exec(text) ?? [];
+  return { word: word.toLowerCase(), rest };
+}
+
 const PLACEHOLDERS: Record<ChatChannel, string> = {
   city: "Say something to the city",
   trade: "Buying or selling? Say what and for how much",
@@ -169,7 +196,7 @@ const PLACEHOLDERS: Record<ChatChannel, string> = {
 const EMPTY: Record<ChatChannel, string> = {
   city: "The city is quiet. Say something.",
   trade: "No one is trading yet. Post what you are buying or selling.",
-  help: "No questions yet. New here? Ask anything.",
+  help: "No questions yet. New here? Ask anything. Type /help for chat commands.",
   guild: "The guild hall is quiet.",
   whisper: "No whispers yet.",
 };
@@ -210,6 +237,7 @@ export function Chat({
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const [helping, setHelping] = useState(false);
   const scroll = useRef<ScrollView>(null);
 
   // A whisper opened from elsewhere (an inspect card) brings the Whispers tab forward, and opens a folded dock.
@@ -240,9 +268,56 @@ export function Chat({
     scroll.current?.scrollToEnd({ animated: true });
   }, [shown.length, markRead, which, whispers.open]);
 
+  /** Whispers a Tinker, or with no words just opens the conversation. */
+  const whisperWith = async (other: { id: number; name: string }, text: string) => {
+    if (other.id === tinkerId) throw new Error("You cannot whisper to yourself");
+    if (text) await api.say(tinkerId, text, "whisper", other.id);
+    whisperTo(other.id, other.name);
+  };
+
+  /** Runs a typed command: /help, /r, or /w and /profile, which find the Tinker named first. */
+  const runCommand = async ({ word, rest }: { word: string; rest: string }) => {
+    if (word === "help" || word === "?") {
+      setHelping(true);
+      return;
+    }
+    if (word === "r" || word === "reply") {
+      if (!whispers.replyTo) throw new Error("No one has whispered you yet");
+      return whisperWith(whispers.replyTo, rest);
+    }
+    const whisper = word === "w" || word === "whisper";
+    if (!whisper && word !== "profile") throw new Error(`No /${word} command. Type /help for the list.`);
+    if (!rest) throw new Error(whisper ? "/w name message" : "/profile name");
+    const found = await api.named(tinkerId, rest);
+    if (found.shared > 1) throw new Error(`${found.shared} Tinkers share that name. Tap theirs in chat instead.`);
+    if (!found.tinker) throw new Error("No Tinker by that name. Use their whole name, as chat shows it.");
+    const other = found.tinker;
+    if (!whisper) {
+      if (!onInspect) throw new Error("Profiles cannot be opened here");
+      onInspect(other.id);
+      return;
+    }
+    await whisperWith(other, found.rest);
+  };
+
   const send = () => {
-    const text = draft.trim();
-    if (!text || sending) return;
+    const typed = draft.trim();
+    if (!typed || sending) return;
+    const command = commandIn(typed);
+    if (command) {
+      setSending(true);
+      runCommand(command)
+        .then(() => {
+          setDraft("");
+          setError(null);
+          // The list gives way to what the command opened, unless the command was asking for it.
+          if (command.word !== "help" && command.word !== "?") setHelping(false);
+        })
+        .catch((reason: Error) => setError(reason.message))
+        .finally(() => setSending(false));
+      return;
+    }
+    const text = typed.startsWith("//") ? typed.slice(1) : typed;
     if (which === "whisper" && whispers.open === null) return;
     setSending(true);
     const call = which === "whisper" ? api.say(tinkerId, text, "whisper", whispers.open!) : api.say(tinkerId, text, which);
@@ -252,6 +327,7 @@ export function Chat({
         else room?.receive(message);
         setDraft("");
         setError(null);
+        setHelping(false);
       })
       .catch((reason: Error) => setError(reason.message))
       .finally(() => setSending(false));
@@ -351,7 +427,7 @@ export function Chat({
         <ScrollView ref={scroll} style={{ flex: 1, maxHeight: docked ? undefined : 520 }} contentContainerStyle={{ gap: 3 }}>
           {inInbox ? (
             whispers.conversations.length === 0 ? (
-              <Text style={ui.muted}>No whispers yet. Tap a name in any room to whisper to them.</Text>
+              <Text style={ui.muted}>No whispers yet. Tap a name in any room to whisper to them, or type /w and their name in any room.</Text>
             ) : (
               whispers.conversations.map((entry) => (
                 <Pressable key={entry.id} onPress={() => whispers.openWith(entry.id, entry.name)} accessibilityRole="button" style={{ paddingVertical: 4, borderBottomWidth: 1, borderBottomColor: colors.panelEdge }}>
@@ -421,7 +497,28 @@ export function Chat({
             <Text style={[ui.muted, { fontSize: 11 }]}>{rooms.city.muted.length} muted · unmute all</Text>
           </Pressable>
         )}
-        {error && <Text style={[ui.muted, { color: colors.scald }]}>{error}</Text>}
+        {helping && (
+          <View style={{ borderWidth: 1, borderColor: colors.brassDim, borderRadius: 4, padding: 8, gap: 3 }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <Text style={[ui.text, { fontWeight: "700", color: colors.brass }]}>Chat commands</Text>
+              <Pressable onPress={() => setHelping(false)} accessibilityRole="button" accessibilityLabel="Close chat commands" hitSlop={8}>
+                <Text style={[ui.text, { color: colors.muted }]}>×</Text>
+              </Pressable>
+            </View>
+            {COMMANDS.map((command) => (
+              <Text key={command.usage} style={[ui.text, { fontSize: 13 }]}>
+                <Text style={{ color: colors.copper, fontWeight: "700" }}>{command.usage}</Text>
+                <Text style={{ color: colors.muted }}> {command.does}</Text>
+              </Text>
+            ))}
+            <Text style={[ui.muted, { fontSize: 12 }]}>Names are whole names, as chat shows them. Or tap a name in chat to inspect, whisper, invite or mute.</Text>
+          </View>
+        )}
+        {error ? (
+          <Text style={[ui.muted, { color: colors.scald }]}>{error}</Text>
+        ) : (
+          !helping && draft.startsWith("/") && !draft.startsWith("//") && <Text style={[ui.muted, { fontSize: 11 }]}>{HINT}</Text>
+        )}
         {!inInbox && (
           <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
             <TextInput
@@ -434,6 +531,14 @@ export function Chat({
               style={[ui.input, { flex: 1, fontFamily: undefined }]}
               blurOnSubmit={false}
             />
+            <Pressable
+              onPress={() => setHelping((open) => !open)}
+              accessibilityRole="button"
+              accessibilityLabel={helping ? "Hide chat commands" : "Show chat commands"}
+              style={{ borderWidth: 1, borderColor: helping ? colors.brass : colors.panelEdge, borderRadius: 4, width: 28, alignSelf: "stretch", alignItems: "center", justifyContent: "center" }}
+            >
+              <Text style={[ui.text, { color: helping ? colors.brass : colors.muted, fontWeight: "700" }]}>?</Text>
+            </Pressable>
             <Pressable onPress={send} accessibilityRole="button" style={[ui.button, { opacity: draft.trim() && !sending ? 1 : 0.5 }]}>
               <Text style={ui.buttonText}>Say</Text>
             </Pressable>

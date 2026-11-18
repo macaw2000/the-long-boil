@@ -633,6 +633,8 @@ export const api = {
   disbandGuild: (id: number) => request<GuildView>("POST", `/tinkers/${id}/guild/disband`),
   setNotice: (id: number, text: string) => request<GuildView>("PUT", `/tinkers/${id}/guild/notice`, { text }),
   inspect: (id: number, other: number) => request<InspectView>("GET", `/tinkers/${id}/inspect/${other}`),
+  named: (id: number, text: string) =>
+    request<{ tinker: { id: number; name: string } | null; rest: string; shared: number }>("GET", `/tinkers/${id}/named?text=${encodeURIComponent(text)}`),
   find: (id: number, name: string) => request<{ found: { id: number; name: string; totalLevel: number }[] }>("GET", `/tinkers/${id}/find?name=${encodeURIComponent(name)}`),
   wardrobe: (id: number) => request<WardrobeOutcome>("GET", `/tinkers/${id}/wardrobe`),
   buyLook: (id: number, look: string) => request<WardrobeOutcome>("POST", `/tinkers/${id}/wardrobe/buy`, { look }),

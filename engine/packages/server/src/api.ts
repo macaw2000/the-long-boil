@@ -46,7 +46,7 @@ import {
   sellToCollector,
   type TradingRules,
 } from "./market.js";
-import { find, inspect } from "./inspect.js";
+import { find, inspect, named } from "./inspect.js";
 import { buyLook, readWardrobe, wear as wearLook } from "./looks.js";
 import { leaderboard } from "./leaderboards.js";
 import { readLedgerPages } from "./pages.js";
@@ -538,6 +538,9 @@ export function buildApi({
   // The leaderboards (GDD section 6), open to every player. Named by Tinker so the caller's own row, or guild, can be marked.
   // Looking a Tinker up by the start of its name, to inspect it.
   app.get<{ Params: { id: string }; Querystring: { name?: string } }>("/tinkers/:id/find", async (request) => find(db, content, request.query.name ?? ""));
+
+  // The Tinker a chat command such as /w or /profile names, by whole name, and the words after it.
+  app.get<{ Params: { id: string }; Querystring: { text?: string } }>("/tinkers/:id/named", async (request) => named(db, request.query.text ?? ""));
 
   app.get<{ Params: { id: string; board: string } }>("/tinkers/:id/leaderboards/:board", async (request) =>
     leaderboard(db, content, Number(request.params.id), request.params.board),
