@@ -8,6 +8,7 @@ import { Easing } from "react-native";
 import { Animated, Image, Text, View } from "react-native";
 import type { Content, Tinker } from "./api";
 import { useReducedMotion } from "./Juice";
+import { armedFrames, workFrames } from "./looks";
 import { backgrounds, characters, icons, skills, ui as uiIcons, vignettes } from "./sprites";
 import { colors, ui } from "./theme";
 
@@ -345,10 +346,10 @@ export function Scene({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tick]);
 
-  const tinkerFrames = characters.tinker!;
+  const tinkerFrames = workFrames(content.looks, tinker.look);
   const pose = !working || !head ? "idle" : monster ? "attack" : (POSE[action?.skill ?? ""] ?? "hammer");
   // With a weapon equipped, the Tinker holds it when idle and fights with it in its own style.
-  const armed = tinker.weapon ? characters[`tinker:${tinker.weapon}`] : undefined;
+  const armed = armedFrames(content.looks, tinker.look, tinker.weapon);
   const style = content.weapons.find((weapon) => weapon.item === tinker.weapon)?.style;
   const shownFrames = armed && (pose === "attack" || pose === "idle") ? armed[pose] : tinkerFrames[pose];
   const monsterFrames = monster ? characters[monster.id] : undefined;

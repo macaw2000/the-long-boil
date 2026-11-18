@@ -113,6 +113,8 @@ export interface Content {
   totalXp: number[];
   /** The Cog Shop's terms. */
   shop: { crate: { item: string } } | null;
+  /** How a Tinker can look (content/looks/looks.json), or null where there are no looks. */
+  looks: Looks | null;
   /** Whether crates are sold for money here (Stripe Checkout), and in test mode; null when they are not. */
   payments: { testMode: boolean } | null;
   /** The food a fight eats, and how many a boss attempt may. */
@@ -166,6 +168,8 @@ export interface Tinker {
   };
   /** Work Orders waiting on the desk. */
   workOrders: number;
+  /** How the Tinker looks; `picked` is false until the player has chosen a body. */
+  look: Wearing & { picked: boolean };
 }
 
 export interface LedgerLine {
@@ -341,6 +345,48 @@ export interface ShopView {
 
 export type ShopOutcome = Outcome & { shop: ShopView };
 
+/** An outfit or backdrop (packages/rules/src/looks.ts): free, bought with Cogs, or opened by a faction's Favour. */
+export interface Look {
+  id: string;
+  name: string;
+  description: string;
+  cogs: number | null;
+  favour: { quality: string; level: number } | null;
+}
+
+export interface Looks {
+  /** The free picks; `sprite` prefixes the body's frames in sprites.ts. */
+  bodies: { id: string; sprite: string }[];
+  outfits: (Look & { dye: { hue: number; saturation: number; value: number } })[];
+  /** `image` is the painting's path under art/. */
+  backdrops: (Look & { image: string })[];
+}
+
+/** What a Tinker is wearing: a body, and an outfit and backdrop or null for the plain ones. */
+export interface Wearing {
+  body: string;
+  outfit: string | null;
+  backdrop: string | null;
+}
+
+export interface LookOffer {
+  id: string;
+  /** Whether the Tinker may wear it now. */
+  held: boolean;
+  cogs: number | null;
+  favour: { quality: string; level: number; have: number } | null;
+}
+
+/** Every outfit and backdrop as one Tinker sees it (packages/server/src/looks.ts). */
+export interface WardrobeView {
+  cogs: number;
+  wearing: Wearing;
+  outfits: LookOffer[];
+  backdrops: LookOffer[];
+}
+
+export type WardrobeOutcome = Outcome & { wardrobe: WardrobeView };
+
 export type GuildRank = "leader" | "officer" | "member";
 
 /** One line of a guild's recent activity (packages/server/src/guilds.ts). */
@@ -382,6 +428,7 @@ export interface InspectView {
   tools: Record<string, string>;
   bossesBeaten: number;
   guild: { id: number; name: string; rank: GuildRank } | null;
+  look: Wearing;
 }
 
 /** One row of a leaderboard (packages/server/src/leaderboards.ts): a Tinker, or a guild on the guild board. */
@@ -586,6 +633,10 @@ export const api = {
   disbandGuild: (id: number) => request<GuildView>("POST", `/tinkers/${id}/guild/disband`),
   setNotice: (id: number, text: string) => request<GuildView>("PUT", `/tinkers/${id}/guild/notice`, { text }),
   inspect: (id: number, other: number) => request<InspectView>("GET", `/tinkers/${id}/inspect/${other}`),
+  find: (id: number, name: string) => request<{ found: { id: number; name: string; totalLevel: number }[] }>("GET", `/tinkers/${id}/find?name=${encodeURIComponent(name)}`),
+  wardrobe: (id: number) => request<WardrobeOutcome>("GET", `/tinkers/${id}/wardrobe`),
+  buyLook: (id: number, look: string) => request<WardrobeOutcome>("POST", `/tinkers/${id}/wardrobe/buy`, { look }),
+  wearLook: (id: number, change: Partial<Wearing>) => request<WardrobeOutcome>("PUT", `/tinkers/${id}/look`, change),
   leaderboard: (id: number, board: string) => request<LeaderboardView>("GET", `/tinkers/${id}/leaderboards/${encodeURIComponent(board)}`),
   mute: (id: number, other: number) => request<ChatView>("PUT", `/tinkers/${id}/mutes/${other}`),
   unmute: (id: number, other: number) => request<ChatView>("DELETE", `/tinkers/${id}/mutes/${other}`),

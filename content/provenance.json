@@ -27042,6 +27042,56 @@
       "retirement": null
     },
     {
+      "id": "looks.global.tinker",
+      "type": "looks",
+      "path": "content/looks/looks.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "docs/work-orders/042-looks-and-profiles.md",
+      "status": "validated",
+      "drafted_by": "claude",
+      "model": "claude-fable-5-2",
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-15T22:40:00Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "clearance",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": null,
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-15T22:40:00Z",
+          "status": "drafted",
+          "by": "claude"
+        },
+        {
+          "at": "2026-11-15T22:40:00Z",
+          "status": "validated",
+          "by": "validators"
+        }
+      ],
+      "retirement": null
+    },
+    {
       "id": "start.global.inventory",
       "type": "start",
       "path": "content/start.json",

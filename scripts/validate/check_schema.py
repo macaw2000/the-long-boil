@@ -41,6 +41,8 @@
 - The Cog Shop's terms (tuning.cog_shop/*) are the one file
   content/tuning/cog-shop.json, and that file declares tuning.cog_shop/*
   (GDD section 8).
+- The Tinker's looks (looks/*) are the one file content/looks/looks.json, and
+  that file declares looks/* (work order 042).
 
 The register's own shape is the provenance check's job, not this one's.
 
@@ -79,7 +81,7 @@ SCHEMA_ONLY_IN = (
     ("tuning.work_orders/", "content/tuning/"),
 )
 
-# Work orders 013 and 021, and the Cog Shop: schema family -> the one file it may be, and that file must
+# Work orders 013, 021 and 042, and the Cog Shop: schema family -> the one file it may be, and that file must
 # declare it.
 SCHEMA_AT_PATH = (
     ("start/", "content/start.json"),
@@ -87,6 +89,7 @@ SCHEMA_AT_PATH = (
     ("road/", "content/road/road.json"),
     ("email/", "content/email/boiler_reminder.json"),
     ("tuning.cog_shop/", "content/tuning/cog-shop.json"),
+    ("looks/", "content/looks/looks.json"),
 )
 
 

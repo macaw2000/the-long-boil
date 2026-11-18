@@ -1,0 +1,82 @@
+{
+  "schema": "looks/1",
+  "id": "looks.global.tinker",
+  "bodies": [
+    { "id": "look.body.m", "sprite": "tinker" },
+    { "id": "look.body.f", "sprite": "tinkerf" }
+  ],
+  "outfits": [
+    {
+      "id": "look.outfit.soot_black",
+      "name": "Soot-Black Leathers",
+      "description": "Apron and gloves in a black that hides the soot, which in Kettleport is most of what clothes are for.",
+      "dye": { "hue": 25, "saturation": 0.25, "value": 0.45 },
+      "cogs": 15
+    },
+    {
+      "id": "look.outfit.oxblood",
+      "name": "Oxblood Leathers",
+      "description": "A deep red hide, oiled until it shines. Nobody has ever been overlooked in it.",
+      "dye": { "hue": 353, "saturation": 1.2, "value": 1.0 },
+      "cogs": 10
+    },
+    {
+      "id": "look.outfit.gaugers_green",
+      "name": "Gauger's Green",
+      "description": "Dyed the green of old copper, as the Gaugers wear it. They do not hand it out to people who guess.",
+      "dye": { "hue": 160, "saturation": 0.7, "value": 0.95 },
+      "favour": { "quality": "favour.gaugers", "level": 2 }
+    },
+    {
+      "id": "look.outfit.board_blue",
+      "name": "Board Blue",
+      "description": "The blue of a Board clerk's ledger cloth. It suggests that somebody, somewhere, has signed for you.",
+      "dye": { "hue": 216, "saturation": 0.9, "value": 0.95 },
+      "favour": { "quality": "favour.board", "level": 2 }
+    }
+  ],
+  "backdrops": [
+    {
+      "id": "look.backdrop.workshop",
+      "name": "No. 9",
+      "description": "Your own workshop, on one of its tidier days.",
+      "image": "bg/workshop.jpg"
+    },
+    {
+      "id": "look.backdrop.sprocket_row",
+      "name": "Sprocket Row",
+      "description": "The Row at lamp-lighting, when every window is somebody else's unfinished job.",
+      "image": "bg/sprocket_row.jpg",
+      "cogs": 5
+    },
+    {
+      "id": "look.backdrop.rustmoor",
+      "name": "The Heaps",
+      "description": "Rustmoor behind you, at a distance from which it looks almost restful.",
+      "image": "bg/rustmoor.jpg",
+      "cogs": 5
+    },
+    {
+      "id": "look.backdrop.open_sky",
+      "name": "Open Sky",
+      "description": "Nothing behind you but weather, which is how the airship captains like to be painted.",
+      "image": "splash/sky.jpg",
+      "cogs": 10
+    },
+    {
+      "id": "look.backdrop.cinderworks",
+      "name": "The Cinderworks",
+      "description": "Furnace light, by leave of the Stokers. It flatters everybody and warms nobody.",
+      "image": "bg/cinderworks.jpg",
+      "favour": { "quality": "favour.stokers", "level": 2 }
+    },
+    {
+      "id": "look.backdrop.brass_exchange",
+      "name": "The Exchange Floor",
+      "description": "The price board over your shoulder, by leave of the Counting-House. The figures are a week old.",
+      "image": "bg/brass_exchange.jpg",
+      "favour": { "quality": "favour.counting_house", "level": 2 }
+    }
+  ],
+  "derivation": "Work order 042. GDD section 8 prices cosmetics at 5 to 30 Cogs, looks only, and section 5 lets Favour open a faction's cosmetics. Jeremy, 15 November 2026: the two bodies are free picks; outfits and backdrops are bought in the Cog Shop, and some are earned through Favour instead. An outfit is a dye of the Tinker's leathers, applied to the drawn frames by scripts/art/dye_outfits.py, so each needs no new art. Prices and Favour levels are starting points for the assayer."
+}

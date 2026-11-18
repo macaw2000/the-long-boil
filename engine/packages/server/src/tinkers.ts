@@ -45,6 +45,8 @@ export interface TinkerView {
   story: StorySummary;
   /** Work Orders waiting on the desk, as last brought up to date; for the tab's badge. */
   workOrders: number;
+  /** How the Tinker looks (work order 042); `picked` is false until the player has chosen a body. */
+  look: rules.Wearing & { picked: boolean };
 }
 
 /** The story's gauges for the top bar and the Story tab's badge. */
@@ -350,7 +352,9 @@ function waitingOrders(desk: rules.WorkOrderState, now: number): number {
 }
 
 export async function view(tx: Tx, tinkerId: number, content: GameContent, now = Date.now()): Promise<TinkerView> {
-  const row = (await tx.query("SELECT id, name, crowns, cogs, progress_ms, steam_until, resolved_to, work_orders FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
+  const row = (
+    await tx.query("SELECT id, name, crowns, cogs, progress_ms, steam_until, resolved_to, work_orders, body, outfit, backdrop FROM tinkers WHERE id = $1", [tinkerId])
+  ).rows[0];
   const loaded = await lockAndLoad(tx, tinkerId);
   const boostUntil = loaded.state.boostUntil;
   return {
@@ -379,7 +383,13 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent, now =
     bossesBeaten: loaded.state.bossesBeaten,
     story: summarizeStory(await loadStory(tx, tinkerId), loaded.state, content, now),
     workOrders: waitingOrders(row.work_orders as rules.WorkOrderState, now),
+    look: { ...wearing(content, row), picked: row.body !== null },
   };
+}
+
+/** What a Tinker's row says it wears, with the first body for one who has not picked. */
+export function wearing(content: GameContent, row: { body: string | null; outfit: string | null; backdrop: string | null }): rules.Wearing {
+  return { body: row.body ?? content.looks?.bodies[0]?.id ?? "", outfit: row.outfit, backdrop: row.backdrop };
 }
 
 
@@ -387,7 +397,8 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent, now =
  * Starts a Tinker over in its own slot: a fresh workshop, as on the day the
  * keys were taken, under the same name or a new one if given. Progress goes (skills, stores, Crowns,
  * queue, story, Work Orders, open Exchange orders); what Cogs bought stays
- * (Cogs, the Cog Shop's upgrades and crates still on their way). The event
+ * (Cogs, the Cog Shop's upgrades and looks, and crates still on their way),
+ * and so does the body picked. The event
  * log is append-only, so the reset is logged, not erased. A Tinker in a guild,
  * or with Crowns still pledged to an old charter, must leave or be refunded
  * first, so no guild loses a member or a pledge without its own rules running.
@@ -423,7 +434,8 @@ export async function resetTinker(db: Db, content: GameContent, tinkerId: number
       `UPDATE tinkers SET crowns = $2, progress_ms = 0, resolved_to = $3, steam_until = $4, content_version = $5,
          weapon = NULL, armour = NULL, worn = '{}', tools = '{}', head_tool = 0, ration_debt = 0, pity = '{}', bosses_beaten = '[]',
          nerve = $6, nerve_at = $7, post_at = $8, hand = '[]', needle_at = '{}', check_in_at = NULL,
-         answered = '[]', played_at = '{}', work_orders = DEFAULT, guide = NULL, head_boosted = false, name = $9
+         answered = '[]', played_at = '{}', work_orders = DEFAULT, guide = NULL, head_boosted = false, name = $9,
+         outfit = CASE WHEN outfit = ANY($10::text[]) THEN outfit END, backdrop = CASE WHEN backdrop = ANY($10::text[]) THEN backdrop END
        WHERE id = $1`,
       [
         tinkerId,
@@ -435,6 +447,8 @@ export async function resetTinker(db: Db, content: GameContent, tinkerId: number
         new Date(story.nerveAt),
         new Date(story.postAt),
         name || row.name,
+        // A look Favour opened goes with the Favour; a free or bought one stays on.
+        [...(content.looks?.outfits ?? []), ...(content.looks?.backdrops ?? [])].filter((look) => !look.favour).map((look) => look.id),
       ],
     );
     for (const stack of content.start.inventory) {
@@ -452,7 +466,8 @@ export async function resetTinker(db: Db, content: GameContent, tinkerId: number
   });
 }
 
-export async function createTinker(db: Db, content: GameContent, login: string, name: string, now: number): Promise<Outcome> {
+export async function createTinker(db: Db, content: GameContent, login: string, name: string, now: number, body?: string): Promise<Outcome> {
+  if (body !== undefined && !content.looks?.bodies.some((known) => known.id === body)) throw new BadRequest(`no body ${body}`);
   return withTransaction(db, async (tx) => {
     const account = (
       await tx.query(
@@ -466,8 +481,8 @@ export async function createTinker(db: Db, content: GameContent, login: string, 
     const tinkerId = Number(
       (
         await tx.query(
-          `INSERT INTO tinkers (account_id, name, crowns, resolved_to, steam_until, content_version, nerve, nerve_at, post_at)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
+          `INSERT INTO tinkers (account_id, name, crowns, resolved_to, steam_until, content_version, nerve, nerve_at, post_at, body)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`,
           [
             account.id,
             name,
@@ -478,6 +493,7 @@ export async function createTinker(db: Db, content: GameContent, login: string, 
             story.nerve,
             new Date(story.nerveAt),
             new Date(story.postAt),
+            body ?? null,
           ],
         )
       ).rows[0].id,

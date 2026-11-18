@@ -347,6 +347,9 @@ ARMED = {
                                     "brass_catapult", "iron_rifle", "steel_carbine"]),
     "tinker-armed-w2.jpeg": (4, 3, ["garnet_rifle", "copper_coil", "spark_rod", "brass_sparker", "garnet_rod"]),
 }
+# The bodies a player can pick (content/looks/looks.json's sprites), each from its own sheets.
+TINKER_BODIES = ["tinker", "tinkerf"]
+
 # The Tinker's height on screen, head to foot, in the scene and in the Loadout.
 TINKER_TALL = 119
 PORTRAIT_TALL = 173
@@ -357,6 +360,52 @@ COG_SHOP_UI = ["cogs", "shop", "boost"]
 VIGNETTES = ["sprocket_row", "rustmoor", "lowvents", "polytechnic", "brass_exchange", "infirmary"]
 
 BACKGROUNDS = ["workshop", "rustmoor", "sprocket_row", "brass_exchange", "guildhall", "cinderworks"]
+
+
+def tinker_sheets(body: str) -> int:
+    """Cuts one body's sheets into <body>_*.png: "tinker" from tinker-at-work.jpeg and the rest, "tinkerf" from
+    tinkerf-at-work.jpeg and the rest. A body with no at-work sheet yet is skipped; its armed sheets are cut as
+    they arrive, and a weapon not yet drawn shows the body bare-handed (scripts/art/build_sprites.py)."""
+    if not (SHEETS / f"{body}-at-work.jpeg").exists():
+        return 0
+    written = 0
+    # Gemini's thin gridlines run into the cells and the feet reach the cells' edges, so the
+    # gridlines are cleared first and the cells barely trimmed.
+    tinker = cells(without_gridlines(keyed(sheet(f"{body}-at-work.jpeg"))), 4, 4, inset=0.004)
+    # The first Tinker's second breath was drawn about 30 pixels to the right; standing still, it should not move.
+    tinker[1] = feet_like(tinker[1], tinker[0])
+    working = fit_together(tinker[:14], CHARACTER, TINKER_TALL)
+    for index, pose in enumerate(TINKER_POSES[:-1]):
+        for frame in (0, 1):
+            save(working[index * 2 + frame], f"{body}_{pose}_{frame}")
+            written += 1
+    # The first sheet's Smithing pose held a hammer in each hand on one frame, so it was redrawn on its own.
+    if (SHEETS / f"{body}-smithing.jpeg").exists():
+        smithing = cells(without_gridlines(keyed(sheet(f"{body}-smithing.jpeg"))), 2, 1, inset=0.004)
+        for frame, image in enumerate(fit_together(smithing, CHARACTER, TINKER_TALL)):
+            save(image, f"{body}_hammer_{frame}")
+            written += 1
+    for frame, image in enumerate(fit_together(tinker[14:], PORTRAIT, PORTRAIT_TALL)):
+        save(image, f"{body}_bare_portrait_{frame}")
+        written += 1
+
+    for file, (cols, rows, weapons) in ARMED.items():
+        file = body + file[len("tinker"):]
+        if not (SHEETS / file).exists():
+            continue
+        armed = cells(without_gridlines(keyed(sheet(file))), cols, rows, inset=0.004)[: len(weapons) * 2]
+        scene = fit_together(armed, CHARACTER, TINKER_TALL)
+        portrait = fit_together(armed, PORTRAIT, PORTRAIT_TALL)
+        for index, weapon in enumerate(weapons):
+            ready, strike = index * 2, index * 2 + 1
+            for name, frames in (("idle", (ready, ready)), ("attack", (ready, strike))):
+                for frame, cell in enumerate(frames):
+                    save(scene[cell], f"{body}_{weapon}_{name}_{frame}")
+                    written += 1
+            for frame in (0, 1):
+                save(portrait[ready], f"{body}_{weapon}_portrait_{frame}")
+                written += 1
+    return written
 
 
 def sheet(name: str) -> Image.Image:
@@ -433,38 +482,9 @@ def main() -> None:
         save(frame, f"old_bellows_{frame_name}")
         written += 1
 
-    # Gemini's thin gridlines run into the cells and the feet reach the cells' edges, so the
-    # gridlines are cleared first and the cells barely trimmed.
-    tinker = cells(without_gridlines(keyed(sheet("tinker-at-work.jpeg"))), 4, 4, inset=0.004)
-    # The second breath was drawn about 30 pixels to the right; standing still, it should not move.
-    tinker[1] = feet_like(tinker[1], tinker[0])
-    working = fit_together(tinker[:14], CHARACTER, TINKER_TALL)
-    for index, pose in enumerate(TINKER_POSES[:-1]):
-        for frame in (0, 1):
-            save(working[index * 2 + frame], f"tinker_{pose}_{frame}")
-            written += 1
-    # The first sheet's Smithing pose held a hammer in each hand on one frame, so it was redrawn on its own.
-    smithing = cells(without_gridlines(keyed(sheet("tinker-smithing.jpeg"))), 2, 1, inset=0.004)
-    for frame, image in enumerate(fit_together(smithing, CHARACTER, TINKER_TALL)):
-        save(image, f"tinker_hammer_{frame}")
-        written += 1
-    for frame, image in enumerate(fit_together(tinker[14:], PORTRAIT, PORTRAIT_TALL)):
-        save(image, f"tinker_bare_portrait_{frame}")
-        written += 1
-
-    for file, (cols, rows, weapons) in ARMED.items():
-        armed = cells(without_gridlines(keyed(sheet(file))), cols, rows, inset=0.004)[: len(weapons) * 2]
-        scene = fit_together(armed, CHARACTER, TINKER_TALL)
-        portrait = fit_together(armed, PORTRAIT, PORTRAIT_TALL)
-        for index, weapon in enumerate(weapons):
-            ready, strike = index * 2, index * 2 + 1
-            for name, frames in (("idle", (ready, ready)), ("attack", (ready, strike))):
-                for frame, cell in enumerate(frames):
-                    save(scene[cell], f"tinker_{weapon}_{name}_{frame}")
-                    written += 1
-            for frame in (0, 1):
-                save(portrait[ready], f"tinker_{weapon}_portrait_{frame}")
-                written += 1
+    # The first Tinker, and any other body whose sheets have been drawn (work order 042).
+    for body in TINKER_BODIES:
+        written += tinker_sheets(body)
 
     shop = [fit_icon(cell) for cell in cells(without_gridlines(keyed(sheet("cog-shop.jpeg"))), 2, 2, inset=0.01)]
     save(shop[0], "icon_cog_crate")

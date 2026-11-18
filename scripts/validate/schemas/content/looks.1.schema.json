@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "looks/1",
+  "title": "The Tinker's looks, version 1",
+  "description": "The one file content/looks/looks.json (work order 042): how a Tinker can look, and what each look costs. 'bodies' are the free picks; 'sprite' is the prefix of that body's drawn frames in the client's art. An outfit is a dye of the leathers the body is drawn in: 'dye' gives the new hue in degrees and what the drawn saturation and brightness are multiplied by, and scripts/art/dye_outfits.py applies it to every frame. A backdrop is a painting behind the portrait; 'image' is its path under art/. An outfit or backdrop with 'cogs' is bought in the Cog Shop at that price; one with 'favour' is taken free once the named Favour stands at 'level' or above; one with neither is free; none has both. Looks change nothing but the picture (GDD section 8). 'derivation' is optional free text, which no check reads. 'revision' is optional and exists only so a register row's revision can match the file.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "bodies", "outfits", "backdrops"],
+  "$defs": {
+    "line": {"type": "string", "minLength": 1, "pattern": "^(?![\\s\\S]*[\\r\\n])[\\s\\S]*\\S"},
+    "favour": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["quality", "level"],
+      "properties": {
+        "quality": {"type": "string", "pattern": "^favour\\.[a-z][a-z0-9_]*$"},
+        "level": {"type": "integer", "minimum": 1, "maximum": 7}
+      }
+    }
+  },
+  "properties": {
+    "schema": {"const": "looks/1"},
+    "id": {"const": "looks.global.tinker"},
+    "revision": {"type": "integer", "minimum": 1},
+    "bodies": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "sprite"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^look\\.body\\.[a-z][a-z0-9_]*$"},
+          "sprite": {"type": "string", "pattern": "^tinker[a-z0-9]*$"}
+        }
+      }
+    },
+    "outfits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "description", "dye"],
+        "not": {"required": ["cogs", "favour"]},
+        "properties": {
+          "id": {"type": "string", "pattern": "^look\\.outfit\\.[a-z][a-z0-9_]*$"},
+          "name": {"$ref": "#/$defs/line"},
+          "description": {"$ref": "#/$defs/line"},
+          "dye": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["hue", "saturation", "value"],
+            "properties": {
+              "hue": {"type": "number", "minimum": 0, "exclusiveMaximum": 360},
+              "saturation": {"type": "number", "minimum": 0, "maximum": 3},
+              "value": {"type": "number", "exclusiveMinimum": 0, "maximum": 3}
+            }
+          },
+          "cogs": {"type": "integer", "minimum": 5, "maximum": 30},
+          "favour": {"$ref": "#/$defs/favour"}
+        }
+      }
+    },
+    "backdrops": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "description", "image"],
+        "not": {"required": ["cogs", "favour"]},
+        "properties": {
+          "id": {"type": "string", "pattern": "^look\\.backdrop\\.[a-z][a-z0-9_]*$"},
+          "name": {"$ref": "#/$defs/line"},
+          "description": {"$ref": "#/$defs/line"},
+          "image": {"type": "string", "pattern": "^[a-z0-9_]+/[a-z0-9_]+\\.(jpg|webp)$"},
+          "cogs": {"type": "integer", "minimum": 5, "maximum": 30},
+          "favour": {"$ref": "#/$defs/favour"}
+        }
+      }
+    },
+    "derivation": {"type": "string"}
+  }
+}

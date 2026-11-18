@@ -273,6 +273,41 @@ def road_prose_fields(section, index):
 
 
 # --------------------------------------------------------------------------
+# The Tinker's looks (work order 042)
+# --------------------------------------------------------------------------
+
+LOOKS_PREFIX = "looks/"
+# Any player can meet any look's words on their first day, in the Cog Shop or
+# on another Tinker's profile, so they are read at the Prologue's act.
+LOOKS_ACT = 0
+
+
+def looks_files(root):
+    """(path, data) for every parsed content file declaring looks/*."""
+    out = []
+    for path in lib.content_files(root):
+        data, error = lib.load_json(root, path)
+        if error or not isinstance(data, dict):
+            continue
+        if declared(data).startswith(LOOKS_PREFIX):
+            out.append((path, data))
+    return out
+
+
+def looks_prose_fields(data):
+    """(pointer, text, field) for each outfit's and backdrop's name and
+    description. field is the key, for the word limits."""
+    out = []
+    for kind in ("outfits", "backdrops"):
+        looks = data.get(kind)
+        for index, look in enumerate(looks if isinstance(looks, list) else []):
+            if isinstance(look, dict):
+                out.extend(("/%s/%d/%s" % (kind, index, field), look[field], field)
+                           for field in ("name", "description") if isinstance(look.get(field), str))
+    return out
+
+
+# --------------------------------------------------------------------------
 # Emails to players (work order 039)
 # --------------------------------------------------------------------------
 

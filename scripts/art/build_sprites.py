@@ -27,6 +27,7 @@ OUT = ROOT / "engine" / "packages" / "client" / "assets" / "sprites"
 # placeholder, so rebuilding the placeholders never loses real art.
 REAL = ROOT / "engine" / "packages" / "client" / "assets" / "art"
 INDEX = ROOT / "engine" / "packages" / "client" / "src" / "sprites.ts"
+LOOKS = ROOT / "content" / "looks" / "looks.json"
 ITEMS = ROOT / "content" / "items" / "rustmoor.json"
 OTHER_ITEMS = [path for path in sorted((ROOT / "content" / "items").glob("*.json")) if path != ITEMS]
 
@@ -719,6 +720,25 @@ def main() -> None:
                 "attack": tinker_anims["attack"],
                 "portrait": index["characters"]["tinker:bare"]["portrait"],
             }
+
+    # The Tinker's other looks (work order 042): each body in content/looks/looks.json, and each body in each
+    # outfit as scripts/art/dye_outfits.py dyed it. A look is indexed like the first Tinker, under its frames'
+    # prefix ("tinkerf", "tinker-oxblood"), wherever every frame of an animation has been drawn.
+    looks = json.loads(LOOKS.read_text())
+    first = {who: anims for who, anims in index["characters"].items() if who == "tinker" or who.startswith("tinker:")}
+    for body in looks["bodies"]:
+        for outfit in [None] + [outfit["id"].split(".")[-1] for outfit in looks["outfits"]]:
+            prefix = body["sprite"] if outfit is None else f"looks/{body['sprite']}-{outfit}"
+            if prefix == "tinker":
+                continue
+            for who, anims in first.items():
+                drawn = {
+                    anim: [prefix + frame[len("tinker"):] for frame in frames]
+                    for anim, frames in anims.items()
+                    if all((REAL / f"{prefix}{frame[len('tinker'):]}.png").exists() for frame in frames)
+                }
+                if drawn:
+                    index["characters"][prefix.split("/")[-1] + who[len("tinker"):]] = drawn
 
     for variant, mapping in RAT_VARIANTS.items():
         anims = {}

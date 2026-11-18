@@ -72,6 +72,8 @@ LEDGER_TEXT_MAX_WORDS = None
 LEDGER_LIMITS = {"title": LEDGER_TITLE_MAX_WORDS, "text": LEDGER_TEXT_MAX_WORDS}
 # Work order 038: a stop's label sits under a mark at phone width.
 ROAD_LIMITS = {"title": 6, "goal": 8, "label": 4, "hint": 6}
+# Work order 042: a look's name and description sit on a tile 136 pixels wide.
+LOOKS_LIMITS = {"name": 4, "description": 25}
 # Work order 039: an email to someone who may have played for a minute.
 EMAIL_LIMITS = {"subject": 10, "lines": 60, "button": 4, "opt_out": 30, "opt_out_link": 4}
 
@@ -182,6 +184,10 @@ def run(root):
         if words > EMAIL_LIMITS["lines"]:
             report.fail("too-long", path, "/lines have %d words in all; at most %d allowed"
                         % (words, EMAIL_LIMITS["lines"]), story.file_id(data))
+    for path, data in story.looks_files(root):
+        for pointer, text, field in story.looks_prose_fields(data):
+            fields += 1
+            _check_text(report, path, story.file_id(data), pointer, text, LOOKS_LIMITS[field], patterns)
     unset = sorted(name for name, value in (("LEDGER_TITLE_MAX_WORDS", LEDGER_TITLE_MAX_WORDS),
                                             ("LEDGER_TEXT_MAX_WORDS", LEDGER_TEXT_MAX_WORDS))
                    if value is None)

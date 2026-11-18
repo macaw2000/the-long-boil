@@ -17,6 +17,8 @@ import { Glow } from "./Glow";
 import { actedMark, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, queuedMs, rest, restLine, revealed, SendOff, type GuideAction, type GuideState, type Target } from "./Guide";
 import { Guild } from "./Guild";
 import { Inspect } from "./Inspect";
+import { drawnBodies } from "./looks";
+import { BodyPick, Wardrobe } from "./Wardrobe";
 import { skillOpen } from "@long-boil/rules";
 import { jobTitle, skillOf, startFirst } from "./jobs";
 import { CanisterDrop, Floaters, LevelUps, ScaldVignette, useFloaters, useLevelUps } from "./Juice";
@@ -55,6 +57,7 @@ function rationsNote(ledger: LedgerData, content: Content): string | undefined {
 
 export function Workshop({ content, tinkerId, admin, onLeave }: { content: Content; tinkerId: number; admin: boolean; onLeave: () => void }) {
   const [tinker, setTinker] = useState<Tinker | null>(null);
+  const [dressing, setDressing] = useState(false);
   const [away, setAway] = useState<{ ledger: LedgerData; trades: TradeNote[]; guild: GuildActivity | null } | null>(null);
   // A chat tab asked for from outside the chat, as the ledger's "Read guild chat" does.
   const [chatFocus, setChatFocus] = useState<{ channel: ChatChannel; ask: number } | undefined>(undefined);
@@ -558,7 +561,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
 
   const loadout = shown("loadout") ? (
     <Glow active={lit.has("loadout")}>
-      <Loadout content={content} tinker={tinker} name={name} onEquip={equipWeapon} onWear={(item) => run(api.wear(tinkerId, item))} portrait={wide ? 128 : 192} />
+      <Loadout content={content} tinker={tinker} name={name} onEquip={equipWeapon} onWear={(item) => run(api.wear(tinkerId, item))} onLook={() => setDressing(true)} portrait={wide ? 128 : 192} />
     </Glow>
   ) : null;
 
@@ -795,6 +798,25 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           onInvite={inviteToGuild}
         />
       )}
+      {dressing && (
+        <Pressable
+          onPress={() => setDressing(false)}
+          style={{ position: "absolute", inset: 0, backgroundColor: "rgba(10,8,6,0.72)", alignItems: "center", justifyContent: "center", zIndex: 50, padding: 16 }}
+          accessibilityViewIsModal
+          accessibilityLabel="Close"
+        >
+          {/* A press inside the card stays in the card. */}
+          <Pressable onPress={() => undefined} style={[ui.panel, { width: 760, maxWidth: "100%", maxHeight: "92%" }]}>
+            <ScrollView contentContainerStyle={{ gap: 10 }}>
+              <Wardrobe content={content} tinker={tinker} onOutcome={apply} />
+              <Pressable onPress={() => setDressing(false)} accessibilityRole="button" style={[ui.button, { alignSelf: "flex-end" }]}>
+                <Text style={ui.buttonText}>Done</Text>
+              </Pressable>
+            </ScrollView>
+          </Pressable>
+        </Pressable>
+      )}
+      {!tinker.look.picked && drawnBodies(content.looks).length > 1 && <BodyPick content={content} tinker={tinker} onOutcome={apply} />}
       {newGear && !step && (
         <NewGear item={newGear} content={content} tinker={tinker} name={name} onEquip={equipWeapon} onClose={() => setNewGear(null)} />
       )}

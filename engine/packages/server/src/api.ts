@@ -46,7 +46,8 @@ import {
   sellToCollector,
   type TradingRules,
 } from "./market.js";
-import { inspect } from "./inspect.js";
+import { find, inspect } from "./inspect.js";
+import { buyLook, readWardrobe, wear as wearLook } from "./looks.js";
 import { leaderboard } from "./leaderboards.js";
 import { readLedgerPages } from "./pages.js";
 import { readCommonplace } from "./commonplace.js";
@@ -310,6 +311,7 @@ export function buildApi({
     dev: clock ? { offsetMs: clock.offset() } : null,
     totalXp: content.rules.totalXp,
     shop: content.rules.shop,
+    looks: content.looks,
     payments: payments && content.rules.shop ? { testMode: payments.testMode } : null,
     ration: { item: content.rules.ration.item, bossCap: content.rules.combat.BOSS_RATION_CAP_PER_ATTEMPT ?? 0 },
     // Armour this high halves a hit (combat.json), so the Loadout can say what armour does.
@@ -364,19 +366,19 @@ export function buildApi({
 
   app.get<{ Params: { id: string } }>("/tinkers/:id", async (request) => look(db, content, Number(request.params.id), now()));
 
-  app.post<{ Body: { login: string; name: string } }>(
+  app.post<{ Body: { login: string; name: string; body?: string } }>(
     "/tinkers",
     {
       schema: {
         body: {
           type: "object",
           required: ["login", "name"],
-          properties: { login: { type: "string", minLength: 1 }, name: { type: "string", minLength: 1, maxLength: 40 } },
+          properties: { login: { type: "string", minLength: 1 }, name: { type: "string", minLength: 1, maxLength: 40 }, body: { type: "string", maxLength: 64 } },
         },
       },
     },
     async (request, reply) => {
-      const outcome = await createTinker(db, content, request.body.login, request.body.name, now());
+      const outcome = await createTinker(db, content, request.body.login, request.body.name, now(), request.body.body);
       return reply.code(201).send(outcome);
     },
   );
@@ -534,6 +536,9 @@ export function buildApi({
   app.get<{ Params: { id: string; other: string } }>("/tinkers/:id/inspect/:other", async (request) => inspect(db, content, Number(request.params.other)));
 
   // The leaderboards (GDD section 6), open to every player. Named by Tinker so the caller's own row, or guild, can be marked.
+  // Looking a Tinker up by the start of its name, to inspect it.
+  app.get<{ Params: { id: string }; Querystring: { name?: string } }>("/tinkers/:id/find", async (request) => find(db, content, request.query.name ?? ""));
+
   app.get<{ Params: { id: string; board: string } }>("/tinkers/:id/leaderboards/:board", async (request) =>
     leaderboard(db, content, Number(request.params.id), request.params.board),
   );
@@ -625,6 +630,31 @@ export function buildApi({
       });
     });
   }
+
+  // How the Tinker looks (work order 042): what it may wear, buying a look with Cogs, and changing what is worn.
+  app.get<{ Params: { id: string } }>("/tinkers/:id/wardrobe", async (request) => readWardrobe(db, content, Number(request.params.id), now()));
+  app.post<{ Params: { id: string }; Body: { look: string } }>(
+    "/tinkers/:id/wardrobe/buy",
+    { schema: { body: { type: "object", required: ["look"], properties: { look: { type: "string", maxLength: 64 } } } } },
+    async (request) => buyLook(db, content, Number(request.params.id), request.body.look, now()),
+  );
+  app.put<{ Params: { id: string }; Body: { body?: string; outfit?: string | null; backdrop?: string | null } }>(
+    "/tinkers/:id/look",
+    {
+      schema: {
+        body: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            body: { type: "string", maxLength: 64 },
+            outfit: { type: ["string", "null"], maxLength: 64 },
+            backdrop: { type: ["string", "null"], maxLength: 64 },
+          },
+        },
+      },
+    },
+    async (request) => wearLook(db, content, Number(request.params.id), request.body, now()),
+  );
 
   app.post<{ Params: { id: string }; Body: { purchase: Purchase } }>(
     "/tinkers/:id/shop/buy",

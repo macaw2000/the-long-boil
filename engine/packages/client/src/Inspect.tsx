@@ -1,7 +1,7 @@
 // Inspecting another Tinker: a card over the screen, opened by tapping a name
 // in chat, the guild roster or a leaderboard. It shows what the server's
-// inspect.ts lets anyone see: guild and rank, the gear on them as a small
-// paperdoll, their tools, and every skill's level. From it you can whisper
+// inspect.ts lets anyone see: guild and rank, the look they chose and the
+// gear on them as a small paperdoll, their tools, and every skill's level. From it you can whisper
 // them, or invite them to your guild.
 
 import { useEffect, useRef, useState } from "react";
@@ -105,7 +105,7 @@ export function Inspect({
                   <Slot key={slot} label={label} item={view.worn[slot] ?? null} empty={`empty_${slot}`} small />
                 ))}
               </View>
-              <Portrait weapon={view.weapon} flash={still} size={128} />
+              <Portrait weapon={view.weapon} flash={still} size={128} looks={content.looks} look={view.look} />
               <View style={{ gap: 4 }}>
                 <Slot label="Weapon" item={view.weapon} empty="empty_weapon" tierLevel={weaponLevel} small />
                 <Slot label="Off-hand" item={view.worn.off_hand ?? null} empty="empty_off_hand" small />

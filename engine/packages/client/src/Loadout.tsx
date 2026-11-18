@@ -10,11 +10,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Easing, Image, Pressable, Text, View } from "react-native";
-import { api, type Content, type FightOutlook, type LoadoutWeapon, type Tinker } from "./api";
+import { api, type Content, type FightOutlook, type LoadoutWeapon, type Looks, type Tinker, type Wearing } from "./api";
+import { backdropUrl, portraitFrames } from "./looks";
 import { SkillIcon } from "./SkillView";
 import { Sparks, useReducedMotion } from "./Juice";
 import { ItemIcon, UiIcon } from "./Sprite";
-import { characters, ui as uiIcons } from "./sprites";
+import { ui as uiIcons } from "./sprites";
 import { seconds, titleCase } from "./format";
 import { colors, fonts, ui } from "./theme";
 
@@ -60,8 +61,20 @@ export const STYLE_COLOURS: Record<string, string> = {
 // 3x the 64-pixel portrait; a narrow column asks for 2x, so the pixels stay whole.
 const PORTRAIT = 192;
 
-/** The Tinker as the paperdoll shows it: holding the equipped weapon, breathing. */
-export function Portrait({ weapon, flash, size }: { weapon: string | null; flash: Animated.Value; size: number }) {
+/** The Tinker as the paperdoll shows it: in its look, before its backdrop, holding the equipped weapon, breathing. */
+export function Portrait({
+  weapon,
+  flash,
+  size,
+  looks = null,
+  look = { body: "", outfit: null, backdrop: null },
+}: {
+  weapon: string | null;
+  flash: Animated.Value;
+  size: number;
+  looks?: Looks | null;
+  look?: Wearing;
+}) {
   const reduced = useReducedMotion();
   const [frame, setFrame] = useState(0);
   useEffect(() => {
@@ -69,9 +82,18 @@ export function Portrait({ weapon, flash, size }: { weapon: string | null; flash
     const timer = setInterval(() => setFrame((f) => 1 - f), 600);
     return () => clearInterval(timer);
   }, [reduced]);
-  const frames = (weapon && characters[`tinker:${weapon}`]?.portrait) || characters["tinker:bare"]!.portrait!;
+  const frames = portraitFrames(looks, look, weapon);
+  const backdrop = backdropUrl(looks, look.backdrop);
   return (
     <View style={{ width: size, height: size, alignItems: "center", justifyContent: "center" }}>
+      {backdrop && (
+        <Image
+          source={{ uri: backdrop }}
+          resizeMode="cover"
+          style={{ position: "absolute", inset: 0, borderRadius: 8, borderWidth: 1, borderColor: colors.panelEdge }}
+          accessibilityIgnoresInvertColors
+        />
+      )}
       <View
         style={{
           position: "absolute",
@@ -163,6 +185,7 @@ export function Loadout({
   name,
   onEquip,
   onWear,
+  onLook,
   portrait = PORTRAIT,
 }: {
   content: Content;
@@ -170,6 +193,8 @@ export function Loadout({
   name: (item: string) => string;
   onEquip: (item: string) => Promise<unknown>;
   onWear: (item: string) => Promise<unknown>;
+  /** Opens the wardrobe, where the body, outfit and backdrop are chosen. */
+  onLook?: () => void;
   /** The portrait's size: 192 (3x) where there is room, 128 (2x) in a narrow column. */
   portrait?: number;
 }) {
@@ -294,7 +319,14 @@ export function Loadout({
               <Slot key={slot} label={SLOT_LABELS[slot]} item={tinker.worn[slot] ?? null} empty={`empty_${slot}`} small />
             ))}
           </View>
-          <Portrait weapon={tinker.weapon} flash={flash} size={portrait} />
+          <View style={{ alignItems: "center", gap: 4 }}>
+            <Portrait weapon={tinker.weapon} flash={flash} size={portrait} looks={content.looks} look={tinker.look} />
+            {onLook && content.looks && (
+              <Pressable onPress={onLook} accessibilityRole="button" style={{ paddingHorizontal: 8, paddingVertical: 2 }}>
+                <Text style={[ui.muted, { fontSize: 12, color: colors.brass, textDecorationLine: "underline" }]}>Change look</Text>
+              </Pressable>
+            )}
+          </View>
           <View style={{ gap: 4 }}>
             <Slot label="Weapon" item={tinker.weapon} empty="empty_weapon" tierLevel={equippedWeapon?.level_required} pop={pop} small />
             <Slot label="Off-hand" item={tinker.worn.off_hand ?? null} empty="empty_off_hand" small />

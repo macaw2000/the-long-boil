@@ -5,7 +5,7 @@
 // Prologue, so the first session has nothing more to learn.
 
 import { useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
 import { api, type LeaderboardRow, type LeaderboardView } from "./api";
 import { titleCase } from "./format";
 import { colors, ui } from "./theme";
@@ -87,6 +87,7 @@ export function Leaderboards({ tinkerId, onInspect }: { tinkerId: number; onInsp
       <View>
         <Text style={[ui.heading, { fontSize: 22 }]}>Leaderboards</Text>
       </View>
+      <Find tinkerId={tinkerId} onInspect={onInspect} />
 
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
           {boards.map((choice) => {
@@ -128,6 +129,68 @@ export function Leaderboards({ tinkerId, onInspect }: { tinkerId: number; onInsp
             </>
           )}
         </View>
+    </View>
+  );
+}
+
+/** Looking a Tinker up by name, to see their profile (work order 042). */
+function Find({ tinkerId, onInspect }: { tinkerId: number; onInspect: (other: number) => void }) {
+  const [name, setName] = useState("");
+  const [found, setFound] = useState<{ id: number; name: string; totalLevel: number }[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const wanted = name.trim();
+
+  // Ask a moment after the typing stops, and only for the name as it now stands.
+  useEffect(() => {
+    if (wanted.length < 2) {
+      setFound(null);
+      return;
+    }
+    let live = true;
+    const timer = setTimeout(() => {
+      api
+        .find(tinkerId, wanted)
+        .then((result) => {
+          if (!live) return;
+          setFound(result.found);
+          setError(null);
+        })
+        .catch((reason: Error) => live && setError(reason.message));
+    }, 300);
+    return () => {
+      live = false;
+      clearTimeout(timer);
+    };
+  }, [tinkerId, wanted]);
+
+  return (
+    <View style={[ui.panel, { gap: 6 }]}>
+      <Text style={ui.muted}>Look a Tinker up by name to see how they look, what they wear and what they have trained.</Text>
+      <TextInput
+        value={name}
+        onChangeText={setName}
+        placeholder="A Tinker's name"
+        placeholderTextColor={colors.muted}
+        autoCapitalize="none"
+        autoCorrect={false}
+        maxLength={40}
+        accessibilityLabel="Find a Tinker by name"
+        style={ui.input}
+      />
+      {error && <Text style={[ui.muted, { color: colors.scald }]}>{error}</Text>}
+      {found && found.length === 0 && <Text style={ui.muted}>No Tinker's name starts with that.</Text>}
+      {found?.map((tinker) => (
+        <Pressable
+          key={tinker.id}
+          onPress={() => onInspect(tinker.id)}
+          accessibilityRole="button"
+          accessibilityLabel={`Inspect ${tinker.name}`}
+          style={{ flexDirection: "row", justifyContent: "space-between", gap: 8, paddingVertical: 4 }}
+        >
+          <Text style={[ui.text, { color: colors.copper, fontWeight: "700" }]}>{tinker.name}</Text>
+          <Text style={ui.number}>Total {tinker.totalLevel}</Text>
+        </Pressable>
+      ))}
     </View>
   );
 }

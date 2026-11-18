@@ -137,7 +137,12 @@ def collect_ids(node, pointer=""):
 # Jeremy's answer to work order 021's open question 1: the first-session
 # guide's "steps" hold the client's fixed step keys, not content ids, so the
 # guide file takes one register row (its file id).
-ID_EXEMPT_KEYS = (("tuning.economy/", "anchors"), ("guide/", "steps"), ("road/", "sections"))
+#
+# Work order 042: the looks file's bodies, outfits and backdrops are named by
+# the engine and the client's art, like the guide's steps, so the file takes
+# one register row.
+ID_EXEMPT_KEYS = (("tuning.economy/", "anchors"), ("guide/", "steps"), ("road/", "sections"),
+                  ("looks/", "bodies"), ("looks/", "outfits"), ("looks/", "backdrops"))
 
 
 def content_ids(data):

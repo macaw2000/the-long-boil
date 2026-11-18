@@ -1,6 +1,6 @@
 // The Cog Shop (GDD section 8): Cog Crates to buy and open, crates still
-// locked, and the four time savers Cogs buy. Nothing here buys story, Nerve
-// or power; the page says so, because the promise is the point. Buying goes
+// locked, the four time savers Cogs buy, and the wardrobe of looks (work
+// order 042). Nothing here buys story, Nerve or power; the page says so, because the promise is the point. Buying goes
 // to Stripe's own checkout page, which sends the player back with
 // ?checkout=paid or ?checkout=cancelled.
 
@@ -10,6 +10,7 @@ import { api, type Content, type Outcome, type Purchase, type ShopOutcome, type 
 import { duration } from "./format";
 import { ItemIcon, UiIcon } from "./Sprite";
 import { colors, ui } from "./theme";
+import { Wardrobe } from "./Wardrobe";
 
 export type CheckoutReturn = "paid" | "cancelled" | null;
 
@@ -133,7 +134,7 @@ export function Shop({
             <Text style={[ui.number, { fontSize: 16, color: colors.brass }]}>{shop.cogs.toLocaleString()} Cogs</Text>
           </View>
         </View>
-        <Text style={ui.muted}>Gilded Cogs buy time savers. They never buy Nerve, story, Favour or gear with stats.</Text>
+        <Text style={ui.muted}>Gilded Cogs buy time savers and looks. They never buy Nerve, story, Favour or gear with stats.</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <ItemIcon item={shop.crate.item} size={40} />
           <View style={{ flex: 1, minWidth: 180, gap: 2 }}>
@@ -218,6 +219,11 @@ export function Shop({
         })}
       </View>
       {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
+      {content.looks && (
+        <View style={ui.panel}>
+          <Wardrobe content={content} tinker={tinker} onOutcome={onOutcome} />
+        </View>
+      )}
     </View>
   );
 }

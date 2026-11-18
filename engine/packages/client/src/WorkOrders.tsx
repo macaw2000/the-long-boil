@@ -17,7 +17,7 @@ const FACTIONS: Record<string, string> = {
   "favour.gaugers": "The Gaugers",
 };
 
-const faction = (seal: string) => FACTIONS[seal] ?? seal;
+export const faction = (seal: string) => FACTIONS[seal] ?? seal;
 
 function unboundHeld(tinker: Tinker, item: string): number {
   return tinker.inventory.filter((stack) => stack.item === item && !stack.bound).reduce((sum, stack) => sum + stack.qty, 0);

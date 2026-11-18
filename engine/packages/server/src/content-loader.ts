@@ -5,7 +5,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
-import { buildContent, readCogShop, type Action, type Content, type CurveRow } from "@long-boil/rules";
+import { buildContent, readCogShop, readLooks, type Action, type Content, type CurveRow, type Looks } from "@long-boil/rules";
 import type { ReminderWords } from "./reminders.js";
 
 export interface StartStack {
@@ -48,6 +48,8 @@ export interface GameContent {
   guide: { id: string; speaker: string; line: string; button?: string }[];
   /** The Boiler reminder's words (work order 039). */
   reminder: ReminderWords;
+  /** How a Tinker can look (work order 042), or null in content with no looks. */
+  looks: Looks | null;
 }
 
 function guideSteps(dir: string): GameContent["guide"] {
@@ -111,6 +113,7 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
   const shopPath = join(dir, "tuning", "cog-shop.json");
   const shop = existsSync(shopPath) ? readCogShop(readJson(shopPath)) : null;
   if (shop && !items.has(shop.crate.item)) throw new Error(`the Cog Shop sells ${shop.crate.item}, which is not an item`);
+  const looksPath = join(dir, "looks", "looks.json");
   return {
     rules: buildContent({
       version,
@@ -134,5 +137,6 @@ export function loadContent(dir = DEFAULT_CONTENT_DIR): GameContent {
     ledger: new Map(ledger.map((page) => [page.item, { id: page.id, item: page.item, title: page.title, text: page.text }])),
     economy,
     items,
+    looks: existsSync(looksPath) ? readLooks(readJson(looksPath)) : null,
   };
 }

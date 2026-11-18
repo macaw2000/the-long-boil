@@ -179,6 +179,10 @@ def run(root):
     for path, data in story.email_files(root):
         _check_words(report, path, story.file_id(data),
                      [(pointer, text) for pointer, text, _f in story.email_prose_fields(data)], story.EMAIL_ACT)
+    # Work order 042: a look's name and description, read on the first day.
+    for path, data in story.looks_files(root):
+        _check_words(report, path, story.file_id(data),
+                     [(pointer, text) for pointer, text, _f in story.looks_prose_fields(data)], story.LOOKS_ACT)
     client = _check_client(report, root)
     storylets, letters = story.count_kinds(files)
     report.note("%d storylet file(s), %d letter file(s), %d guide file(s) as act %d, "
