@@ -1,0 +1,44 @@
+{
+  "schema": "storylet/1",
+  "id": "act1.lowvents.shovel_rack",
+  "act": 1,
+  "location": "lowvents",
+  "reveal_layer": 0,
+  "requires": {
+    "act1.progress": ">=10",
+    "smithing": ">=5"
+  },
+  "nerve": 1,
+  "cooldown_hours": 24,
+  "description": "A Stoker does not throw a shovel away. When a blade splits at the shoulder or wears to a blunt lip against the Kettle's coal, it comes home to the Lowvents and waits on the Fellowship hall's fender for a Tinker. Tonight there are six: one split clean across, five merely blunt. The hall stove is hot enough to bring iron to a welding heat if you are patient with the damper, and somebody has left a hammer and a pair of tongs beside it, which in the hall counts as an invitation. The stair pays a Tinker in coal.",
+  "options": [
+    {
+      "label": "Weld the split shovel at the hall stove, with its owner watching from the stove bench.",
+      "challenge": {
+        "quality": "smithing",
+        "difficulty": 9
+      },
+      "success": {
+        "text": "You open the damper a notch at a time until the split shoulder comes out of the coals nearly white and throwing sparks, which is the moment. Flux, two blows, back in the fire, two more. The seam draws shut and the shovel is one piece again. The owner sights down the blade, stands on it, and looks a long time for the flaw. There isn't one. He tips three lumps of coal from his own scuttle into your bag and goes back to his tea, which on the stair is a speech.",
+        "changes": {
+          "item.rustmoor.coal": "+3"
+        }
+      },
+      "failure": {
+        "text": "The damper sticks, then gives all at once, and the stove breathes out across your wrist. By the time you have the shovel back in the fire the shoulder has gone a sullen grey, and the weld takes the way wet paper takes glue. The owner turns the blade over, says nothing, and props it by the door to wait for a Tinker with better luck. Somebody passes you a cold rag for the wrist. Nobody passes you any coal.",
+        "changes": {
+          "needle.scald": "+1"
+        }
+      }
+    },
+    {
+      "label": "Leave the split one to someone braver, and file an edge back onto the five blunt shovels.",
+      "success": {
+        "text": "It is an hour's honest work with a flat file and no fire to speak of: blade across your knee, long strokes, turn it, again. The five owners try their edges on a thumbnail one after another, and the last shaves a curl off the bench to settle it. Between the five of them they find one lump of coal, and hand it over with some ceremony.",
+        "changes": {
+          "item.rustmoor.coal": "+1"
+        }
+      }
+    }
+  ]
+}

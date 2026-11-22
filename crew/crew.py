@@ -468,6 +468,8 @@ def main():
         # The Claude plan first, always (Jeremy, 2 November 2026); API credits only on --api.
         from claude_code_client import ClaudeCodeClient
         client = ClaudeCodeClient()
+    if not args.registrar_agent:
+        AGENT_MODELS["registrar"] = "code (no model)"
     via = "dry-run" if args.dry_run else "api" if args.api else "claude-code"
     crew = Crew(client, log, via)
     run_started = time.monotonic()

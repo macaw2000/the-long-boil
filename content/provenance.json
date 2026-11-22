@@ -28931,6 +28931,62 @@
         }
       ],
       "retirement": null
+    },
+    {
+      "id": "act1.lowvents.shovel_rack",
+      "type": "storylet",
+      "path": "content/storylets/act1.lowvents.shovel_rack.json",
+      "pointer": null,
+      "revision": null,
+      "work_order": "crew/briefs/lowvents-shovel-storylet.md",
+      "status": "reviewed",
+      "drafted_by": "scrivener",
+      "model": null,
+      "patch": null,
+      "validators": {
+        "result": "pass",
+        "run": "2026-11-22T22:42:30Z",
+        "checks": [
+          "schema",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "style",
+          "work_orders"
+        ],
+        "waiver": null
+      },
+      "review": {
+        "by": "inspector",
+        "verdict": "pass",
+        "notes": "Pass with notes: Inspector review passed 2026-11-22T22:43:37Z on the round 2 draft. Reveal clear. Reveal risk: None found. The scene is reveal_layer 0 and stays there: no Whistle, Haze, Ballast, Ledger Page, Notice, Rook, Hearth or Downpipe heat. 'The Kettle's coal' is the city's official view of how the Kettle runs and does not point at anything higher. Economy risk: The most a player can get is 3 item.rustmoor.coal per 24 hours for 1 Nerve, with no Crowns. That is within the brief's cap. No Exchange price for coal is in my canon, so its effect on the market is an open question, not a finding. Economy risk: Option 2 gives 1 coal per day with no risk at all: a small but guaranteed coal source. Economy risk: At Smithing 15 or more, 0.6 x 15/9 >= 1, so the weld is certain. From then on the scene is a guaranteed 3 coal for 1 Nerve every 24 hours, for good, because requires has no upper Smithing bound. (1) id / description: The id is act1.lowvents.shovel_rack, but the description puts the shovels on the Fellowship hall's fender ('waits on the Fellowship hall's fender for a Tinker'). The scene has no rack, so the id doesn't match the text. Fix: In description, change 'waits on the Fellowship hall's fender for a Tinker' to 'waits in the rack by the Fellowship hall's fender for a Tinker', or rename the id if it is not yet fixed. Minor; not a fail. (2) options (choice at high skill): OPEN QUESTION FOR JEREMY, not a fail. At Smithing 5 to 14 the choice is real: at 5 the weld is a 33% chance at 3 coal with a scald risk, against a certain 1 coal. From Smithing 15 the weld is certain and always the better option (3 coal against 1), so the scene stops being a choice for strong Smiths. style.md: 'If one option is obviously correct, it is not a choice.' The GDD's vent example also becomes certain at high skill, so the odds formula allows this, and I am not inventing a cap. Fix: Jeremy decides: accept it, add an upper Smithing bound to requires, or give option 2 a payoff of a different kind. The drafter should not choose on its own. (3) options[0].challenge.difficulty: Checked and fine. Difficulty 9 gives P = 0.33 at Smithing 5, 0.50 at 7.5 and 0.67 at 10. That matches the brief's 'passes about half the time' across Smithing 5 to 10. Fix: None. (4) description ('against the Kettle's coal'): The idea that Stokers shovel coal into the Kettle comes from the brief. The cleared world.md and act1.md I have do not state it. It is consistent with Layer 0 and the faction's name, but no cleared file settles it. Fix: None for this draft. Jeremy may want to write it into world.md so later scenes have it settled. (5) description (last sentence) and options[0].success.text: TASTE CALL, left to Jeremy. The description quotes the canon line 'The stair pays a Tinker in coal.' word for word, and the success text uses the contraction 'There isn't one.' Neither breaks a cited rule. Fix: None required. (6) work order attachments (process): The canon bundle included excerpts labelled docs/gdd.md, which the inspector is told not to read directly. act1.md says to attach world.md, characters.md, style.md and qualities.json and 'nothing else'. The excerpts held nothing above Layer 1, and this review cites only style and the odds formula, which both also appear in the cleared files. Fix: Future work orders should attach docs/canon/slices/gdd-cleared.md instead of excerpts labelled docs/gdd.md."
+      },
+      "approved_by": null,
+      "approved_at": null,
+      "history": [
+        {
+          "at": "2026-11-22T22:42:29Z",
+          "status": "drafted",
+          "by": "scrivener"
+        },
+        {
+          "at": "2026-11-22T22:42:30Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-22T22:43:37Z",
+          "status": "reviewed",
+          "by": "inspector"
+        }
+      ],
+      "retirement": null
     }
   ]
 }
