@@ -18,7 +18,8 @@ def _reply(payload):
         stop_reason="end_turn",
         stop_details=None,
         content=[types.SimpleNamespace(type="text", text=json.dumps(payload))],
-        usage=types.SimpleNamespace(input_tokens=0, output_tokens=0),
+        usage=types.SimpleNamespace(input_tokens=0, cache_creation_input_tokens=0,
+                                    cache_read_input_tokens=0, output_tokens=0),
     )
 
 

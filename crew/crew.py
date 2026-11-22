@@ -36,6 +36,9 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
+
+from pricing import price
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
@@ -239,13 +242,17 @@ def run_validators(root, storylet, row=None):
 
 
 class Crew:
-    def __init__(self, client, log):
+    def __init__(self, client, log, via):
         self.client = client
         self.log = log
+        self.via = via        # "claude-code", "api" or "dry-run"
+        self.round = 0        # set by main() before each drafting round
+        self.calls = []       # one usage record per agent call, written to usage.json
 
     def ask(self, agent, system, user, schema, effort):
         """One structured call to Claude as `agent`. Returns the parsed JSON."""
         self.log(f"[{agent}] thinking ({effort} effort)")
+        started = time.monotonic()
         response = self.client.beta.messages.create(
             model=MODEL,
             max_tokens=16000,
@@ -261,9 +268,27 @@ class Crew:
         if response.stop_reason == "max_tokens":
             raise RuntimeError(f"{agent} ran out of tokens")
         text = next(b.text for b in response.content if b.type == "text")
-        u = response.usage
-        self.log(f"[{agent}] done: {u.input_tokens} in, {u.output_tokens} out")
+        self.record(agent, effort, response, time.monotonic() - started)
         return json.loads(text)
+
+    def record(self, agent, effort, response, seconds):
+        """Keep one call's usage, priced at API list rates, and log a short line."""
+        u = response.usage
+        fresh = getattr(u, "input_tokens", 0) or 0
+        cw = getattr(u, "cache_creation_input_tokens", 0) or 0
+        cr = getattr(u, "cache_read_input_tokens", 0) or 0
+        out = getattr(u, "output_tokens", 0) or 0
+        cost = price(MODEL, fresh, cw, cr, out)
+        rec = {"at": now(), "agent": agent, "round": self.round, "model": MODEL, "effort": effort,
+               "via": self.via, "fresh_input": fresh, "cache_write": cw, "cache_read": cr,
+               "output": out, "seconds": round(seconds, 1),
+               "api_cost_usd": None if cost is None else round(cost, 6)}
+        cc = getattr(response, "claude_code", None)
+        if cc:
+            rec["claude_code"] = cc
+        self.calls.append(rec)
+        money = "" if cost is None else f", ${cost:.4f} at API rates"
+        self.log(f"[{agent}] done: {fresh + cw + cr} in ({cr} cached), {out} out, {seconds:.0f}s{money}")
 
     def scrivener(self, brief, canon, examples, feedback):
         system = agent_prompt("scrivener") + (
@@ -364,7 +389,10 @@ def main():
         # The Claude plan first, always (Jeremy, 2 November 2026); API credits only on --api.
         from claude_code_client import ClaudeCodeClient
         client = ClaudeCodeClient()
-    crew = Crew(client, log)
+    via = "dry-run" if args.dry_run else "api" if args.api else "claude-code"
+    crew = Crew(client, log, via)
+    run_started = time.monotonic()
+    gate_seconds = []
 
     canon = canon_bundle(meta["act"], meta["layer"])
     examples = example_storylets(meta["act"], meta["location"])
@@ -375,6 +403,7 @@ def main():
     feedback, storylet, verdict, checks, draft = None, None, None, [], None
     for rnd in range(1, MAX_ROUNDS + 1):
         log(f"-- round {rnd}")
+        crew.round = rnd
         draft = crew.scrivener(brief, canon, examples, feedback)
         try:
             storylet = json.loads(draft["storylet_json"])
@@ -388,7 +417,9 @@ def main():
             log(f"[gate] {feedback}")
             continue
 
+        t = time.monotonic()
         fails, checks = run_validators(root, storylet)
+        gate_seconds.append(round(time.monotonic() - t, 1))
         if fails:
             log(f"[gate] {len(fails)} validator failure(s), back to the scrivener")
             for ln in fails:
@@ -416,7 +447,7 @@ def main():
         verdict = None
     else:
         log(f"gave up after {MAX_ROUNDS} rounds; nothing to register")
-        write_run(run_dir, log_lines, storylet, draft, verdict, None, events)
+        write_run(run_dir, log_lines, storylet, draft, verdict, None, events, usage(crew, run_started, gate_seconds, "gave up", log))
         return 1
 
     reg = json.loads(read(os.path.join(REPO, "content", "provenance.json")))
@@ -436,10 +467,12 @@ def main():
         log(f"[registrar] row rejected: {errors}")
     else:
         log("registrar could not write a valid row")
-        write_run(run_dir, log_lines, storylet, draft, verdict, None, events)
+        write_run(run_dir, log_lines, storylet, draft, verdict, None, events, usage(crew, run_started, gate_seconds, "registrar failed", log))
         return 1
 
-    write_run(run_dir, log_lines, storylet, draft, verdict, row, events)
+    outcome = "applied" if args.apply else "reviewed"
+    write_run(run_dir, log_lines, storylet, draft, verdict, row, events,
+              usage(crew, run_started, gate_seconds, outcome, log))
     if args.apply:
         dest = os.path.join(REPO, "content", "storylets", f"{sid}.json")
         shutil.copy(os.path.join(run_dir, f"{sid}.json"), dest)
@@ -453,7 +486,35 @@ def main():
     return 0
 
 
-def write_run(run_dir, log_lines, storylet, draft, verdict, row, events):
+def usage(crew, run_started, gate_seconds, outcome, log):
+    """The run's cost ledger: every agent call, the gate's time, and totals."""
+    calls = crew.calls
+    total = {k: sum(c[k] for c in calls) for k in ("fresh_input", "cache_write", "cache_read", "output")}
+    costs = [c["api_cost_usd"] for c in calls]
+    total["api_cost_usd"] = None if None in costs else round(sum(costs), 6)
+    by_agent = {}
+    for c in calls:
+        a = by_agent.setdefault(c["agent"], {"calls": 0, "output": 0, "api_cost_usd": 0.0, "seconds": 0.0})
+        a["calls"] += 1
+        a["output"] += c["output"]
+        a["seconds"] = round(a["seconds"] + c["seconds"], 1)
+        a["api_cost_usd"] = round(a["api_cost_usd"] + (c["api_cost_usd"] or 0), 6)
+    rounds = max([c["round"] for c in calls] or [0])
+    led = {"outcome": outcome, "via": crew.via, "model": MODEL, "rounds": rounds,
+           "agent_calls": len(calls), "wall_seconds": round(time.monotonic() - run_started, 1),
+           "gate_runs": len(gate_seconds), "gate_seconds": gate_seconds,
+           "totals": total, "by_agent": by_agent, "calls": calls,
+           "pricing": "API list prices from crew/pricing.py; the run itself was billed to "
+                      + ("the Claude plan" if crew.via == "claude-code" else crew.via)}
+    if calls:
+        money = "" if total["api_cost_usd"] is None else f", ${total['api_cost_usd']:.4f} at API rates"
+        log(f"usage: {len(calls)} agent calls over {rounds} round(s), "
+            f"{sum(total[k] for k in ('fresh_input', 'cache_write', 'cache_read'))} in, "
+            f"{total['output']} out{money}")
+    return led
+
+
+def write_run(run_dir, log_lines, storylet, draft, verdict, row, events, ledger):
     if storylet:
         with open(os.path.join(run_dir, f"{storylet.get('id', 'draft')}.json"), "w") as f:
             json.dump(storylet, f, indent=2)
@@ -467,6 +528,9 @@ def write_run(run_dir, log_lines, storylet, draft, verdict, row, events):
     }
     with open(os.path.join(run_dir, "report.json"), "w") as f:
         json.dump(report, f, indent=2)
+        f.write("\n")
+    with open(os.path.join(run_dir, "usage.json"), "w") as f:
+        json.dump(ledger, f, indent=2)
         f.write("\n")
     with open(os.path.join(run_dir, "run.log"), "w") as f:
         f.write("\n".join(log_lines) + "\n")

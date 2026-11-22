@@ -43,15 +43,22 @@ class _Messages:
         if out.get("is_error") or out.get("structured_output") is None:
             raise RuntimeError(f"claude -p returned no structured output: {out.get('result')}")
         usage = out.get("usage", {})
+        # Same fields as the API's usage object, so the crew prices both paths alike:
+        # input_tokens is fresh input only; cache writes and reads are counted apart.
         return types.SimpleNamespace(
             stop_reason="end_turn",
             stop_details=None,
             content=[types.SimpleNamespace(type="text", text=json.dumps(out["structured_output"]))],
             usage=types.SimpleNamespace(
-                input_tokens=usage.get("input_tokens", 0)
-                + usage.get("cache_creation_input_tokens", 0)
-                + usage.get("cache_read_input_tokens", 0),
+                input_tokens=usage.get("input_tokens", 0),
+                cache_creation_input_tokens=usage.get("cache_creation_input_tokens", 0),
+                cache_read_input_tokens=usage.get("cache_read_input_tokens", 0),
                 output_tokens=usage.get("output_tokens", 0)),
+            # What Claude Code itself reports: its own cost estimate, timings and turns.
+            claude_code={"total_cost_usd": out.get("total_cost_usd"),
+                         "duration_ms": out.get("duration_ms"),
+                         "duration_api_ms": out.get("duration_api_ms"),
+                         "num_turns": out.get("num_turns")},
         )
 
 
