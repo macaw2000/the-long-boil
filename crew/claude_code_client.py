@@ -52,6 +52,9 @@ class _Messages:
             usage=types.SimpleNamespace(
                 input_tokens=usage.get("input_tokens", 0),
                 cache_creation_input_tokens=usage.get("cache_creation_input_tokens", 0),
+                # Claude Code writes its prompt cache with a 1-hour lifetime unless it says otherwise.
+                cache_creation_1h_input_tokens=(usage.get("cache_creation") or {}).get(
+                    "ephemeral_1h_input_tokens", usage.get("cache_creation_input_tokens", 0)),
                 cache_read_input_tokens=usage.get("cache_read_input_tokens", 0),
                 output_tokens=usage.get("output_tokens", 0)),
             # What Claude Code itself reports: its own cost estimate, timings and turns.

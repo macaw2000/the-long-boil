@@ -15,8 +15,10 @@ way the game's own pipeline does:
    naming the draft goes back to the scrivener.
 3. The inspector reviews what code cannot check: voice, lore, reveal timing,
    whether the choice is a real one. A fail goes back to the scrivener.
-4. The registrar writes the storylet's provenance row. The gate runs again with
-   the row in the register, so the provenance check must pass as well.
+4. The storylet's provenance row is written by code from the run's events
+   (with --registrar-agent, by the registrar agent, as before 22 November 2026).
+   The gate runs again with the row in the register, so the provenance check
+   must pass as well.
 
 Each agent's system prompt is its definition in .claude/agents/, the same files
 the build crew uses in Claude Code. Nothing above the brief's reveal layer, and
@@ -48,6 +50,13 @@ AGENTS = os.path.join(REPO, ".claude", "agents")
 VALIDATE = os.path.join(REPO, "scripts", "validate", "run.py")
 
 MODEL = "claude-opus-5-5"
+# The model each agent runs on. Change one line here to move an agent to a
+# cheaper model; every run's usage.json records which model each call used.
+AGENT_MODELS = {
+    "scrivener": MODEL,
+    "inspector": MODEL,
+    "registrar": MODEL,
+}
 MAX_ROUNDS = 3  # scrivener drafts before the crew gives up
 LOCKED = "locked.md"
 
@@ -253,8 +262,9 @@ class Crew:
         """One structured call to Claude as `agent`. Returns the parsed JSON."""
         self.log(f"[{agent}] thinking ({effort} effort)")
         started = time.monotonic()
+        model = AGENT_MODELS[agent]
         response = self.client.beta.messages.create(
-            model=MODEL,
+            model=model,
             max_tokens=16000,
             betas=["server-side-fallback-2026-07-01"],
             fallbacks="default",
@@ -268,20 +278,21 @@ class Crew:
         if response.stop_reason == "max_tokens":
             raise RuntimeError(f"{agent} ran out of tokens")
         text = next(b.text for b in response.content if b.type == "text")
-        self.record(agent, effort, response, time.monotonic() - started)
+        self.record(agent, model, effort, response, time.monotonic() - started)
         return json.loads(text)
 
-    def record(self, agent, effort, response, seconds):
+    def record(self, agent, model, effort, response, seconds):
         """Keep one call's usage, priced at API list rates, and log a short line."""
         u = response.usage
         fresh = getattr(u, "input_tokens", 0) or 0
         cw = getattr(u, "cache_creation_input_tokens", 0) or 0
         cr = getattr(u, "cache_read_input_tokens", 0) or 0
+        cw1h = getattr(u, "cache_creation_1h_input_tokens", 0) or 0
         out = getattr(u, "output_tokens", 0) or 0
-        cost = price(MODEL, fresh, cw, cr, out)
-        rec = {"at": now(), "agent": agent, "round": self.round, "model": MODEL, "effort": effort,
+        cost = price(model, fresh, cw, cr, out, cw1h)
+        rec = {"at": now(), "agent": agent, "round": self.round, "model": model, "effort": effort,
                "via": self.via, "fresh_input": fresh, "cache_write": cw, "cache_read": cr,
-               "output": out, "seconds": round(seconds, 1),
+               "cache_write_1h": cw1h, "output": out, "seconds": round(seconds, 1),
                "api_cost_usd": None if cost is None else round(cost, 6)}
         cc = getattr(response, "claude_code", None)
         if cc:
@@ -326,6 +337,71 @@ class Crew:
         return self.ask("registrar", system, user, REGISTRAR_OUT, "low")
 
 
+def settle_row(row, storylet, verdict):
+    """Set the fields code already knows, so the registrar cannot get them wrong.
+
+    The registrar is a model; these two fields are facts. The revision is the
+    storylet's own, and the register allows only "pass" or "fail" as a verdict
+    (provenance/3), so the inspector's "pass with notes" is written as "pass"
+    with the notes kept. Returns a list of what it changed, for the log.
+    """
+    fixed = []
+    if row.get("revision") != storylet.get("revision"):
+        fixed.append(f"revision {row.get('revision')!r} -> {storylet.get('revision')!r}")
+        row["revision"] = storylet.get("revision")
+    review = row.get("review")
+    if isinstance(review, dict) and review.get("verdict") not in ("pass", "fail"):
+        fixed.append(f"review verdict {review.get('verdict')!r} -> 'pass'")
+        notes = review.get("notes") or ""
+        review["verdict"] = "pass"
+        review["notes"] = notes if notes.lower().startswith("pass with notes") else ("Pass with notes: " + notes).strip()
+    return fixed
+
+
+def register_row(sid, storylet, events, brief_rel):
+    """The storylet's provenance row, written by code from the run's events.
+
+    Every field is a fact the orchestrator already holds: who drafted it, which
+    checks passed and when, the inspector's verdict. Until 22 November 2026 a
+    model (the registrar agent, Opus at low effort) wrote this row; it cost about
+    a fifth of a run and could fail the register's schema. Run with
+    --registrar-agent to use the agent again.
+    """
+    last = lambda kind: next(e for e in reversed(events) if e["event"] == kind)
+    drafted, checked, reviewed = last("drafted"), last("validators"), last("reviewed")
+    v = reviewed["verdict"]
+    notes = [f"Inspector review passed {reviewed['at']} on the round {drafted['round']} draft."]
+    notes.append("Reveal clear." if v.get("reveal_clear") else "Reveal NOT clear.")
+    notes += [f"Reveal risk: {r}" for r in v.get("reveal_risks", [])]
+    notes += [f"Economy risk: {r}" for r in v.get("economy_risks", [])]
+    notes += [f"({i}) {f['field']}: {f['finding']} Fix: {f['fix']}" for i, f in enumerate(v.get("findings", []), 1)]
+    if v["verdict"] == "pass with notes":
+        notes.insert(0, "Pass with notes:")
+    return {
+        "id": sid,
+        "type": "storylet",
+        "path": f"content/storylets/{sid}.json",
+        "pointer": None,
+        "revision": storylet.get("revision"),
+        "work_order": brief_rel,
+        "status": "reviewed",
+        "drafted_by": "scrivener",
+        "model": None,
+        "patch": None,
+        "validators": {"result": "pass", "run": checked["at"], "checks": checked["checks"], "waiver": None},
+        "review": {"by": "inspector", "verdict": "fail" if v["verdict"] == "fail" else "pass",
+                   "notes": " ".join(notes)},
+        "approved_by": None,
+        "approved_at": None,
+        "history": [
+            {"at": drafted["at"], "status": "drafted", "by": "scrivener"},
+            {"at": checked["at"], "status": "validated", "by": "validators"},
+            {"at": reviewed["at"], "status": "reviewed", "by": "inspector"},
+        ],
+        "retirement": None,
+    }
+
+
 def guard_row(row, sid):
     """Hard rules the registrar may not break, whatever the model says."""
     problems = []
@@ -356,6 +432,9 @@ def main():
                          "headless Claude Code on your Claude plan")
     ap.add_argument("--claude-code", action="store_true",
                     help="the default, kept so older commands still work")
+    ap.add_argument("--registrar-agent", action="store_true",
+                    help="have the registrar agent (a model) write the register row, as before 22 November 2026; "
+                         "by default code writes it")
     ap.add_argument("--apply", action="store_true",
                     help="copy the storylet and its row into the game's content tree")
     args = ap.parse_args()
@@ -453,9 +532,21 @@ def main():
     reg = json.loads(read(os.path.join(REPO, "content", "provenance.json")))
     example_row = next(r for r in reg["rows"] if r["type"] == "storylet" and r["status"] == "reviewed")
     row, errors = None, None
-    for attempt in (1, 2):
+    attempts = (1, 2) if args.registrar_agent else ()
+    if not args.registrar_agent:
+        row = register_row(sid, storylet, events, os.path.relpath(brief_path, REPO))
+        problems = guard_row(row, sid) or run_validators(root, storylet, row)[0]
+        if problems:
+            log("[registrar] row rejected: " + "; ".join(problems))
+            write_run(run_dir, log_lines, storylet, draft, verdict, None, events,
+                      usage(crew, run_started, gate_seconds, "registrar failed", log))
+            return 1
+        log(f"[registrar] row written by code (no model) at status {row['status']}; provenance check passes")
+    for attempt in attempts:
         out = crew.registrar(sid, events, example_row, errors)
         row = json.loads(out["row_json"])
+        for f in settle_row(row, storylet, verdict):
+            log(f"[registrar] set by code: {f}")
         problems = guard_row(row, sid)
         if not problems:
             fails, _ = run_validators(root, storylet, row)
@@ -466,9 +557,11 @@ def main():
         errors = "\n".join(problems)
         log(f"[registrar] row rejected: {errors}")
     else:
-        log("registrar could not write a valid row")
-        write_run(run_dir, log_lines, storylet, draft, verdict, None, events, usage(crew, run_started, gate_seconds, "registrar failed", log))
-        return 1
+        if attempts:
+            log("registrar could not write a valid row")
+            write_run(run_dir, log_lines, storylet, draft, verdict, None, events,
+                      usage(crew, run_started, gate_seconds, "registrar failed", log))
+            return 1
 
     outcome = "applied" if args.apply else "reviewed"
     write_run(run_dir, log_lines, storylet, draft, verdict, row, events,
@@ -500,7 +593,7 @@ def usage(crew, run_started, gate_seconds, outcome, log):
         a["seconds"] = round(a["seconds"] + c["seconds"], 1)
         a["api_cost_usd"] = round(a["api_cost_usd"] + (c["api_cost_usd"] or 0), 6)
     rounds = max([c["round"] for c in calls] or [0])
-    led = {"outcome": outcome, "via": crew.via, "model": MODEL, "rounds": rounds,
+    led = {"outcome": outcome, "via": crew.via, "models": dict(AGENT_MODELS), "rounds": rounds,
            "agent_calls": len(calls), "wall_seconds": round(time.monotonic() - run_started, 1),
            "gate_runs": len(gate_seconds), "gate_seconds": gate_seconds,
            "totals": total, "by_agent": by_agent, "calls": calls,

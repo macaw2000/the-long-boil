@@ -21,7 +21,7 @@ Three storylets made with it, and what the Inspector caught along the way, are i
 | **Scrivener** | Claude Opus 5.5, high effort | Drafts the storylet in the house voice from the brief and the Act I canon. Revises it from validator and Inspector feedback. | `storylet_json`, things it invented, open questions |
 | **Validator gate** | No model: the game's `scripts/validate/run.py` | Runs every content check on a sandbox copy of the game's content with the draft dropped in. | Pass, or the exact failure lines |
 | **Inspector** | Claude Opus 5.5, high effort | Reviews what code can't check: voice, lore, reveal hints, whether the choice is a real one, economy risk. Never edits. | `pass` / `pass with notes` / `fail`, with field-level fixes |
-| **Registrar** | Claude Opus 5.5, low effort | Turns the run's event log into one provenance row, up to status `reviewed`. Never approves. | The register row |
+| **Registrar** | No model since 22 November 2026: code in `crew.py` (`register_row`) | Turns the run's event log into one provenance row, up to status `reviewed`. Never approves. Until 22 November this was Claude Opus 5.5 at low effort; it cost about a fifth of a run and twice failed the register's schema, so code now writes the row (`--registrar-agent` brings the agent back). | The register row |
 
 Each agent's system prompt is its definition in `../.claude/agents/`. The same six agent definitions run the game's build crew inside Claude Code, so this crew is the storylet slice of that pipeline, rebuilt as standalone orchestration code.
 
@@ -81,6 +81,8 @@ uv venv .venv && uv pip install --python .venv/bin/python -r requirements.txt
 .venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --apply    # and add it to the game
 .venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --dry-run  # no model calls at all
 .venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --api      # real run on API credits (needs ANTHROPIC_API_KEY)
+.venv/bin/python crew.py briefs/rustmoor-silk-storylet.md --registrar-agent  # the registrar as a model, as before 22 November
+.venv/bin/python usage_report.py                                     # every real run's tokens and cost at API prices
 ```
 
 By default each agent's call goes through headless Claude Code (`claude -p`) with the same system prompt and output schema, no tools and no project settings, so it runs on the Claude plan Claude Code is logged in with, not API credits (`claude_code_client.py`). The crew strips any API key from that call's environment, so it cannot fall back to credits. `--api` calls the Anthropic API instead.
@@ -121,7 +123,7 @@ By default each agent's call goes through headless Claude Code (`claude -p`) wit
 
 The run was not applied to the game. It waits at `reviewed` for the designer's read.
 
-Each run writes `runs/<timestamp>/`: the storylet file, `report.json` (anything the Scrivener invented, its open questions, the Inspector's verdict, and the register row) and `run.log`.
+Each run writes `runs/<timestamp>/`: the storylet file, `report.json` (anything the Scrivener invented, its open questions, the Inspector's verdict, and the register row), `run.log`, and `usage.json`: every agent call's tokens (fresh input, cache writes, cache reads, output), seconds, and cost at API list prices from `pricing.py`, with Claude Code's own cost figure beside it.
 
 ## Files
 
