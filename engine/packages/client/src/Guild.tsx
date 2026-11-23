@@ -28,6 +28,15 @@ function SmallButton({ label, onPress, tone = colors.brass }: { label: string; o
   );
 }
 
+/** A guild's name, which opens its card. */
+function GuildName({ name, onPress }: { name: string; onPress: () => void }) {
+  return (
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`Look at ${name}`}>
+      <Text style={[ui.text, { fontWeight: "700", color: colors.brass, textDecorationLine: "underline" }]}>{name}</Text>
+    </Pressable>
+  );
+}
+
 /** How long ago, as the activity and the notice say it. */
 function ago(at: string): string {
   const ms = gameNow() - new Date(at).getTime();
@@ -110,6 +119,7 @@ export function Guild({
   view,
   setView,
   onInspect,
+  onGuild,
   content,
 }: {
   tinkerId: number;
@@ -117,6 +127,8 @@ export function Guild({
   view: GuildView | null;
   setView: (view: GuildView) => void;
   onInspect: (other: number) => void;
+  /** Opens a guild's card. */
+  onGuild: (guild: number) => void;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState("");
@@ -302,7 +314,7 @@ export function Guild({
           <Text style={ui.heading}>Invitations</Text>
           {view.invites.map((invite) => (
             <View key={invite.guildId} style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
-              <Text style={ui.text}>{invite.name}</Text>
+              <GuildName name={invite.name} onPress={() => onGuild(invite.guildId)} />
               <SmallButton label="Join" tone={colors.verdigris} onPress={() => act(api.acceptInvite(tinkerId, invite.guildId))} />
               <SmallButton label="Decline" tone={colors.muted} onPress={() => act(api.dropRequest(tinkerId, invite.guildId, tinkerId))} />
             </View>
@@ -342,7 +354,7 @@ export function Guild({
           const applied = view.applications.some((application) => application.guildId === entry.id);
           return (
             <View key={entry.id} style={{ flexDirection: "row", gap: 8, alignItems: "center", flexWrap: "wrap", paddingVertical: 4, borderBottomWidth: 1, borderBottomColor: colors.panelEdge }}>
-              <Text style={[ui.text, { fontWeight: "700" }]}>{entry.name}</Text>
+              <GuildName name={entry.name} onPress={() => onGuild(entry.id)} />
               <Text style={ui.muted}>
                 {entry.members} of {view.rules.maxMembers}
               </Text>

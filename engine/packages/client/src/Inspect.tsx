@@ -29,6 +29,7 @@ export function Inspect({
   onClose,
   onWhisper,
   onInvite,
+  onGuild,
 }: {
   tinkerId: number;
   otherId: number;
@@ -38,6 +39,8 @@ export function Inspect({
   onWhisper?: (other: number, name: string) => void;
   /** Set when the viewer may invite to its guild. */
   onInvite?: (other: number) => Promise<boolean>;
+  /** Opens the guild card. */
+  onGuild: (guild: number) => void;
 }) {
   const [view, setView] = useState<InspectView | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -82,7 +85,14 @@ export function Inspect({
             <Text style={ui.muted}>
               {view.guild ? (
                 <>
-                  <Text style={{ color: colors.brass }}>{view.guild.name}</Text> · {RANKS[view.guild.rank]}
+                  <Text
+                    onPress={() => onGuild(view.guild!.id)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Look at ${view.guild.name}`}
+                    style={{ color: colors.brass, textDecorationLine: "underline" }}
+                  >
+                    {view.guild.name}
+                  </Text> · {RANKS[view.guild.rank]}
                 </>
               ) : (
                 "In no guild"

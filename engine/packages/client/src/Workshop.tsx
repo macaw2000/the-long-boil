@@ -16,6 +16,7 @@ import { duration, namer, titleCase, tradeLine } from "./format";
 import { Glow } from "./Glow";
 import { actedMark, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, queuedMs, rest, restLine, revealed, SendOff, type GuideAction, type GuideState, type Target } from "./Guide";
 import { Guild } from "./Guild";
+import { GuildCard } from "./GuildCard";
 import { Inspect } from "./Inspect";
 import { drawnBodies } from "./looks";
 import { BodyPick, Wardrobe } from "./Wardrobe";
@@ -301,6 +302,12 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
 
   // Another Tinker's inspect card, opened from chat, the roster or a board.
   const [inspecting, setInspecting] = useState<number | null>(null);
+  // A guild's card; it and the inspect card give way to each other.
+  const [guildShown, setGuildShown] = useState<number | null>(null);
+  const showGuild = (guild: number) => {
+    setInspecting(null);
+    setGuildShown(guild);
+  };
 
   const connected = useLive(
     tinkerId,
@@ -612,10 +619,10 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
             <Text style={ui.buttonText}>Leaderboards</Text>
           </Pressable>
         )}
-        <Guild tinkerId={tinkerId} content={content} view={guildView} setView={setGuildView} onInspect={setInspecting} />
+        <Guild tinkerId={tinkerId} content={content} view={guildView} setView={setGuildView} onInspect={setInspecting} onGuild={showGuild} />
       </View>
     ) : place === "leaderboards" ? (
-      <Leaderboards tinkerId={tinkerId} onInspect={setInspecting} />
+      <Leaderboards tinkerId={tinkerId} onInspect={setInspecting} onGuild={showGuild} />
     ) : place === "exchange" ? (
       <View style={{ gap: 12 }}>
         {tinker.story.debts.length > 0 && <Bills tinker={tinker} act={run} payGuided={at === "pay"} />}
@@ -799,6 +806,21 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
             if (!wide) setPlace("chat");
           }}
           onInvite={inviteToGuild}
+          onGuild={showGuild}
+        />
+      )}
+      {guildShown !== null && (
+        <GuildCard
+          key={guildShown}
+          tinkerId={tinkerId}
+          guildId={guildShown}
+          mine={guildView}
+          setMine={setGuildView}
+          onInspect={(other) => {
+            setGuildShown(null);
+            setInspecting(other);
+          }}
+          onClose={() => setGuildShown(null)}
         />
       )}
       {dressing && (

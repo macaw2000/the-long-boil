@@ -480,6 +480,55 @@ export function setNotice(db: Db, content: GameContent, tinkerId: number, text: 
   });
 }
 
+/** A guild as anyone may see it: never its notice, requests or activity. */
+export interface GuildCardView {
+  id: number;
+  name: string;
+  formedAt: string;
+  /** Members in all, as the 30-member cap counts them. */
+  size: number;
+  maxMembers: number;
+  totalLevel: number;
+  /** By rank, then level. A fully banned account's Tinkers are left out, as they cannot be inspected. */
+  members: { id: number; name: string; rank: rules.GuildRank; totalLevel: number }[];
+}
+
+export async function lookAtGuild(db: Db, content: GameContent, guildId: number): Promise<GuildCardView> {
+  if (!Number.isSafeInteger(guildId)) throw new NotFound("no such guild");
+  const guild = (await db.query("SELECT id, name, formed_at FROM guilds WHERE id = $1 AND status = 'active'", [guildId])).rows[0];
+  if (!guild) throw new NotFound("that guild has closed");
+  const rows = (
+    await db.query(
+      `SELECT t.id, t.name, m.rank, a.ban, s.skill, s.xp FROM guild_members m JOIN tinkers t ON t.id = m.tinker_id
+       JOIN accounts a ON a.id = t.account_id LEFT JOIN skills s ON s.tinker_id = t.id WHERE m.guild_id = $1`,
+      [guildId],
+    )
+  ).rows;
+  const everyone = new Set<number>();
+  const seen = new Map<number, { name: string; rank: rules.GuildRank; xp: Record<string, number> }>();
+  for (const row of rows) {
+    const id = Number(row.id);
+    everyone.add(id);
+    if (row.ban === "full") continue;
+    const member = seen.get(id) ?? { name: row.name as string, rank: row.rank as rules.GuildRank, xp: {} };
+    if (row.skill) member.xp[row.skill] = Number(row.xp);
+    seen.set(id, member);
+  }
+  const order = { leader: 0, officer: 1, member: 2 } as const;
+  const members = [...seen]
+    .map(([id, member]) => ({ id, name: member.name, rank: member.rank, totalLevel: rules.totalLevel(member.xp, content.rules) }))
+    .sort((a, b) => order[a.rank] - order[b.rank] || b.totalLevel - a.totalLevel || a.name.localeCompare(b.name));
+  return {
+    id: Number(guild.id),
+    name: guild.name,
+    formedAt: guild.formed_at.toISOString(),
+    size: everyone.size,
+    maxMembers: rules.GUILD_MAX_MEMBERS,
+    totalLevel: members.reduce((sum, member) => sum + member.totalLevel, 0),
+    members,
+  };
+}
+
 /** The guild chat channel this Tinker belongs to, or null. */
 export async function guildChannel(db: Db, tinkerId: number): Promise<string | null> {
   const row = (await db.query("SELECT guild_id FROM guild_members WHERE tinker_id = $1", [tinkerId])).rows[0];

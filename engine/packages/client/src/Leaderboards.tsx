@@ -38,13 +38,13 @@ function detailText(board: string, row: LeaderboardRow): string | null {
   return `${Math.floor(row.detail).toLocaleString()} XP`;
 }
 
-function Row({ board, row, onInspect }: { board: string; row: LeaderboardRow; onInspect: (other: number) => void }) {
+function Row({ board, row, onInspect, onGuild }: { board: string; row: LeaderboardRow; onInspect: (other: number) => void; onGuild: (guild: number) => void }) {
   const detail = detailText(board, row);
-  // A Tinker's row opens their inspect card; the guild board's rows are guilds.
+  // A Tinker's row opens their inspect card; a guild's opens the guild card.
   return (
     <Pressable
-      onPress={board === "guilds" ? undefined : () => onInspect(row.id)}
-      accessibilityRole={board === "guilds" ? undefined : "button"}
+      onPress={() => (board === "guilds" ? onGuild : onInspect)(row.id)}
+      accessibilityRole="button"
       style={{ flexDirection: "row", alignItems: "baseline", gap: 10, paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: colors.panelEdge }}
     >
       <Text style={[ui.number, { width: 40, textAlign: "right" }]}>{row.rank}</Text>
@@ -58,7 +58,7 @@ function Row({ board, row, onInspect }: { board: string; row: LeaderboardRow; on
   );
 }
 
-export function Leaderboards({ tinkerId, onInspect }: { tinkerId: number; onInspect: (other: number) => void }) {
+export function Leaderboards({ tinkerId, onInspect, onGuild }: { tinkerId: number; onInspect: (other: number) => void; onGuild: (guild: number) => void }) {
   const [board, setBoard] = useState("total");
   const [view, setView] = useState<LeaderboardView | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -121,11 +121,11 @@ export function Leaderboards({ tinkerId, onInspect }: { tinkerId: number; onInsp
           {shown && shown.rows.length === 0 && (
             <Text style={ui.muted}>{board === "guilds" ? "No guild has formed yet." : "Nobody has trained this yet."}</Text>
           )}
-          {shown?.rows.map((row) => <Row key={row.id} board={board} row={row} onInspect={onInspect} />)}
+          {shown?.rows.map((row) => <Row key={row.id} board={board} row={row} onInspect={onInspect} onGuild={onGuild} />)}
           {youBelow && (
             <>
               <Text style={[ui.muted, { textAlign: "center" }]}>…</Text>
-              <Row board={board} row={youBelow} onInspect={onInspect} />
+              <Row board={board} row={youBelow} onInspect={onInspect} onGuild={onGuild} />
             </>
           )}
         </View>

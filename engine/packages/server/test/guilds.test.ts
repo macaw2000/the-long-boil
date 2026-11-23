@@ -187,6 +187,30 @@ describe("an invitation refused", () => {
   });
 });
 
+describe("a guild's card", () => {
+  it("shows anyone its members, never its notice, and leaves out the fully banned", async () => {
+    const lead = await tinker("g-card@example.com", "Cardy");
+    const bad = await tinker("g-bad@example.com", "Baddy");
+    const stranger = await tinker("g-passer@example.com", "Passer");
+    const id = (await call("POST", `/tinkers/${lead}/guild`, { name: "Card Players" })).body.guild.id;
+    await call("POST", `/tinkers/${lead}/guild/invite/${bad}`);
+    await call("POST", `/tinkers/${bad}/guilds/${id}/accept`);
+    await call("PUT", `/tinkers/${lead}/guild/notice`, { text: "Between ourselves." });
+    const card = await call("GET", `/tinkers/${stranger}/guilds/${id}`);
+    expect(card.body).toMatchObject({ id, name: "Card Players", size: 2, maxMembers: 30 });
+    expect(card.body.members.map((m: { name: string; rank: string }) => `${m.name} ${m.rank}`)).toEqual(["Cardy leader", "Baddy member"]);
+    expect(JSON.stringify(card.body)).not.toMatch(/Between ourselves/);
+    const account = (await db.query("SELECT account_id FROM tinkers WHERE id = $1", [bad])).rows[0].account_id;
+    expect((await call("PUT", `/admin/players/${account}/ban`, { kind: "full", reason: "test" })).status).toBe(200);
+    const after = (await call("GET", `/tinkers/${stranger}/guilds/${id}`)).body;
+    expect(after.size).toBe(2);
+    expect(after.members).toHaveLength(1);
+    await call("POST", `/tinkers/${lead}/guild/disband`);
+    expect((await call("GET", `/tinkers/${stranger}/guilds/${id}`)).status).toBe(404);
+    expect((await call("GET", `/tinkers/${stranger}/guilds/nonsense`)).status).toBe(404);
+  });
+});
+
 describe("who hears of a guild change", () => {
   it("tells the rest of the guild when someone joins, declines, changes rank or leaves", async () => {
     await open.ready();

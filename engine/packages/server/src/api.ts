@@ -27,6 +27,7 @@ import {
   foundGuild,
   guildChannel,
   inviteToGuild,
+  lookAtGuild,
   readGuild,
   removeMember,
   renameGuild,
@@ -691,6 +692,9 @@ export function buildApi({
     "/tinkers/:id/guild",
     { schema: { body: { type: "object", required: ["name"], properties: { name: { type: "string", maxLength: 80 } } } } },
     async (request) => guildDone(idOf(request.params), await foundGuild(db, content, idOf(request.params), request.body.name, now())),
+  );
+  app.get<{ Params: { id: string; guild: string } }>("/tinkers/:id/guilds/:guild", async (request) =>
+    lookAtGuild(db, content, Number(request.params.guild)),
   );
   app.post<{ Params: { id: string; guild: string } }>("/tinkers/:id/guilds/:guild/apply", async (request) =>
     guildDone(idOf(request.params), await applyToGuild(db, content, idOf(request.params), Number(request.params.guild), now())),

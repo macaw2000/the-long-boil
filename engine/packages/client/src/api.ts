@@ -415,6 +415,17 @@ export interface GuildView {
   rules: { maxMembers: number; renameCrowns: number; noticeMax: number };
 }
 
+/** A guild as anyone may see it (packages/server/src/guilds.ts). */
+export interface GuildCardView {
+  id: number;
+  name: string;
+  formedAt: string;
+  size: number;
+  maxMembers: number;
+  totalLevel: number;
+  members: { id: number; name: string; rank: GuildRank; totalLevel: number }[];
+}
+
 /** Another Tinker looked over (packages/server/src/inspect.ts): guild, skills and gear, never their purse. */
 export interface InspectView {
   id: number;
@@ -622,6 +633,7 @@ export const api = {
   whispers: (id: number) => request<{ conversations: WhisperConversation[] }>("GET", `/tinkers/${id}/whispers`),
   guild: (id: number) => request<GuildView>("GET", `/tinkers/${id}/guild`),
   foundGuild: (id: number, name: string) => request<GuildView>("POST", `/tinkers/${id}/guild`, { name }),
+  guildCard: (id: number, guild: number) => request<GuildCardView>("GET", `/tinkers/${id}/guilds/${guild}`),
   applyToGuild: (id: number, guild: number) => request<GuildView>("POST", `/tinkers/${id}/guilds/${guild}/apply`),
   acceptInvite: (id: number, guild: number) => request<GuildView>("POST", `/tinkers/${id}/guilds/${guild}/accept`),
   dropRequest: (id: number, guild: number, other: number) => request<GuildView>("DELETE", `/tinkers/${id}/guilds/${guild}/requests/${other}`),
