@@ -61,6 +61,19 @@ export function usePlanner(content: Content, tinker: Tinker, name: (id: string) 
     return totals;
   }, [tinker.inventory]);
 
+  // What the bench will hold once the queue has run: a job added after it works from this, so Brass Ingots queued
+  // behind Copper prospecting are counted against the Copper to come, not the none in hand (Jeremy, 23 November 2026).
+  const afterQueue = useMemo(() => {
+    const totals = new Map(held);
+    for (const entry of tinker.queue) {
+      const action = content.actions.find((candidate) => candidate.id === entry.actionId);
+      if (!action) continue;
+      for (const input of action.inputs) totals.set(input.item, Math.max(0, (totals.get(input.item) ?? 0) - input.qty * entry.remaining));
+      for (const output of action.outputs) totals.set(output.item, (totals.get(output.item) ?? 0) + output.qty * entry.remaining);
+    }
+    return totals;
+  }, [held, tinker.queue, content]);
+
   const isBoss = (id: string) => Boolean(content.monsters.find((monster) => monster.id === id)?.boss);
 
   /** Seconds one repetition takes: the action's time, or this Tinker's expected time per kill. */
@@ -72,13 +85,13 @@ export function usePlanner(content: Content, tinker: Tinker, name: (id: string) 
     return content.monsters.find((candidate) => candidate.id === id)?.seconds_per_kill ?? 60;
   };
 
-  /** How many fit in a span of steam, and in the materials held. A boss is one attempt at a time. */
+  /** How many fit in a span of steam, and in the materials held once the queue has run. A boss is one attempt at a time. */
   const countFor = (id: string, span: number): number => {
     if (isBoss(id)) return 1;
     const byTime = Math.max(1, Math.floor(span / secondsEach(id)));
     const action = content.actions.find((candidate) => candidate.id === id);
     if (!action || action.inputs.length === 0) return byTime;
-    const byInputs = Math.min(...action.inputs.map((input) => Math.floor((held.get(input.item) ?? 0) / input.qty)));
+    const byInputs = Math.min(...action.inputs.map((input) => Math.floor((afterQueue.get(input.item) ?? 0) / input.qty)));
     return Math.max(1, Math.min(byTime, byInputs));
   };
 
@@ -96,8 +109,9 @@ export function usePlanner(content: Content, tinker: Tinker, name: (id: string) 
       // A piece of gear makes what it lacks first, inside its one queue entry (the Boiler's gear chain).
       const gear = [...content.weapons, ...content.armours, ...content.pieces, ...content.tools].map((piece) => piece.item);
       if (action.outputs.some((output) => gear.includes(output.item))) return `it makes the ${missing.join(" and ")} it needs first, from what it can gather`;
-      const ahead = tinker.queue.length > 0 ? " unless the job ahead of it makes some first" : "";
-      return `you hold no ${missing.join(" or ")}, so it will be taken off the queue${ahead}`;
+      const coming = action.inputs.every((input) => (afterQueue.get(input.item) ?? 0) >= input.qty);
+      if (coming) return `you hold no ${missing.join(" or ")} yet: Add to queue, and the job ahead makes it first`;
+      return `you hold no ${missing.join(" or ")}, so it will be taken off the queue`;
     }
     const outlook = fights.get(id);
     const boss = content.monsters.find((monster) => monster.id === id && monster.boss);
