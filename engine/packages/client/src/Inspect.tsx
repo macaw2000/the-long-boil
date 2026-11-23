@@ -37,17 +37,20 @@ export function Inspect({
   onClose: () => void;
   onWhisper?: (other: number, name: string) => void;
   /** Set when the viewer may invite to its guild. */
-  onInvite?: (other: number) => void;
+  onInvite?: (other: number) => Promise<boolean>;
 }) {
   const [view, setView] = useState<InspectView | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [invited, setInvited] = useState(false);
+  const [invited, setInvited] = useState<"asking" | "Invited" | "Joined" | null>(null);
+  // The Tinker on the card now: an invitation answered after it changed says nothing.
+  const current = useRef(otherId);
+  current.current = otherId;
   const still = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     setView(null);
     setError(null);
-    setInvited(false);
+    setInvited(null);
     api
       .inspect(tinkerId, otherId)
       .then(setView)
@@ -173,14 +176,23 @@ export function Inspect({
               {!self && onInvite && !view.guild && (
                 <Pressable
                   onPress={() => {
-                    onInvite(view.id);
-                    setInvited(true);
+                    setInvited("asking");
+                    setError(null);
+                    onInvite(view.id)
+                      .then((joined) => {
+                        if (current.current === view.id) setInvited(joined ? "Joined" : "Invited");
+                      })
+                      .catch((reason: Error) => {
+                        if (current.current !== view.id) return;
+                        setInvited(null);
+                        setError(reason.message);
+                      });
                   }}
-                  disabled={invited}
+                  disabled={invited !== null}
                   accessibilityRole="button"
                   style={[ui.button, invited && { opacity: 0.5 }]}
                 >
-                  <Text style={ui.buttonText}>{invited ? "Invited" : "Invite to guild"}</Text>
+                  <Text style={ui.buttonText}>{invited === "Invited" || invited === "Joined" ? invited : "Invite to guild"}</Text>
                 </Pressable>
               )}
               <Pressable onPress={onClose} accessibilityRole="button" style={[ui.button, { backgroundColor: "transparent", borderWidth: 1, borderColor: colors.panelEdge }]}>

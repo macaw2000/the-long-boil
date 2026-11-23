@@ -164,7 +164,12 @@ async function memberCount(tx: Tx, guildId: number): Promise<number> {
   return Number((await one(tx, "SELECT count(*) AS n FROM guild_members WHERE guild_id = $1", [guildId]))!.n);
 }
 
-async function join(tx: Tx, content: GameContent, guildId: number, tinkerId: number, now: number) {
+/** Marks every member as touched, so open Guild tabs show the change. */
+async function touchMembers(tx: Tx, guildId: number, touched: Set<number>) {
+  for (const row of (await tx.query("SELECT tinker_id FROM guild_members WHERE guild_id = $1", [guildId])).rows) touched.add(Number(row.tinker_id));
+}
+
+async function join(tx: Tx, content: GameContent, guildId: number, tinkerId: number, now: number, touched: Set<number>) {
   await lockGuild(tx, guildId);
   if (await accountInGuild(tx, tinkerId)) throw new rules.GuildRefusal("this account is already in a guild");
   if ((await memberCount(tx, guildId)) >= rules.GUILD_MAX_MEMBERS) throw new rules.GuildRefusal(`a guild holds at most ${rules.GUILD_MAX_MEMBERS} members`);
@@ -174,6 +179,7 @@ async function join(tx: Tx, content: GameContent, guildId: number, tinkerId: num
   );
   await tx.query("DELETE FROM guild_requests WHERE tinker_id = $1", [tinkerId]);
   await logFor(tx, content, tinkerId, [{ type: "guild_joined", at: now, payload: { guild: guildId, crowns: 0, items: {} } }]);
+  await touchMembers(tx, guildId, touched);
 }
 
 async function readView(tx: Tx, content: GameContent, tinkerId: number): Promise<GuildView> {
@@ -305,7 +311,7 @@ export function applyToGuild(db: Db, content: GameContent, tinkerId: number, gui
   return guildOp(db, content, tinkerId, now, async (tx, touched) => {
     await lockGuild(tx, guildId);
     const invited = await one(tx, "SELECT 1 FROM guild_requests WHERE guild_id = $1 AND tinker_id = $2 AND kind = 'invite'", [guildId, tinkerId]);
-    if (invited) return join(tx, content, guildId, tinkerId, now);
+    if (invited) return join(tx, content, guildId, tinkerId, now, touched);
     if (await accountInGuild(tx, tinkerId)) throw new rules.GuildRefusal("this account is already in a guild");
     await tx.query(
       "INSERT INTO guild_requests (guild_id, tinker_id, kind, by_tinker_id, at) VALUES ($1, $2, 'application', $2, $3) ON CONFLICT (guild_id, tinker_id) DO NOTHING",
@@ -324,7 +330,7 @@ export function inviteToGuild(db: Db, content: GameContent, tinkerId: number, ot
     if (await accountInGuild(tx, otherId)) throw new rules.GuildRefusal("that Tinker's account is already in a guild");
     touched.add(otherId);
     const applied = await one(tx, "SELECT 1 FROM guild_requests WHERE guild_id = $1 AND tinker_id = $2 AND kind = 'application'", [mine.guildId, otherId]);
-    if (applied) return join(tx, content, mine.guildId, otherId, now);
+    if (applied) return join(tx, content, mine.guildId, otherId, now, touched);
     await tx.query(
       "INSERT INTO guild_requests (guild_id, tinker_id, kind, by_tinker_id, at) VALUES ($1, $2, 'invite', $3, $4) ON CONFLICT (guild_id, tinker_id) DO NOTHING",
       [mine.guildId, otherId, tinkerId, new Date(now)],
@@ -340,17 +346,17 @@ export function acceptApplication(db: Db, content: GameContent, tinkerId: number
       throw new rules.GuildRefusal("no application from that Tinker");
     }
     touched.add(otherId);
-    await join(tx, content, mine.guildId, otherId, now);
+    await join(tx, content, mine.guildId, otherId, now, touched);
   });
 }
 
 /** The invited Tinker accepts. */
 export function acceptInvite(db: Db, content: GameContent, tinkerId: number, guildId: number, now: number) {
-  return guildOp(db, content, tinkerId, now, async (tx) => {
+  return guildOp(db, content, tinkerId, now, async (tx, touched) => {
     if (!(await one(tx, "SELECT 1 FROM guild_requests WHERE guild_id = $1 AND tinker_id = $2 AND kind = 'invite'", [guildId, tinkerId]))) {
       throw new rules.GuildRefusal("no invitation from that guild");
     }
-    await join(tx, content, guildId, tinkerId, now);
+    await join(tx, content, guildId, tinkerId, now, touched);
   });
 }
 
@@ -361,8 +367,10 @@ export function dropRequest(db: Db, content: GameContent, tinkerId: number, guil
       const mine = await actorIn(tx, tinkerId, "accept");
       if (mine.guildId !== guildId) throw new rules.GuildRefusal("that request is not your guild's");
     }
-    await tx.query("DELETE FROM guild_requests WHERE guild_id = $1 AND tinker_id = $2", [guildId, otherId]);
+    const dropped = await tx.query("DELETE FROM guild_requests WHERE guild_id = $1 AND tinker_id = $2", [guildId, otherId]);
+    if (!dropped.rowCount) return;
     touched.add(otherId);
+    await touchMembers(tx, guildId, touched);
   });
 }
 
@@ -380,7 +388,7 @@ export function setRank(db: Db, content: GameContent, tinkerId: number, otherId:
       await tx.query("UPDATE guild_members SET rank = $2 WHERE tinker_id = $1", [otherId, rank]);
     }
     await logFor(tx, content, otherId, [{ type: "guild_rank", at: now, payload: { guild: mine.guildId, rank, by: tinkerId, crowns: 0, items: {} } }]);
-    touched.add(otherId);
+    await touchMembers(tx, mine.guildId, touched);
   });
 }
 
@@ -389,6 +397,8 @@ export function removeMember(db: Db, content: GameContent, tinkerId: number, oth
   return guildOp(db, content, tinkerId, now, async (tx, touched) => {
     const mine = await membership(tx, tinkerId);
     if (!mine) throw new rules.GuildRefusal("you are not in a guild");
+    // Joins take this lock too, so a sole leader's leaving cannot disband a guild someone is just joining.
+    await lockGuild(tx, mine.guildId);
     const target = await membership(tx, otherId);
     if (!target || target.guildId !== mine.guildId) throw new rules.GuildRefusal("that Tinker is not in your guild");
     const count = await memberCount(tx, mine.guildId);
@@ -398,6 +408,7 @@ export function removeMember(db: Db, content: GameContent, tinkerId: number, oth
     await tx.query("DELETE FROM guild_members WHERE tinker_id = $1", [otherId]);
     await logFor(tx, content, otherId, [{ type: "guild_left", at: now, payload: { guild: mine.guildId, removed: otherId !== tinkerId, crowns: 0, items: {} } }]);
     touched.add(otherId);
+    await touchMembers(tx, mine.guildId, touched);
   });
 }
 

@@ -8,7 +8,8 @@
 // connection. Tapping a name offers whisper, mute and invite. Anyone else's
 // messages can be muted, for this account only. Typed commands do the same
 // by name: /w name message whispers, /r message replies to the last
-// whisper, /profile name inspects, and /help (or the ? by Say) lists them;
+// whisper, /profile name inspects, /invite name asks them into the guild,
+// and /help (or the ? by Say) lists them;
 // "//" sends a message that starts with a slash.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -174,9 +175,10 @@ const COMMANDS: { usage: string; does: string }[] = [
   { usage: "/w name message", does: "Whisper to a Tinker. Leave out the message to open the conversation." },
   { usage: "/r message", does: "Reply to whoever whispered you last." },
   { usage: "/profile name", does: "Look a Tinker over: guild, skills and gear." },
+  { usage: "/invite name", does: "Invite a Tinker to your guild, if you lead it or are an officer." },
   { usage: "/help", does: "Show this list." },
 ];
-const HINT = "/w name message · /r message · /profile name · /help";
+const HINT = "/w name message · /r message · /profile name · /invite name · /help";
 
 /** A typed command split into its word and the rest, or null for an ordinary message. */
 function commandIn(text: string): { word: string; rest: string } | null {
@@ -208,8 +210,8 @@ export interface ChatProps {
   whispers: WhisperState;
   guildName?: string;
   connected: boolean;
-  /** Set when this Tinker may invite to its guild. */
-  onInvite?: (other: number) => void;
+  /** Set when this Tinker may invite to its guild. Says whether the other joined at once; rejects with the refusal. */
+  onInvite?: (other: number) => Promise<boolean>;
   /** Opens another Tinker's inspect card. */
   onInspect?: (other: number) => void;
   /** Asks for a tab from outside (the ledger's "Read guild chat"); a new `ask` brings it forward. */
@@ -236,6 +238,8 @@ export function Chat({
   const room = which === "whisper" ? null : which === "guild" ? rooms.guild : rooms[which];
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
+  /** What a command or a name's button just did, until the next thing typed or tapped. */
+  const [done, setDone] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [helping, setHelping] = useState(false);
   const scroll = useRef<ScrollView>(null);
@@ -275,7 +279,16 @@ export function Chat({
     whisperTo(other.id, other.name);
   };
 
-  /** Runs a typed command: /help, /r, or /w and /profile, which find the Tinker named first. */
+  const invite = async (other: { id: number; name: string }) => {
+    if (!rooms.guild) throw new Error("You are not in a guild. Found or join one on the Guild tab.");
+    if (!onInvite) throw new Error("Only the guild's leader and officers can invite.");
+    if (other.id === tinkerId) throw new Error("You are already in your guild");
+    const joined = await onInvite(other.id);
+    setError(null);
+    setDone(joined ? `${other.name} had applied, and has joined the guild.` : `Invited ${other.name}. The invitation waits on their Guild tab.`);
+  };
+
+  /** Runs a typed command: /help, /r, or /w, /profile and /invite, which find the Tinker named first. */
   const runCommand = async ({ word, rest }: { word: string; rest: string }) => {
     if (word === "help" || word === "?") {
       setHelping(true);
@@ -286,12 +299,17 @@ export function Chat({
       return whisperWith(whispers.replyTo, rest);
     }
     const whisper = word === "w" || word === "whisper";
-    if (!whisper && word !== "profile") throw new Error(`No /${word} command. Type /help for the list.`);
-    if (!rest) throw new Error(whisper ? "/w name message" : "/profile name");
+    if (!whisper && word !== "profile" && word !== "invite") throw new Error(`No /${word} command. Type /help for the list.`);
+    if (!rest) throw new Error(whisper ? "/w name message" : `/${word} name`);
     const found = await api.named(tinkerId, rest);
     if (found.shared > 1) throw new Error(`${found.shared} Tinkers share that name. Tap theirs in chat instead.`);
     if (!found.tinker) throw new Error("No Tinker by that name. Use their whole name, as chat shows it.");
     const other = found.tinker;
+    if (word === "invite") {
+      // A whole name and nothing after it, so a slip never invites someone else.
+      if (found.rest) throw new Error("/invite takes only a name. No Tinker has that whole name.");
+      return invite(other);
+    }
     if (!whisper) {
       if (!onInspect) throw new Error("Profiles cannot be opened here");
       onInspect(other.id);
@@ -303,6 +321,7 @@ export function Chat({
   const send = () => {
     const typed = draft.trim();
     if (!typed || sending) return;
+    setDone(null);
     const command = commandIn(typed);
     if (command) {
       setSending(true);
@@ -362,6 +381,8 @@ export function Chat({
   const choose = (channel: ChatChannel) => {
     setWhich(channel);
     setPicked(null);
+    setDone(null);
+    setError(null);
     // Leaving the Whispers tab closes the thread, so a whisper asked for from elsewhere always brings it back.
     if (channel !== "whisper") whispers.close();
     if (folded) docked?.onFold(false);
@@ -453,7 +474,7 @@ export function Chat({
                 const actions = [
                 ...(onInspect ? [{ label: "inspect", tone: colors.ink, act: () => (setPicked(null), onInspect(message.tinker.id)) }] : []),
                   ...(which !== "whisper" ? [{ label: "whisper", tone: colors.brass, act: () => whisperTo(message.tinker.id, message.tinker.name) }] : []),
-                  ...(onInvite && which !== "guild" && which !== "whisper" ? [{ label: "invite to guild", tone: colors.verdigris, act: () => (setPicked(null), onInvite(message.tinker.id)) }] : []),
+                  ...(onInvite && which !== "guild" && which !== "whisper" ? [{ label: "invite to guild", tone: colors.verdigris, act: () => (setPicked(null), setDone(null), void invite(message.tinker).catch((reason: Error) => setError(reason.message))) }] : []),
                   { label: "mute", tone: colors.scald, act: () => (setPicked(null), mute(message.tinker.id, true)) },
                 ];
                 return (
@@ -516,6 +537,8 @@ export function Chat({
         )}
         {error ? (
           <Text style={[ui.muted, { color: colors.scald }]}>{error}</Text>
+        ) : done ? (
+          <Text style={[ui.muted, { color: colors.verdigris }]} accessibilityLiveRegion="polite">{done}</Text>
         ) : (
           !helping && draft.startsWith("/") && !draft.startsWith("//") && <Text style={[ui.muted, { fontSize: 11 }]}>{HINT}</Text>
         )}

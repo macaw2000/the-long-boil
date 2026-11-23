@@ -273,8 +273,11 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       ? (other: number) =>
           api
             .invite(tinkerId, other)
-            .then(setGuildView)
-            .catch((reason: Error) => setError(reason.message))
+            .then((view) => {
+              setGuildView(view);
+              // One who had already applied is let in at once.
+              return Boolean(view.guild?.members.some((member) => member.tinkerId === other));
+            })
       : undefined;
 
   // A notice pinned since this Tinker last opened the Guild tab counts on the Guild badge until it is read.

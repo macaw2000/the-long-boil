@@ -169,6 +169,49 @@ describe("founding a guild", () => {
   });
 });
 
+describe("who hears of a guild change", () => {
+  it("tells the rest of the guild when someone joins, declines, changes rank or leaves", async () => {
+    await open.ready();
+    const lead = await tinker("g-lead@example.com", "Lead");
+    const mate = await tinker("g-mate@example.com", "Mate");
+    const shy = await tinker("g-shy@example.com", "Shy");
+    const guild = (await call("POST", `/tinkers/${lead}/guild`, { name: "Loud Bells" })).body.guild.id;
+    const hears = async (id: number, step: () => Promise<{ status: number }>) => {
+      let told = 0;
+      const socket = await open.injectWS(`/live/${id}`);
+      socket.on("message", (data: Buffer) => {
+        if (JSON.parse(data.toString()).type === "guild") told++;
+      });
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect((await step()).status).toBe(200);
+      for (let tries = 0; tries < 50 && !told; tries++) await new Promise((resolve) => setTimeout(resolve, 10));
+      socket.terminate();
+      expect(told).toBeGreaterThan(0);
+    };
+    for (const other of [mate, shy]) await call("POST", `/tinkers/${lead}/guild/invite/${other}`);
+    await hears(lead, () => call("POST", `/tinkers/${mate}/guilds/${guild}/accept`));
+    await hears(lead, () => call("DELETE", `/tinkers/${shy}/guilds/${guild}/requests/${shy}`));
+    await hears(lead, async () => {
+      await call("POST", `/tinkers/${lead}/guild/invite/${shy}`);
+      return call("POST", `/tinkers/${shy}/guilds/${guild}/accept`);
+    });
+    await hears(shy, () => call("PUT", `/tinkers/${lead}/guild/members/${mate}/rank`, { rank: "officer" }));
+    await hears(lead, () => call("DELETE", `/tinkers/${mate}/guild/members/${mate}`));
+  });
+
+  it("never disbands a guild under someone joining as its sole leader leaves", async () => {
+    for (const letter of ["a", "b", "c", "d", "e"]) {
+      const lead = await tinker(`g-race-l${letter}@example.com`, `Racer ${letter}`);
+      const joiner = await tinker(`g-race-j${letter}@example.com`, `Joiner ${letter}`);
+      const guild = (await call("POST", `/tinkers/${lead}/guild`, { name: `Race ${letter}` })).body.guild.id;
+      await call("POST", `/tinkers/${lead}/guild/invite/${joiner}`);
+      const [, joined] = await Promise.all([call("DELETE", `/tinkers/${lead}/guild/members/${lead}`), call("POST", `/tinkers/${joiner}/guilds/${guild}/accept`)]);
+      const after = (await call("GET", `/tinkers/${joiner}/guild`)).body.guild;
+      expect(joined.status === 200).toBe(after !== null);
+    }
+  });
+});
+
 describe("a charter from when guilds cost a fee", () => {
   it("forms on the next guild step and refunds every pledge", async () => {
     const dee = await tinker("g-dee@example.com", "Dee", 20_000);

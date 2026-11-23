@@ -153,7 +153,7 @@ export function Guild({
               {guild.members.length} of {view.rules.maxMembers} · you are {RANKS[guild.rank]}
             </Text>
           </View>
-          {guild.members.length === 1 && <Text style={ui.muted}>Just you so far. Tap a name in chat to invite them in.</Text>}
+          {guild.members.length === 1 && <Text style={ui.muted}>Just you so far. Type /invite and a name in chat, or tap a name there.</Text>}
         </View>
 
         <View style={[ui.panel, { gap: 6 }]}>
@@ -228,7 +228,12 @@ export function Guild({
                     ) : (
                       <SmallButton label="Hand on leadership" onPress={() => setConfirming(`lead-${member.tinkerId}`)} />
                     ))}
-                  {leader && !self && <SmallButton label="Remove" tone={colors.scald} onPress={() => act(api.removeMember(tinkerId, member.tinkerId))} />}
+                  {leader && !self &&
+                    (confirming === `remove-${member.tinkerId}` ? (
+                      <SmallButton label="Confirm: remove" tone={colors.scald} onPress={() => act(api.removeMember(tinkerId, member.tinkerId))} />
+                    ) : (
+                      <SmallButton label="Remove" tone={colors.scald} onPress={() => setConfirming(`remove-${member.tinkerId}`)} />
+                    ))}
                 </View>
               </View>
             );
@@ -238,7 +243,7 @@ export function Guild({
         {answers && (
           <View style={ui.panel}>
             <Text style={ui.heading}>Requests</Text>
-            {guild.requests.length === 0 && <Text style={ui.muted}>No applications waiting. Invite Tinkers from chat.</Text>}
+            {guild.requests.length === 0 && <Text style={ui.muted}>No applications waiting. Type /invite and a name in chat to ask someone in.</Text>}
             {guild.requests.map((request) => (
               <View key={request.tinkerId} style={{ flexDirection: "row", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
                 <Text style={ui.text}>{request.name}</Text>
