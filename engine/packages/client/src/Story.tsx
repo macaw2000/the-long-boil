@@ -10,6 +10,7 @@ import { api, type LedgerPage, type Outcome, type SceneView, type StoryOutcome, 
 import { Commonplace, PageText } from "./Commonplace";
 import { titleCase } from "./format";
 import { Glow } from "./Glow";
+import { GOLD } from "./Guide";
 import { OddsDial } from "./Juice";
 import { Road } from "./Road";
 import type { Place } from "./SideNav";
@@ -235,8 +236,16 @@ export function Story({
         {view.storylets.length === 0 && view.letters.length === 0 && (
           <Text style={ui.muted}>Nothing waits for you just now. Work the bench, and come back when the city has moved.</Text>
         )}
-        {view.storylets.map((scene) => (
-          <Card key={scene.id} scene={scene} nerve={view.nerve} busy={busy} onPlay={(option) => act(api.play(tinkerId, "storylet", scene.id, option))} />
+        {/* The road says "Play it below", so its scene leads the list, marked, rather than sitting among a dozen others. */}
+        {[...view.storylets.filter((scene) => scene.id === roadScene), ...view.storylets.filter((scene) => scene.id !== roadScene)].map((scene) => (
+          <Card
+            key={scene.id}
+            scene={scene}
+            nerve={view.nerve}
+            busy={busy}
+            onRoad={scene.id === roadScene}
+            onPlay={(option) => act(api.play(tinkerId, "storylet", scene.id, option))}
+          />
         ))}
       </Glow>
 
@@ -282,12 +291,15 @@ function Card({
   scene,
   nerve,
   busy,
+  onRoad = false,
   onPlay,
   onDiscard,
 }: {
   scene: SceneView;
   nerve: number;
   busy: boolean;
+  /** The road's next scene: the main story goes on from here. */
+  onRoad?: boolean;
   onPlay: (option: number) => void;
   onDiscard?: () => void;
 }) {
@@ -295,7 +307,8 @@ function Card({
   // "Certain" only means something beside an option that can fail; on its own it puzzled new players.
   const risky = scene.options.some((option) => option.challenge);
   return (
-    <View style={ui.panel}>
+    <View style={[ui.panel, onRoad && { borderColor: GOLD }]}>
+      {onRoad && <Text style={[ui.muted, { color: GOLD }]}>▶ The story goes on here</Text>}
       <View style={{ flexDirection: "row", gap: 12 }}>
         {/* The 96x96 vignette of the scene's place (GDD section 7); a brass plate with its name where none is drawn. */}
         {vignetteSource(scene.location) !== undefined ? (
