@@ -169,6 +169,24 @@ describe("founding a guild", () => {
   });
 });
 
+describe("an invitation refused", () => {
+  it("says whether the Tinker, their player's other Tinker, or the inviter's own account is the reason", async () => {
+    const lead = await tinker("g-why@example.com", "Why");
+    const mine = await tinker("g-why@example.com", "Why Two");
+    const main = await tinker("g-alt@example.com", "Main");
+    const alt = await tinker("g-alt@example.com", "Alt");
+    await call("POST", `/tinkers/${lead}/guild`, { name: "Why Nots" });
+    await call("POST", `/tinkers/${main}/guild`, { name: "Elsewhere" });
+    const invite = async (id: number) => (await call("POST", `/tinkers/${lead}/guild/invite/${id}`)).body.error;
+    expect(await invite(main)).toBe("Main is already in Elsewhere");
+    expect(await invite(alt)).toMatch(/^Alt's player already has another Tinker in a guild/);
+    expect(await invite(alt)).not.toMatch(/Main|Elsewhere/);
+    expect(await invite(mine)).toMatch(/on your own account/);
+    expect((await call("GET", `/tinkers/${lead}/inspect/${alt}`)).body.guild).toBeNull();
+    expect((await call("GET", `/tinkers/${lead}/inspect/${main}`)).body.guild).toMatchObject({ name: "Elsewhere" });
+  });
+});
+
 describe("who hears of a guild change", () => {
   it("tells the rest of the guild when someone joins, declines, changes rank or leaves", async () => {
     await open.ready();

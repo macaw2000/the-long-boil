@@ -323,11 +323,31 @@ export function applyToGuild(db: Db, content: GameContent, tinkerId: number, gui
   });
 }
 
+/**
+ * Why a Tinker cannot be invited, or null. One guild per account: a Tinker
+ * whose profile shows no guild may still be refused for another Tinker on
+ * the account. Which Tinker, and which guild, is not given away.
+ */
+async function inviteRefusal(tx: Tx, tinkerId: number, otherId: number): Promise<string | null> {
+  const row = (await one(
+    tx,
+    `SELECT t.name, t.account_id = mine.account_id AS own, g.name AS guild
+     FROM tinkers t JOIN tinkers mine ON mine.id = $2
+     LEFT JOIN guild_members m ON m.tinker_id = t.id LEFT JOIN guilds g ON g.id = m.guild_id WHERE t.id = $1`,
+    [otherId, tinkerId],
+  ))!;
+  if (row.guild) return `${row.name} is already in ${row.guild}`;
+  if (row.own) return `${row.name} is on your own account, and an account has one Tinker in a guild`;
+  if (await accountInGuild(tx, otherId)) return `${row.name}'s player already has another Tinker in a guild, and an account has one`;
+  return null;
+}
+
 export function inviteToGuild(db: Db, content: GameContent, tinkerId: number, otherId: number, now: number) {
   return guildOp(db, content, tinkerId, now, async (tx, touched) => {
     const mine = await actorIn(tx, tinkerId, "invite");
     if (!(await one(tx, "SELECT 1 FROM tinkers WHERE id = $1", [otherId]))) throw new NotFound(`no Tinker ${otherId}`);
-    if (await accountInGuild(tx, otherId)) throw new rules.GuildRefusal("that Tinker's account is already in a guild");
+    const refusal = await inviteRefusal(tx, tinkerId, otherId);
+    if (refusal) throw new rules.GuildRefusal(refusal);
     touched.add(otherId);
     const applied = await one(tx, "SELECT 1 FROM guild_requests WHERE guild_id = $1 AND tinker_id = $2 AND kind = 'application'", [mine.guildId, otherId]);
     if (applied) return join(tx, content, mine.guildId, otherId, now, touched);
