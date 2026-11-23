@@ -27,7 +27,14 @@ env:
   STACK: LongBoil-dev-App
 
 jobs:
+  # A failed content check (a story spoiler, say) must stop the deploy, not just turn red beside it.
+  validate:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/validate.yml
+
   deploy:
+    needs: validate
     if: vars.AWS_DEPLOY_ROLE_ARN != ''
     runs-on: ubuntu-latest
     # No `environment:` key: it would change the OIDC subject the deploy
