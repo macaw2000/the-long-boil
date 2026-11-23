@@ -233,6 +233,9 @@ function erf(x: number): number {
 }
 
 /** A boss attempt's win chance and length with n Rations (combat.json boss). */
+/** Below this win chance a boss is out of reach: it is not fought, so it cannot take the Rations an attempt spends. */
+export const BOSS_OUT_OF_REACH = 0.05;
+
 export function planBoss(c: CombatConstants, f: Fighter, m: Monster, heal: number, rations: number) {
   const player = playerSwing(c, f, m);
   const boss = monsterSwing(c, f, m);

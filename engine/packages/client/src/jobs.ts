@@ -27,7 +27,9 @@ const NOT_READY: Record<string, string> = {
   cannot_win: "you cannot hurt it yet",
 };
 
-export function notReadyText(reason: string): string {
+/** A boss out of reach is not fought at all, so it says what to train rather than "cannot hurt it". */
+export function notReadyText(reason: string, boss?: { level: number }): string {
+  if (boss && reason === "cannot_win") return `out of reach: train your style toward ${boss.level}`;
   return NOT_READY[reason] ?? reason;
 }
 
@@ -98,7 +100,8 @@ export function usePlanner(content: Content, tinker: Tinker, name: (id: string) 
       return `you hold no ${missing.join(" or ")}, so it will be taken off the queue${ahead}`;
     }
     const outlook = fights.get(id);
-    if (outlook && !outlook.ready) return `${notReadyText(outlook.reason)}, or it will be taken off the queue`;
+    const boss = content.monsters.find((monster) => monster.id === id && monster.boss);
+    if (outlook && !outlook.ready) return `${notReadyText(outlook.reason, boss)}, or it will be taken off the queue`;
     return null;
   };
 

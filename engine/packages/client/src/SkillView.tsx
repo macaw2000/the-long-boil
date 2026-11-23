@@ -164,12 +164,12 @@ export function SkillView({
                 const line = !outlook
                   ? `Level ${monster.level}`
                   : !outlook.ready
-                    ? notReadyText(outlook.reason)
+                    ? // "0% to win" on the first day read as a wall; a boss out of reach (the rules' 5%) says what to train.
+                      monster.boss && outlook.reason === "cannot_win"
+                      ? `Boss · wants level ${monster.level}`
+                      : notReadyText(outlook.reason)
                     : monster.boss && outlook.winChance !== null
-                      ? // "0% to win" on the first day read as a wall; a boss out of reach says only what it is.
-                        outlook.winChance < 0.05
-                        ? `Boss · level ${monster.level}`
-                        : `${Math.round(outlook.winChance * 100)}% to win`
+                      ? `${Math.round(outlook.winChance * 100)}% to win`
                       : wants
                         ? `Level ${monster.level} · ${wants.short}`
                         : `${seconds(outlook.seconds)} a kill`;

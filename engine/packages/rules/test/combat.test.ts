@@ -114,6 +114,15 @@ describe("Scrapjaw", () => {
     expect(after.inventory[RATION]).toBe(15);
     expect(after.bossesBeaten).toEqual([scrapjaw.id]);
   });
+
+  it("is not attempted out of reach, so the Rations stay in the crate", () => {
+    let state = reference("melee", 12, 6, "item.rustmoor.riveting_hammer", 30);
+    state = setQueue(state, [{ actionId: scrapjaw.id, remaining: 3 }]);
+    const { state: after, events } = resolve(state, content, HOUR);
+    expect(events.some((event) => event.type === "boss_attempted")).toBe(false);
+    expect(events).toContainEqual(expect.objectContaining({ type: "queue_stalled", reason: "cannot_win", actionId: scrapjaw.id }));
+    expect(after.inventory[RATION]).toBe(30);
+  });
 });
 
 describe("drops and Rations", () => {

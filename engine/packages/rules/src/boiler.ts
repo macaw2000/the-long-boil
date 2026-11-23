@@ -18,6 +18,7 @@ import {
   killXp,
   nextRandom,
   planBoss,
+  BOSS_OUT_OF_REACH,
   zoneOf,
   combatLevel,
   type Armour,
@@ -296,6 +297,7 @@ function fightStep(state: TinkerState, content: Content, monster: Monster): Step
   if (monster.boss) {
     const rations = Math.min(c.BOSS_RATION_CAP_PER_ATTEMPT ?? 0, held);
     const plan = planBoss(c, fighter, monster, heal, rations);
+    if (plan.win < BOSS_OUT_OF_REACH) return { kind: "stall", reason: "cannot_win" };
     return {
       kind: "run",
       ms: Math.round(plan.seconds * 1000),
@@ -414,6 +416,7 @@ export function fightOutlook(state: TinkerState, content: Content, monster: Mons
   if (monster.boss) {
     const rations = Math.min(c.BOSS_RATION_CAP_PER_ATTEMPT ?? 0, held);
     const plan = planBoss(c, fighter, monster, content.ration.heal, rations);
+    if (plan.win < BOSS_OUT_OF_REACH) return { monsterId: monster.id, ready: false, reason: "cannot_win" };
     return { monsterId: monster.id, ready: true, seconds: seconds(plan.seconds), winChance: plan.win, rations };
   }
   const plan = planCappedKill(content, state.skillXp, fighter, monster, held > 0);

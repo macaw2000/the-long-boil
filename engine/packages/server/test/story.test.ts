@@ -206,7 +206,7 @@ describe("the first session's story", () => {
 });
 
 describe("fights before they are queued", () => {
-  it("shows a boss's win chance with the Rations it would take, and why a fight cannot start", async () => {
+  it("shows why a fight cannot start, a boss out of reach among them", async () => {
     const id = (await call("POST", "/tinkers", { login: "fights@example.com", name: "Fen" })).body.tinker.id;
     const unarmed = (await call("GET", `/tinkers/${id}/fights`)).body.fights;
     expect(unarmed.find((f: { monsterId: string }) => f.monsterId === "monster.rustmoor.scrapjaw")).toEqual({
@@ -218,10 +218,12 @@ describe("fights before they are queued", () => {
     clock += HOUR;
     await call("PUT", `/tinkers/${id}/weapon`, { item: "item.rustmoor.brass_spanner" });
     const armed = (await call("GET", `/tinkers/${id}/fights`)).body.fights;
-    const boss = armed.find((f: { monsterId: string }) => f.monsterId === "monster.rustmoor.scrapjaw");
-    expect(boss).toMatchObject({ ready: true, rations: 3 });
-    expect(boss.winChance).toBeGreaterThanOrEqual(0);
-    expect(boss.winChance).toBeLessThan(0.05);
+    // Below 5% a boss is out of reach: it is not fought, so it cannot spend the attempt's Rations.
+    expect(armed.find((f: { monsterId: string }) => f.monsterId === "monster.rustmoor.scrapjaw")).toEqual({
+      monsterId: "monster.rustmoor.scrapjaw",
+      ready: false,
+      reason: "cannot_win",
+    });
     const runt = armed.find((f: { monsterId: string }) => f.monsterId === "monster.rustmoor.rust_rat_runt");
     expect(runt).toMatchObject({ ready: true, winChance: null });
     expect(runt.seconds).toBeGreaterThanOrEqual(54);
