@@ -79,7 +79,7 @@ export function GuildCard({
       {/* A press inside the card stays in the card. */}
       <Pressable onPress={() => undefined} style={[ui.panel, { width: 440, maxWidth: "100%", maxHeight: "92%", gap: 10 }]}>
         {!view ? (
-          <Text style={error ? [ui.muted, { color: colors.scald }] : ui.muted}>{error ?? "Knocking at the guild hall…"}</Text>
+          <Text style={error ? [ui.muted, { color: colors.scald }] : ui.muted}>{error ?? "Opening the guild hall…"}</Text>
         ) : (
           <>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
