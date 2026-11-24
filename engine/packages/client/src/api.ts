@@ -391,7 +391,7 @@ export type GuildRank = "leader" | "officer" | "member";
 
 /** One line of a guild's recent activity (packages/server/src/guilds.ts). */
 export type GuildActivityEntry = { at: string; tinker: { id: number; name: string } } & (
-  | { kind: "founded" | "joined" | "left" | "removed" | "notice" }
+  | { kind: "founded" | "joined" | "left" | "removed" | "notice" | "claimed" }
   | { kind: "renamed"; name: string }
   | { kind: "rank"; rank: GuildRank; by: string }
   | { kind: "level"; skill: string; level: number }
@@ -408,11 +408,22 @@ export interface GuildView {
     members: { tinkerId: number; name: string; rank: GuildRank; totalLevel: number; lastSeen: string; workOrders: number }[];
     activity: GuildActivityEntry[];
     requests: { tinkerId: number; name: string; kind: "invite" | "application"; at: string }[];
+    recruiting: Recruiting;
+    /** Set while the leader is long away: when this Tinker may take over. */
+    claim: { leader: string; at: string } | null;
   } | null;
   invites: { guildId: number; name: string; status: string }[];
   applications: { guildId: number; name: string; status: string }[];
-  guilds: { id: number; name: string; members: number }[];
+  guilds: { id: number; name: string; members: number; recruiting: Recruiting }[];
+  totalLevel: number;
   rules: { maxMembers: number; renameCrowns: number; noticeMax: number };
+}
+
+/** How a guild takes applications. */
+export interface Recruiting {
+  open: boolean;
+  minLevel: number;
+  autoAccept: boolean;
 }
 
 /** A guild as anyone may see it (packages/server/src/guilds.ts). */
@@ -423,6 +434,7 @@ export interface GuildCardView {
   size: number;
   maxMembers: number;
   totalLevel: number;
+  recruiting: Recruiting;
   members: { id: number; name: string; rank: GuildRank; totalLevel: number }[];
 }
 
@@ -642,6 +654,8 @@ export const api = {
   setRank: (id: number, other: number, rank: GuildRank) => request<GuildView>("PUT", `/tinkers/${id}/guild/members/${other}/rank`, { rank }),
   removeMember: (id: number, other: number) => request<GuildView>("DELETE", `/tinkers/${id}/guild/members/${other}`),
   renameGuild: (id: number, name: string) => request<GuildView>("POST", `/tinkers/${id}/guild/rename`, { name }),
+  claimGuild: (id: number) => request<GuildView>("POST", `/tinkers/${id}/guild/claim`),
+  setRecruiting: (id: number, recruiting: Recruiting) => request<GuildView>("PUT", `/tinkers/${id}/guild/recruiting`, recruiting),
   disbandGuild: (id: number) => request<GuildView>("POST", `/tinkers/${id}/guild/disband`),
   setNotice: (id: number, text: string) => request<GuildView>("PUT", `/tinkers/${id}/guild/notice`, { text }),
   inspect: (id: number, other: number) => request<InspectView>("GET", `/tinkers/${id}/inspect/${other}`),

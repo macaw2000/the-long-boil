@@ -66,6 +66,9 @@ function ActivityLine({ entry, content, onInspect }: { entry: GuildActivityEntry
     case "removed":
       line = <>{who} was removed</>;
       break;
+    case "claimed":
+      line = <>{who} took over from a leader long away</>;
+      break;
     case "notice":
       line = <>{who} pinned a notice</>;
       break;
@@ -134,6 +137,7 @@ export function Guild({
   const [name, setName] = useState("");
   const [rename, setRename] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
+  const [minLevel, setMinLevel] = useState<string | null>(null);
   const [allActivity, setAllActivity] = useState(false);
   const [confirming, setConfirming] = useState<string | null>(null);
 
@@ -146,6 +150,7 @@ export function Guild({
         setError(null);
         setName("");
         setNotice(null);
+        setMinLevel(null);
         setConfirming(null);
       })
       .catch((reason: Error) => setError(reason.message));
@@ -167,6 +172,19 @@ export function Guild({
           </View>
           {guild.members.length === 1 && <Text style={ui.muted}>Just you so far. Type /invite and a name in chat, or tap a name there.</Text>}
         </View>
+
+        {guild.claim && (
+          <View style={[ui.panel, { gap: 6, alignItems: "flex-start", borderColor: colors.copper }]}>
+            <Text style={ui.text}>{guild.claim.leader}, the leader, has been away a month or more.</Text>
+            {new Date(guild.claim.at).getTime() > gameNow() ? (
+              <Text style={ui.muted}>If no one else takes over, you may in {duration(new Date(guild.claim.at).getTime() - gameNow())}.</Text>
+            ) : confirming === "claim" ? (
+              <SmallButton label="Confirm: lead this guild" tone={colors.copper} onPress={() => act(api.claimGuild(tinkerId))} />
+            ) : (
+              <SmallButton label="Take over as leader" onPress={() => setConfirming("claim")} />
+            )}
+          </View>
+        )}
 
         <View style={[ui.panel, { gap: 6 }]}>
           <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
@@ -240,7 +258,8 @@ export function Guild({
                     ) : (
                       <SmallButton label="Hand on leadership" onPress={() => setConfirming(`lead-${member.tinkerId}`)} />
                     ))}
-                  {leader && !self &&
+                  {!self &&
+                    (leader || (guild.rank === "officer" && member.rank === "member")) &&
                     (confirming === `remove-${member.tinkerId}` ? (
                       <SmallButton label="Confirm: remove" tone={colors.scald} onPress={() => act(api.removeMember(tinkerId, member.tinkerId))} />
                     ) : (
@@ -264,6 +283,46 @@ export function Guild({
                 <SmallButton label={request.kind === "application" ? "Decline" : "Withdraw"} tone={colors.muted} onPress={() => act(api.dropRequest(tinkerId, guild.id, request.tinkerId))} />
               </View>
             ))}
+          </View>
+        )}
+
+        {leader && (
+          <View style={[ui.panel, { gap: 8 }]}>
+            <Text style={ui.heading}>Who may join</Text>
+            <View style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}>
+              {(
+                [
+                  ["Anyone, at once", true, true],
+                  ["By application", true, false],
+                  ["Invitation only", false, false],
+                ] as const
+              ).map(([label, open, autoAccept]) => {
+                const chosen = guild.recruiting.open === open && (!open || guild.recruiting.autoAccept === autoAccept);
+                return (
+                  <SmallButton
+                    key={label}
+                    label={chosen ? `● ${label}` : label}
+                    tone={chosen ? colors.verdigris : colors.muted}
+                    onPress={() => act(api.setRecruiting(tinkerId, { open, autoAccept, minLevel: guild.recruiting.minLevel }))}
+                  />
+                );
+              })}
+            </View>
+            {guild.recruiting.open && (
+              <View style={{ flexDirection: "row", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                <Text style={ui.muted}>Total level asked (0 for none)</Text>
+                <TextInput
+                  value={minLevel ?? String(guild.recruiting.minLevel)}
+                  onChangeText={(text) => setMinLevel(text.replace(/\D/g, "").slice(0, 4))}
+                  inputMode="numeric"
+                  accessibilityLabel="Total level asked"
+                  style={[ui.input, { width: 80 }]}
+                />
+                {minLevel !== null && Number(minLevel) !== guild.recruiting.minLevel && (
+                  <SmallButton label="Set" tone={colors.verdigris} onPress={() => act(api.setRecruiting(tinkerId, { ...guild.recruiting, minLevel: Number(minLevel) }))} />
+                )}
+              </View>
+            )}
           </View>
         )}
 
@@ -363,8 +422,12 @@ export function Guild({
                   <SmallButton label="Applied · withdraw" tone={colors.muted} onPress={() => act(api.dropRequest(tinkerId, entry.id, tinkerId))} />
                 ) : entry.members >= view.rules.maxMembers ? (
                   <Text style={[ui.muted, { fontSize: 12 }]}>full</Text>
+                ) : !entry.recruiting.open ? (
+                  <Text style={[ui.muted, { fontSize: 12 }]}>by invitation</Text>
+                ) : view.totalLevel < entry.recruiting.minLevel ? (
+                  <Text style={[ui.muted, { fontSize: 12 }]}>total level {entry.recruiting.minLevel}</Text>
                 ) : (
-                  <SmallButton label="Apply" onPress={() => act(api.applyToGuild(tinkerId, entry.id))} />
+                  <SmallButton label={entry.recruiting.autoAccept ? "Join" : "Apply"} onPress={() => act(api.applyToGuild(tinkerId, entry.id))} />
                 )}
               </View>
             </View>

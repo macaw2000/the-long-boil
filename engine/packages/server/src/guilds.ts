@@ -33,17 +33,34 @@ export interface GuildView {
     activity: GuildActivityEntry[];
     /** Invitations out and applications in; shown to those who may answer them. */
     requests: { tinkerId: number; name: string; kind: "invite" | "application"; at: string }[];
+    recruiting: Recruiting;
+    /** Set while the leader has been away long enough to be replaced: who they are, and when this Tinker may claim. */
+    claim: { leader: string; at: string } | null;
   } | null;
   invites: { guildId: number; name: string; status: string }[];
   applications: { guildId: number; name: string; status: string }[];
   /** Every guild, largest first, to apply to. */
-  guilds: { id: number; name: string; members: number }[];
+  guilds: { id: number; name: string; members: number; recruiting: Recruiting }[];
+  /** This Tinker's total level, to set against what a guild asks. */
+  totalLevel: number;
   rules: { maxMembers: number; renameCrowns: number; noticeMax: number };
+}
+
+/** How a guild takes applications. */
+export interface Recruiting {
+  open: boolean;
+  minLevel: number;
+  /** Lets whoever applies in at once. */
+  autoAccept: boolean;
+}
+
+function recruitingOf(row: Row): Recruiting {
+  return { open: row.recruiting, minLevel: Number(row.min_level), autoAccept: row.auto_accept };
 }
 
 /** One line of the Guild tab's recent activity. */
 export type GuildActivityEntry = { at: string; tinker: { id: number; name: string } } & (
-  | { kind: "founded" | "joined" | "left" | "removed" | "notice" }
+  | { kind: "founded" | "joined" | "left" | "removed" | "notice" | "claimed" }
   | { kind: "renamed"; name: string }
   | { kind: "rank"; rank: rules.GuildRank; by: string }
   | { kind: "level"; skill: string; level: number }
@@ -94,6 +111,7 @@ async function readActivity(tx: Tx, guildId: number): Promise<GuildActivityEntry
       case "guild_renamed":
         return { ...base, kind: "renamed", name: payload.name };
       case "guild_rank":
+        if (payload.claimed) return { ...base, kind: "claimed" };
         return { ...base, kind: "rank", rank: payload.rank, by: row.by_name };
       case "guild_notice":
         return { ...base, kind: "notice" };
@@ -154,6 +172,38 @@ async function formCharters(tx: Tx, content: GameContent, now: number, touched: 
   }
 }
 
+/**
+ * Whether a member may claim the guild, or when. The leader is away only if
+ * no Tinker on the account has been looked in on, and the account has not
+ * signed in by the wall clock either, so a dev clock moved forward cannot
+ * make every leader look absent. Officers come first, then members, each by
+ * when they joined.
+ */
+async function claimOn(tx: Tx, guildId: number, tinkerId: number, now: number): Promise<{ leaderId: number; leader: string; at: number } | null> {
+  const lead = await one(
+    tx,
+    `SELECT m.tinker_id, t.name, a.last_seen_at, (SELECT max(o.resolved_to) FROM tinkers o WHERE o.account_id = m.account_id) AS seen
+     FROM guild_members m JOIN tinkers t ON t.id = m.tinker_id JOIN accounts a ON a.id = m.account_id WHERE m.guild_id = $1 AND m.rank = 'leader'`,
+    [guildId],
+  );
+  if (!lead || Number(lead.tinker_id) === tinkerId) return null;
+  // Each clock's absence: the game's, and the wall's where sign-in keeps one.
+  const wall = lead.last_seen_at ? Date.now() - lead.last_seen_at.getTime() : Infinity;
+  const away = Math.min(now - lead.seen.getTime(), wall);
+  if (away < rules.GUILD_CLAIM_MS) return null;
+  const heirs = (
+    await tx.query(
+      `SELECT m.tinker_id FROM guild_members m JOIN accounts a ON a.id = m.account_id
+       WHERE m.guild_id = $1 AND m.rank <> 'leader' AND a.ban IS DISTINCT FROM 'full'
+       ORDER BY m.rank = 'officer' DESC, m.joined_at, m.tinker_id`,
+      [guildId],
+    )
+  ).rows.map((row) => Number(row.tinker_id));
+  const place = heirs.indexOf(tinkerId);
+  if (place < 0) return null;
+  return { leaderId: Number(lead.tinker_id), leader: lead.name, at: now + rules.claimAfter(place) - away };
+}
+
 async function lockGuild(tx: Tx, guildId: number): Promise<Row> {
   const guild = await one(tx, "SELECT * FROM guilds WHERE id = $1 AND status = 'active' FOR UPDATE", [guildId]);
   if (!guild) throw new rules.GuildRefusal("that guild is not open");
@@ -182,7 +232,7 @@ async function join(tx: Tx, content: GameContent, guildId: number, tinkerId: num
   await touchMembers(tx, guildId, touched);
 }
 
-async function readView(tx: Tx, content: GameContent, tinkerId: number): Promise<GuildView> {
+async function readView(tx: Tx, content: GameContent, tinkerId: number, now: number):Promise<GuildView> {
   const mine = await membership(tx, tinkerId);
   let guild: GuildView["guild"] = null;
   if (mine) {
@@ -224,6 +274,8 @@ async function readView(tx: Tx, content: GameContent, tinkerId: number): Promise
       members: views,
       activity: await readActivity(tx, mine.guildId),
       requests,
+      recruiting: recruitingOf(row),
+      claim: await claimOn(tx, mine.guildId, tinkerId, now).then((claim) => claim && { leader: claim.leader, at: new Date(claim.at).toISOString() }),
     };
   }
   const asked = (kind: string) =>
@@ -232,16 +284,17 @@ async function readView(tx: Tx, content: GameContent, tinkerId: number): Promise
       .then((result) => result.rows.map((r) => ({ guildId: Number(r.id), name: r.name, status: r.status })));
   const guilds = (
     await tx.query(
-      `SELECT g.id, g.name, (SELECT count(*) FROM guild_members m WHERE m.guild_id = g.id) AS members
+      `SELECT g.id, g.name, g.recruiting, g.min_level, g.auto_accept, (SELECT count(*) FROM guild_members m WHERE m.guild_id = g.id) AS members
        FROM guilds g WHERE g.status = 'active' ORDER BY members DESC, g.name`,
       [],
     )
-  ).rows.map((g) => ({ id: Number(g.id), name: g.name, members: Number(g.members) }));
+  ).rows.map((g) => ({ id: Number(g.id), name: g.name, members: Number(g.members), recruiting: recruitingOf(g) }));
   return {
     guild,
     invites: await asked("invite"),
     applications: await asked("application"),
     guilds,
+    totalLevel: rules.totalLevel(await skillXp(tx, tinkerId), content.rules),
     rules: { maxMembers: rules.GUILD_MAX_MEMBERS, renameCrowns: rules.GUILD_RENAME_CROWNS, noticeMax: rules.GUILD_NOTICE_MAX },
   };
 }
@@ -266,7 +319,7 @@ async function guildOp(
       await formCharters(tx, content, now, touched);
       await step(tx, touched);
       touched.delete(tinkerId);
-      return { view: await readView(tx, content, tinkerId), touched: [...touched] };
+      return { view: await readView(tx, content, tinkerId, now), touched: [...touched] };
     });
   } catch (error) {
     if (error instanceof rules.GuildRefusal) throw new BadRequest(error.message);
@@ -309,10 +362,17 @@ export function foundGuild(db: Db, content: GameContent, tinkerId: number, name:
 
 export function applyToGuild(db: Db, content: GameContent, tinkerId: number, guildId: number, now: number) {
   return guildOp(db, content, tinkerId, now, async (tx, touched) => {
-    await lockGuild(tx, guildId);
+    const guild = await lockGuild(tx, guildId);
     const invited = await one(tx, "SELECT 1 FROM guild_requests WHERE guild_id = $1 AND tinker_id = $2 AND kind = 'invite'", [guildId, tinkerId]);
     if (invited) return join(tx, content, guildId, tinkerId, now, touched);
     if (await accountInGuild(tx, tinkerId)) throw new rules.GuildRefusal("this account is already in a guild");
+    // An invitation, above, passes over all of this.
+    const asks = recruitingOf(guild);
+    if (!asks.open) throw new rules.GuildRefusal(`${guild.name} is not taking applications`);
+    if (asks.minLevel > 0 && rules.totalLevel(await skillXp(tx, tinkerId), content.rules) < asks.minLevel) {
+      throw new rules.GuildRefusal(`${guild.name} asks for total level ${asks.minLevel}`);
+    }
+    if (asks.autoAccept) return join(tx, content, guildId, tinkerId, now, touched);
     await tx.query(
       "INSERT INTO guild_requests (guild_id, tinker_id, kind, by_tinker_id, at) VALUES ($1, $2, 'application', $2, $3) ON CONFLICT (guild_id, tinker_id) DO NOTHING",
       [guildId, tinkerId, new Date(now)],
@@ -396,7 +456,10 @@ export function dropRequest(db: Db, content: GameContent, tinkerId: number, guil
 
 export function setRank(db: Db, content: GameContent, tinkerId: number, otherId: number, rank: rules.GuildRank, now: number) {
   return guildOp(db, content, tinkerId, now, async (tx, touched) => {
-    const mine = await actorIn(tx, tinkerId, rank === "leader" ? "hand_on" : "promote");
+    const act = rank === "leader" ? "hand_on" : "promote";
+    await lockGuild(tx, (await actorIn(tx, tinkerId, act)).guildId);
+    // Read again under the lock: leadership may have just been claimed.
+    const mine = await actorIn(tx, tinkerId, act);
     const target = await membership(tx, otherId);
     if (!target || target.guildId !== mine.guildId) throw new rules.GuildRefusal("that Tinker is not in your guild");
     if (otherId === tinkerId) throw new rules.GuildRefusal("the leader's rank changes only by handing leadership on");
@@ -415,10 +478,12 @@ export function setRank(db: Db, content: GameContent, tinkerId: number, otherId:
 /** Removes a member, or leaves when the Tinker removes itself. A sole leader leaving closes the guild. */
 export function removeMember(db: Db, content: GameContent, tinkerId: number, otherId: number, now: number) {
   return guildOp(db, content, tinkerId, now, async (tx, touched) => {
-    const mine = await membership(tx, tinkerId);
-    if (!mine) throw new rules.GuildRefusal("you are not in a guild");
+    const before = await membership(tx, tinkerId);
+    if (!before) throw new rules.GuildRefusal("you are not in a guild");
     // Joins take this lock too, so a sole leader's leaving cannot disband a guild someone is just joining.
-    await lockGuild(tx, mine.guildId);
+    await lockGuild(tx, before.guildId);
+    const mine = await membership(tx, tinkerId);
+    if (mine?.guildId !== before.guildId) throw new rules.GuildRefusal("you are not in a guild");
     const target = await membership(tx, otherId);
     if (!target || target.guildId !== mine.guildId) throw new rules.GuildRefusal("that Tinker is not in your guild");
     const count = await memberCount(tx, mine.guildId);
@@ -442,8 +507,40 @@ async function closeGuild(tx: Tx, guildId: number, now: number, touched: Set<num
 /** The leader disbands a guild. */
 export function disbandGuild(db: Db, content: GameContent, tinkerId: number, now: number) {
   return guildOp(db, content, tinkerId, now, async (tx, touched) => {
+    await lockGuild(tx, (await actorIn(tx, tinkerId, "disband")).guildId);
     const mine = await actorIn(tx, tinkerId, "disband");
     await closeGuild(tx, mine.guildId, now, touched);
+  });
+}
+
+/** Takes over from a leader long away, who becomes an officer. */
+export function claimLeadership(db: Db, content: GameContent, tinkerId: number, now: number) {
+  return guildOp(db, content, tinkerId, now, async (tx, touched) => {
+    const mine = await membership(tx, tinkerId);
+    if (!mine) throw new rules.GuildRefusal("you are not in a guild");
+    await lockGuild(tx, mine.guildId);
+    const claim = await claimOn(tx, mine.guildId, tinkerId, now);
+    if (!claim || claim.at > now) throw new rules.GuildRefusal("leadership is not yours to claim yet");
+    await tx.query("UPDATE guild_members SET rank = 'officer' WHERE tinker_id = $1", [claim.leaderId]);
+    await tx.query("UPDATE guild_members SET rank = 'leader' WHERE tinker_id = $1", [tinkerId]);
+    await logFor(tx, content, tinkerId, [
+      { type: "guild_rank", at: now, payload: { guild: mine.guildId, rank: "leader", by: tinkerId, claimed: true, from: claim.leaderId, crowns: 0, items: {} } },
+    ]);
+    await touchMembers(tx, mine.guildId, touched);
+  });
+}
+
+/** The leader sets how the guild takes applications. */
+export function setRecruiting(db: Db, content: GameContent, tinkerId: number, recruiting: Recruiting, now: number) {
+  return guildOp(db, content, tinkerId, now, async (tx, touched) => {
+    const { minLevel } = recruiting;
+    if (!Number.isInteger(minLevel) || minLevel < 0 || minLevel > rules.GUILD_MIN_LEVEL_MAX) {
+      throw new rules.GuildRefusal("the level asked is a whole number, 0 for none");
+    }
+    await lockGuild(tx, (await actorIn(tx, tinkerId, "recruit")).guildId);
+    const mine = await actorIn(tx, tinkerId, "recruit");
+    await tx.query("UPDATE guilds SET recruiting = $2, min_level = $3, auto_accept = $4 WHERE id = $1", [mine.guildId, recruiting.open, minLevel, recruiting.autoAccept]);
+    await touchMembers(tx, mine.guildId, touched);
   });
 }
 
@@ -489,13 +586,14 @@ export interface GuildCardView {
   size: number;
   maxMembers: number;
   totalLevel: number;
+  recruiting: Recruiting;
   /** By rank, then level. A fully banned account's Tinkers are left out, as they cannot be inspected. */
   members: { id: number; name: string; rank: rules.GuildRank; totalLevel: number }[];
 }
 
 export async function lookAtGuild(db: Db, content: GameContent, guildId: number): Promise<GuildCardView> {
   if (!Number.isSafeInteger(guildId)) throw new NotFound("no such guild");
-  const guild = (await db.query("SELECT id, name, formed_at FROM guilds WHERE id = $1 AND status = 'active'", [guildId])).rows[0];
+  const guild = (await db.query("SELECT id, name, formed_at, recruiting, min_level, auto_accept FROM guilds WHERE id = $1 AND status = 'active'", [guildId])).rows[0];
   if (!guild) throw new NotFound("that guild has closed");
   const rows = (
     await db.query(
@@ -523,6 +621,7 @@ export async function lookAtGuild(db: Db, content: GameContent, guildId: number)
     name: guild.name,
     formedAt: guild.formed_at.toISOString(),
     size: everyone.size,
+    recruiting: recruitingOf(guild),
     maxMembers: rules.GUILD_MAX_MEMBERS,
     totalLevel: members.reduce((sum, member) => sum + member.totalLevel, 0),
     members,

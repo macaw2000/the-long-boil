@@ -66,7 +66,9 @@ export function GuildCard({
       step = { label: "Withdraw", act: () => act(() => api.dropRequest(tinkerId, guildId, tinkerId)) };
     } else if (full) standing = "This guild is full.";
     else if (invited) step = { label: "Join", act: () => act(() => api.acceptInvite(tinkerId, guildId)) };
-    else step = { label: "Apply", act: () => act(() => api.applyToGuild(tinkerId, guildId)) };
+    else if (!view.recruiting.open) standing = "By invitation only.";
+    else if (mine.totalLevel < view.recruiting.minLevel) standing = `Asks for total level ${view.recruiting.minLevel}. Yours is ${mine.totalLevel}.`;
+    else step = { label: view.recruiting.autoAccept ? "Join" : "Apply", act: () => act(() => api.applyToGuild(tinkerId, guildId)) };
   }
 
   return (

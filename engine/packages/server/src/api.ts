@@ -22,6 +22,7 @@ import {
   acceptApplication,
   acceptInvite,
   applyToGuild,
+  claimLeadership,
   disbandGuild,
   dropRequest,
   foundGuild,
@@ -33,7 +34,9 @@ import {
   renameGuild,
   setNotice,
   setRank,
+  setRecruiting,
   type GuildOutcome,
+  type Recruiting,
 } from "./guilds.js";
 import { CITY, HELP, PUBLIC_CHANNELS, TRADE, localBroadcast, tinkerChannel, type Broadcast, type Notice } from "./live.js";
 import {
@@ -732,6 +735,22 @@ export function buildApi({
     "/tinkers/:id/guild/notice",
     { schema: { body: { type: "object", required: ["text"], properties: { text: { type: "string", maxLength: 2000 } } } } },
     async (request) => guildDone(idOf(request.params), await setNotice(db, content, idOf(request.params), request.body.text, now())),
+  );
+  app.post<{ Params: { id: string } }>("/tinkers/:id/guild/claim", async (request) =>
+    guildDone(idOf(request.params), await claimLeadership(db, content, idOf(request.params), now())),
+  );
+  app.put<{ Params: { id: string }; Body: Recruiting }>(
+    "/tinkers/:id/guild/recruiting",
+    {
+      schema: {
+        body: {
+          type: "object",
+          required: ["open", "minLevel", "autoAccept"],
+          properties: { open: { type: "boolean" }, minLevel: { type: "integer" }, autoAccept: { type: "boolean" } },
+        },
+      },
+    },
+    async (request) => guildDone(idOf(request.params), await setRecruiting(db, content, idOf(request.params), request.body, now())),
   );
   app.post<{ Params: { id: string } }>("/tinkers/:id/guild/disband", async (request) =>
     guildDone(idOf(request.params), await disbandGuild(db, content, idOf(request.params), now())),

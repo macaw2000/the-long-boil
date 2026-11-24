@@ -14,7 +14,8 @@ describe("guild rules", () => {
     expect(mayAct("officer", "invite")).toBe(true);
     expect(mayAct("officer", "accept")).toBe(true);
     expect(mayAct("officer", "notice")).toBe(true);
-    expect(mayAct("officer", "remove")).toBe(false);
+    expect(mayAct("officer", "remove")).toBe(true);
+    expect(mayAct("officer", "recruit")).toBe(false);
     expect(mayAct("member", "notice")).toBe(false);
     expect(mayAct("member", "invite")).toBe(false);
     expect(mayAct("leader", "disband")).toBe(true);
@@ -24,7 +25,10 @@ describe("guild rules", () => {
     expect(removalRefusal("leader", "leader", true, 3)).toMatch(/hand leadership on/);
     expect(removalRefusal("leader", "leader", true, 1)).toBeNull();
     expect(removalRefusal("member", "member", true, 3)).toBeNull();
-    expect(removalRefusal("officer", "member", false, 3)).toMatch(/only the leader/);
+    expect(removalRefusal("member", "member", false, 3)).toMatch(/only the leader and officers/);
+    expect(removalRefusal("officer", "member", false, 3)).toBeNull();
+    expect(removalRefusal("officer", "officer", false, 3)).toMatch(/only the leader removes officers/);
+    expect(removalRefusal("officer", "leader", false, 3)).toMatch(/cannot be removed/);
     expect(removalRefusal("leader", "officer", false, 3)).toBeNull();
   });
 });

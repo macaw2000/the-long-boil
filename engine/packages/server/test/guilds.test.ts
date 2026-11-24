@@ -187,6 +187,67 @@ describe("an invitation refused", () => {
   });
 });
 
+describe("who may join", () => {
+  it("is the leader's to set, and an invitation passes over it", async () => {
+    const lead = await tinker("g-rec@example.com", "Recruiter");
+    const one = await tinker("g-rec1@example.com", "Hopeful");
+    const two = await tinker("g-rec2@example.com", "Second Hopeful");
+    const id = (await call("POST", `/tinkers/${lead}/guild`, { name: "Choosy Lot" })).body.guild.id;
+    const set = (body: object, as = lead) => call("PUT", `/tinkers/${as}/guild/recruiting`, body);
+    expect((await set({ open: true, minLevel: -1, autoAccept: false })).status).toBe(400);
+    await set({ open: false, minLevel: 0, autoAccept: false });
+    expect((await call("POST", `/tinkers/${one}/guilds/${id}/apply`)).body.error).toMatch(/not taking applications/);
+    await set({ open: true, minLevel: 500, autoAccept: true });
+    expect((await call("POST", `/tinkers/${one}/guilds/${id}/apply`)).body.error).toMatch(/total level 500/);
+    expect((await call("GET", `/tinkers/${one}/guilds/${id}`)).body.recruiting).toEqual({ open: true, minLevel: 500, autoAccept: true });
+    await call("POST", `/tinkers/${lead}/guild/invite/${one}`);
+    expect((await call("POST", `/tinkers/${one}/guilds/${id}/apply`)).body.guild.rank).toBe("member");
+    expect((await set({ open: true, minLevel: 0, autoAccept: true }, one)).body.error).toMatch(/member cannot/);
+    await set({ open: true, minLevel: 0, autoAccept: true });
+    expect((await call("POST", `/tinkers/${two}/guilds/${id}/apply`)).body.guild.id).toBe(id);
+    // An officer removes members, never the leader.
+    await call("PUT", `/tinkers/${lead}/guild/members/${one}/rank`, { rank: "officer" });
+    expect((await call("DELETE", `/tinkers/${one}/guild/members/${lead}`)).body.error).toMatch(/cannot be removed/);
+    expect((await call("DELETE", `/tinkers/${one}/guild/members/${two}`)).status).toBe(200);
+  });
+});
+
+describe("a leader long away", () => {
+  it("may be replaced after 30 days, officers first, unless playing another Tinker or signed in", async () => {
+    const DAY = 86_400_000;
+    const lead = await tinker("g-away@example.com", "Away");
+    const officer = await tinker("g-off@example.com", "Officer Heir");
+    const member = await tinker("g-mem@example.com", "Member Heir");
+    const id = (await call("POST", `/tinkers/${lead}/guild`, { name: "Left Alone" })).body.guild.id;
+    for (const other of [member, officer]) {
+      await call("POST", `/tinkers/${lead}/guild/invite/${other}`);
+      await call("POST", `/tinkers/${other}/guilds/${id}/accept`);
+    }
+    await call("PUT", `/tinkers/${lead}/guild/members/${officer}/rank`, { rank: "officer" });
+    const away = (days: number) => db.query("UPDATE tinkers SET resolved_to = $2 WHERE id = $1", [lead, new Date(clock - days * DAY)]);
+    const claim = (as: number) => call("POST", `/tinkers/${as}/guild/claim`);
+    await away(29);
+    expect((await call("GET", `/tinkers/${officer}/guild`)).body.guild.claim).toBeNull();
+    expect((await claim(officer)).body.error).toMatch(/not yours to claim/);
+    await away(31);
+    expect((await claim(lead)).status).toBe(400);
+    expect((await call("GET", `/tinkers/${member}/guild`)).body.guild.claim).toEqual({ leader: "Away", at: new Date(clock + DAY).toISOString() });
+    expect((await claim(member)).status).toBe(400);
+    const account = (await db.query("SELECT account_id FROM tinkers WHERE id = $1", [lead])).rows[0].account_id;
+    await db.query("UPDATE accounts SET last_seen_at = $2 WHERE id = $1", [account, new Date()]);
+    expect((await claim(officer)).status).toBe(400);
+    await db.query("UPDATE accounts SET last_seen_at = NULL WHERE id = $1", [account]);
+    const alt = await tinker("g-away@example.com", "Away Too");
+    expect((await claim(officer)).status).toBe(400);
+    await db.query("UPDATE tinkers SET resolved_to = $2 WHERE id = $1", [alt, new Date(clock - 40 * DAY)]);
+    const claimed = await claim(officer);
+    expect(claimed.body.guild.rank).toBe("leader");
+    expect(claimed.body.guild.members.find((m: { tinkerId: number }) => m.tinkerId === lead).rank).toBe("officer");
+    expect(claimed.body.guild.activity).toContainEqual(expect.objectContaining({ kind: "claimed", tinker: expect.objectContaining({ name: "Officer Heir" }) }));
+    expect((await claim(member)).status).toBe(400);
+  });
+});
+
 describe("a guild's card", () => {
   it("shows anyone its members, never its notice, and leaves out the fully banned", async () => {
     const lead = await tinker("g-card@example.com", "Cardy");
