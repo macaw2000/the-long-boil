@@ -38,7 +38,7 @@ import {
   type GuildOutcome,
   type Recruiting,
 } from "./guilds.js";
-import { CITY, HELP, PUBLIC_CHANNELS, TRADE, localBroadcast, tinkerChannel, type Broadcast, type Notice } from "./live.js";
+import { CITY, PUBLIC_CHANNELS, localBroadcast, tinkerChannel, type Broadcast, type Notice } from "./live.js";
 import {
   GDD_TRADING,
   Refused,
@@ -756,8 +756,8 @@ export function buildApi({
     guildDone(idOf(request.params), await disbandGuild(db, content, idOf(request.params), now())),
   );
 
-  type ChannelName = "city" | "trade" | "help" | "guild" | "whisper";
-  const CHANNEL_NAMES = ["city", "trade", "help", "guild", "whisper"];
+  type ChannelName = keyof typeof PUBLIC_CHANNELS | "guild" | "whisper";
+  const CHANNEL_NAMES = [...Object.keys(PUBLIC_CHANNELS), "guild", "whisper"];
 
   // The admin console (milestone 14). Admins only: the preHandler refuses anyone else under sign-in,
   // and the dev login, which has no one to tell apart, is everyone's admin.
@@ -890,9 +890,7 @@ export function buildApi({
           if (notice.type === "chat") return chatListener(notice);
           send(notice);
         }),
-        broadcast.subscribe(CITY, chatListener),
-        broadcast.subscribe(TRADE, chatListener),
-        broadcast.subscribe(HELP, chatListener),
+        ...Object.values(PUBLIC_CHANNELS).map((channel) => broadcast.subscribe(channel, chatListener)),
         () => guildStop?.(),
       );
       // Subscribed first, so nothing published while the guild is looked up is missed.

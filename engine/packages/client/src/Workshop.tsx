@@ -252,10 +252,12 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const chat = useChat(tinkerId);
   const trade = useChat(tinkerId, "trade");
   const help = useChat(tinkerId, "help");
+  const recruit = useChat(tinkerId, "recruit");
   const whispers = useWhispers(tinkerId);
   const { receive: receiveChat, reload: reloadChat } = chat;
   const { receive: receiveTrade, reload: reloadTrade } = trade;
   const { receive: receiveHelp, reload: reloadHelp } = help;
+  const { receive: receiveRecruit, reload: reloadRecruit } = recruit;
   const { receive: receiveWhisper, reload: reloadWhispers } = whispers;
 
   // The guild: its view feeds the Guild tab, and membership decides whether guild chat exists.
@@ -319,12 +321,13 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       (notice: Notice) => {
         if (notice.type === "changed") lookAgain();
         else if (notice.type === "chat") {
-          const into = { city: receiveChat, trade: receiveTrade, help: receiveHelp, guild: receiveGuildChat, whisper: receiveWhisper };
+          const into = { city: receiveChat, trade: receiveTrade, help: receiveHelp, recruit: receiveRecruit, guild: receiveGuildChat, whisper: receiveWhisper };
           into[channelOf(notice.message)](notice.message);
         } else if (notice.type === "mutes") {
           reloadChat();
           reloadTrade();
           reloadHelp();
+          reloadRecruit();
           reloadWhispers();
         }
         else if (notice.type === "guild") {
@@ -332,7 +335,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           lookAgain();
         }
       },
-      [lookAgain, receiveChat, receiveTrade, receiveHelp, receiveGuildChat, receiveWhisper, reloadChat, reloadTrade, reloadHelp, reloadWhispers, loadGuild],
+      [lookAgain, receiveChat, receiveTrade, receiveHelp, receiveRecruit, receiveGuildChat, receiveWhisper, reloadChat, reloadTrade, reloadHelp, reloadRecruit, reloadWhispers, loadGuild],
     ),
   );
 
@@ -544,7 +547,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         (noticeAt && noticeAt !== noticeSeen && place !== "guild" ? 1 : 0),
       tone: colors.verdigris,
     },
-    chat: place === "chat" ? undefined : { count: chat.unread + trade.unread + help.unread + guildChat.unread + whispers.unread, tone: colors.verdigris },
+    chat: place === "chat" ? undefined : { count: chat.unread + trade.unread + help.unread + recruit.unread + guildChat.unread + whispers.unread, tone: colors.verdigris },
   };
   // A place the guide has opened and the player has not yet visited says so.
   if (guide.seen) {
@@ -585,12 +588,17 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
 
   const chatProps: ChatProps = {
     tinkerId,
-    rooms: { city: chat, trade, help, guild: guildView?.guild ? guildChat : null },
+    rooms: { city: chat, trade, help, recruit, guild: guildView?.guild ? guildChat : null },
     whispers,
     guildName: guildView?.guild?.name,
     connected,
     onInvite: inviteToGuild,
     onInspect: setInspecting,
+    content,
+    inventory: tinker.inventory,
+    activity: guildView?.guild?.activity ?? [],
+    onGuild: showGuild,
+    onGuildTab: loadGuild,
     focus: chatFocus,
   };
 

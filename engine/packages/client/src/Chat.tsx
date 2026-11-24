@@ -1,20 +1,25 @@
 // Chat (build plan milestones 8 and 10). On desktop it is docked along the
 // foot of the screen, as in Milky Way Idle, with a handle to drag it taller
 // or shorter and a button to fold it down to its tabs; on a phone it is a
-// place of its own. Five tabs: Kettleport for general talk, Trade for
-// buying and selling, Help for new Tinkers' questions, the guild's own channel
-// for members, and Whispers, private conversations between two Tinkers.
+// place of its own. Six tabs: Kettleport for general talk, Trade for
+// buying and selling, Help for new Tinkers' questions, Recruiting for guilds and
+// those looking for one, the guild's own channel for members with its comings
+// and goings among the talk, and Whispers, private conversations between two Tinkers.
 // History loads once per channel; new messages arrive over the live
 // connection. Tapping a name offers whisper, mute and invite. Anyone else's
 // messages can be muted, for this account only. Typed commands do the same
 // by name: /w name message whispers, /r message replies to the last
 // whisper, /profile name inspects, /invite name asks them into the guild,
 // and /help (or the ? by Say) lists them;
+// [Item Name] links an item (itemLinks.ts).
 // "//" sends a message that starts with a slash.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PanResponder, Pressable, ScrollView, Text, TextInput, useWindowDimensions, View } from "react-native";
-import { api, type ChatChannel, type ChatMessage, type WhisperConversation } from "./api";
+import { api, type ChatChannel, type ChatMessage, type Content, type GuildActivityEntry, type Tinker, type WhisperConversation } from "./api";
+import { ActivityLine } from "./Guild";
+import { finishLink, openLink, pieces, suggest } from "./itemLinks";
+import { ItemIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
 const MAX_CHARS = 280;
@@ -162,6 +167,7 @@ export function channelOf(message: ChatMessage): ChatChannel {
   if (message.channel.startsWith("chat:dm:")) return "whisper";
   if (message.channel === "chat:trade") return "trade";
   if (message.channel === "chat:help") return "help";
+  if (message.channel === "chat:recruit") return "recruit";
   return "city";
 }
 
@@ -176,6 +182,7 @@ const COMMANDS: { usage: string; does: string }[] = [
   { usage: "/r message", does: "Reply to whoever whispered you last." },
   { usage: "/profile name", does: "Look a Tinker over: guild, skills and gear." },
   { usage: "/invite name", does: "Invite a Tinker to your guild, if you lead it or are an officer." },
+  { usage: "[item name]", does: "Link an item anywhere in a message. Type [ and the start of its name." },
   { usage: "/help", does: "Show this list." },
 ];
 const HINT = "/w name message · /r message · /profile name · /invite name · /help";
@@ -191,6 +198,7 @@ const PLACEHOLDERS: Record<ChatChannel, string> = {
   city: "Say something to the city",
   trade: "Buying or selling? Say what and for how much",
   help: "Ask a question, or answer one",
+  recruit: "Looking for a guild, or for members?",
   guild: "Say something to the guild",
   whisper: "Whisper",
 };
@@ -199,6 +207,7 @@ const EMPTY: Record<ChatChannel, string> = {
   city: "The city is quiet. Say something.",
   trade: "No one is trading yet. Post what you are buying or selling.",
   help: "No questions yet. New here? Ask anything. Type /help for chat commands.",
+  recruit: "No guild is calling yet. Say what yours is after, or that you want one.",
   guild: "The guild hall is quiet.",
   whisper: "No whispers yet.",
 };
@@ -206,7 +215,16 @@ const EMPTY: Record<ChatChannel, string> = {
 export interface ChatProps {
   tinkerId: number;
   /** The rooms this Tinker reads; guild is null outside a guild. */
-  rooms: { city: ChatState; trade: ChatState; help: ChatState; guild: ChatState | null };
+  rooms: { city: ChatState; trade: ChatState; help: ChatState; recruit: ChatState; guild: ChatState | null };
+  content: Content;
+  /** This Tinker's stores, to offer for item links. */
+  inventory: Tinker["inventory"];
+  /** The guild's doings, shown among its talk. */
+  activity: GuildActivityEntry[];
+  /** Opens a guild's card. */
+  onGuild: (guild: number) => void;
+  /** The guild's channel was opened: look at its doings again. */
+  onGuildTab: () => void;
   whispers: WhisperState;
   guildName?: string;
   connected: boolean;
@@ -226,6 +244,11 @@ export function Chat({
   connected,
   onInvite,
   onInspect,
+  content,
+  inventory,
+  activity,
+  onGuild,
+  onGuildTab,
   focus,
   docked,
 }: ChatProps & {
@@ -243,6 +266,20 @@ export function Chat({
   const [sending, setSending] = useState(false);
   const [helping, setHelping] = useState(false);
   const scroll = useRef<ScrollView>(null);
+  const input = useRef<TextInput>(null);
+  /** The linked item last tapped, told of above the box. */
+  const [item, setItem] = useState<string | null>(null);
+  const held = useMemo(() => {
+    const ids = new Set(inventory.map((stack) => stack.item));
+    return content.items.filter((known) => ids.has(known.id));
+  }, [content.items, inventory]);
+
+  // Opened by any road, the guild's channel looks at the guild's doings again, which nothing pushes.
+  const look = useRef(onGuildTab);
+  look.current = onGuildTab;
+  useEffect(() => {
+    if (which === "guild") look.current();
+  }, [which]);
 
   // A whisper opened from elsewhere (an inspect card) brings the Whispers tab forward, and opens a folded dock.
   useEffect(() => {
@@ -270,7 +307,7 @@ export function Chat({
   useEffect(() => {
     markRead?.();
     scroll.current?.scrollToEnd({ animated: true });
-  }, [shown.length, markRead, which, whispers.open]);
+  }, [shown.length, activity.length, markRead, which, whispers.open]);
 
   /** Whispers a Tinker, or with no words just opens the conversation. */
   const whisperWith = async (other: { id: number; name: string }, text: string) => {
@@ -352,7 +389,7 @@ export function Chat({
       .finally(() => setSending(false));
   };
 
-  const everyRoom = [rooms.city, rooms.trade, rooms.help, rooms.guild].filter((entry): entry is ChatState => entry !== null);
+  const everyRoom = [rooms.city, rooms.trade, rooms.help, rooms.recruit, rooms.guild].filter((entry): entry is ChatState => entry !== null);
   const mute = (other: number, on: boolean) =>
     (on ? api.mute(tinkerId, other) : api.unmute(tinkerId, other))
       .then(() => {
@@ -371,10 +408,31 @@ export function Chat({
     { channel: "city", label: "Kettleport", unread: rooms.city.unread },
     { channel: "trade", label: "Trade", unread: rooms.trade.unread },
     { channel: "help", label: "Help", unread: rooms.help.unread },
+    { channel: "recruit", label: "Recruiting", unread: rooms.recruit.unread },
     ...(rooms.guild ? [{ channel: "guild" as const, label: guildName ?? "Guild", unread: rooms.guild.unread }] : []),
     { channel: "whisper", label: "Whispers", unread: whispers.unread },
   ];
   const left = MAX_CHARS - [...draft].length;
+  const bracket = helping ? null : openLink(draft);
+  const offers = bracket === null ? [] : suggest(bracket, held, 6);
+  const linked = item ? content.items.find((known) => known.id === item) : undefined;
+  const linkedHeld = item ? inventory.filter((stack) => stack.item === item).reduce((sum, stack) => sum + stack.qty, 0) : 0;
+  /** Opens the card of the guild a Tinker is in. */
+  const guildOf = (other: { id: number; name: string }) => {
+    setPicked(null);
+    setDone(null);
+    api
+      .inspect(tinkerId, other.id)
+      .then((view) => (view.guild ? onGuild(view.guild.id) : setDone(`${other.name} is in no guild.`)))
+      .catch((reason: Error) => setError(reason.message));
+  };
+  // The guild's doings fall among its talk by time, back to where the talk shown begins.
+  const oldest = shown.length >= 50 ? shown[0]!.at : "";
+  const lines: ({ at: string; message: ChatMessage } | { at: string; doing: GuildActivityEntry })[] = shown.map((message) => ({ at: message.at, message }));
+  if (which === "guild") {
+    for (const doing of activity) if (doing.at >= oldest) lines.push({ at: doing.at, doing });
+    lines.sort((a, b) => Date.parse(a.at) - Date.parse(b.at));
+  }
   const inInbox = which === "whisper" && whispers.open === null;
   const openName = whispers.conversations.find((entry) => entry.id === whispers.open)?.name;
 
@@ -383,6 +441,7 @@ export function Chat({
     setPicked(null);
     setDone(null);
     setError(null);
+    setItem(null);
     // Leaving the Whispers tab closes the thread, so a whisper asked for from elsewhere always brings it back.
     if (channel !== "whisper") whispers.close();
     if (folded) docked?.onFold(false);
@@ -467,14 +526,17 @@ export function Chat({
             )
           ) : (
             <>
-              {shown.length === 0 && <Text style={ui.muted}>{EMPTY[which]}</Text>}
-              {shown.map((message) => {
+              {lines.length === 0 && <Text style={ui.muted}>{EMPTY[which]}</Text>}
+              {lines.map((line, index) => {
+                if ("doing" in line) return <ActivityLine key={`doing-${line.at}-${index}`} entry={line.doing} content={content} onInspect={(other) => onInspect?.(other)} />;
+                const { message } = line;
                 const mine = message.tinker.id === tinkerId;
                 const open = picked === message.id;
                 const actions = [
                 ...(onInspect ? [{ label: "inspect", tone: colors.ink, act: () => (setPicked(null), onInspect(message.tinker.id)) }] : []),
                   ...(which !== "whisper" ? [{ label: "whisper", tone: colors.brass, act: () => whisperTo(message.tinker.id, message.tinker.name) }] : []),
                   ...(onInvite && which !== "guild" && which !== "whisper" ? [{ label: "invite to guild", tone: colors.verdigris, act: () => (setPicked(null), setDone(null), void invite(message.tinker).catch((reason: Error) => setError(reason.message))) }] : []),
+                  ...(which === "recruit" ? [{ label: "their guild", tone: colors.brass, act: () => guildOf(message.tinker) }] : []),
                   { label: "mute", tone: colors.scald, act: () => (setPicked(null), mute(message.tinker.id, true)) },
                 ];
                 return (
@@ -490,7 +552,20 @@ export function Chat({
                         {message.tinker.name}
                       </Text>
                       <Text style={{ color: colors.muted }}>: </Text>
-                      {message.text}
+                      {pieces(message.text, content.items).map((piece, at) =>
+                        "item" in piece ? (
+                          <Text
+                            key={at}
+                            onPress={() => setItem(item === piece.item ? null : piece.item)}
+                            accessibilityRole="button"
+                            style={{ color: colors.verdigris, fontWeight: "700" }}
+                          >
+                            [{piece.name}]
+                          </Text>
+                        ) : (
+                          piece.text
+                        ),
+                      )}
                     </Text>
                     {open && !mine && (
                       <View style={{ flexDirection: "row", gap: 6, paddingLeft: 40 }}>
@@ -517,6 +592,37 @@ export function Chat({
           <Pressable onPress={() => rooms.city.muted.forEach((other) => mute(other, false))} accessibilityRole="button">
             <Text style={[ui.muted, { fontSize: 11 }]}>{rooms.city.muted.length} muted · unmute all</Text>
           </Pressable>
+        )}
+        {linked && (
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, borderWidth: 1, borderColor: colors.brassDim, borderRadius: 4, padding: 6 }}>
+            <ItemIcon item={linked.id} size={32} />
+            <View style={{ flex: 1 }}>
+              <Text style={[ui.text, { fontWeight: "700", color: colors.brass }]}>{linked.name}</Text>
+              <Text style={[ui.muted, { fontSize: 12 }]}>{linkedHeld > 0 ? `You hold ${linkedHeld.toLocaleString()}` : "You hold none"}</Text>
+            </View>
+            <Pressable onPress={() => setItem(null)} accessibilityRole="button" accessibilityLabel="Close item" hitSlop={8}>
+              <Text style={[ui.text, { color: colors.muted }]}>×</Text>
+            </Pressable>
+          </View>
+        )}
+        {offers.length > 0 && !inInbox && (
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+            {offers.map((offer) => (
+              <Pressable
+                key={offer.id}
+                onPress={() => {
+                  setDraft([...finishLink(draft, offer.name)].slice(0, MAX_CHARS).join(""));
+                  input.current?.focus();
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={`Link ${offer.name}`}
+                style={{ flexDirection: "row", alignItems: "center", gap: 4, borderWidth: 1, borderColor: colors.panelEdge, borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 }}
+              >
+                <ItemIcon item={offer.id} size={18} />
+                <Text style={[ui.text, { fontSize: 12 }]}>{offer.name}</Text>
+              </Pressable>
+            ))}
+          </View>
         )}
         {helping && (
           <View style={{ borderWidth: 1, borderColor: colors.brassDim, borderRadius: 4, padding: 8, gap: 3 }}>
@@ -545,6 +651,7 @@ export function Chat({
         {!inInbox && (
           <View style={{ flexDirection: "row", gap: 6, alignItems: "center" }}>
             <TextInput
+              ref={input}
               value={draft}
               onChangeText={(text) => setDraft([...text].slice(0, MAX_CHARS).join(""))}
               onSubmitEditing={send}

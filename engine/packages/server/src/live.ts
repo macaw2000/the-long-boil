@@ -31,8 +31,10 @@ export const CITY = "chat:city";
 export const TRADE = "chat:trade";
 /** Questions from new Tinkers and answers from anyone. */
 export const HELP = "chat:help";
+/** Guilds looking for members, and Tinkers looking for a guild. */
+export const RECRUIT = "chat:recruit";
 /** The channels every Tinker reads. */
-export const PUBLIC_CHANNELS = { city: CITY, trade: TRADE, help: HELP } as const;
+export const PUBLIC_CHANNELS = { city: CITY, trade: TRADE, help: HELP, recruit: RECRUIT } as const;
 
 /** A private conversation between two Tinkers, the same whichever of them names it. */
 export function whisperChannel(a: number, b: number): string {

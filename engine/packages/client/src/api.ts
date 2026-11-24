@@ -490,7 +490,7 @@ export interface LeaderboardView {
   you: LeaderboardRow | null;
 }
 
-export type ChatChannel = "city" | "trade" | "help" | "guild" | "whisper";
+export type ChatChannel = "city" | "trade" | "help" | "recruit" | "guild" | "whisper";
 
 export interface WhisperConversation {
   with: { id: number; name: string };

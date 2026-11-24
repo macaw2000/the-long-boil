@@ -194,3 +194,19 @@ describe("the other channels", () => {
     expect((await call("POST", `/tinkers/${ivy}/chat`, { text: "To nobody", channel: "whisper" })).status).toBe(400);
   });
 });
+
+describe("the recruiting channel", () => {
+  it("is read by everyone, live and in history, and kept from the other rooms", async () => {
+    const hal = await newTinker("recruit-hal@example.com", "Hal");
+    const ida = await newTinker("recruit-ida@example.com", "Ida");
+    const live = await listen(ida);
+    await live.until(() => live.notices.length === 1);
+    expect((await call("POST", `/tinkers/${hal}/chat`, { text: "Iron Owls want [Brass Ingot] smelters.", channel: "recruit" })).status).toBe(201);
+    await live.until(() => live.notices.some((notice) => notice.message?.text.startsWith("Iron Owls")));
+    const texts = async (query: string) => (await call("GET", `/tinkers/${ida}/chat${query}`)).body.messages.map((message: { text: string }) => message.text);
+    expect(await texts("?channel=recruit")).toEqual(["Iron Owls want [Brass Ingot] smelters."]);
+    for (const other of ["", "?channel=trade", "?channel=help"]) expect(await texts(other)).not.toContain("Iron Owls want [Brass Ingot] smelters.");
+    expect((await call("GET", `/tinkers/${ida}/chat?channel=nonsense`)).status).toBe(400);
+    live.socket.terminate();
+  });
+});

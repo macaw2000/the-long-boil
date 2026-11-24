@@ -46,7 +46,7 @@ function ago(at: string): string {
 
 const ACTIVITY_SHOWN = 8;
 
-function ActivityLine({ entry, content, onInspect }: { entry: GuildActivityEntry; content: Content; onInspect: (other: number) => void }) {
+export function ActivityLine({ entry, content, onInspect }: { entry: GuildActivityEntry; content: Content; onInspect: (other: number) => void }) {
   const who = (
     <Text onPress={() => onInspect(entry.tinker.id)} accessibilityRole="button" style={{ color: colors.copper, fontWeight: "700" }}>
       {entry.tinker.name}
