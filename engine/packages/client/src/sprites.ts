@@ -391,6 +391,160 @@ export const characters: Record<string, Record<string, Frames>> = {
   "tinker-board_blue:bare": {
     portrait: [require("../assets/art/looks/tinker-board_blue_bare_portrait_0.png"), require("../assets/art/looks/tinker-board_blue_bare_portrait_1.png")],
   },
+  "tinker-guild_plum": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_idle_1.png")],
+    hammer: [require("../assets/art/looks/tinker-guild_plum_hammer_0.png"), require("../assets/art/looks/tinker-guild_plum_hammer_1.png")],
+    pick: [require("../assets/art/looks/tinker-guild_plum_pick_0.png"), require("../assets/art/looks/tinker-guild_plum_pick_1.png")],
+    tinker: [require("../assets/art/looks/tinker-guild_plum_tinker_0.png"), require("../assets/art/looks/tinker-guild_plum_tinker_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_attack_1.png")],
+    cook: [require("../assets/art/looks/tinker-guild_plum_cook_0.png"), require("../assets/art/looks/tinker-guild_plum_cook_1.png")],
+    scavenge: [require("../assets/art/looks/tinker-guild_plum_scavenge_0.png"), require("../assets/art/looks/tinker-guild_plum_scavenge_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.brass_spanner": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_brass_spanner_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_brass_spanner_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_brass_spanner_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_brass_spanner_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_brass_spanner_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_brass_spanner_portrait_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.iron_crowbar": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_iron_crowbar_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_iron_crowbar_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_iron_crowbar_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_iron_crowbar_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_iron_crowbar_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_iron_crowbar_portrait_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.riveting_hammer": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_riveting_hammer_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_riveting_hammer_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_riveting_hammer_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_riveting_hammer_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_riveting_hammer_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_riveting_hammer_portrait_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.steel_blade": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_steel_blade_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_steel_blade_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_steel_blade_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_steel_blade_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_steel_blade_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_steel_blade_portrait_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.scrapjaws_cleaver": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_scrapjaws_cleaver_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_scrapjaws_cleaver_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_scrapjaws_cleaver_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_scrapjaws_cleaver_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_scrapjaws_cleaver_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_scrapjaws_cleaver_portrait_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.brass_catapult": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_brass_catapult_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_brass_catapult_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_brass_catapult_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_brass_catapult_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_brass_catapult_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_brass_catapult_portrait_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.iron_rifle": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_iron_rifle_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_iron_rifle_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_iron_rifle_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_iron_rifle_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_iron_rifle_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_iron_rifle_portrait_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.steel_carbine": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_steel_carbine_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_steel_carbine_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_steel_carbine_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_steel_carbine_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_steel_carbine_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_steel_carbine_portrait_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.garnet_rifle": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_garnet_rifle_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_garnet_rifle_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_garnet_rifle_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_garnet_rifle_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_garnet_rifle_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_garnet_rifle_portrait_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.copper_coil": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_copper_coil_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_copper_coil_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_copper_coil_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_copper_coil_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_copper_coil_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_copper_coil_portrait_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.brass_sparker": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_brass_sparker_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_brass_sparker_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_brass_sparker_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_brass_sparker_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_brass_sparker_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_brass_sparker_portrait_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.spark_rod": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_spark_rod_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_spark_rod_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_spark_rod_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_spark_rod_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_spark_rod_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_spark_rod_portrait_1.png")],
+  },
+  "tinker-guild_plum:item.rustmoor.garnet_rod": {
+    idle: [require("../assets/art/looks/tinker-guild_plum_garnet_rod_idle_0.png"), require("../assets/art/looks/tinker-guild_plum_garnet_rod_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_plum_garnet_rod_attack_0.png"), require("../assets/art/looks/tinker-guild_plum_garnet_rod_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_plum_garnet_rod_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_garnet_rod_portrait_1.png")],
+  },
+  "tinker-guild_plum:bare": {
+    portrait: [require("../assets/art/looks/tinker-guild_plum_bare_portrait_0.png"), require("../assets/art/looks/tinker-guild_plum_bare_portrait_1.png")],
+  },
+  "tinker-guild_gold": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_idle_1.png")],
+    hammer: [require("../assets/art/looks/tinker-guild_gold_hammer_0.png"), require("../assets/art/looks/tinker-guild_gold_hammer_1.png")],
+    pick: [require("../assets/art/looks/tinker-guild_gold_pick_0.png"), require("../assets/art/looks/tinker-guild_gold_pick_1.png")],
+    tinker: [require("../assets/art/looks/tinker-guild_gold_tinker_0.png"), require("../assets/art/looks/tinker-guild_gold_tinker_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_attack_1.png")],
+    cook: [require("../assets/art/looks/tinker-guild_gold_cook_0.png"), require("../assets/art/looks/tinker-guild_gold_cook_1.png")],
+    scavenge: [require("../assets/art/looks/tinker-guild_gold_scavenge_0.png"), require("../assets/art/looks/tinker-guild_gold_scavenge_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.brass_spanner": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_brass_spanner_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_brass_spanner_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_brass_spanner_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_brass_spanner_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_brass_spanner_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_brass_spanner_portrait_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.iron_crowbar": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_iron_crowbar_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_iron_crowbar_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_iron_crowbar_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_iron_crowbar_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_iron_crowbar_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_iron_crowbar_portrait_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.riveting_hammer": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_riveting_hammer_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_riveting_hammer_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_riveting_hammer_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_riveting_hammer_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_riveting_hammer_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_riveting_hammer_portrait_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.steel_blade": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_steel_blade_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_steel_blade_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_steel_blade_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_steel_blade_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_steel_blade_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_steel_blade_portrait_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.scrapjaws_cleaver": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_scrapjaws_cleaver_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_scrapjaws_cleaver_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_scrapjaws_cleaver_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_scrapjaws_cleaver_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_scrapjaws_cleaver_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_scrapjaws_cleaver_portrait_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.brass_catapult": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_brass_catapult_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_brass_catapult_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_brass_catapult_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_brass_catapult_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_brass_catapult_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_brass_catapult_portrait_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.iron_rifle": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_iron_rifle_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_iron_rifle_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_iron_rifle_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_iron_rifle_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_iron_rifle_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_iron_rifle_portrait_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.steel_carbine": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_steel_carbine_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_steel_carbine_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_steel_carbine_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_steel_carbine_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_steel_carbine_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_steel_carbine_portrait_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.garnet_rifle": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_garnet_rifle_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_garnet_rifle_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_garnet_rifle_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_garnet_rifle_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_garnet_rifle_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_garnet_rifle_portrait_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.copper_coil": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_copper_coil_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_copper_coil_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_copper_coil_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_copper_coil_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_copper_coil_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_copper_coil_portrait_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.brass_sparker": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_brass_sparker_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_brass_sparker_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_brass_sparker_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_brass_sparker_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_brass_sparker_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_brass_sparker_portrait_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.spark_rod": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_spark_rod_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_spark_rod_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_spark_rod_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_spark_rod_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_spark_rod_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_spark_rod_portrait_1.png")],
+  },
+  "tinker-guild_gold:item.rustmoor.garnet_rod": {
+    idle: [require("../assets/art/looks/tinker-guild_gold_garnet_rod_idle_0.png"), require("../assets/art/looks/tinker-guild_gold_garnet_rod_idle_1.png")],
+    attack: [require("../assets/art/looks/tinker-guild_gold_garnet_rod_attack_0.png"), require("../assets/art/looks/tinker-guild_gold_garnet_rod_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinker-guild_gold_garnet_rod_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_garnet_rod_portrait_1.png")],
+  },
+  "tinker-guild_gold:bare": {
+    portrait: [require("../assets/art/looks/tinker-guild_gold_bare_portrait_0.png"), require("../assets/art/looks/tinker-guild_gold_bare_portrait_1.png")],
+  },
   "tinkerf": {
     idle: [require("../assets/art/tinkerf_idle_0.png"), require("../assets/art/tinkerf_idle_1.png")],
     hammer: [require("../assets/art/tinkerf_hammer_0.png"), require("../assets/art/tinkerf_hammer_1.png")],
@@ -775,6 +929,160 @@ export const characters: Record<string, Record<string, Frames>> = {
   },
   "tinkerf-board_blue:bare": {
     portrait: [require("../assets/art/looks/tinkerf-board_blue_bare_portrait_0.png"), require("../assets/art/looks/tinkerf-board_blue_bare_portrait_1.png")],
+  },
+  "tinkerf-guild_plum": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_idle_1.png")],
+    hammer: [require("../assets/art/looks/tinkerf-guild_plum_hammer_0.png"), require("../assets/art/looks/tinkerf-guild_plum_hammer_1.png")],
+    pick: [require("../assets/art/looks/tinkerf-guild_plum_pick_0.png"), require("../assets/art/looks/tinkerf-guild_plum_pick_1.png")],
+    tinker: [require("../assets/art/looks/tinkerf-guild_plum_tinker_0.png"), require("../assets/art/looks/tinkerf-guild_plum_tinker_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_attack_1.png")],
+    cook: [require("../assets/art/looks/tinkerf-guild_plum_cook_0.png"), require("../assets/art/looks/tinkerf-guild_plum_cook_1.png")],
+    scavenge: [require("../assets/art/looks/tinkerf-guild_plum_scavenge_0.png"), require("../assets/art/looks/tinkerf-guild_plum_scavenge_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.brass_spanner": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_brass_spanner_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_brass_spanner_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_brass_spanner_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_brass_spanner_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_brass_spanner_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_brass_spanner_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.iron_crowbar": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_iron_crowbar_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_iron_crowbar_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_iron_crowbar_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_iron_crowbar_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_iron_crowbar_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_iron_crowbar_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.riveting_hammer": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_riveting_hammer_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_riveting_hammer_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_riveting_hammer_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_riveting_hammer_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_riveting_hammer_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_riveting_hammer_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.steel_blade": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_steel_blade_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_steel_blade_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_steel_blade_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_steel_blade_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_steel_blade_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_steel_blade_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.scrapjaws_cleaver": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_scrapjaws_cleaver_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_scrapjaws_cleaver_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_scrapjaws_cleaver_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_scrapjaws_cleaver_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_scrapjaws_cleaver_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_scrapjaws_cleaver_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.brass_catapult": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_brass_catapult_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_brass_catapult_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_brass_catapult_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_brass_catapult_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_brass_catapult_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_brass_catapult_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.iron_rifle": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_iron_rifle_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_iron_rifle_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_iron_rifle_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_iron_rifle_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_iron_rifle_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_iron_rifle_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.steel_carbine": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_steel_carbine_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_steel_carbine_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_steel_carbine_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_steel_carbine_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_steel_carbine_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_steel_carbine_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.garnet_rifle": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_garnet_rifle_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_garnet_rifle_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_garnet_rifle_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_garnet_rifle_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_garnet_rifle_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_garnet_rifle_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.copper_coil": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_copper_coil_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_copper_coil_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_copper_coil_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_copper_coil_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_copper_coil_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_copper_coil_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.brass_sparker": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_brass_sparker_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_brass_sparker_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_brass_sparker_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_brass_sparker_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_brass_sparker_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_brass_sparker_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.spark_rod": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_spark_rod_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_spark_rod_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_spark_rod_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_spark_rod_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_spark_rod_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_spark_rod_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:item.rustmoor.garnet_rod": {
+    idle: [require("../assets/art/looks/tinkerf-guild_plum_garnet_rod_idle_0.png"), require("../assets/art/looks/tinkerf-guild_plum_garnet_rod_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_plum_garnet_rod_attack_0.png"), require("../assets/art/looks/tinkerf-guild_plum_garnet_rod_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_garnet_rod_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_garnet_rod_portrait_1.png")],
+  },
+  "tinkerf-guild_plum:bare": {
+    portrait: [require("../assets/art/looks/tinkerf-guild_plum_bare_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_plum_bare_portrait_1.png")],
+  },
+  "tinkerf-guild_gold": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_idle_1.png")],
+    hammer: [require("../assets/art/looks/tinkerf-guild_gold_hammer_0.png"), require("../assets/art/looks/tinkerf-guild_gold_hammer_1.png")],
+    pick: [require("../assets/art/looks/tinkerf-guild_gold_pick_0.png"), require("../assets/art/looks/tinkerf-guild_gold_pick_1.png")],
+    tinker: [require("../assets/art/looks/tinkerf-guild_gold_tinker_0.png"), require("../assets/art/looks/tinkerf-guild_gold_tinker_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_attack_1.png")],
+    cook: [require("../assets/art/looks/tinkerf-guild_gold_cook_0.png"), require("../assets/art/looks/tinkerf-guild_gold_cook_1.png")],
+    scavenge: [require("../assets/art/looks/tinkerf-guild_gold_scavenge_0.png"), require("../assets/art/looks/tinkerf-guild_gold_scavenge_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.brass_spanner": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_brass_spanner_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_brass_spanner_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_brass_spanner_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_brass_spanner_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_brass_spanner_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_brass_spanner_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.iron_crowbar": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_iron_crowbar_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_iron_crowbar_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_iron_crowbar_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_iron_crowbar_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_iron_crowbar_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_iron_crowbar_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.riveting_hammer": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_riveting_hammer_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_riveting_hammer_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_riveting_hammer_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_riveting_hammer_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_riveting_hammer_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_riveting_hammer_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.steel_blade": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_steel_blade_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_steel_blade_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_steel_blade_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_steel_blade_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_steel_blade_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_steel_blade_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.scrapjaws_cleaver": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_scrapjaws_cleaver_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_scrapjaws_cleaver_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_scrapjaws_cleaver_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_scrapjaws_cleaver_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_scrapjaws_cleaver_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_scrapjaws_cleaver_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.brass_catapult": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_brass_catapult_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_brass_catapult_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_brass_catapult_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_brass_catapult_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_brass_catapult_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_brass_catapult_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.iron_rifle": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_iron_rifle_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_iron_rifle_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_iron_rifle_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_iron_rifle_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_iron_rifle_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_iron_rifle_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.steel_carbine": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_steel_carbine_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_steel_carbine_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_steel_carbine_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_steel_carbine_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_steel_carbine_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_steel_carbine_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.garnet_rifle": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_garnet_rifle_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_garnet_rifle_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_garnet_rifle_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_garnet_rifle_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_garnet_rifle_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_garnet_rifle_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.copper_coil": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_copper_coil_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_copper_coil_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_copper_coil_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_copper_coil_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_copper_coil_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_copper_coil_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.brass_sparker": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_brass_sparker_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_brass_sparker_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_brass_sparker_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_brass_sparker_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_brass_sparker_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_brass_sparker_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.spark_rod": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_spark_rod_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_spark_rod_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_spark_rod_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_spark_rod_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_spark_rod_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_spark_rod_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:item.rustmoor.garnet_rod": {
+    idle: [require("../assets/art/looks/tinkerf-guild_gold_garnet_rod_idle_0.png"), require("../assets/art/looks/tinkerf-guild_gold_garnet_rod_idle_1.png")],
+    attack: [require("../assets/art/looks/tinkerf-guild_gold_garnet_rod_attack_0.png"), require("../assets/art/looks/tinkerf-guild_gold_garnet_rod_attack_1.png")],
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_garnet_rod_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_garnet_rod_portrait_1.png")],
+  },
+  "tinkerf-guild_gold:bare": {
+    portrait: [require("../assets/art/looks/tinkerf-guild_gold_bare_portrait_0.png"), require("../assets/art/looks/tinkerf-guild_gold_bare_portrait_1.png")],
   },
   "monster.rustmoor.rust_rat_runt": {
     idle: [require("../assets/art/rust_rat_runt_idle0.png"), require("../assets/art/rust_rat_runt_idle1.png")],

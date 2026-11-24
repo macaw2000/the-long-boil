@@ -198,6 +198,30 @@ describe("a guild's week", () => {
     expect(fight(await contracts(lead)).seconds).toBeGreaterThanOrEqual(6 * 3600);
   });
 
+  it("grows the guild by its Workshop and spends tokens on a look, once", async () => {
+    const lead = await tinker("Builder");
+    const id = await guild(lead, "Built Up");
+    await db.query("UPDATE guilds SET workshop_points = 12 WHERE id = $1", [id]);
+    const other = await tinker("Looker");
+    expect((await call("GET", `/tinkers/${lead}/guild`)).body.guild).toMatchObject({ maxMembers: 32, workshop: { level: 1, into: 2, cost: 20 } });
+    expect((await call("GET", `/tinkers/${other}/guilds/${id}`)).body.maxMembers).toBe(32);
+    const crowd = await Promise.all(Array.from({ length: 32 }, (_, n) => tinker(`Place ${n}`)));
+    const joined = await Promise.all(crowd.map((each) => join(each, id)));
+    expect(joined.filter((each) => each.status === 200)).toHaveLength(31);
+    expect(joined.find((each) => each.status !== 200)!.body.error).toMatch(/full, at 32/);
+
+    const buy = () => call("POST", `/tinkers/${lead}/wardrobe/buy`, { look: "look.outfit.guild_plum" });
+    expect((await buy()).body.error).toMatch(/20 Guild Tokens; you have 0/);
+    await db.query("UPDATE tinkers SET guild_tokens = 45, cogs = 3 WHERE id = $1", [lead]);
+    const both = await Promise.all([buy(), buy()]);
+    expect(both.map((each) => each.status).sort()).toEqual([200, 400]);
+    const after = (await call("GET", `/tinkers/${lead}/wardrobe`)).body.wardrobe;
+    expect(after).toMatchObject({ cogs: 3, tokens: 25, wearing: { outfit: "look.outfit.guild_plum" } });
+    // It is theirs whether or not they stay.
+    await db.query("DELETE FROM guild_members WHERE tinker_id = $1", [lead]);
+    expect((await call("PUT", `/tinkers/${lead}/look`, { outfit: "look.outfit.guild_plum" })).status).toBe(200);
+  });
+
   it("lets a brand-new Tinker join a new guild in one step", async () => {
     const lead = await tinker("Open Door");
     const id = await guild(lead, "Open House");

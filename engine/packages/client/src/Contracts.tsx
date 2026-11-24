@@ -3,10 +3,11 @@
 // nothing here is a button, and nothing badges.
 
 import { Text, View } from "react-native";
-import { gameNow, type ContractsView } from "./api";
+import { gameNow, type ContractsView, type GuildView } from "./api";
 import { duration, titleCase } from "./format";
 import { FIGHT } from "./jobs";
 import { SkillIcon } from "./SkillView";
+import { UiIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
 export function contractName(kind: string): string {
@@ -29,7 +30,7 @@ function left(ms: number): string {
   return days >= 1 ? `${days} ${days === 1 ? "day" : "days"}` : duration(ms);
 }
 
-export function Contracts({ view }: { view: ContractsView }) {
+export function Contracts({ view, workshop, places }: { view: ContractsView; workshop: NonNullable<GuildView["guild"]>["workshop"]; places: number }) {
   const tiers = view.contracts.reduce((sum, contract) => sum + contract.reached, 0);
   const paid = view.mine >= view.needed;
   return (
@@ -40,7 +41,7 @@ export function Contracts({ view }: { view: ContractsView }) {
           ends in {left(new Date(view.endsAt).getTime() - gameNow())} · you hold {view.tokens} Guild {view.tokens === 1 ? "Token" : "Tokens"}
         </Text>
       </View>
-      <Text style={ui.muted}>Work as you always do, and it counts for the guild. Each mark passed earns a Guild Token.</Text>
+      <Text style={ui.muted}>Work as you always do, and it counts for the guild. Each mark passed earns members a Guild Token, for looks, and the Workshop a point.</Text>
       {view.contracts.map((contract) => {
         const most = contract.targets[contract.targets.length - 1]!;
         const next = contract.targets[contract.reached];
@@ -75,6 +76,17 @@ export function Contracts({ view }: { view: ContractsView }) {
           ? `You have done your part: ${tiers} ${tiers === 1 ? "token" : "tokens"} so far, paid two days after the week ends.`
           : `Put in ${targetHours(view.needed)} across these to be paid; you have ${hours(view.mine)}.`}
       </Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 10, borderTopWidth: 1, borderTopColor: colors.panelEdge, paddingTop: 8 }}>
+        <UiIcon name="guild" size={26} />
+        <Text style={[ui.text, { flex: 1 }]}>
+          Workshop <Text style={{ color: colors.brass, fontWeight: "700" }}>level {workshop.level}</Text>
+          <Text style={ui.muted}>
+            {" "}
+            · room for {places} members
+            {workshop.cost === null ? "" : ` · ${workshop.into} of ${workshop.cost} points to 2 more`}
+          </Text>
+        </Text>
+      </View>
     </View>
   );
 }

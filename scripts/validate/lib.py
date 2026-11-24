@@ -231,8 +231,8 @@ def validate(instance, schema, root_schema=None, pointer=""):
 
     Supports: $ref (local #/$defs/...), type, enum, const, required,
     properties, additionalProperties, prefixItems, items, minItems, maxItems, minimum,
-    exclusiveMinimum, maximum, minLength, pattern, dependentRequired, and one
-    keyword of this repo's own: maxWords (a string's whitespace-separated
+    exclusiveMinimum, maximum, minLength, pattern, dependentRequired, not,
+    anyOf, and one keyword of this repo's own: maxWords (a string's whitespace-separated
     word count).
 
     Returns a list of (pointer, message).
@@ -258,6 +258,12 @@ def validate(instance, schema, root_schema=None, pointer=""):
         if not any(_TYPES[t](instance) for t in allowed):
             return [(where, "expected %s, got %s" % (
                 " or ".join(allowed), _describe(instance)))]
+
+    if "not" in schema and not validate(instance, schema["not"], root_schema, pointer):
+        errors.append((where, "must not match %s" % json.dumps(schema["not"])))
+
+    if "anyOf" in schema and all(validate(instance, option, root_schema, pointer) for option in schema["anyOf"]):
+        errors.append((where, "must match one of %s" % json.dumps(schema["anyOf"])))
 
     if "const" in schema and instance != schema["const"]:
         errors.append((where, "must equal %s" % json.dumps(schema["const"])))

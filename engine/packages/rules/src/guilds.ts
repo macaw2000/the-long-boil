@@ -3,7 +3,28 @@
 // new Tinker and one. Ranks decide who may do what. The server keeps guilds
 // in the database; these are the rules it applies.
 
+/** Places a guild starts with; its Workshop adds more (work order 043). */
 export const GUILD_MAX_MEMBERS = 30;
+export const WORKSHOP_TOP = 10;
+export const WORKSHOP_PLACES = 2;
+
+/** Points a Workshop level costs: 10 for the first, 20 for the second, and so on. */
+export function workshopCost(level: number): number {
+  return level * 10;
+}
+
+/** A Workshop's level from its points, and how far into the next it is; `cost` is null at the top. */
+export function workshopAt(points: number): { level: number; into: number; cost: number | null } {
+  let level = 0;
+  let into = points;
+  while (level < WORKSHOP_TOP && into >= workshopCost(level + 1)) into -= workshopCost(++level);
+  return { level, into, cost: level < WORKSHOP_TOP ? workshopCost(level + 1) : null };
+}
+
+/** How many members a guild with these Workshop points holds. */
+export function guildPlaces(points: number): number {
+  return GUILD_MAX_MEMBERS + workshopAt(points).level * WORKSHOP_PLACES;
+}
 export const GUILD_RENAME_CROWNS = 10_000;
 export const GUILD_NOTICE_MAX = 500;
 export const GUILD_MIN_LEVEL_MAX = 9999;

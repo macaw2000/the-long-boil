@@ -15,12 +15,16 @@ export interface LookOffer {
   /** Whether the Tinker may wear it now. */
   held: boolean;
   cogs: number | null;
+  /** Its price in Guild Tokens. */
+  tokens: number | null;
   /** The Favour that opens it, and where the Tinker's stands. */
   favour: { quality: string; level: number; have: number } | null;
 }
 
 export interface WardrobeView {
   cogs: number;
+  /** Guild Tokens held. */
+  tokens: number;
   wearing: rules.Wearing;
   outfits: LookOffer[];
   backdrops: LookOffer[];
@@ -33,25 +37,26 @@ function looksOf(content: GameContent): rules.Looks {
   return content.looks;
 }
 
-async function held(tx: Tx, tinkerId: number): Promise<{ cogs: number; bought: string[]; qualities: Record<string, number>; row: any }> {
-  const row = (await tx.query("SELECT cogs, body, outfit, backdrop, looks FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
+async function held(tx: Tx, tinkerId: number): Promise<{ cogs: number; tokens: number; bought: string[]; qualities: Record<string, number>; row: any }> {
+  const row = (await tx.query("SELECT cogs, guild_tokens, body, outfit, backdrop, looks FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
   const qualities: Record<string, number> = {};
   for (const quality of (await tx.query("SELECT name, value FROM qualities WHERE tinker_id = $1 AND name LIKE 'favour.%'", [tinkerId])).rows) {
     qualities[quality.name] = Number(quality.value);
   }
-  return { cogs: Number(row.cogs), bought: row.looks, qualities, row };
+  return { cogs: Number(row.cogs), tokens: Number(row.guild_tokens), bought: row.looks, qualities, row };
 }
 
 async function wardrobeView(tx: Tx, content: GameContent, tinkerId: number): Promise<WardrobeView> {
   const looks = looksOf(content);
-  const { cogs, bought, qualities, row } = await held(tx, tinkerId);
+  const { cogs, tokens, bought, qualities, row } = await held(tx, tinkerId);
   const offer = (look: rules.Look): LookOffer => ({
     id: look.id,
     held: rules.holdsLook(look, bought, qualities),
     cogs: look.cogs,
+    tokens: look.tokens,
     favour: look.favour ? { ...look.favour, have: qualities[look.favour.quality] ?? 0 } : null,
   });
-  return { cogs, wearing: wearing(content, row), outfits: looks.outfits.map(offer), backdrops: looks.backdrops.map(offer) };
+  return { cogs, tokens, wearing: wearing(content, row), outfits: looks.outfits.map(offer), backdrops: looks.backdrops.map(offer) };
 }
 
 /** Runs a change of look as a check-in, turning a refusal or a shortfall of Cogs into a 400. */
@@ -77,18 +82,19 @@ export async function readWardrobe(db: Db, content: GameContent, tinkerId: numbe
   return wardrobeOp(db, content, tinkerId, now, async () => undefined);
 }
 
-/** Buys an outfit or backdrop with Cogs, and puts it on. */
+/** Buys an outfit or backdrop with Cogs or Guild Tokens, and puts it on. */
 export async function buyLook(db: Db, content: GameContent, tinkerId: number, id: string, now: number): Promise<WardrobeOutcome> {
   return wardrobeOp(db, content, tinkerId, now, async (tx, seq) => {
     const looks = looksOf(content);
     const look = rules.findLook(looks, id);
     if (!look) throw new BadRequest(`no look ${id}`);
-    const { cogs, bought, qualities } = await held(tx, tinkerId);
-    const price = rules.buyLook(look, bought, qualities, cogs);
-    await adjustCogs(tx, tinkerId, -price);
+    const { cogs, tokens, bought, qualities } = await held(tx, tinkerId);
+    const price = rules.buyLook(look, bought, qualities, cogs, tokens);
+    await adjustCogs(tx, tinkerId, -price.cogs);
+    if (price.tokens) await tx.query("UPDATE tinkers SET guild_tokens = guild_tokens - $2 WHERE id = $1", [tinkerId, price.tokens]);
     const slot = looks.outfits.some((outfit) => outfit.id === id) ? "outfit" : "backdrop";
     await tx.query(`UPDATE tinkers SET looks = array_append(looks, $2), ${slot} = $2 WHERE id = $1`, [tinkerId, id]);
-    const last = await appendEvents(tx, tinkerId, seq, [{ type: "look_bought", at: now, payload: { look: id, items: {}, cogs: -price } }], content.rules.version);
+    const last = await appendEvents(tx, tinkerId, seq, [{ type: "look_bought", at: now, payload: { look: id, items: {}, cogs: -price.cogs, ...(price.tokens ? { tokens: -price.tokens } : {}) } }], content.rules.version);
     await setLastSeq(tx, tinkerId, last);
   });
 }

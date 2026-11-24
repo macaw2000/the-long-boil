@@ -1,7 +1,7 @@
 # Work order 043: Guild Contracts and the guild Workshop
 
 **Agents:** the lead session for the rules, server and client. `draftsman` for the contract pool and tuning; `toolwright` for its schema and checks; `scrivener` for the one-line requests; then `inspector`, `assayer` and `educator`.
-**Status:** design approved by Jeremy (23 November 2026). Contracts and tokens are built and tested, not reviewed by the crew. Guild Tokens have nothing to buy and Workshop points raise nothing until the second part, the Workshop and looks.
+**Status:** design approved by Jeremy (23 November 2026). Contracts, tokens, the Workshop and three looks are built and tested, not reviewed by the crew.
 **Blocks:** guild charters (GDD section 5), which fill from Contracts.
 
 ## Why this one
@@ -33,7 +33,7 @@ A panel at the top of the Guild tab: five contracts, each an icon, a bar with th
 
 - Tokens are paid when the week closes, to those still in the guild. An account is paid by one guild a week.
 - Tokens are bound to the Tinker and never trade. No Crowns are paid, so no faucet opens.
-- **Tokens buy looks:** guild-only outfits and backdrops, beside those Cogs and Favour open. They are recolours and existing paintings, so no new art is needed.
+- **Tokens buy looks:** guild-only outfits and backdrops, beside those Cogs and Favour open. They are recolours and existing paintings, so no new art is needed. The first three: The Guild Hall (backdrop, 10), Guild Plum (20) and Foreman's Gold (35). A look bought is kept on leaving the guild.
 - **Workshop points raise the Workshop,** and each level adds 2 member places, from 30 to at most 50. Level n costs 10n points: 10, 20, 30, and so on to 100 for the tenth, 550 in all. No level makes work or fighting faster.
 
 ## The figures

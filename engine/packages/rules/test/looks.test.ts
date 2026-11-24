@@ -13,7 +13,7 @@ describe("the Tinker's looks", () => {
     expect(looks.bodies.map((body) => body.id)).toEqual(["look.body.m", "look.body.f"]);
     for (const look of [...looks.outfits, ...looks.backdrops]) {
       if (look.cogs !== null) expect(look.cogs).toBeGreaterThanOrEqual(5), expect(look.cogs).toBeLessThanOrEqual(30);
-      expect(look.cogs !== null && look.favour !== null).toBe(false);
+      expect([look.cogs, look.favour, look.tokens].filter((way) => way !== null).length).toBeLessThanOrEqual(1);
     }
   });
 
@@ -26,7 +26,12 @@ describe("the Tinker's looks", () => {
   });
 
   it("sells a Cog look once, for its price, and never sells what Favour opens", () => {
-    expect(buyLook(SOOT, [], {}, 15)).toBe(15);
+    expect(buyLook(SOOT, [], {}, 15)).toEqual({ cogs: 15, tokens: 0 });
+    const plum = findLook(looks, "look.outfit.guild_plum")!;
+    expect(holdsLook(plum, [], { "favour.gaugers": 7 })).toBe(false);
+    expect(buyLook(plum, [], {}, 0, 20)).toEqual({ cogs: 0, tokens: 20 });
+    expect(() => buyLook(plum, [], {}, 500, 19)).toThrow("20 Guild Tokens");
+    expect(() => buyLook(plum, [plum.id], {}, 0, 99)).toThrow("already");
     expect(() => buyLook(SOOT, [], {}, 14)).toThrow(ShopRefusal);
     expect(() => buyLook(SOOT, [SOOT.id], {}, 100)).toThrow("already");
     expect(() => buyLook(GREEN, [], {}, 100)).toThrow("Favour");

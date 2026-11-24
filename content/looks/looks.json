@@ -33,6 +33,20 @@
       "description": "The blue of a Board clerk's ledger cloth. It suggests that somebody, somewhere, has signed for you.",
       "dye": { "hue": 216, "saturation": 0.9, "value": 0.95 },
       "favour": { "quality": "favour.board", "level": 2 }
+    },
+    {
+      "id": "look.outfit.guild_plum",
+      "name": "Guild Plum",
+      "description": "A purple no dyer will sell to one customer. Guilds order it by the vat.",
+      "dye": { "hue": 300, "saturation": 0.75, "value": 0.9 },
+      "tokens": 20
+    },
+    {
+      "id": "look.outfit.guild_gold",
+      "name": "Foreman's Gold",
+      "description": "Yellow enough to be seen from the far end of the bench, which is what it is for.",
+      "dye": { "hue": 44, "saturation": 1.3, "value": 1.35 },
+      "tokens": 35
     }
   ],
   "backdrops": [
@@ -76,7 +90,14 @@
       "description": "The price board over your shoulder, by leave of the Counting-House. The figures are a week old.",
       "image": "bg/brass_exchange.jpg",
       "favour": { "quality": "favour.counting_house", "level": 2 }
+    },
+    {
+      "id": "look.backdrop.guildhall",
+      "name": "The Guild Hall",
+      "description": "The long table and the banners, with everybody else just out of the picture.",
+      "image": "bg/guildhall.jpg",
+      "tokens": 10
     }
   ],
-  "derivation": "Work order 042. GDD section 8 prices cosmetics at 5 to 30 Cogs, looks only, and section 5 lets Favour open a faction's cosmetics. Jeremy, 15 November 2026: the two bodies are free picks; outfits and backdrops are bought in the Cog Shop, and some are earned through Favour instead. An outfit is a dye of the Tinker's leathers, applied to the drawn frames by scripts/art/dye_outfits.py, so each needs no new art. Prices and Favour levels are starting points for the assayer."
+  "derivation": "Work order 042. GDD section 8 prices cosmetics at 5 to 30 Cogs, looks only, and section 5 lets Favour open a faction's cosmetics. Jeremy, 15 November 2026: the two bodies are free picks; outfits and backdrops are bought in the Cog Shop, and some are earned through Favour instead. An outfit is a dye of the Tinker's leathers, applied to the drawn frames by scripts/art/dye_outfits.py, so each needs no new art. Prices and Favour levels are starting points for the assayer. Work order 043: three looks are bought with Guild Tokens, at 10, 20 and 35, where a week pays at most 15 and a guild doing the first tier of everything pays 5. Those are starting points too."
 }

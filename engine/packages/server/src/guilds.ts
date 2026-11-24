@@ -35,6 +35,9 @@ export interface GuildView {
     /** Invitations out and applications in; shown to those who may answer them. */
     requests: { tinkerId: number; name: string; kind: "invite" | "application"; at: string }[];
     recruiting: Recruiting;
+    /** Members it holds, and the Workshop that adds to them. */
+    maxMembers: number;
+    workshop: { level: number; into: number; cost: number | null };
     /** This week's Guild Contracts (work order 043). */
     contracts: ContractsView;
     /** Set while the leader has been away long enough to be replaced: who they are, and when this Tinker may claim. */
@@ -43,7 +46,7 @@ export interface GuildView {
   invites: { guildId: number; name: string; status: string }[];
   applications: { guildId: number; name: string; status: string }[];
   /** Every guild, largest first, to apply to. */
-  guilds: { id: number; name: string; members: number; recruiting: Recruiting }[];
+  guilds: { id: number; name: string; members: number; maxMembers: number; recruiting: Recruiting }[];
   /** This Tinker's total level, to set against what a guild asks. */
   totalLevel: number;
   rules: { maxMembers: number; renameCrowns: number; noticeMax: number };
@@ -226,9 +229,9 @@ async function touchMembers(tx: Tx, guildId: number, touched: Set<number>) {
 }
 
 async function join(tx: Tx, content: GameContent, guildId: number, tinkerId: number, now: number, touched: Set<number>) {
-  await lockGuild(tx, guildId);
+  const places = rules.guildPlaces(Number((await lockGuild(tx, guildId)).workshop_points));
   if (await accountInGuild(tx, tinkerId)) throw new rules.GuildRefusal("this account is already in a guild");
-  if ((await memberCount(tx, guildId)) >= rules.GUILD_MAX_MEMBERS) throw new rules.GuildRefusal(`a guild holds at most ${rules.GUILD_MAX_MEMBERS} members`);
+  if ((await memberCount(tx, guildId)) >= places) throw new rules.GuildRefusal(`that guild is full, at ${places} members`);
   await tx.query(
     "INSERT INTO guild_members (guild_id, tinker_id, account_id, rank, joined_at) SELECT $1, id, account_id, 'member', $3 FROM tinkers WHERE id = $2",
     [guildId, tinkerId, new Date(now)],
@@ -283,6 +286,8 @@ async function readView(tx: Tx, content: GameContent, tinkerId: number, now: num
       activity: await readActivity(tx, mine.guildId),
       requests,
       recruiting: recruitingOf(row),
+      maxMembers: rules.guildPlaces(Number(row.workshop_points)),
+      workshop: rules.workshopAt(Number(row.workshop_points)),
       contracts: await readContracts(tx, content, mine.guildId, tinkerId, now),
       claim: await claimOn(tx, mine.guildId, tinkerId, now).then((claim) => claim && { leader: claim.leader, at: new Date(claim.at).toISOString() }),
     };
@@ -293,11 +298,11 @@ async function readView(tx: Tx, content: GameContent, tinkerId: number, now: num
       .then((result) => result.rows.map((r) => ({ guildId: Number(r.id), name: r.name, status: r.status })));
   const guilds = (
     await tx.query(
-      `SELECT g.id, g.name, g.recruiting, g.min_level, g.auto_accept, (SELECT count(*) FROM guild_members m WHERE m.guild_id = g.id) AS members
+      `SELECT g.id, g.name, g.recruiting, g.min_level, g.auto_accept, g.workshop_points, (SELECT count(*) FROM guild_members m WHERE m.guild_id = g.id) AS members
        FROM guilds g WHERE g.status = 'active' ORDER BY members DESC, g.name`,
       [],
     )
-  ).rows.map((g) => ({ id: Number(g.id), name: g.name, members: Number(g.members), recruiting: recruitingOf(g) }));
+  ).rows.map((g) => ({ id: Number(g.id), name: g.name, members: Number(g.members), maxMembers: rules.guildPlaces(Number(g.workshop_points)), recruiting: recruitingOf(g) }));
   return {
     guild,
     invites: await asked("invite"),
@@ -605,7 +610,7 @@ export interface GuildCardView {
 
 export async function lookAtGuild(db: Db, content: GameContent, guildId: number): Promise<GuildCardView> {
   if (!Number.isSafeInteger(guildId)) throw new NotFound("no such guild");
-  const guild = (await db.query("SELECT id, name, formed_at, recruiting, min_level, auto_accept FROM guilds WHERE id = $1 AND status = 'active'", [guildId])).rows[0];
+  const guild = (await db.query("SELECT id, name, formed_at, recruiting, min_level, auto_accept, workshop_points FROM guilds WHERE id = $1 AND status = 'active'", [guildId])).rows[0];
   if (!guild) throw new NotFound("that guild has closed");
   const rows = (
     await db.query(
@@ -634,7 +639,7 @@ export async function lookAtGuild(db: Db, content: GameContent, guildId: number)
     formedAt: guild.formed_at.toISOString(),
     size: everyone.size,
     recruiting: recruitingOf(guild),
-    maxMembers: rules.GUILD_MAX_MEMBERS,
+    maxMembers: rules.guildPlaces(Number(guild.workshop_points)),
     totalLevel: members.reduce((sum, member) => sum + member.totalLevel, 0),
     members,
   };

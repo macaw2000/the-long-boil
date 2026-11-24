@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { guildNameRefusal, mayAct, removalRefusal } from "../src/index.js";
+import { guildNameRefusal, guildPlaces, mayAct, removalRefusal, workshopAt } from "../src/index.js";
 
 describe("guild rules", () => {
   it("names a guild with 3 to 24 letters, spaces and apostrophes", () => {
@@ -19,6 +19,16 @@ describe("guild rules", () => {
     expect(mayAct("member", "notice")).toBe(false);
     expect(mayAct("member", "invite")).toBe(false);
     expect(mayAct("leader", "disband")).toBe(true);
+  });
+
+  it("raises the Workshop by its points, two places a level, to 50", () => {
+    expect(workshopAt(0)).toEqual({ level: 0, into: 0, cost: 10 });
+    expect(workshopAt(9)).toEqual({ level: 0, into: 9, cost: 10 });
+    expect(workshopAt(10)).toEqual({ level: 1, into: 0, cost: 20 });
+    expect(workshopAt(35)).toEqual({ level: 2, into: 5, cost: 30 });
+    expect(workshopAt(549).level).toBe(9);
+    expect(workshopAt(550)).toEqual({ level: 10, into: 0, cost: null });
+    expect([0, 10, 550, 9999].map(guildPlaces)).toEqual([30, 32, 50, 50]);
   });
 
   it("keeps a leader from walking out on a guild", () => {

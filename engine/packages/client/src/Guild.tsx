@@ -176,13 +176,13 @@ export function Guild({
           <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: 8 }}>
             <Text style={[ui.heading, { fontSize: 22 }]}>{guild.name}</Text>
             <Text style={ui.muted}>
-              {guild.members.length} of {view.rules.maxMembers} · you are {RANKS[guild.rank]}
+              {guild.members.length} of {guild.maxMembers} · you are {RANKS[guild.rank]}
             </Text>
           </View>
           {guild.members.length === 1 && <Text style={ui.muted}>Just you so far. Type /invite and a name in chat, or tap a name there.</Text>}
         </View>
 
-        <Contracts view={guild.contracts} />
+        <Contracts view={guild.contracts} workshop={guild.workshop} places={guild.maxMembers} />
 
         {guild.claim && (
           <View style={[ui.panel, { gap: 6, alignItems: "flex-start", borderColor: colors.copper }]}>
@@ -426,12 +426,12 @@ export function Guild({
             <View key={entry.id} style={{ flexDirection: "row", gap: 8, alignItems: "center", flexWrap: "wrap", paddingVertical: 4, borderBottomWidth: 1, borderBottomColor: colors.panelEdge }}>
               <GuildName name={entry.name} onPress={() => onGuild(entry.id)} />
               <Text style={ui.muted}>
-                {entry.members} of {view.rules.maxMembers}
+                {entry.members} of {entry.maxMembers}
               </Text>
               <View style={{ marginLeft: "auto" }}>
                 {applied ? (
                   <SmallButton label="Applied · withdraw" tone={colors.muted} onPress={() => act(api.dropRequest(tinkerId, entry.id, tinkerId))} />
-                ) : entry.members >= view.rules.maxMembers ? (
+                ) : entry.members >= entry.maxMembers ? (
                   <Text style={[ui.muted, { fontSize: 12 }]}>full</Text>
                 ) : !entry.recruiting.open ? (
                   <Text style={[ui.muted, { fontSize: 12 }]}>by invitation</Text>

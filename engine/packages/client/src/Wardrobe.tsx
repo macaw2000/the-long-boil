@@ -1,6 +1,6 @@
 // The wardrobe (work order 042): the Tinker's body, outfit and backdrop. The
 // bodies are free picks. An outfit or backdrop is free, bought with Cogs, or
-// opened by a faction's Favour, and each tile says which and what it would
+// bought with Guild Tokens, or opened by a faction's Favour, and each tile says which and what it would
 // take. Looks change the picture and nothing else. It sits on the Cog Shop's
 // page, and opens over the screen from the Loadout's "Change look".
 
@@ -86,6 +86,8 @@ export function Wardrobe({ content, tinker, onOutcome }: { content: Content; tin
           <Button label="Wear" disabled={busy} onPress={() => take(api.wearLook(tinker.id, { [slot]: id }))} />
         ) : offer?.cogs != null ? (
           <Button label={`Buy · ${offer.cogs} Cogs`} disabled={busy || wardrobe.cogs < offer.cogs} onPress={() => take(api.buyLook(tinker.id, offer.id))} />
+        ) : offer?.tokens != null ? (
+          <Button label={`${offer.tokens} Tokens`} disabled={busy || wardrobe.tokens < offer.tokens} onPress={() => take(api.buyLook(tinker.id, offer.id))} />
         ) : (
           <Text style={[ui.muted, { fontSize: 11, textAlign: "center" }]}>{short}</Text>
         )}
@@ -100,6 +102,8 @@ export function Wardrobe({ content, tinker, onOutcome }: { content: Content; tin
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
           <UiIcon name="cogs" size={20} />
           <Text style={[ui.number, { color: colors.brass }]}>{wardrobe.cogs.toLocaleString()} Cogs</Text>
+          <UiIcon name="guild" size={20} />
+          <Text style={[ui.number, { color: colors.brass }]}>{wardrobe.tokens.toLocaleString()} Guild {wardrobe.tokens === 1 ? "Token" : "Tokens"}</Text>
         </View>
       </View>
       <Text style={ui.muted}>How other Tinkers see you when they look you up. Looks change the picture and nothing else.</Text>

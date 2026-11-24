@@ -86,7 +86,7 @@ describe("a Tinker's looks", () => {
     expect((await call("PUT", `/tinkers/${id}/look`, { outfit: GREEN })).status).toBe(400);
     await call("POST", `/dev/tinkers/${id}/story`, { qualities: { "favour.gaugers": 2 } });
     const wardrobe = (await call("GET", `/tinkers/${id}/wardrobe`)).body.wardrobe;
-    expect(wardrobe.outfits.find((offer: { id: string }) => offer.id === GREEN)).toEqual({ id: GREEN, held: true, cogs: null, favour: { quality: "favour.gaugers", level: 2, have: 2 } });
+    expect(wardrobe.outfits.find((offer: { id: string }) => offer.id === GREEN)).toEqual({ id: GREEN, held: true, cogs: null, tokens: null, favour: { quality: "favour.gaugers", level: 2, have: 2 } });
     expect((await call("PUT", `/tinkers/${id}/look`, { outfit: GREEN })).body.tinker.look.outfit).toBe(GREEN);
   });
 

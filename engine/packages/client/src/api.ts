@@ -352,6 +352,7 @@ export interface Look {
   description: string;
   cogs: number | null;
   favour: { quality: string; level: number } | null;
+  tokens: number | null;
 }
 
 export interface Looks {
@@ -374,12 +375,14 @@ export interface LookOffer {
   /** Whether the Tinker may wear it now. */
   held: boolean;
   cogs: number | null;
+  tokens: number | null;
   favour: { quality: string; level: number; have: number } | null;
 }
 
 /** Every outfit and backdrop as one Tinker sees it (packages/server/src/looks.ts). */
 export interface WardrobeView {
   cogs: number;
+  tokens: number;
   wearing: Wearing;
   outfits: LookOffer[];
   backdrops: LookOffer[];
@@ -410,13 +413,15 @@ export interface GuildView {
     activity: GuildActivityEntry[];
     requests: { tinkerId: number; name: string; kind: "invite" | "application"; at: string }[];
     recruiting: Recruiting;
+    maxMembers: number;
+    workshop: { level: number; into: number; cost: number | null };
     contracts: ContractsView;
     /** Set while the leader is long away: when this Tinker may take over. */
     claim: { leader: string; at: string } | null;
   } | null;
   invites: { guildId: number; name: string; status: string }[];
   applications: { guildId: number; name: string; status: string }[];
-  guilds: { id: number; name: string; members: number; recruiting: Recruiting }[];
+  guilds: { id: number; name: string; members: number; maxMembers: number; recruiting: Recruiting }[];
   totalLevel: number;
   rules: { maxMembers: number; renameCrowns: number; noticeMax: number };
 }
