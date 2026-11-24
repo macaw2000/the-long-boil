@@ -393,6 +393,7 @@ export type GuildRank = "leader" | "officer" | "member";
 export type GuildActivityEntry = { at: string; tinker: { id: number; name: string } } & (
   | { kind: "founded" | "joined" | "left" | "removed" | "notice" | "claimed" }
   | { kind: "renamed"; name: string }
+  | { kind: "tier"; contract: string; tier: number }
   | { kind: "rank"; rank: GuildRank; by: string }
   | { kind: "level"; skill: string; level: number }
   | { kind: "boss"; monster: string }
@@ -409,6 +410,7 @@ export interface GuildView {
     activity: GuildActivityEntry[];
     requests: { tinkerId: number; name: string; kind: "invite" | "application"; at: string }[];
     recruiting: Recruiting;
+    contracts: ContractsView;
     /** Set while the leader is long away: when this Tinker may take over. */
     claim: { leader: string; at: string } | null;
   } | null;
@@ -417,6 +419,15 @@ export interface GuildView {
   guilds: { id: number; name: string; members: number; recruiting: Recruiting }[];
   totalLevel: number;
   rules: { maxMembers: number; renameCrowns: number; noticeMax: number };
+}
+
+/** A guild's contracts this week (packages/server/src/contracts.ts); all work is in seconds. */
+export interface ContractsView {
+  endsAt: string;
+  contracts: { kind: string; seconds: number; mine: number; targets: number[]; reached: number }[];
+  mine: number;
+  needed: number;
+  tokens: number;
 }
 
 /** How a guild takes applications. */

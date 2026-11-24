@@ -267,6 +267,10 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       .catch(() => undefined);
   }, [tinkerId]);
   useEffect(loadGuild, [loadGuild]);
+  // Looked at again on opening the tab: contracts fill as members work, which nothing pushes.
+  useEffect(() => {
+    if (place === "guild") loadGuild();
+  }, [place, loadGuild]);
   const guildChat = useChat(tinkerId, "guild", Boolean(guildView?.guild));
   const { receive: receiveGuildChat } = guildChat;
   const inviteToGuild =
@@ -451,8 +455,12 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   // While the guide runs, the screen shows only what it has reached; the place the player is on always shows.
   const opened = revealed(step, guide, tinker.story.qualities["prologue.progress"] ?? 0, tinker.story.qualities["record.visits_since_prologue"] ?? 0);
   // A skill the story has not opened yet (rules SKILL_GATES) stays hidden even after the guide.
+  // A guild or an invitation opens the Guild tab whatever the guide has reached, and being in a guild opens chat, where it talks.
+  const social = (feature: string) =>
+    (feature === "guild" && Boolean(guildView && (guildView.guild || guildView.invites.length))) || (feature === "chat" && Boolean(guildView?.guild));
   const shown = (feature: string) =>
-    (!feature.startsWith("skill:") || skillOpen(feature.slice("skill:".length), tinker.story.qualities)) && (feature === place || opened(feature as Place));
+    (!feature.startsWith("skill:") || skillOpen(feature.slice("skill:".length), tinker.story.qualities)) &&
+    (feature === place || opened(feature as Place) || social(feature));
 
   const head = tinker.queue[0];
   const headSeconds = head
@@ -614,7 +622,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     ) : place === "guild" ? (
       <View style={{ gap: 12 }}>
         {/* A phone's bar has no room for another tab, so the boards are reached from here. */}
-        {!wide && (
+        {!wide && shown("leaderboards") && (
           <Pressable onPress={() => setPlace("leaderboards")} accessibilityRole="button" style={[ui.button, { alignSelf: "flex-start" }]}>
             <Text style={ui.buttonText}>Leaderboards</Text>
           </Pressable>
@@ -626,8 +634,9 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     ) : place === "exchange" ? (
       <View style={{ gap: 12 }}>
         {tinker.story.debts.length > 0 && <Bills tinker={tinker} act={run} payGuided={at === "pay"} />}
-        {shown("chat") && <WorkOrders content={content} tinker={tinker} name={name} onOutcome={apply} />}
-        <Exchange content={content} tinker={tinker} name={name} run={run} whole={shown("chat")} />
+        {/* Opened by the guide alone: a guild opens chat early, but not these. */}
+        {opened("chat") && <WorkOrders content={content} tinker={tinker} name={name} onOutcome={apply} />}
+        <Exchange content={content} tinker={tinker} name={name} run={run} whole={opened("chat")} />
       </View>
     ) : place === "stores" ? (
       <View style={{ gap: 12 }}>

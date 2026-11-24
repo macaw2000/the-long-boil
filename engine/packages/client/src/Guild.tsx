@@ -9,6 +9,7 @@
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { api, gameNow, type Content, type GuildActivityEntry, type GuildRank, type GuildView } from "./api";
+import { Contracts, contractName } from "./Contracts";
 import { duration, titleCase } from "./format";
 import { MonsterPicture, SkillIcon } from "./SkillView";
 import { UiIcon } from "./Sprite";
@@ -65,6 +66,14 @@ function ActivityLine({ entry, content, onInspect }: { entry: GuildActivityEntry
       break;
     case "removed":
       line = <>{who} was removed</>;
+      break;
+    case "tier":
+      icon = <SkillIcon skill={entry.contract} size={22} />;
+      line = (
+        <>
+          {who} carried {contractName(entry.contract)} past mark <Text style={{ color: colors.verdigris, fontWeight: "700" }}>{entry.tier}</Text>
+        </>
+      );
       break;
     case "claimed":
       line = <>{who} took over from a leader long away</>;
@@ -172,6 +181,8 @@ export function Guild({
           </View>
           {guild.members.length === 1 && <Text style={ui.muted}>Just you so far. Type /invite and a name in chat, or tap a name there.</Text>}
         </View>
+
+        <Contracts view={guild.contracts} />
 
         {guild.claim && (
           <View style={[ui.panel, { gap: 6, alignItems: "flex-start", borderColor: colors.copper }]}>
@@ -383,7 +394,7 @@ export function Guild({
 
       <View style={[ui.panel, { gap: 8 }]}>
         <Text style={ui.heading}>Found a guild</Text>
-        <Text style={ui.muted}>Free, and yours at once. Up to {view.rules.maxMembers} members, one guild per account.</Text>
+        <Text style={ui.muted}>Free, and yours at once: pick a name. Anyone may join until you say otherwise. Up to {view.rules.maxMembers} members, one guild per account.</Text>
         <View style={{ flexDirection: "row", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
           <TextInput
             value={name}

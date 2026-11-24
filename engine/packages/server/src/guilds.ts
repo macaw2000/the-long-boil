@@ -7,6 +7,7 @@
 
 import * as rules from "@long-boil/rules";
 import type { GameContent } from "./content-loader.js";
+import { closeWeeks, joinWeek, readContracts, type ContractsView } from "./contracts.js";
 import { withTransaction, type Db, type Tx } from "./db.js";
 import { adjustCrowns, appendEvents, setLastSeq, Shortfall, type LogEntry } from "./events.js";
 import { BadRequest, NotFound } from "./tinkers.js";
@@ -34,6 +35,8 @@ export interface GuildView {
     /** Invitations out and applications in; shown to those who may answer them. */
     requests: { tinkerId: number; name: string; kind: "invite" | "application"; at: string }[];
     recruiting: Recruiting;
+    /** This week's Guild Contracts (work order 043). */
+    contracts: ContractsView;
     /** Set while the leader has been away long enough to be replaced: who they are, and when this Tinker may claim. */
     claim: { leader: string; at: string } | null;
   } | null;
@@ -62,6 +65,7 @@ function recruitingOf(row: Row): Recruiting {
 export type GuildActivityEntry = { at: string; tinker: { id: number; name: string } } & (
   | { kind: "founded" | "joined" | "left" | "removed" | "notice" | "claimed" }
   | { kind: "renamed"; name: string }
+  | { kind: "tier"; contract: string; tier: number }
   | { kind: "rank"; rank: rules.GuildRank; by: string }
   | { kind: "level"; skill: string; level: number }
   | { kind: "boss"; monster: string }
@@ -83,7 +87,7 @@ async function readActivity(tx: Tx, guildId: number): Promise<GuildActivityEntry
       `(SELECT e.tinker_id, t.name, e.type, e.at, e.payload, b.name AS by_name
         FROM events e JOIN tinkers t ON t.id = e.tinker_id LEFT JOIN tinkers b ON b.id = (e.payload->>'by')::bigint
         WHERE e.payload->>'guild' = $4
-          AND e.type IN ('guild_founded', 'guild_joined', 'guild_left', 'guild_renamed', 'guild_rank', 'guild_notice')
+          AND e.type IN ('guild_founded', 'guild_joined', 'guild_left', 'guild_renamed', 'guild_rank', 'guild_notice', 'guild_tier')
         ORDER BY e.at DESC LIMIT $2)
        UNION ALL
        (SELECT e.tinker_id, t.name, e.type, e.at, e.payload, NULL
@@ -115,6 +119,8 @@ async function readActivity(tx: Tx, guildId: number): Promise<GuildActivityEntry
         return { ...base, kind: "rank", rank: payload.rank, by: row.by_name };
       case "guild_notice":
         return { ...base, kind: "notice" };
+      case "guild_tier":
+        return { ...base, kind: "tier", contract: payload.kind, tier: Number(payload.tier) };
       case "level_up":
         return { ...base, kind: "level", skill: payload.skill, level: Number(payload.level) };
       default:
@@ -227,6 +233,8 @@ async function join(tx: Tx, content: GameContent, guildId: number, tinkerId: num
     "INSERT INTO guild_members (guild_id, tinker_id, account_id, rank, joined_at) SELECT $1, id, account_id, 'member', $3 FROM tinkers WHERE id = $2",
     [guildId, tinkerId, new Date(now)],
   );
+  const account = await one(tx, "SELECT account_id FROM tinkers WHERE id = $1", [tinkerId]);
+  await joinWeek(tx, content, guildId, Number(account!.account_id), now);
   await tx.query("DELETE FROM guild_requests WHERE tinker_id = $1", [tinkerId]);
   await logFor(tx, content, tinkerId, [{ type: "guild_joined", at: now, payload: { guild: guildId, crowns: 0, items: {} } }]);
   await touchMembers(tx, guildId, touched);
@@ -275,6 +283,7 @@ async function readView(tx: Tx, content: GameContent, tinkerId: number, now: num
       activity: await readActivity(tx, mine.guildId),
       requests,
       recruiting: recruitingOf(row),
+      contracts: await readContracts(tx, content, mine.guildId, tinkerId, now),
       claim: await claimOn(tx, mine.guildId, tinkerId, now).then((claim) => claim && { leader: claim.leader, at: new Date(claim.at).toISOString() }),
     };
   }
@@ -314,6 +323,8 @@ async function guildOp(
   step: (tx: Tx, touched: Set<number>) => Promise<void>,
 ): Promise<GuildOutcome> {
   try {
+    // In a transaction of its own (contracts.ts), before this one locks anything; first, so one who is leaving is paid.
+    await closeWeeks(db, tinkerId, now);
     return await withTransaction(db, async (tx) => {
       const touched = new Set<number>();
       await formCharters(tx, content, now, touched);
@@ -347,7 +358,8 @@ export function foundGuild(db: Db, content: GameContent, tinkerId: number, name:
     if (refusal) throw new rules.GuildRefusal(refusal);
     const guild = (
       await tx.query(
-        "INSERT INTO guilds (name, status, created_at, charter_ends, formed_at) VALUES ($1, 'active', $2, $2, $2) RETURNING *",
+        // A new guild lets anyone in at once, so a first-day player can join one; its leader may change that.
+        "INSERT INTO guilds (name, status, created_at, charter_ends, formed_at, auto_accept) VALUES ($1, 'active', $2, $2, $2, true) RETURNING *",
         [rules.cleanGuildName(name), new Date(now)],
       )
     ).rows[0];

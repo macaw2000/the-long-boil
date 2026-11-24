@@ -157,6 +157,8 @@ const GUIDE_OPENS: Partial<Record<string, string>> = {
   loadout: "equip",
   [`skill:${FIGHT}`]: "equip",
   crowns: "rats",
+  // About ten minutes in, with a night's work set: a new player can found or join a guild in the first sitting.
+  guild: "come_back",
 };
 
 /**
@@ -183,7 +185,7 @@ const LATER_OPENS: Partial<Record<string, number>> = {
  * is skipped or the Prologue is over.
  */
 export function revealed(step: Step | null, state: GuideState, prologueProgress: number, visitsSincePrologue = 0): (feature: Feature) => boolean {
-  // Everything opens at the visit after the plate: opening Guild and the Cog Shop the moment the Prologue ended felt like the story stopping.
+  // Everything opens at the visit after the plate: opening the Cog Shop and the rest the moment the Prologue ended felt like the story stopping.
   if (state.skipped || visitsSincePrologue >= 1 || (prologueProgress >= 100 && state.acknowledged.length === 0)) return () => true;
   if (step === null || state.opened) {
     return (feature) => {

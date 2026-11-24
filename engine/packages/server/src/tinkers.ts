@@ -6,6 +6,7 @@
 import * as rules from "@long-boil/rules";
 import type { GameEvent, QueueEntry, StoryEvent, StoryState, TinkerState } from "@long-boil/rules";
 import type { GameContent } from "./content-loader.js";
+import { collectTokens, countGuildWork } from "./contracts.js";
 import { withTransaction, type Db, type Tx } from "./db.js";
 import { appendEvents, type LogEntry } from "./events.js";
 import { NotFound, settle, type TradeNote } from "./settle.js";
@@ -331,6 +332,7 @@ export async function advance(tx: Tx, content: GameContent, tinkerId: number, no
     ...refreshed.events.map((event) => ({ type: event.type, at: event.at, payload: event })),
   ];
   if (refill) entries.push({ type: "checked_in", at: now, payload: { steamUntil: state.steamUntil } });
+  entries.push(...(await collectTokens(tx, tinkerId, now)), ...(await countGuildWork(tx, content, tinkerId, resolved.events, now)));
   const seq = await appendEvents(tx, tinkerId, loaded.lastSeq, entries, version);
   await saveState(tx, tinkerId, loaded, state, seq, version);
   await saveStory(tx, tinkerId, storyBefore, refreshed.story);

@@ -9,3 +9,4 @@ export * from "./work_orders.js";
 export * from "./guilds.js";
 export * from "./shop.js";
 export * from "./looks.js";
+export * from "./contracts.js";

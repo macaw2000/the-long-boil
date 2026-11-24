@@ -57,6 +57,10 @@ describe("founding a guild", () => {
 
   it("lets Tinkers in by application or invitation, one guild per account", async () => {
     bram = await tinker("g-bram@example.com", "Bram", 50_000);
+    // A new guild lets anyone in at once; this one's leader would rather be asked.
+    const founded = (await call("GET", `/tinkers/${ada}/guild`)).body.guild.recruiting;
+    expect(founded).toEqual({ open: true, minLevel: 0, autoAccept: true });
+    await call("PUT", `/tinkers/${ada}/guild/recruiting`, { ...founded, autoAccept: false });
     const applied = await call("POST", `/tinkers/${bram}/guilds/${guildId}/apply`, undefined, gated);
     expect(applied.body.applications).toEqual([{ guildId, name: "Iron Owls", status: "active" }]);
     const leaderSees = (await call("GET", `/tinkers/${ada}/guild`)).body.guild.requests;
