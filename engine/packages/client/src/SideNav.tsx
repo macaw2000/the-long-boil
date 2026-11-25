@@ -286,6 +286,7 @@ export function SkillStrip({
   onPlace,
   guided,
   shown,
+  badges,
 }: {
   content: Content;
   tinker: Tinker;
@@ -293,6 +294,7 @@ export function SkillStrip({
   onPlace: (place: Place) => void;
   guided: Place | null;
   shown: (place: Place) => boolean;
+  badges: Partial<Record<Place, PlaceBadge>>;
 }) {
   const [asked, setAsked] = useState<string | null>(null);
   return (
@@ -327,6 +329,11 @@ export function SkillStrip({
           >
             <SkillIcon skill={skill} size={24} />
             {/* A phone shows icons only, so the guide's skill carries its name. */}
+            {open && badges[key] && (
+              <View style={{ position: "absolute", top: -4, right: -4 }}>
+                <Badge count={badges[key].count} label={badges[key].label} tone={badges[key].tone} />
+              </View>
+            )}
             {!open && <UiIcon name="locked" size={14} />}
             {open && <Text style={[ui.muted, { fontSize: 11, color: active ? colors.brass : colors.muted }]}>
               {skill === FIGHT ? "Fight" : guided === key ? titleCase(skill) : String(level)}

@@ -12,7 +12,7 @@
 // piece at a time as the steps reach each place; skipping or finishing the
 // guide opens the rest.
 
-import { SKILL_GATES } from "@long-boil/rules";
+import { JOBS_CREDIT, SKILL_GATES } from "@long-boil/rules";
 import { Image, Pressable, Text, View } from "react-native";
 import type { Content, GuideProgress, RoadView, Tinker } from "./api";
 import { FIGHT } from "./jobs";
@@ -205,7 +205,7 @@ const JOBS_OPEN: Partial<Record<string, number>> = {
  */
 export function revealed(step: Step | null, state: GuideState, prologueProgress: number, visitsSincePrologue = 0, jobsDone = 0): (feature: Feature) => boolean {
   // Everything opens at the visit after the plate: opening the Cog Shop and the rest the moment the Prologue ended felt like the story stopping.
-  if (state.skipped || visitsSincePrologue >= 1 || (prologueProgress >= 100 && state.acknowledged.length === 0)) return () => true;
+  if (state.skipped || state.acknowledged.includes(ALL_OPEN) || visitsSincePrologue >= 1 || (prologueProgress >= 100 && state.acknowledged.length === 0)) return () => true;
   const worked = (feature: Feature) => {
     const jobs = JOBS_OPEN[feature];
     return jobs !== undefined && jobsDone >= jobs;
@@ -224,6 +224,17 @@ export function revealed(step: Step | null, state: GuideState, prologueProgress:
   };
 }
 
+/** The guide-state mark of a player who skipped: replaying the guide shuts nothing they had open. */
+export const ALL_OPEN = "all_open";
+
+/** Opened places that can be new, in the order they open. */
+const OPENING_ORDER: Place[] = ["story", `skill:${FIGHT}`, "guild", "exchange", "skill:tailoring", "skill:prospecting", "skill:smithing", "skill:cooking", "skill:scavenging", "shop", "chat"];
+
+/** The one place that wears "new": the latest opened and not yet visited, so badges never pile up. */
+export function newestPlace(place: Place, seen: readonly string[], shown: (place: Place) => boolean): Place | null {
+  return OPENING_ORDER.filter((candidate) => candidate !== place && shown(candidate) && !seen.includes(candidate)).pop() ?? null;
+}
+
 /** When a place still shut will open, in plain words: what its greyed row in the nav says when hovered or tapped. */
 export function opensWhen(feature: string, jobsDone: number): string {
   const gate = feature.startsWith("skill:") ? SKILL_GATES[feature.slice("skill:".length)] : undefined;
@@ -231,7 +242,8 @@ export function opensWhen(feature: string, jobsDone: number): string {
   if (GUIDE_OPENS[feature] !== undefined) return "Opens later in this visit";
   const left = (JOBS_OPEN[feature] ?? 0) - jobsDone;
   if (left <= 0) return "Opens when Brassbuckle has shown you round";
-  return `Opens after ${left} more ${left === 1 ? "job" : "jobs"}`;
+  // "Job" is the queue's word for a whole entry; what counts here is each go.
+  return `Opens after ${left} more ${left === 1 ? "thing" : "things"} made, gathered or beaten. A spell away counts for up to ${JOBS_CREDIT}.`;
 }
 
 /** Where a fresh workshop opens while the guide runs: the bench Brassbuckle points at. */
@@ -397,7 +409,7 @@ export interface Goal {
   speaker?: string;
 }
 
-export function nextGoal(tinker: Tinker, content: Content, now: number, name: (id: string) => string, guide: GuideState, saleLeft: number | null = null): Goal | null {
+export function nextGoal(tinker: Tinker, content: Content, now: number, name: (id: string) => string, guide: GuideState, saleLeft: number | null = null, newest: Place | null = null, cooking = true): Goal | null {
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
   // The later sittings speak in Brassbuckle's words from the guide file, falling back to plain ones.
   const said = (id: string, plain: string, place: Place | null): Goal => {
@@ -419,8 +431,11 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
     return progress >= PLATE_FROM && progress < 100 ? said("brass_plate", "Scenes are open in Story.", "story") : { text: "Scenes are open in Story, and you have Nerve to play them.", place: "story" };
   }
   // The first armour comes after the sitting's scenes (playtesters met it with a night of fights queued): Silk Hand-Wraps, from the rats' silk.
+  // Wraps already made want wearing whenever that is; being sent to make them waits for the bill.
+  if (Object.keys(tinker.worn).length === 0 && held(tinker, WRAPS) > 0) {
+    return { text: `Wear your ${name(WRAPS)} in the Loadout.`, place: "stores" };
+  }
   if (progress >= BILL_ANSWERED && Object.keys(tinker.worn).length === 0) {
-    if (held(tinker, WRAPS) > 0) return { text: `Wear your ${name(WRAPS)} in the Loadout.`, place: "stores" };
     return said("first_armour", "Make something to wear.", held(tinker, SILK) >= WRAPS_SILK ? "skill:tailoring" : `skill:${FIGHT}`);
   }
   // The bench will stop before the Boiler does: say so before anything that can wait, rather than "All in hand".
@@ -430,8 +445,12 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
     const skill = content.actions.find((action) => action.id === head.actionId)?.skill ?? FIGHT;
     return { text: `The bench has work for ${Math.round(queued / 360_000) / 10}h, the Boiler steam for ${Math.round(steamLeft / 360_000) / 10}h. Queue more so nothing sits idle.`, place: `skill:${skill}` };
   }
+  // A skill just opened, when nothing else is due. Not Cooking, which a full crate of Rations leaves without a use.
+  if (newest?.startsWith("skill:") && newest !== "skill:cooking" && newest !== `skill:${FIGHT}`) {
+    return { text: `${titleCase(newest.slice("skill:".length))} is open: see what you can do there.`, place: newest };
+  }
   // Fewer Rations than a night of fights eats: say where more come from.
-  if (held(tinker, content.ration.item) < LOW_RATIONS) return { text: "Rations are running low: cook more at Cooking, with what the grocer's counter in the Exchange sells.", place: "exchange" };
+  if (cooking && held(tinker, content.ration.item) < LOW_RATIONS) return { text: "Rations are running low: cook more at Cooking, with what the grocer's counter in the Exchange sells.", place: "exchange" };
   // An unpaid bill comes after everything that can be done now: once the week's sale is used, it is only fighting.
   const unpaid = tinker.story.debts[0];
   if (unpaid) {
@@ -496,7 +515,7 @@ export function GuideCard({
             </Pressable>
           )}
           <Pressable onPress={onSkip} accessibilityRole="button">
-            <Text style={[ui.muted, { fontSize: 12 }]}>Skip the guide</Text>
+            <Text style={[ui.muted, { fontSize: 12 }]}>Skip the guide (opens every place)</Text>
           </Pressable>
         </View>
       </View>

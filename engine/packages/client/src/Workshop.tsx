@@ -14,7 +14,7 @@ import { Chat, ChatDock, channelOf, useChat, useWhispers, type ChatProps } from 
 import { Bills, Exchange } from "./Exchange";
 import { duration, namer, titleCase, tradeLine } from "./format";
 import { Glow } from "./Glow";
-import { actedMark, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, queuedMs, rest, restLine, revealed, SendOff, type GuideAction, type GuideState, type Target } from "./Guide";
+import { actedMark, ALL_OPEN, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, newestPlace, nextGoal, nudges, queuedMs, rest, restLine, revealed, SendOff, type GuideAction, type GuideState, type Target } from "./Guide";
 import { Guild } from "./Guild";
 import { GuildCard } from "./GuildCard";
 import { Inspect } from "./Inspect";
@@ -500,7 +500,8 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const litPlaces = coaching
     ? new Set<Place>()
     : new Set<Place>([...(lit as Set<Target>)].map(placeOf).filter((value): value is Place => value !== null && value !== place));
-  const goal = coaching ? null : nextGoal(tinker, content, now, name, guide, saleLeft);
+  const newest = guide.seen ? newestPlace(place, guide.seen, shown) : null;
+  const goal = coaching ? null : nextGoal(tinker, content, now, name, guide, saleLeft, newest, opened("skill:cooking"));
   const resting = rest(tinker, content, now, name, nextVisitAt);
   const rationsLine = away ? rationsNote(away.ledger, content) : undefined;
   const closeLedger = () => {
@@ -551,12 +552,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   };
   // A place the guide has opened and the player has not yet visited says so.
   if (guide.seen) {
-    const places: Place[] = ["story", "exchange", "guild", "shop", "chat", ...content.actions.map((action): Place => `skill:${action.skill}`), "skill:fight"];
-    for (const candidate of new Set(places)) {
-      if (candidate === place || candidate === GUIDE_START || guide.seen.includes(candidate) || !shown(candidate)) continue;
-      if ((badges[candidate]?.count ?? 0) > 0) continue;
-      badges[candidate] = { count: 1, label: "new", tone: colors.verdigris };
-    }
+    if (newest && !((badges[newest]?.count ?? 0) > 0)) badges[newest] = { count: 1, label: "new", tone: colors.verdigris };
   }
 
   const scene = (
@@ -571,11 +567,11 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     <View style={{ gap: 12 }}>
       <ReminderNotice />
       {step && coaching ? (
-      <GuideCard step={step} content={content} coaching={coaching} onAction={guideAction} onSkip={() => setGuide({ ...guide, skipped: true })} />
+      <GuideCard step={step} content={content} coaching={coaching} onAction={guideAction} onSkip={() => setGuide({ ...guide, skipped: true, acknowledged: [...guide.acknowledged, ALL_OPEN] })} />
     ) : sendOff ? (
       <SendOff at={resting} now={now} onClose={() => setSendOff(false)} />
     ) : (
-      <GoalBar goal={goal} road={tinker.story.road} quiet={restLine(resting, now)} onGo={setPlace} onReplay={() => setGuide({ acknowledged: [], skipped: false, opened: true, seen: guide.seen })} />
+      <GoalBar goal={goal} road={tinker.story.road} quiet={restLine(resting, now)} onGo={setPlace} onReplay={() => setGuide({ acknowledged: guide.skipped || guide.acknowledged.includes(ALL_OPEN) ? [ALL_OPEN] : [], skipped: false, opened: true, seen: guide.seen })} />
       )}
     </View>
   );
@@ -750,7 +746,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         </View>
       )}
       {!wide && skillPlace !== null && (
-        <SkillStrip content={content} tinker={tinker} place={place} onPlace={setPlace} guided={guidedPlace} shown={shown} />
+        <SkillStrip badges={badges} content={content} tinker={tinker} place={place} onPlace={setPlace} guided={guidedPlace} shown={shown} />
       )}
       <View style={{ flex: 1, flexDirection: "row" }}>
         {wide && (
