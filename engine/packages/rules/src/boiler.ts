@@ -116,6 +116,20 @@ export type GameEvent =
   | { type: "queue_stalled"; at: number; actionId: string; reason: "inputs" | "level" | "unknown_action" | "no_weapon" | "cannot_win" }
   | { type: "boiler_dry"; at: number };
 
+/**
+ * The most jobs one look at the workshop counts toward opening places: a look
+ * lands every job while the player is there, so only a spell away meets it. A
+ * night's 790 rats would otherwise open every place at once, which a
+ * playtester called feeling dropped (docs/first-day-plan.md).
+ */
+export const JOBS_CREDIT = 8;
+
+/** Jobs these events finished that count toward opening places: each craft, gather or fight. */
+export function jobsCounted(events: readonly GameEvent[]): number {
+  const done = events.filter((event) => event.type === "action_completed" || event.type === "monster_killed" || event.type === "boss_attempted").length;
+  return Math.min(JOBS_CREDIT, done);
+}
+
 export interface Resolution {
   state: TinkerState;
   events: GameEvent[];

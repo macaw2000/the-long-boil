@@ -34,6 +34,8 @@ export interface TinkerView {
   skills: { skill: string; xp: number; level: number }[];
   queue: QueueEntry[];
   progressMs: number;
+  /** Jobs finished, as counted toward opening places (rules jobsCounted). */
+  jobsDone: number;
   /** How long one go of the queue's head takes, kills included: a fight's time depends on the Tinker. */
   headMs: number | null;
   steamUntil: string;
@@ -335,6 +337,8 @@ export async function advance(tx: Tx, content: GameContent, tinkerId: number, no
   entries.push(...(await collectTokens(tx, tinkerId, now)), ...(await countGuildWork(tx, content, tinkerId, resolved.events, now)));
   const seq = await appendEvents(tx, tinkerId, loaded.lastSeq, entries, version);
   await saveState(tx, tinkerId, loaded, state, seq, version);
+  const jobs = rules.jobsCounted(resolved.events);
+  if (jobs > 0) await tx.query("UPDATE tinkers SET jobs_done = jobs_done + $2 WHERE id = $1", [tinkerId, jobs]);
   await saveStory(tx, tinkerId, storyBefore, refreshed.story);
   return { loaded, state, story: refreshed.story, storyBefore, events: resolved.events, storyEvents: refreshed.events, trades, seq };
 }
@@ -355,7 +359,7 @@ function waitingOrders(desk: rules.WorkOrderState, now: number): number {
 
 export async function view(tx: Tx, tinkerId: number, content: GameContent, now = Date.now()): Promise<TinkerView> {
   const row = (
-    await tx.query("SELECT id, name, crowns, cogs, progress_ms, steam_until, resolved_to, work_orders, body, outfit, backdrop FROM tinkers WHERE id = $1", [tinkerId])
+    await tx.query("SELECT id, name, crowns, cogs, progress_ms, steam_until, resolved_to, work_orders, jobs_done, body, outfit, backdrop FROM tinkers WHERE id = $1", [tinkerId])
   ).rows[0];
   const loaded = await lockAndLoad(tx, tinkerId);
   const boostUntil = loaded.state.boostUntil;
@@ -375,6 +379,7 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent, now =
       .sort((a, b) => a.skill.localeCompare(b.skill)),
     queue: loaded.state.queue,
     progressMs: loaded.state.progressMs,
+    jobsDone: Number(row.jobs_done),
     headMs: rules.headMs(loaded.state, content.rules),
     steamUntil: row.steam_until.toISOString(),
     resolvedTo: row.resolved_to.toISOString(),
@@ -436,7 +441,7 @@ export async function resetTinker(db: Db, content: GameContent, tinkerId: number
       `UPDATE tinkers SET crowns = $2, progress_ms = 0, resolved_to = $3, steam_until = $4, content_version = $5,
          weapon = NULL, armour = NULL, worn = '{}', tools = '{}', head_tool = 0, ration_debt = 0, pity = '{}', bosses_beaten = '[]',
          nerve = $6, nerve_at = $7, post_at = $8, hand = '[]', needle_at = '{}', check_in_at = NULL,
-         answered = '[]', played_at = '{}', work_orders = DEFAULT, guide = NULL, head_boosted = false, name = $9,
+         answered = '[]', played_at = '{}', work_orders = DEFAULT, guide = NULL, jobs_done = 0, head_boosted = false, name = $9,
          outfit = CASE WHEN outfit = ANY($10::text[]) THEN outfit END, backdrop = CASE WHEN backdrop = ANY($10::text[]) THEN backdrop END
        WHERE id = $1`,
       [

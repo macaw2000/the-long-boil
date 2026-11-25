@@ -456,7 +456,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
   const step = currentStep(tinker, guide);
   // While the guide runs, the screen opens only what it has reached (the nav greys the rest); the place the player is on is always open.
-  const opened = revealed(step, guide, tinker.story.qualities["prologue.progress"] ?? 0, tinker.story.qualities["record.visits_since_prologue"] ?? 0);
+  const opened = revealed(step, guide, tinker.story.qualities["prologue.progress"] ?? 0, tinker.story.qualities["record.visits_since_prologue"] ?? 0, tinker.jobsDone);
   // A skill the story has not opened yet (rules SKILL_GATES) stays locked even after the guide.
   // A guild or an invitation opens the Guild tab whatever the guide has reached, and being in a guild opens chat, where it talks.
   const social = (feature: string) =>
@@ -642,9 +642,9 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     ) : place === "exchange" ? (
       <View style={{ gap: 12 }}>
         {tinker.story.debts.length > 0 && <Bills tinker={tinker} act={run} payGuided={at === "pay"} />}
-        {/* Opened by the guide alone: a guild opens chat early, but not these. */}
-        {opened("chat") && <WorkOrders content={content} tinker={tinker} name={name} onOutcome={apply} />}
-        <Exchange content={content} tinker={tinker} name={name} run={run} whole={opened("chat")} />
+        {/* The whole Exchange waits for the Prologue: jobs or a guild open chat sooner, but not these. */}
+        {opened("floor") && <WorkOrders content={content} tinker={tinker} name={name} onOutcome={apply} />}
+        <Exchange content={content} tinker={tinker} name={name} run={run} whole={opened("floor")} cooking={opened("skill:cooking")} />
       </View>
     ) : place === "stores" ? (
       <View style={{ gap: 12 }}>
@@ -808,7 +808,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         </View>
       </View>
       {!wide && (
-        <BottomBar place={place} workPlace={workPlace} onPlace={setPlace} badges={badges} lit={litPlaces} guided={guidedPlace} shown={shown} />
+        <BottomBar place={place} workPlace={workPlace} onPlace={setPlace} badges={badges} lit={litPlaces} guided={guidedPlace} shown={shown} jobsDone={tinker.jobsDone} />
       )}
       {inspecting !== null && (
         <Inspect

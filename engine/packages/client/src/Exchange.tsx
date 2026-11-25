@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Pressable, Text, TextInput, useWindowDimensions, View } from "react-native";
 import { api, type BookLevel, type Content, type MarketView, type Outcome, type Side, type Tinker } from "./api";
 import { Glow } from "./Glow";
-import { held as heldAll, LOW_RATIONS, THIRD_SITTING } from "./Guide";
+import { held as heldAll, LOW_RATIONS } from "./Guide";
 import { ItemIcon } from "./Sprite";
 import { colors, ui } from "./theme";
 
@@ -22,6 +22,7 @@ export function Exchange({
   name,
   run,
   whole,
+  cooking,
 }: {
   content: Content;
   tinker: Tinker;
@@ -29,6 +30,8 @@ export function Exchange({
   run: (call: Promise<Outcome>) => Promise<unknown>;
   /** The whole Exchange; on the first day only what a player can use, as a first visit read as nine new things and one job. */
   whole: boolean;
+  /** Whether Cooking has opened, and the grocer with it. */
+  cooking: boolean;
 }) {
   const [market, setMarket] = useState<MarketView | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -57,7 +60,7 @@ export function Exchange({
   return (
     <View style={{ flexDirection: wide ? "row" : "column", gap: 12, alignItems: "flex-start" }}>
       <View style={{ width: wide ? 380 : "100%", gap: 12 }}>
-        <Window content={content} tinker={tinker} market={market} name={name} act={act} whole={whole} />
+        <Window content={content} tinker={tinker} market={market} name={name} act={act} whole={whole} cooking={cooking} />
       </View>
       <View style={{ flex: wide ? 1 : undefined, width: wide ? undefined : "100%", gap: 12 }}>
         {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
@@ -106,10 +109,10 @@ export function Bills({ tinker, act, payGuided = false }: { tinker: Tinker; act:
 }
 
 /** The Counting-House window: the collectors and the grocer's counter. */
-function Window({ content, tinker, market, name, act, whole }: { content: Content; tinker: Tinker; market: MarketView | null; name: (id: string) => string; act: Act; whole: boolean }) {
+function Window({ content, tinker, market, name, act, whole, cooking }: { content: Content; tinker: Tinker; market: MarketView | null; name: (id: string) => string; act: Act; whole: boolean; cooking: boolean }) {
   const collected = Object.entries(content.economy).filter(([item, terms]) => terms.collectorPrice !== null && (whole || heldUnbound(tinker, item) > 0));
   // The grocer opens with Cooking, or sooner if the goal line sends a player here for Rations.
-  const grocer = whole || (tinker.story.qualities["prologue.progress"] ?? 0) >= THIRD_SITTING || heldAll(tinker, content.ration.item) < LOW_RATIONS;
+  const grocer = whole || cooking || heldAll(tinker, content.ration.item) < LOW_RATIONS;
   const groceries = grocer ? Object.entries(content.economy).filter(([, terms]) => terms.grocerPrice !== null) : [];
   return (
     <View style={ui.panel}>

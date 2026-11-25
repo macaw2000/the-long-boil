@@ -142,6 +142,7 @@ The Great Kettle and the Lift move to Act I. So do the Exchange, guilds, the Nee
 36. **Later pages are named by their own titles**, such as "Hester's Torn Page: No. 9, accounts", to be settled across the drop pages before the first Cinderworks page is drafted; decision 27 stands until then (Jeremy, 5 November 2026).
 37. **Hester's "the line comes first" stays** at 4 Crowns against 350 (Jeremy, 5 November 2026).
 38. **The Friday runner in `drop_3` stays open**: canon does not say whether it is Pip (Jeremy, 5 November 2026).
+39. **The left bar opens by play in about the first hour**, one or two places at a time, and greys what is shut instead of hiding it. The Exchange opens at 10 jobs done, then Tailoring 18, Prospecting 26, Smithing 34, Cooking 42, Scavenging and Leaderboards 50, the Cog Shop and Chat 58; the story still opens them if it gets there first. The story keeps its three sittings. A spell away counts for at most 8 jobs (the lead session's addition), so a night of 790 rats does not open every place at once (Jeremy, 25 November 2026).
 
 ## Open after work order 041
 

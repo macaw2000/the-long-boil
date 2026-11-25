@@ -67,7 +67,7 @@ export function SideNav({
   return (
     <ScrollView style={{ width: 210 }} contentContainerStyle={{ paddingVertical: 12, gap: 2 }}>
       {(["story", "exchange", "guild", "shop", "leaderboards"] as const).map((choice) => (
-        <NavRow key={choice} locked={shown(choice) ? undefined : { name: placeName(choice), when: opensWhen(choice) }} active={place === choice} lit={lit.has(choice)} guided={guided === choice} onPress={() => onPlace(choice)} badge={badges[choice]}>
+        <NavRow key={choice} locked={shown(choice) ? undefined : { name: placeName(choice), when: opensWhen(choice, tinker.jobsDone) }} active={place === choice} lit={lit.has(choice)} guided={guided === choice} onPress={() => onPlace(choice)} badge={badges[choice]}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
             <View style={{ width: 26, height: 26 }}>{PLACE_ICONS[choice] && <UiIcon name={PLACE_ICONS[choice]!} size={26} />}</View>
             <Text style={[ui.text, { fontSize: 15, color: place === choice ? colors.brass : colors.ink }]}>{placeName(choice)}</Text>
@@ -83,7 +83,7 @@ export function SideNav({
         const progress = !open || skill === FIGHT ? null : levelProgress(content, entry?.xp ?? 0, level);
         const busy = working !== undefined && (content.actions.find((action) => action.id === working)?.skill ?? FIGHT) === skill;
         return (
-          <NavRow key={skill} locked={open ? undefined : { name: skillName(skill), when: opensWhen(key) }} active={place === key} lit={lit.has(key)} guided={guided === key} onPress={() => onPlace(key)} badge={badges[key]}>
+          <NavRow key={skill} locked={open ? undefined : { name: skillName(skill), when: opensWhen(key, tinker.jobsDone) }} active={place === key} lit={lit.has(key)} guided={guided === key} onPress={() => onPlace(key)} badge={badges[key]}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 10, flex: 1 }}>
               <SkillIcon skill={skill} size={26} />
               <View style={{ flex: 1, gap: 3 }}>
@@ -214,6 +214,7 @@ export function BottomBar({
   lit,
   guided,
   shown,
+  jobsDone,
 }: {
   place: Place;
   /** Where Work leads from elsewhere: the skill the Tinker is busy at. */
@@ -223,6 +224,8 @@ export function BottomBar({
   lit: Set<Place>;
   guided: Place | null;
   shown: (place: Place) => boolean;
+  /** Jobs finished, for what a locked place says. */
+  jobsDone: number;
 }) {
   const [asked, setAsked] = useState<Place | null>(null);
   const working = place.startsWith("skill:");
@@ -243,7 +246,7 @@ export function BottomBar({
   };
   return (
     <View>
-    {asked !== null && !shown(asked) && <LockedNote text={`${placeName(asked)}: ${opensWhen(asked)}`} />}
+    {asked !== null && !shown(asked) && <LockedNote text={`${placeName(asked)}: ${opensWhen(asked, jobsDone)}`} />}
     <View style={{ flexDirection: "row", borderTopWidth: 1, borderTopColor: colors.brassDim, backgroundColor: "rgba(20, 16, 12, 0.96)" }}>
       {items.map(({ key, label }) => {
         const open = key === "work" || shown(key);
@@ -255,7 +258,7 @@ export function BottomBar({
             <Pressable
               onPress={() => press(key)}
               accessibilityRole="tab"
-              accessibilityLabel={open ? label : `${label}, locked. ${opensWhen(key)}`}
+              accessibilityLabel={open ? label : `${label}, locked. ${opensWhen(key, jobsDone)}`}
               accessibilityState={{ selected: active, disabled: !open }}
               style={{ alignItems: "center", paddingVertical: 10, borderTopWidth: 2, borderTopColor: active ? colors.brass : "transparent", ...(open ? null : LOCKED) }}
             >
@@ -308,7 +311,7 @@ export function SkillStrip({
               if (open) onPlace(key);
             }}
             accessibilityRole="tab"
-            accessibilityLabel={!open ? `${skillName(skill)}, locked. ${opensWhen(key)}` : skill === FIGHT ? "Fight" : `${titleCase(skill)}, level ${level}`}
+            accessibilityLabel={!open ? `${skillName(skill)}, locked. ${opensWhen(key, tinker.jobsDone)}` : skill === FIGHT ? "Fight" : `${titleCase(skill)}, level ${level}`}
             accessibilityState={{ selected: active, disabled: !open }}
             style={{
               alignItems: "center",
@@ -333,7 +336,7 @@ export function SkillStrip({
         );
       })}
     </ScrollView>
-    {asked !== null && !shown(`skill:${asked}`) && <LockedNote text={`${skillName(asked)}: ${opensWhen(`skill:${asked}`)}`} />}
+    {asked !== null && !shown(`skill:${asked}`) && <LockedNote text={`${skillName(asked)}: ${opensWhen(`skill:${asked}`, tinker.jobsDone)}`} />}
     </View>
   );
 }

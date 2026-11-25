@@ -35,6 +35,7 @@ describe("a Tinker's first session", () => {
     expect(status).toBe(201);
     id = body.tinker.id;
     expect(body.tinker.crowns).toBe(0);
+    expect(body.tinker.jobsDone).toBe(0);
     expect(body.tinker.inventory).toEqual([
       { item: "item.rustmoor.brass_ingot", qty: 50, bound: false },
       { item: "item.rustmoor.rustmoor_ration", qty: 342, bound: true },
@@ -54,6 +55,8 @@ describe("a Tinker's first session", () => {
     const { body } = await call("POST", `/tinkers/${id}/check-in`);
     const spanners = body.tinker.inventory.find((stack: { item: string }) => stack.item === "item.rustmoor.brass_spanner");
     expect(spanners.qty).toBe(50);
+    // A spell away counts for a few jobs only, so it opens one place, not all of them.
+    expect(body.tinker.jobsDone).toBe(8);
     const copper = body.tinker.inventory.find((stack: { item: string }) => stack.item === "item.rustmoor.copper");
     expect(copper.qty).toBe(Math.floor((6 * 3600 - 50 * 54) / 54));
     expect(body.tinker.skills.find((skill: { skill: string }) => skill.skill === "tinkering")).toMatchObject({ xp: 400, level: 3 });

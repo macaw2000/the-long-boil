@@ -147,7 +147,7 @@ export function currentStep(tinker: Tinker, state: GuideState): Step | null {
 }
 
 /** Parts of the screen that open as the guide reaches them. */
-export type Feature = Place | "nerve" | "crowns" | "cogs" | `needle.${string}` | "loadout";
+export type Feature = Place | "nerve" | "crowns" | "cogs" | `needle.${string}` | "loadout" | "floor";
 
 /** What the first sitting's guide opens, and the step that opens each. */
 const GUIDE_OPENS: Partial<Record<string, string>> = {
@@ -181,34 +181,57 @@ const LATER_OPENS: Partial<Record<string, number>> = {
 };
 
 /**
+ * Places also open by play, one or two at a time over about the first hour: a
+ * job takes about a minute, so something is always a few jobs away (Jeremy,
+ * 25 November 2026). Whichever comes first, this or the story, opens the place.
+ */
+const JOBS_OPEN: Partial<Record<string, number>> = {
+  exchange: 10,
+  "skill:tailoring": 18,
+  "skill:prospecting": 26,
+  "skill:smithing": 34,
+  "skill:cooking": 42,
+  "skill:scavenging": 50,
+  leaderboards: 50,
+  shop: 58,
+  cogs: 58,
+  chat: 58,
+};
+
+/**
  * What the screen shows: while the guide runs, only what it has reached;
  * after it, the first day's places as they come; everything once the guide
  * is skipped or the Prologue is over.
  */
-export function revealed(step: Step | null, state: GuideState, prologueProgress: number, visitsSincePrologue = 0): (feature: Feature) => boolean {
+export function revealed(step: Step | null, state: GuideState, prologueProgress: number, visitsSincePrologue = 0, jobsDone = 0): (feature: Feature) => boolean {
   // Everything opens at the visit after the plate: opening the Cog Shop and the rest the moment the Prologue ended felt like the story stopping.
   if (state.skipped || visitsSincePrologue >= 1 || (prologueProgress >= 100 && state.acknowledged.length === 0)) return () => true;
+  const worked = (feature: Feature) => {
+    const jobs = JOBS_OPEN[feature];
+    return jobs !== undefined && jobsDone >= jobs;
+  };
   if (step === null || state.opened) {
     return (feature) => {
       const later = LATER_OPENS[feature];
-      return GUIDE_OPENS[feature] !== undefined || (later !== undefined && prologueProgress >= later);
+      return GUIDE_OPENS[feature] !== undefined || (later !== undefined && prologueProgress >= later) || worked(feature);
     };
   }
   const at = stepIndex(step.id);
   return (feature) => {
     const opens = GUIDE_OPENS[feature];
-    return opens !== undefined && at >= stepIndex(opens);
+    // A player who plays on at the last step, rather than leaving, is past everything the guide teaches.
+    return (opens !== undefined && at >= stepIndex(opens)) || (at >= stepIndex("come_back") && worked(feature));
   };
 }
 
 /** When a place still shut will open, in plain words: what its greyed row in the nav says when hovered or tapped. */
-export function opensWhen(feature: string): string {
+export function opensWhen(feature: string, jobsDone: number): string {
   const gate = feature.startsWith("skill:") ? SKILL_GATES[feature.slice("skill:".length)] : undefined;
   if (gate) return gate.reason;
   if (GUIDE_OPENS[feature] !== undefined) return "Opens later in this visit";
-  const later = LATER_OPENS[feature];
-  if (later === undefined) return "Opens on your first visit after the Prologue";
-  return later <= BILL_ANSWERED ? "Opens once you answer your first letter" : "Opens later in the Prologue";
+  const left = (JOBS_OPEN[feature] ?? 0) - jobsDone;
+  if (left <= 0) return "Opens when Brassbuckle has shown you round";
+  return `Opens after ${left} more ${left === 1 ? "job" : "jobs"}`;
 }
 
 /** Where a fresh workshop opens while the guide runs: the bench Brassbuckle points at. */
