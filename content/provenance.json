@@ -25939,15 +25939,32 @@
       "model": null,
       "patch": null,
       "validators": {
-        "result": null,
-        "run": null,
-        "checks": null,
+        "result": "pass",
+        "run": "2026-11-25T23:47:25Z",
+        "checks": [
+          "fixtures",
+          "schema",
+          "provenance",
+          "xp_curve",
+          "references",
+          "pacing",
+          "drops",
+          "combat",
+          "start",
+          "qualities",
+          "story_graph",
+          "reveal",
+          "clearance",
+          "style",
+          "work_orders",
+          "hook"
+        ],
         "waiver": null
       },
       "review": {
         "by": "inspector",
         "verdict": "pass",
-        "notes": "Pass with notes (work order 041, second review, 14 Nov 2026), first_haul line only: in voice, stool joke gone; the other fourteen lines unchanged since the review of 5 Nov. The client hint beneath it no longer repeats the watching clause. Not approved. This verdict covers only the first 15 steps. On 25 November 2026 the scrivener added eight lines (opened_exchange, opened_prospecting, opened_smithing, opened_cooking, opened_scavenging, opened_guild, new_job, cogs) under Jeremy's go-ahead after the educator's cold read (docs/first-day-plan.md decisions 39 and 40); the inspector has not reviewed them, so the row is back to drafted. Reported by the orchestrator: Jeremy approved the wording of the eight lines in chat on 25 November 2026, before any inspector review or play. That is a fact about the wording, not an approval of the row. Later on 25 November 2026: the scrivener replaced opened_scavenging with \"Crowns, no bites: Scavenging finds bent nails; the window under Exchange buys only so many a week.\" Reported by the orchestrator: Jeremy approved that wording in chat. The inspector failed opened_exchange (\"on my word\" with no speaker shown) and opened_cooking (\"No hurry\" hiding the low-Rations line); both were settled in client code (commit 803ca28) with their wording unchanged. A fresh inspector review is pending; the pass verdict above still covers only the first 15 steps. Not approved."
+        "notes": "Pass with notes (work order 041, second review, 14 Nov 2026), first_haul line only: in voice, stool joke gone; the other fourteen lines unchanged since the review of 5 Nov. The client hint beneath it no longer repeats the watching clause. Not approved. This verdict covers only the first 15 steps. On 25 November 2026 the scrivener added eight lines (opened_exchange, opened_prospecting, opened_smithing, opened_cooking, opened_scavenging, opened_guild, new_job, cogs) under Jeremy's go-ahead after the educator's cold read (docs/first-day-plan.md decisions 39 and 40); the inspector has not reviewed them, so the row is back to drafted. Reported by the orchestrator: Jeremy approved the wording of the eight lines in chat on 25 November 2026, before any inspector review or play. That is a fact about the wording, not an approval of the row. Later on 25 November 2026: the scrivener replaced opened_scavenging with \"Crowns, no bites: Scavenging finds bent nails; the window under Exchange buys only so many a week.\" Reported by the orchestrator: Jeremy approved that wording in chat. The inspector failed opened_exchange (\"on my word\" with no speaker shown) and opened_cooking (\"No hurry\" hiding the low-Rations line); both were settled in client code (commit 803ca28) with their wording unchanged. A fresh inspector review is pending; the pass verdict above still covers only the first 15 steps. Not approved. Fresh inspector review, 25 November 2026, of the eight goal-bar lines at commit 5409feb: no fails; new_job and cogs pass, the other six pass with notes. Its note on opened_guild's \"free\" is settled: Jeremy confirmed guilds are free (build plan corrected in eaba6a9; the GDD edit is Jeremy's). This review is recorded here as reported by the orchestrator; the verdict field still carries the earlier review of the first 15 steps, and the row stays drafted. After that review, Jeremy approved in chat (reported by the orchestrator) capitalising Copper, Barley Meal and Bent Nails in opened_prospecting, opened_smithing, opened_cooking and opened_scavenging, and replacing opened_exchange with \"The rats leave you Rat Scrap; the window under Exchange turns it into Crowns.\" Both changes are in the working tree as of the 2026-11-25T23:47:25Z validator run, so the commit-5409feb review predates them. Not approved."
       },
       "approved_by": null,
       "approved_at": null,

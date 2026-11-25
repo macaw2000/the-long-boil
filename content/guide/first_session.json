@@ -82,27 +82,27 @@
     {
       "id": "opened_exchange",
       "speaker": "Professor Brassbuckle",
-      "line": "The window under Exchange buys your Rat Scrap for Crowns, on my word, but only so much a week."
+      "line": "The rats leave you Rat Scrap; the window under Exchange turns it into Crowns."
     },
     {
       "id": "opened_prospecting",
       "speaker": "Professor Brassbuckle",
-      "line": "Fifty ingots do not last. Prospecting digs the copper that more are made from."
+      "line": "Fifty ingots do not last. Prospecting digs the Copper that more are made from."
     },
     {
       "id": "opened_smithing",
       "speaker": "Professor Brassbuckle",
-      "line": "Smithing makes copper into Brass Ingots, and ingots into a breastplate against bites."
+      "line": "Smithing makes Copper into Brass Ingots, and ingots into a breastplate against bites."
     },
     {
       "id": "opened_cooking",
       "speaker": "Professor Brassbuckle",
-      "line": "No hurry: Cooking makes more Rations, from barley meal sold under Exchange."
+      "line": "No hurry: Cooking makes more Rations, from Barley Meal sold under Exchange."
     },
     {
       "id": "opened_scavenging",
       "speaker": "Professor Brassbuckle",
-      "line": "Crowns, no bites: Scavenging finds bent nails; the window under Exchange buys only so many a week."
+      "line": "Crowns, no bites: Scavenging finds Bent Nails; the window under Exchange buys only so many a week."
     },
     {
       "id": "opened_guild",
