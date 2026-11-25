@@ -14,7 +14,7 @@ import { Chat, ChatDock, channelOf, useChat, useWhispers, type ChatProps } from 
 import { Bills, Exchange } from "./Exchange";
 import { duration, namer, titleCase, tradeLine } from "./format";
 import { Glow } from "./Glow";
-import { actedMark, ALL_OPEN, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, newestPlace, nextGoal, nudges, queuedMs, rest, restLine, revealed, SendOff, type GuideAction, type GuideState, type Target } from "./Guide";
+import { actedMark, ALL_OPEN, unseenPlaces, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, queuedMs, rest, restLine, revealed, SendOff, type GuideAction, type GuideState, type Target } from "./Guide";
 import { Guild } from "./Guild";
 import { GuildCard } from "./GuildCard";
 import { Inspect } from "./Inspect";
@@ -500,8 +500,9 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const litPlaces = coaching
     ? new Set<Place>()
     : new Set<Place>([...(lit as Set<Target>)].map(placeOf).filter((value): value is Place => value !== null && value !== place));
-  const newest = guide.seen ? newestPlace(place, guide.seen, shown) : null;
-  const goal = coaching ? null : nextGoal(tinker, content, now, name, guide, saleLeft, newest, opened("skill:cooking"));
+  const unseen = guide.seen ? unseenPlaces(place, guide.seen, shown) : [];
+  const newest = unseen[unseen.length - 1] ?? null;
+  const goal = coaching ? null : nextGoal(tinker, content, now, name, guide, saleLeft, unseen, opened("skill:cooking"));
   const resting = rest(tinker, content, now, name, nextVisitAt);
   const rationsLine = away ? rationsNote(away.ledger, content) : undefined;
   const closeLedger = () => {

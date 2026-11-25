@@ -63,7 +63,7 @@ Milestones 1 to 6 are built. The GDD makes Kettleport a shared city (sections 6 
    - Ledger Page text is blurred by default (section 7) once chat can quote an item; there is no item linking yet.
 9. **Work Orders.** A new solo Work Order every 8 hours, each with a faction's seal that earns that faction's Favour (section 6). Gated like trading: total level 50 on an account at least 2 days old. Needs a draftsman work order for the order pool and its rewards, and the assayer's faucet figure, before it ships.
 10. **Guilds.** Settled by Jeremy on 24 October 2026:
-    - **Founding** costs 500,000 Crowns, a Crown sink (section 6), raised jointly. A founder opens a charter with at least 50,000 Crowns; any Tinker past the gate may pledge toward the rest; the guild forms when the charter is paid in full. Pledges are refunded if the charter is abandoned or not filled within 14 days.
+    - **Founding** is free and at once (commit fbfce97, 10 November 2026; Jeremy confirmed 25 November 2026). Superseded plan: founding 500,000 Crowns, a Crown sink (section 6), raised jointly. A founder opens a charter with at least 50,000 Crowns; any Tinker past the gate may pledge toward the rest; the guild forms when the charter is paid in full. Pledges are refunded if the charter is abandoned or not filled within 14 days.
     - **Joining** needs the trading gate (total level 50, an account at least 2 days old). One guild per account. At most 30 members.
     - **Ranks:** the leader (the founder) promotes officers, removes members, hands on leadership and disbands; officers invite and accept members; members.
     - **Ways in:** an invitation, or an application an officer or the leader accepts. No open join.

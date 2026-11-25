@@ -227,9 +227,10 @@ export const ALL_OPEN = "all_open";
 /** Opened places that can be new, in the order they open. */
 const OPENING_ORDER: Place[] = ["story", `skill:${FIGHT}`, "guild", "exchange", "skill:tailoring", "skill:prospecting", "skill:smithing", "skill:cooking", "skill:scavenging", "chat", "shop"];
 
-/** The one place that wears "new": the latest opened and not yet visited, so badges never pile up. */
-export function newestPlace(place: Place, seen: readonly string[], shown: (place: Place) => boolean): Place | null {
-  return OPENING_ORDER.filter((candidate) => candidate !== place && shown(candidate) && !seen.includes(candidate)).pop() ?? null;
+/** The one place that wears "new" is the last of these: the latest opened and not yet visited, so badges never pile up. */
+/** Opened places not yet visited, oldest first. */
+export function unseenPlaces(place: Place, seen: readonly string[], shown: (place: Place) => boolean): Place[] {
+  return OPENING_ORDER.filter((candidate) => candidate !== place && shown(candidate) && !seen.includes(candidate));
 }
 
 /** The guide-file line that gives a reason to visit each place, shown while it is the newest opened. */
@@ -419,7 +420,7 @@ export interface Goal {
   speaker?: string;
 }
 
-export function nextGoal(tinker: Tinker, content: Content, now: number, name: (id: string) => string, guide: GuideState, saleLeft: number | null = null, newest: Place | null = null, cooking = true): Goal | null {
+export function nextGoal(tinker: Tinker, content: Content, now: number, name: (id: string) => string, guide: GuideState, saleLeft: number | null = null, unseen: readonly Place[] = [], cooking = true): Goal | null {
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
   // The later sittings speak in Brassbuckle's words from the guide file, falling back to plain ones.
   const said = (id: string, plain: string, place: Place | null): Goal => {
@@ -467,17 +468,21 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
     return { ...line, text: `${line.text} (${tinker.crowns.toLocaleString()} of ${unpaid!.crowns.toLocaleString()} Crowns.)` };
   };
   if (unpaid && saleLeft !== 0) return billLine();
-  // A place just opened, when nothing else is due: why to go there. Tailoring has the armour line.
-  if (newest === "skill:tailoring" && Object.keys(tinker.worn).length === 0) {
+  // A place just opened, when nothing else is due: why to go there. The newest unvisited place that has a line,
+  // so a place without one (Chat) never hides the rest. Tailoring has the armour line.
+  const afterPrologue = (tinker.story.qualities["record.visits_since_prologue"] ?? 0) >= 1;
+  const hasLine = (candidate: Place) =>
+    candidate === "skill:tailoring"
+      ? Object.keys(tinker.worn).length === 0
+      : // Cogs wait for the Prologue's end, even for a player whose skipped guide opened the shop (decision 40).
+        candidate in OPENED_LINES && (candidate !== "shop" || afterPrologue);
+  const newest = [...unseen].reverse().find(hasLine);
+  if (newest === "skill:tailoring") {
     return plainly("first_armour", "Make something to wear.", held(tinker, SILK) >= WRAPS_SILK ? "skill:tailoring" : `skill:${FIGHT}`);
   }
-  // Cogs wait for the Prologue's end, even for a player whose skipped guide opened the shop (decision 40).
-  const early = newest === "shop" && (tinker.story.qualities["record.visits_since_prologue"] ?? 0) < 1;
-  if (newest && newest in OPENED_LINES && !early) {
-    // Brassbuckle gives their word in this one, so it carries the name.
-    if (newest === "exchange") return said("opened_exchange", "Exchange is open: see what you can do there.", newest);
-    return plainly(OPENED_LINES[newest]!, `${titleCase(newest.replace("skill:", ""))} is open: see what you can do there.`, newest);
-  }
+  // Brassbuckle gives their word in this one, so it carries the name.
+  if (newest === "exchange") return said("opened_exchange", "Exchange is open: see what you can do there.", newest);
+  if (newest) return plainly(OPENED_LINES[newest]!, `${titleCase(newest.replace("skill:", ""))} is open: see what you can do there.`, newest);
   if (unpaid) return billLine();
   // Nothing else told a player to train, and a skill gate could hold the story back for weeks (decision 17).
   const gate = tinker.story.nextGate;
