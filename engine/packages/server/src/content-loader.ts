@@ -45,7 +45,7 @@ export interface GameContent {
   /** Ledger page texts by the item that carries the page; a page with no file yet is not transcribed. */
   ledger: ReadonlyMap<string, LedgerPage>;
   /** Brassbuckle's first-session guide (work order 021), or no steps before it is written. */
-  guide: { id: string; speaker: string; line: string; button?: string }[];
+  guide: { id: string; speaker?: string; line: string; button?: string }[];
   /** The Boiler reminder's words (work order 039). */
   reminder: ReminderWords;
   /** How a Tinker can look (work order 042), or null in content with no looks. */

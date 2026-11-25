@@ -181,8 +181,9 @@ const LATER_OPENS: Partial<Record<string, number>> = {
 };
 
 /**
- * Places also open by play, one or two at a time over about the first hour: a
- * job takes about a minute, so something is always a few jobs away (Jeremy,
+ * The Exchange and the skills also open by play, one at a time over most of the
+ * first hour; Leaderboards, Chat, the Cog Shop and Cogs wait for the visit after
+ * the Prologue, as readers saw no reason for them sooner. A job takes about a minute, so something is always a few jobs away (Jeremy,
  * 25 November 2026). Whichever comes first, this or the story, opens the place.
  */
 const JOBS_OPEN: Partial<Record<string, number>> = {
@@ -192,10 +193,6 @@ const JOBS_OPEN: Partial<Record<string, number>> = {
   "skill:smithing": 34,
   "skill:cooking": 42,
   "skill:scavenging": 50,
-  leaderboards: 50,
-  shop: 58,
-  cogs: 58,
-  chat: 58,
 };
 
 /**
@@ -228,19 +225,32 @@ export function revealed(step: Step | null, state: GuideState, prologueProgress:
 export const ALL_OPEN = "all_open";
 
 /** Opened places that can be new, in the order they open. */
-const OPENING_ORDER: Place[] = ["story", `skill:${FIGHT}`, "guild", "exchange", "skill:tailoring", "skill:prospecting", "skill:smithing", "skill:cooking", "skill:scavenging", "shop", "chat"];
+const OPENING_ORDER: Place[] = ["story", `skill:${FIGHT}`, "guild", "exchange", "skill:tailoring", "skill:prospecting", "skill:smithing", "skill:cooking", "skill:scavenging", "chat", "shop"];
 
 /** The one place that wears "new": the latest opened and not yet visited, so badges never pile up. */
 export function newestPlace(place: Place, seen: readonly string[], shown: (place: Place) => boolean): Place | null {
   return OPENING_ORDER.filter((candidate) => candidate !== place && shown(candidate) && !seen.includes(candidate)).pop() ?? null;
 }
 
+/** The guide-file line that gives a reason to visit each place, shown while it is the newest opened. */
+const OPENED_LINES: Partial<Record<Place, string>> = {
+  exchange: "opened_exchange",
+  "skill:prospecting": "opened_prospecting",
+  "skill:smithing": "opened_smithing",
+  "skill:cooking": "opened_cooking",
+  "skill:scavenging": "opened_scavenging",
+  guild: "opened_guild",
+  shop: "cogs",
+};
+
 /** When a place still shut will open, in plain words: what its greyed row in the nav says when hovered or tapped. */
 export function opensWhen(feature: string, jobsDone: number): string {
   const gate = feature.startsWith("skill:") ? SKILL_GATES[feature.slice("skill:".length)] : undefined;
   if (gate) return gate.reason;
   if (GUIDE_OPENS[feature] !== undefined) return "Opens later in this visit";
-  const left = (JOBS_OPEN[feature] ?? 0) - jobsDone;
+  const jobs = JOBS_OPEN[feature];
+  if (jobs === undefined) return "Opens on your first visit after the Prologue";
+  const left = jobs - jobsDone;
   if (left <= 0) return "Opens when Brassbuckle has shown you round";
   // "Job" is the queue's word for a whole entry; what counts here is each go.
   return `Opens after ${left} more ${left === 1 ? "thing" : "things"} made, gathered or beaten. A spell away counts for up to ${JOBS_CREDIT}.`;
@@ -393,7 +403,7 @@ function betterWeapon(tinker: Tinker, content: Content): string | null {
 /** After the guide, the one thing most worth doing next, as a line on the goal bar. */
 /** The two actions asked for between third-sitting scenes (decision 22), keyed by prologue.progress after it. */
 const BETWEEN_SCENES: Record<number, { text: string; place: Place }> = {
-  40: { text: "Start a job you have not tried yet.", place: "skill:prospecting" },
+  40: { text: "Start a job you have not tried yet.", place: "skill:smithing" },
   50: { text: "Start a fight in Rustmoor.", place: `skill:${FIGHT}` },
 };
 
@@ -416,6 +426,8 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
     const entry = content.guide.find((candidate) => candidate.id === id);
     return entry ? { text: entry.line, place, speaker: entry.speaker } : { text: plain, place };
   };
+  // Lines for a newly opened place are long, so they go without Brassbuckle's name in front.
+  const plainly = (id: string, plain: string, place: Place): Goal => ({ text: content.guide.find((candidate) => candidate.id === id)?.line ?? plain, place });
   const debt = tinker.story.debts.find((candidate) => tinker.crowns >= candidate.crowns);
   if (debt) return { text: `Pay ${debt.label}: you have the ${debt.crowns.toLocaleString()} Crowns.`, place: "exchange" };
   if (tinker.story.letters > 0) return prologue(tinker) < BILL_ANSWERED ? said("pips_bill", "A letter is waiting in Story.", "story") : { text: "A letter is waiting in Story.", place: "story" };
@@ -426,7 +438,7 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
   // In the third sitting, one action between each pair of scenes, so story and work alternate.
   const progress = prologue(tinker);
   const fightingAlready = progress === 50 && tinker.queue[0]?.actionId.startsWith("monster.");
-  if (awaitsAction(progress) && !fightingAlready && !guide.acknowledged.includes(actedMark(progress))) return BETWEEN_SCENES[progress]!;
+  if (awaitsAction(progress) && !fightingAlready && !guide.acknowledged.includes(actedMark(progress))) return progress === 40 ? plainly("new_job", BETWEEN_SCENES[40]!.text, BETWEEN_SCENES[40]!.place) : BETWEEN_SCENES[progress]!;
   if (tinker.story.openScenes > 0 && tinker.story.nerve > 0) {
     return progress >= PLATE_FROM && progress < 100 ? said("brass_plate", "Scenes are open in Story.", "story") : { text: "Scenes are open in Story, and you have Nerve to play them.", place: "story" };
   }
@@ -445,9 +457,12 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
     const skill = content.actions.find((action) => action.id === head.actionId)?.skill ?? FIGHT;
     return { text: `The bench has work for ${Math.round(queued / 360_000) / 10}h, the Boiler steam for ${Math.round(steamLeft / 360_000) / 10}h. Queue more so nothing sits idle.`, place: `skill:${skill}` };
   }
-  // A skill just opened, when nothing else is due. Not Cooking, which a full crate of Rations leaves without a use.
-  if (newest?.startsWith("skill:") && newest !== "skill:cooking" && newest !== `skill:${FIGHT}`) {
-    return { text: `${titleCase(newest.slice("skill:".length))} is open: see what you can do there.`, place: newest };
+  // A place just opened, when nothing else is due: why to go there. Tailoring has the armour line.
+  if (newest === "skill:tailoring" && Object.keys(tinker.worn).length === 0) {
+    return plainly("first_armour", "Make something to wear.", held(tinker, SILK) >= WRAPS_SILK ? "skill:tailoring" : `skill:${FIGHT}`);
+  }
+  if (newest && newest in OPENED_LINES) {
+    return plainly(OPENED_LINES[newest]!, `${titleCase(newest.replace("skill:", ""))} is open: see what you can do there.`, newest);
   }
   // Fewer Rations than a night of fights eats: say where more come from.
   if (cooking && held(tinker, content.ration.item) < LOW_RATIONS) return { text: "Rations are running low: cook more at Cooking, with what the grocer's counter in the Exchange sells.", place: "exchange" };

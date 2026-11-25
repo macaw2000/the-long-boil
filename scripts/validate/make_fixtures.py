@@ -1370,25 +1370,54 @@ GUIDE_ID = "prologue.sprocket_row.first_session_guide"
 GUIDE_STEPS = ("boiler", "queue_spanners", "who_you_are", "first_spanner", "rats_in_the_workshop", "equip",
                "rats", "come_back", "pips_bill", "pay_bill", "first_armour", "brass_plate",
                "sale_done", "rations", "first_haul")
+# Work order of 25 November 2026: eight more entries, all required. The seven
+# named speakers are fixed by the schema, and cogs has no speaker.
+GUIDE_LATER = ("opened_exchange", "opened_prospecting", "opened_smithing", "opened_cooking", "opened_scavenging",
+               "opened_guild", "new_job", "cogs")
+GUIDE_LATER_SPEAKER = "Professor Brassbuckle"
 GUIDE_BUTTONS = ("boiler", "come_back")
 GDP = "content/guide/first_session.json"
 def gstep(ident, line="A fixture card says where to press.", button=None, speaker="A fixture professor"):
     st = {"id": ident, "speaker": speaker, "line": line}
     if button is not None: st["button"] = button
     return st
+def later_step(ident, line="A fixture line says where to go."):
+    st = gstep(ident, line=line, speaker=GUIDE_LATER_SPEAKER)
+    if ident == "cogs": del st["speaker"]
+    return st
+LATER_STEPS = [later_step(i) for i in GUIDE_LATER]
 def guide(steps=None, ident=GUIDE_ID):
     if steps is None:
-        steps = [gstep(i, button="Fixture button" if i in GUIDE_BUTTONS else None) for i in GUIDE_STEPS]
+        steps = [gstep(i, button="Fixture button" if i in GUIDE_BUTTONS else None) for i in GUIDE_STEPS] + LATER_STEPS
     return {"schema": "guide/1", "id": ident, "revision": 1, "steps": steps}
 GOOD_GUIDE = guide()
 
 # schema pass: the guide at its one path.
 put("schema/pass/" + GDP, GOOD_GUIDE)
+# schema fail-guide-cogs: a speaker on cogs, and nothing else wrong.
+put("schema/fail-guide-cogs/" + GDP, guide(GOOD_GUIDE["steps"][:22] + [
+    dict(later_step("cogs"), speaker=GUIDE_LATER_SPEAKER)]))
+# schema fail-guide-partial: seven of the eight; fail-guide-fifteen: the old
+# fifteen, none of the eight. Both are in order, so only the count is wrong.
+put("schema/fail-guide-partial/" + GDP, guide(GOOD_GUIDE["steps"][:22]))
+put("schema/fail-guide-fifteen/" + GDP, guide(GOOD_GUIDE["steps"][:15]))
+# schema fail-guide-later: another speaker (opened_exchange); a button
+# (opened_prospecting); two entries swapped; a line break; no speaker
+# (opened_guild); no line (new_job); a button on cogs; a twenty-fourth entry.
+put("schema/fail-guide-later/" + GDP, guide(GOOD_GUIDE["steps"][:15] + [
+    gstep("opened_exchange"),
+    dict(later_step("opened_prospecting"), button="Fixture button"),
+    later_step("opened_cooking"), later_step("opened_smithing"),
+    later_step("opened_scavenging", line="Two lines,\nnot one."),
+    {"id": "opened_guild", "line": "A fixture line says where to go."},
+    {"id": "new_job", "speaker": GUIDE_LATER_SPEAKER},
+    dict(later_step("cogs"), button="Fixture button"),
+    gstep("fixture_extra")]))
 # schema fail-guide: a wrong file id; a missing button (boiler); two steps out
 # of order; a button where none is allowed (equip); a blank speaker and a
 # blank line; a field the schema does not know; a missing line; a button on a
 # goal line (sale_done); a blank line on the last goal line (rations); a
-# sixteenth step; a guide/1 file under content/letters/ (and with no steps); a non-guide file
+# twenty-fourth step; a guide/1 file under content/letters/ (and with no steps); a non-guide file
 # under content/guide/.
 GS = "schema/fail-guide/"
 put(GS + GDP, guide([
@@ -1405,8 +1434,7 @@ put(GS + GDP, guide([
     dict(gstep("brass_plate"), glow="workbench"),
     gstep("sale_done", button="Fixture button"),
     gstep("rations", line=" "),
-    gstep("first_haul"),
-    gstep("fixture_extra")], ident="prologue.sprocket_row.fixture_guide"))
+    gstep("first_haul")] + LATER_STEPS + [gstep("fixture_extra")], ident="prologue.sprocket_row.fixture_guide"))
 # schema fail-guide-lines: a card is one line, so a line or a button with a
 # line break (\n or \r) fails; a speaker with one does not.
 put("schema/fail-guide-lines/" + GDP, guide([
@@ -1414,13 +1442,13 @@ put("schema/fail-guide-lines/" + GDP, guide([
           "A fixture card says where to press."),
           button=("Go\non" if i == "boiler" else "Fixture button") if i in GUIDE_BUTTONS else None,
           speaker="A fixture\nprofessor" if i == "equip" else "A fixture professor")
-    for i in GUIDE_STEPS]))
+    for i in GUIDE_STEPS] + LATER_STEPS))
 put(GS + "content/letters/guide.json", guide([], ident="prologue.sprocket_row.fixture_stray_guide"))
-# schema fail-guide-short: the old twelve steps, in order, with the last two
-# goal lines and first_haul missing; and fail-guide-swapped: all fifteen with
+# schema fail-guide-short: the old twelve steps, in order, with everything
+# after brass_plate missing; and fail-guide-swapped: all twenty-three with
 # those two goal lines swapped. Both goal lines are required, in their order.
 put("schema/fail-guide-short/" + GDP, guide(GOOD_GUIDE["steps"][:12]))
-put("schema/fail-guide-swapped/" + GDP, guide(GOOD_GUIDE["steps"][:12] + [gstep("rations"), gstep("sale_done"), gstep("first_haul")]))
+put("schema/fail-guide-swapped/" + GDP, guide(GOOD_GUIDE["steps"][:12] + [gstep("rations"), gstep("sale_done"), gstep("first_haul")] + LATER_STEPS))
 put(GS + "content/guide/notes.json", {"schema": "start/1", "id": "start.global.inventory", "inventory": [], "crowns": 0})
 
 # style pass: every line exactly 40 words and both buttons exactly 4;
@@ -1432,6 +1460,7 @@ def full_guide(line_words=40, button_words=4, extra=None):
     for i in GUIDE_STEPS:
         st = gstep(i, line=words(line_words), button=words(button_words, "press") if i in GUIDE_BUTTONS else None)
         steps.append(st)
+    steps += [later_step(i, line=words(line_words)) for i in GUIDE_LATER]
     for index, field, text in (extra or ()):
         steps[index][field] = text
     return guide(steps)
@@ -1440,23 +1469,27 @@ put(SYP + GDP, full_guide(extra=[(3, "line", "You delved, and the players cheere
 # style fail-guide: one word over each limit; banned phrases in a line and in
 # a button, in any case and across a line break; "the player" in a line; the
 # speaker still unchecked. The two goal lines added last are held to the same
-# limits: one word over on sale_done, a banned word on rations.
+# limits: one word over on sale_done, a banned word on rations. So are the
+# eight further entries, cogs (which has no speaker) among them.
 SYG = "style/fail-guide/"
 put(SYG + STYP, STYLE_MD)
 put(SYG + GDP, full_guide(extra=[
     (0, "line", words(41)), (0, "button", words(5, "press")),
     (3, "line", "A Testament\nto the brass."), (8, "button", "Delve deeper"),
     (5, "line", "The player goes to the Row."), (4, "speaker", "A tapestry of a professor"),
-    (12, "line", words(41)), (13, "line", "Rations are a tapestry of crumbs.")]))
+    (12, "line", words(41)), (13, "line", "Rations are a tapestry of crumbs."),
+    (15, "line", words(41)), (21, "line", "The player has a new job."), (22, "line", words(41) + " tapestry")]))
 
 # reveal pass: the guide is act 0, so "knockabout" (not a guarded form) passes.
 put(RVP + GDP, full_guide(line_words=3, button_words=2, extra=[(2, "line", "A knockabout day at the yard.")]))
 # reveal fail-guide: guarded forms in a line and a button, in any case, and in
-# the two goal lines added last; the speaker is not read.
+# the two goal lines added last, and in the first and last of the eight further
+# entries (cogs has no speaker); the speaker is not read.
 RVG = "reveal/fail-guide/"
 put(RVG + GDP, full_guide(line_words=3, button_words=2, extra=[
     (1, "line", "Something is Knocking below."), (8, "button", "Answer the KNOCK"),
-    (6, "speaker", "Mr Knocker"), (12, "line", "The window heard a knock."), (13, "line", "Rations knocked from the crate.")]))
+    (6, "speaker", "Mr Knocker"), (12, "line", "The window heard a knock."), (13, "line", "Rations knocked from the crate."),
+    (15, "line", "The window knocks back."), (22, "line", "Cogs that knock.")]))
 
 # provenance pass: the guide takes one row, for its file id; its step ids
 # are not content ids (lib.ID_EXEMPT_KEYS, Jeremy's answer to work order 021).

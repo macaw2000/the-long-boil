@@ -79,6 +79,45 @@
    "id": "first_haul",
    "speaker": "A fixture professor",
    "line": "brass brass brass"
+  },
+  {
+   "id": "opened_exchange",
+   "speaker": "Professor Brassbuckle",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "opened_prospecting",
+   "speaker": "Professor Brassbuckle",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "opened_smithing",
+   "speaker": "Professor Brassbuckle",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "opened_cooking",
+   "speaker": "Professor Brassbuckle",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "opened_scavenging",
+   "speaker": "Professor Brassbuckle",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "opened_guild",
+   "speaker": "Professor Brassbuckle",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "new_job",
+   "speaker": "Professor Brassbuckle",
+   "line": "brass brass brass"
+  },
+  {
+   "id": "cogs",
+   "line": "brass brass brass"
   }
  ]
 }

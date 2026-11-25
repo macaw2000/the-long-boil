@@ -1,0 +1,9 @@
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/15/speaker: must equal "Professor Brassbuckle"
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/16/button: field 'button' is not allowed by this schema
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/17/id: must equal "opened_smithing"
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/18/id: must equal "opened_cooking"
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/19/line: does not match pattern ^(?![\s\S]*[\r\n])[\s\S]*\S
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/20: missing required field 'speaker'
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/21: missing required field 'line'
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps/22/button: field 'button' is not allowed by this schema
+FAIL schema/shape content/guide/first_session.json id=prologue.sprocket_row.first_session_guide : /steps: more than 23 items

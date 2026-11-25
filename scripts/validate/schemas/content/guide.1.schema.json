@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "guide/1",
   "title": "First-session guide, version 1",
-  "description": "The one file content/guide/first_session.json (work order 021, part 1): Professor Brassbuckle's card at each step of GDD section 7's first session, shown in the client beside the control the step wants pressed. 'id' is the file-level id prologue.sprocket_row.first_session_guide. 'steps' holds exactly fifteen steps, by position, with these ids in this order, each once (the client depends on them): eight of the first sitting's guide steps, boiler, queue_spanners, who_you_are, first_spanner, rats_in_the_workshop, equip, rats, come_back, then six lines the client shows on the goal bar after the guided steps, pips_bill, pay_bill, first_armour, brass_plate, sale_done, rations (work order 037; first_armour added by work order 032), then first_haul, the first sitting's ninth guide step, which the client shows between rats and come_back (work order 041; it sits last in the file so no earlier position moves). The goal-bar lines are never guide-card steps: the client's STEPS holds the first eight and first_haul. Each step is {id, speaker, line, button}: speaker, free text; line, the card's text; button, the label of the card's own button, required on boiler and come_back and not allowed on any other step. Each text field is a string with at least one non-space character. When a step is done is the client's rule, not content. The word limits (40 for a line, 4 for a button) and the banned list are the style check's; the reveal-word guard reads the line and button as act 0 (the reveal check's); that the file is content/guide/first_session.json is the schema check's. The step ids are not content ids: 'steps' is exempt from id collection (lib.ID_EXEMPT_KEYS, Jeremy's answer to work order 021), so the file takes one register row, for its file id. A card is one line: 'line' and 'button' may not contain a line break (Jeremy's answer to work order 021). 'revision' is optional and exists only so a register row's revision can match the file. prefixItems is validated by this repo's validator: one schema per position.",
+  "description": "The one file content/guide/first_session.json (work order 021, part 1): Professor Brassbuckle's card at each step of GDD section 7's first session, shown in the client beside the control the step wants pressed. 'id' is the file-level id prologue.sprocket_row.first_session_guide. 'steps' holds exactly twenty-three steps, by position, with these ids in this order, each once (the client depends on them): eight of the first sitting's guide steps, boiler, queue_spanners, who_you_are, first_spanner, rats_in_the_workshop, equip, rats, come_back, then six lines the client shows on the goal bar after the guided steps, pips_bill, pay_bill, first_armour, brass_plate, sale_done, rations (work order 037; first_armour added by work order 032), then first_haul, the first sitting's ninth guide step, which the client shows between rats and come_back (work order 041; it sits after the goal lines so no earlier position moves). Then eight further goal-bar lines (work order approved 25 November 2026): opened_exchange, opened_prospecting, opened_smithing, opened_cooking, opened_scavenging, opened_guild, new_job, cogs. Each of the eight has a line and no button; the first seven have the speaker \"Professor Brassbuckle\", and cogs has no speaker (the key is not allowed on it). The goal-bar lines are never guide-card steps: the client's STEPS holds the first eight and first_haul. Each step is {id, speaker, line, button}: speaker, free text on the first fifteen; line, the card's text; button, the label of the card's own button, required on boiler and come_back and not allowed on any other step. Each text field is a string with at least one non-space character. When a step is done is the client's rule, not content. The word limits (40 for a line, 4 for a button) and the banned list are the style check's; the reveal-word guard reads the line and button as act 0 (the reveal check's); that the file is content/guide/first_session.json is the schema check's. The step ids are not content ids: 'steps' is exempt from id collection (lib.ID_EXEMPT_KEYS, Jeremy's answer to work order 021), so the file takes one register row, for its file id. A card is one line: 'line' and 'button' may not contain a line break (Jeremy's answer to work order 021). 'revision' is optional and exists only so a register row's revision can match the file. prefixItems is validated by this repo's validator: one schema per position.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -23,8 +23,8 @@
     },
     "steps": {
       "type": "array",
-      "minItems": 15,
-      "maxItems": 15,
+      "minItems": 23,
+      "maxItems": 23,
       "prefixItems": [
         {
           "$ref": "#/$defs/step_boiler"
@@ -70,6 +70,30 @@
         },
         {
           "$ref": "#/$defs/step_first_haul"
+        },
+        {
+          "$ref": "#/$defs/step_opened_exchange"
+        },
+        {
+          "$ref": "#/$defs/step_opened_prospecting"
+        },
+        {
+          "$ref": "#/$defs/step_opened_smithing"
+        },
+        {
+          "$ref": "#/$defs/step_opened_cooking"
+        },
+        {
+          "$ref": "#/$defs/step_opened_scavenging"
+        },
+        {
+          "$ref": "#/$defs/step_opened_guild"
+        },
+        {
+          "$ref": "#/$defs/step_new_job"
+        },
+        {
+          "$ref": "#/$defs/step_cogs"
         }
       ]
     }
@@ -387,6 +411,162 @@
         },
         "speaker": {
           "$ref": "#/$defs/text"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_opened_exchange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "opened_exchange"
+        },
+        "speaker": {
+          "const": "Professor Brassbuckle"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_opened_prospecting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "opened_prospecting"
+        },
+        "speaker": {
+          "const": "Professor Brassbuckle"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_opened_smithing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "opened_smithing"
+        },
+        "speaker": {
+          "const": "Professor Brassbuckle"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_opened_cooking": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "opened_cooking"
+        },
+        "speaker": {
+          "const": "Professor Brassbuckle"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_opened_scavenging": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "opened_scavenging"
+        },
+        "speaker": {
+          "const": "Professor Brassbuckle"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_opened_guild": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "opened_guild"
+        },
+        "speaker": {
+          "const": "Professor Brassbuckle"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_new_job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "speaker",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "new_job"
+        },
+        "speaker": {
+          "const": "Professor Brassbuckle"
+        },
+        "line": {
+          "$ref": "#/$defs/card_text"
+        }
+      }
+    },
+    "step_cogs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "line"
+      ],
+      "properties": {
+        "id": {
+          "const": "cogs"
         },
         "line": {
           "$ref": "#/$defs/card_text"

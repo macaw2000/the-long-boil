@@ -98,7 +98,7 @@ export interface ItemTerms {
 
 export interface Content {
   version: string;
-  guide: { id: string; speaker: string; line: string; button?: string }[];
+  guide: { id: string; speaker?: string; line: string; button?: string }[];
   /** Present only on a dev server, which can skip time forward. */
   dev: { offsetMs: number } | null;
   economy: Record<string, ItemTerms>;

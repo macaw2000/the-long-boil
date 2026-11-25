@@ -143,6 +143,7 @@ The Great Kettle and the Lift move to Act I. So do the Exchange, guilds, the Nee
 37. **Hester's "the line comes first" stays** at 4 Crowns against 350 (Jeremy, 5 November 2026).
 38. **The Friday runner in `drop_3` stays open**: canon does not say whether it is Pip (Jeremy, 5 November 2026).
 39. **The left bar opens by play in about the first hour**, one or two places at a time, and greys what is shut instead of hiding it. The Exchange opens at 10 jobs done, then Tailoring 18, Prospecting 26, Smithing 34, Cooking 42, Scavenging and Leaderboards 50, the Cog Shop and Chat 58; the story still opens them if it gets there first. The story keeps its three sittings. A spell away counts for at most 8 jobs (the lead session's addition), so a night of 790 rats does not open every place at once (Jeremy, 25 November 2026).
+40. **Leaderboards, Chat, the Cog Shop and Cogs wait for the visit after the Prologue**, amending decision 39; Guild stays at the end of the guide, and being in a guild still opens Chat. The first screen keeps all its locks. The scrivener writes a reason to visit each place, why to try a new job, and what Cogs are (Jeremy, 25 November 2026, after the educator's cold read).
 
 ## Open after work order 041
 
