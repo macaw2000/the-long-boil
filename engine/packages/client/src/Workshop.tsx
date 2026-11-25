@@ -455,9 +455,9 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
 
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
   const step = currentStep(tinker, guide);
-  // While the guide runs, the screen shows only what it has reached; the place the player is on always shows.
+  // While the guide runs, the screen opens only what it has reached (the nav greys the rest); the place the player is on is always open.
   const opened = revealed(step, guide, tinker.story.qualities["prologue.progress"] ?? 0, tinker.story.qualities["record.visits_since_prologue"] ?? 0);
-  // A skill the story has not opened yet (rules SKILL_GATES) stays hidden even after the guide.
+  // A skill the story has not opened yet (rules SKILL_GATES) stays locked even after the guide.
   // A guild or an invitation opens the Guild tab whatever the guide has reached, and being in a guild opens chat, where it talks.
   const social = (feature: string) =>
     (feature === "guild" && Boolean(guildView && (guildView.guild || guildView.invites.length))) || (feature === "chat" && Boolean(guildView?.guild));

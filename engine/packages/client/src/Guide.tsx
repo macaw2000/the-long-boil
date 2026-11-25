@@ -12,6 +12,7 @@
 // piece at a time as the steps reach each place; skipping or finishing the
 // guide opens the rest.
 
+import { SKILL_GATES } from "@long-boil/rules";
 import { Image, Pressable, Text, View } from "react-native";
 import type { Content, GuideProgress, RoadView, Tinker } from "./api";
 import { FIGHT } from "./jobs";
@@ -198,6 +199,16 @@ export function revealed(step: Step | null, state: GuideState, prologueProgress:
     const opens = GUIDE_OPENS[feature];
     return opens !== undefined && at >= stepIndex(opens);
   };
+}
+
+/** When a place still shut will open, in plain words: what its greyed row in the nav says when hovered or tapped. */
+export function opensWhen(feature: string): string {
+  const gate = feature.startsWith("skill:") ? SKILL_GATES[feature.slice("skill:".length)] : undefined;
+  if (gate) return gate.reason;
+  if (GUIDE_OPENS[feature] !== undefined) return "Opens later in this visit";
+  const later = LATER_OPENS[feature];
+  if (later === undefined) return "Opens on your first visit after the Prologue";
+  return later <= BILL_ANSWERED ? "Opens once you answer your first letter" : "Opens later in the Prologue";
 }
 
 /** Where a fresh workshop opens while the guide runs: the bench Brassbuckle points at. */
