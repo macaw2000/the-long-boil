@@ -403,7 +403,7 @@ function betterWeapon(tinker: Tinker, content: Content): string | null {
 /** After the guide, the one thing most worth doing next, as a line on the goal bar. */
 /** The two actions asked for between third-sitting scenes (decision 22), keyed by prologue.progress after it. */
 const BETWEEN_SCENES: Record<number, { text: string; place: Place }> = {
-  40: { text: "Start a job you have not tried yet.", place: "skill:smithing" },
+  40: { text: "Start a job you have not tried yet.", place: "skill:scavenging" },
   50: { text: "Start a fight in Rustmoor.", place: `skill:${FIGHT}` },
 };
 
@@ -457,22 +457,28 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
     const skill = content.actions.find((action) => action.id === head.actionId)?.skill ?? FIGHT;
     return { text: `The bench has work for ${Math.round(queued / 360_000) / 10}h, the Boiler steam for ${Math.round(steamLeft / 360_000) / 10}h. Queue more so nothing sits idle.`, place: `skill:${skill}` };
   }
+  // Fewer Rations than a night of fights eats: say where more come from.
+  if (cooking && held(tinker, content.ration.item) < LOW_RATIONS) return { text: "Rations are running low: cook more at Cooking, with what the grocer's counter in the Exchange sells.", place: "exchange" };
+  // An unpaid bill comes before a new place while the window still buys; once the week's sale is used, after it.
+  const unpaid = tinker.story.debts[0];
+  const billLine = (): Goal => {
+    // Once the week's sale is used the window can do nothing more, so the line points at the fights.
+    const line = saleLeft === 0 ? said("sale_done", "The rats' Crowns will make up the rest.", null) : said("pay_bill", "Sell rat scrap at the Counting-House window.", "exchange");
+    return { ...line, text: `${line.text} (${tinker.crowns.toLocaleString()} of ${unpaid!.crowns.toLocaleString()} Crowns.)` };
+  };
+  if (unpaid && saleLeft !== 0) return billLine();
   // A place just opened, when nothing else is due: why to go there. Tailoring has the armour line.
   if (newest === "skill:tailoring" && Object.keys(tinker.worn).length === 0) {
     return plainly("first_armour", "Make something to wear.", held(tinker, SILK) >= WRAPS_SILK ? "skill:tailoring" : `skill:${FIGHT}`);
   }
-  if (newest && newest in OPENED_LINES) {
+  // Cogs wait for the Prologue's end, even for a player whose skipped guide opened the shop (decision 40).
+  const early = newest === "shop" && (tinker.story.qualities["record.visits_since_prologue"] ?? 0) < 1;
+  if (newest && newest in OPENED_LINES && !early) {
+    // Brassbuckle gives their word in this one, so it carries the name.
+    if (newest === "exchange") return said("opened_exchange", "Exchange is open: see what you can do there.", newest);
     return plainly(OPENED_LINES[newest]!, `${titleCase(newest.replace("skill:", ""))} is open: see what you can do there.`, newest);
   }
-  // Fewer Rations than a night of fights eats: say where more come from.
-  if (cooking && held(tinker, content.ration.item) < LOW_RATIONS) return { text: "Rations are running low: cook more at Cooking, with what the grocer's counter in the Exchange sells.", place: "exchange" };
-  // An unpaid bill comes after everything that can be done now: once the week's sale is used, it is only fighting.
-  const unpaid = tinker.story.debts[0];
-  if (unpaid) {
-    // Once the week's sale is used the window can do nothing more, so the line points at the fights.
-    const line = saleLeft === 0 ? said("sale_done", "The rats' Crowns will make up the rest.", null) : said("pay_bill", "Sell rat scrap at the Counting-House window.", "exchange");
-    return { ...line, text: `${line.text} (${tinker.crowns.toLocaleString()} of ${unpaid.crowns.toLocaleString()} Crowns.)` };
-  }
+  if (unpaid) return billLine();
   // Nothing else told a player to train, and a skill gate could hold the story back for weeks (decision 17).
   const gate = tinker.story.nextGate;
   if (gate && (tinker.story.qualities["record.visits_since_prologue"] ?? 0) >= 1) {
