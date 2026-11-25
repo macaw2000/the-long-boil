@@ -209,7 +209,7 @@
     {
       "id": "item.rustmoor.brass_breastplate",
       "name": "Brass Breastplate",
-      "flavour": "A brass breastplate hammered from a single ingot, thin enough to hear a rat's teeth on it."
+      "flavour": "A brass breastplate hammered from a stack of ingots, yet thin enough to hear a rat's teeth on it."
     },
     {
       "id": "item.rustmoor.iron_cuirass",

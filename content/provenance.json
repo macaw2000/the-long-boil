@@ -18084,7 +18084,7 @@
       "patch": null,
       "validators": {
         "result": "pass",
-        "run": "2026-10-31T02:04:29Z",
+        "run": "2026-11-25T23:58:19Z",
         "checks": [
           "fixtures",
           "schema",
@@ -18098,8 +18098,10 @@
           "qualities",
           "story_graph",
           "reveal",
+          "clearance",
           "style",
-          "work_orders"
+          "work_orders",
+          "hook"
         ],
         "waiver": null
       },
@@ -18114,6 +18116,16 @@
         },
         {
           "at": "2026-10-31T02:04:29Z",
+          "status": "validated",
+          "by": "validators"
+        },
+        {
+          "at": "2026-11-25T23:58:19Z",
+          "status": "drafted",
+          "by": "draftsman"
+        },
+        {
+          "at": "2026-11-25T23:58:19Z",
           "status": "validated",
           "by": "validators"
         }
