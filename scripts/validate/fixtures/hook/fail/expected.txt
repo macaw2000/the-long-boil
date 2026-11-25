@@ -1,0 +1,4 @@
+FAIL hook/allowed scripts/validate/hook_cases.json id=fixture.wrong-deny : inspector: want deny, hook said allow: Read {"file_path": "/repo/docs/canon/world.md"}
+FAIL hook/refused scripts/validate/hook_cases.json id=fixture.wrong-allow : no agent: want allow, hook said deny: Bash {"command": "cat docs/canon/*.md"}
+FAIL hook/shape scripts/validate/hook_cases.json id=fixture.bad-tool : case 4 needs a string id, a tool in Bash/Read/Grep/Glob, an input object and want deny or allow
+FAIL hook/shape scripts/validate/hook_cases.json id=fixture.right : repeated case id

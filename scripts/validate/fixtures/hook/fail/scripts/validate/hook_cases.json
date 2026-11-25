@@ -1,0 +1,7 @@
+[
+  {"id": "fixture.wrong-allow", "tool": "Bash", "input": {"command": "cat docs/canon/*.md"}, "want": "allow"},
+  {"id": "fixture.wrong-deny", "tool": "Read", "input": {"file_path": "/repo/docs/canon/world.md"}, "agent": "inspector", "want": "deny"},
+  {"id": "fixture.right", "tool": "Bash", "input": {"command": "rg x"}, "want": "deny"},
+  {"id": "fixture.right", "tool": "Bash", "input": {"command": "rg x"}, "want": "deny"},
+  {"id": "fixture.bad-tool", "tool": "Write", "input": {}, "want": "deny"}
+]

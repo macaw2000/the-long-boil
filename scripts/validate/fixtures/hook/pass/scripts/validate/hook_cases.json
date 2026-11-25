@@ -1,0 +1,9 @@
+[
+  {"id": "fixture.sealed-upper", "tool": "Bash", "input": {"command": "cat docs/canon/LOCKED.md"}, "want": "deny"},
+  {"id": "fixture.cast-inspector", "tool": "Read", "input": {"file_path": "/repo/docs/canon/characters.md"}, "agent": "inspector", "want": "deny"},
+  {"id": "fixture.cast-scrivener", "tool": "Read", "input": {"file_path": "/repo/docs/canon/characters.md"}, "agent": "scrivener", "want": "allow"},
+  {"id": "fixture.cd-glob", "tool": "Bash", "input": {"command": "cd docs/canon && cat *"}, "want": "deny"},
+  {"id": "fixture.repo-grep", "tool": "Bash", "input": {"command": "grep -rn x ."}, "want": "deny"},
+  {"id": "fixture.slice", "tool": "Read", "input": {"file_path": "/repo/docs/canon/slices/reveals-layer1.md"}, "agent": "inspector", "want": "allow"},
+  {"id": "fixture.named-search", "tool": "Bash", "input": {"command": "rg x content"}, "want": "allow"}
+]

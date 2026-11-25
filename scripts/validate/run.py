@@ -36,6 +36,7 @@ import lib  # noqa: E402
 import check_clearance
 import check_combat
 import check_drops
+import check_hook
 import check_pacing
 import check_provenance
 import check_qualities
@@ -63,6 +64,7 @@ CHECKS = (
     ("clearance", check_clearance),
     ("style", check_style),
     ("work_orders", check_work_orders),
+    ("hook", check_hook),
 )
 
 FIXTURES = os.path.join(lib.HERE, "fixtures")
