@@ -333,7 +333,7 @@ An order book: sellers list, buyers post standing bids, and matches fill at once
 
 ### Guilds, Work Orders, and Favour
 
-A guild costs 500,000 Crowns and gets chat, a contribution roster, a Workshop, and 5 weekly Guild Contracts such as "Smelt 50,000 Brass Ingots", whose tiers pay upgrades and tokens. Solo players get a new Work Order every 8 hours. Work Orders and trading unlock at total level 50 on an account at least two days old, so throwaway alt accounts cannot farm them. Selling to NPC collectors at the Counting-House window is never locked, so a new Tinker can sell scrap in the first session. The same window has a grocer's counter that sells Cooking ingredients at fixed prices, also never locked. The cheap early levels make total level 50 a matter of hours, so the account's age does the real gating.
+A guild is free to found and forms at once (amended 26 November 2026: it once cost 500,000 Crowns, but founding has been free in the build since 10 November, so nothing stands between a new Tinker and a guild). It gets chat, a contribution roster, a Workshop, and 5 weekly Guild Contracts such as "Smelt 50,000 Brass Ingots", whose tiers pay upgrades and tokens. Solo players get a new Work Order every 8 hours. Work Orders and trading unlock at total level 50 on an account at least two days old, so throwaway alt accounts cannot farm them. Selling to NPC collectors at the Counting-House window is never locked, so a new Tinker can sell scrap in the first session. The same window has a grocer's counter that sells Cooking ingredients at fixed prices, also never locked. The cheap early levels make total level 50 a matter of hours, so the account's age does the real gating.
 
 This edition adds one thing: every Work Order and Guild Contract carries a faction's seal. Completing it earns that faction Favour, and during a Reckoning it counts as a pledge to that faction's side. Players choose which seals to take, so the daily grind becomes a quiet vote on the city's future.
 
@@ -348,10 +348,10 @@ The draft named this as its open gap: the overall Crown faucet and sink budget n
 | Faucets (Crowns in) | Sinks (Crowns out) |
 | --- | --- |
 | Monster drops | Calibrating attempts |
-| Work Order and Guild Contract rewards | Exchange sales tax (2%) |
+| Work Order rewards (Guild Contracts pay Guild Tokens and Workshop points, never Crowns; amended 26 November 2026) | Exchange sales tax (2%) |
 | NPC collectors buying Curios, scrap and crafted goods, capped weekly | (Tax on Cog Crate sales, retired 30 October 2026: crates are bound and never sell) |
 | Story rewards, small and capped | Paying off Arrears |
-|  | Guild founding (500,000 Crowns) and Workshop upgrades |
+|  | (Guild founding and Workshop upgrades, retired 26 November 2026: founding is free, and Workshop upgrades are bought with Workshop points from Guild Contract tiers) |
 |  | Cooking ingredients from the grocer's counter |
 |  | NPC sell orders at the price ceiling |
 
