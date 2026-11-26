@@ -110,7 +110,11 @@ export function usePlanner(content: Content, tinker: Tinker, name: (id: string) 
       const gear = [...content.weapons, ...content.armours, ...content.pieces, ...content.tools].map((piece) => piece.item);
       if (action.outputs.some((output) => gear.includes(output.item))) return `it makes the ${missing.join(" and ")} it needs first, from what it can gather`;
       const coming = action.inputs.every((input) => (afterQueue.get(input.item) ?? 0) >= input.qty);
-      if (coming) return `you hold no ${missing.join(" or ")} yet: Add to queue, and the job ahead makes it first`;
+      if (coming) {
+        // With the queue full Add to queue has no room, and Start now would run this first with nothing to work.
+        if (tinker.queue.length >= tinker.upgrades.queueSlots) return `you hold no ${missing.join(" or ")} yet, and Add to queue has no room: let the job making it finish first, then start this`;
+        return `you hold no ${missing.join(" or ")} yet: Add to queue, and the job ahead makes it first`;
+      }
       return `you hold no ${missing.join(" or ")}, so it will be taken off the queue`;
     }
     const outlook = fights.get(id);

@@ -78,6 +78,7 @@ export function SkillView({
   onStart,
   onQueue,
   onGrocer,
+  onSkill,
   skillShown,
 }: {
   skill: string;
@@ -97,6 +98,8 @@ export function SkillView({
   onQueue: (entry: QueueEntry) => void;
   /** Goes to the grocer's counter, for an ingredient no skill makes. */
   onGrocer: () => void;
+  /** Goes to a skill's page, for an input that skill gathers. */
+  onSkill: (skill: string) => void;
   /** Whether a skill's page is open on the screen yet: a weapon made at one that is not cannot be asked for. */
   skillShown: (skill: string) => boolean;
 }) {
@@ -226,6 +229,7 @@ export function SkillView({
             onQueue(entry);
           }}
           onGrocer={onGrocer}
+          onSkill={onSkill}
         />
       )}
     </View>
@@ -358,6 +362,7 @@ function JobDetail({
   onStart,
   onQueue,
   onGrocer,
+  onSkill,
 }: {
   id: string;
   content: Content;
@@ -373,6 +378,8 @@ function JobDetail({
   onQueue: (entry: QueueEntry) => void;
   /** Goes to the grocer's counter, for an ingredient no skill makes. */
   onGrocer: () => void;
+  /** Goes to a skill's page, for an input that skill gathers. */
+  onSkill: (skill: string) => void;
 }) {
   // Picking a tile opens this below the tiles, often below the fold: bring it, and its Start, into view.
   const panel = useRef<View>(null);
@@ -416,6 +423,20 @@ function JobDetail({
             <Text style={ui.muted}>
               {name(input.item)} is sold at the grocer's counter, {content.economy[input.item]!.grocerPrice} Crowns each: on the Exchange, in the
               Counting-House window, below the collectors.{" "}
+              <Text style={{ color: colors.brass, textDecorationLine: "underline" }}>Go there</Text>
+            </Text>
+          </Pressable>
+        ))}
+      {/* An input another skill gathers from nothing, such as Copper at Prospecting: say where, and go there. */}
+      {action?.inputs
+        .filter((input) => (planner.held.get(input.item) ?? 0) < input.qty)
+        .map((input) => ({ input, maker: content.actions.find((other) => other.inputs.length === 0 && other.outputs.some((output) => output.item === input.item)) }))
+        .filter(({ maker }) => maker && maker.skill !== action.skill && skillShown(maker.skill))
+        .map(({ input, maker }) => (
+          <Pressable key={input.item} onPress={() => onSkill(maker!.skill)} accessibilityRole="link" style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+            <ItemIcon item={input.item} size={20} />
+            <Text style={ui.muted}>
+              {name(input.item)} comes from {titleCase(maker!.skill)}.{" "}
               <Text style={{ color: colors.brass, textDecorationLine: "underline" }}>Go there</Text>
             </Text>
           </Pressable>
