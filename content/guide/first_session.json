@@ -82,32 +82,32 @@
     {
       "id": "opened_exchange",
       "speaker": "Professor Brassbuckle",
-      "line": "The rats leave you Rat Scrap; the window under Exchange turns it into Crowns."
+      "line": "The rats leave you Rat Scrap; sell it at the window under Exchange for Crowns."
     },
     {
       "id": "opened_prospecting",
       "speaker": "Professor Brassbuckle",
-      "line": "Fifty ingots do not last. Prospecting digs the Copper that more are made from."
+      "line": "Fifty ingots do not last. Start Prospecting for Copper, which more are made from."
     },
     {
       "id": "opened_smithing",
       "speaker": "Professor Brassbuckle",
-      "line": "Smithing makes Copper into Brass Ingots, and ingots into a breastplate against bites."
+      "line": "More Brass Ingots: Smithing smelts them from Copper. Start one, or dig Copper at Prospecting first."
     },
     {
       "id": "opened_cooking",
       "speaker": "Professor Brassbuckle",
-      "line": "No hurry: Cooking makes more Rations, from Barley Meal sold under Exchange."
+      "line": "Nights of rats eat into the crate. Buy Barley Meal under Exchange, and cook Rations from it."
     },
     {
       "id": "opened_scavenging",
       "speaker": "Professor Brassbuckle",
-      "line": "Crowns, no bites: Scavenging finds Bent Nails; the window under Exchange buys only so many a week."
+      "line": "Crowns, no bites: start Scavenging Bent Nails; the window under Exchange buys only so many a week."
     },
     {
       "id": "opened_guild",
       "speaker": "Professor Brassbuckle",
-      "line": "The work you do anyway can count for a guild too. Under Guild, join one or found your own, free."
+      "line": "Even alone, a guild pays: your rat fights earn Guild Tokens, spent on looks. Found one free."
     },
     {
       "id": "new_job",
