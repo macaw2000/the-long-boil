@@ -9,7 +9,7 @@ import { buildApi } from "../src/api.js";
 import { loadContent } from "../src/content-loader.js";
 import { Unauthorized } from "../src/auth.js";
 import { connect, migrate } from "../src/db.js";
-import { stripePayments, type CheckoutRequest } from "../src/payments.js";
+import { isMissingCustomer, stripePayments, type CheckoutRequest } from "../src/payments.js";
 
 const db = connect(process.env.PGDATABASE_TEST ?? "long_boil_test");
 // The shipped content holds a bought crate for 0 hours (Jeremy, 2 November 2026); the hold is still
@@ -102,8 +102,14 @@ describe("buying Cog Crates", () => {
   });
 
   it("refuses a live key unless live payments are asked for", () => {
-    expect(() => stripePayments({ apiKey: "rk_live_x", webhookSecret: WEBHOOK_SECRET })).toThrow(/test mode/);
+    expect(() => stripePayments({ apiKey: "rk_live_x", webhookSecret: WEBHOOK_SECRET })).toThrow(/STRIPE_ALLOW_LIVE/);
     expect(stripePayments({ apiKey: "rk_live_x", webhookSecret: WEBHOOK_SECRET, allowLive: true }).testMode).toBe(false);
+  });
+
+  it("knows a saved customer from the other mode by Stripe's resource_missing answer", () => {
+    expect(isMissingCustomer({ type: "StripeInvalidRequestError", code: "resource_missing", param: "customer" })).toBe(true);
+    expect(isMissingCustomer({ type: "StripeInvalidRequestError", code: "resource_missing", param: "price" })).toBe(false);
+    expect(isMissingCustomer(new Error("network"))).toBe(false);
   });
 
   it("opens a checkout at the shop's price, returning the page to send the player to", async () => {

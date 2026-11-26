@@ -7,7 +7,7 @@ name: engine
 on:
   push:
   pull_request:
-  # deploy-dev runs this and waits for it.
+  # deploy runs this and waits for it.
   workflow_call:
 
 jobs:

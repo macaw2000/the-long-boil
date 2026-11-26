@@ -67,20 +67,20 @@ const INTEGRATION = "long-boil-cog-crate-qhvbmzrd";
 /**
  * Stripe with an API key and the webhook's signing secret. The key should be
  * a restricted key (rk_) that may only write Checkout Sessions and read
- * Customers. A live key
- * is refused unless `allowLive`: the capstone runs in test mode.
+ * Customers. A live key is refused unless `allowLive` (STRIPE_ALLOW_LIVE=1),
+ * so a test environment can never take real money by a pasted key.
  */
 export function stripePayments({ apiKey, webhookSecret, allowLive = false }: { apiKey: string; webhookSecret: string; allowLive?: boolean }): Payments {
   const testMode = !apiKey.includes("_live_");
-  if (!testMode && !allowLive) throw new Error("a live Stripe key needs STRIPE_ALLOW_LIVE=1; the capstone runs in test mode");
+  if (!testMode && !allowLive) throw new Error("a live Stripe key needs STRIPE_ALLOW_LIVE=1");
   const stripe = new Stripe(apiKey);
   return {
     testMode,
     async checkout({ tinkerId, crates, priceCents, cogsPerCrate, lockHours, siteUrl, customer }) {
-      const session = await stripe.checkout.sessions.create({
+      const open = (known: string | null | undefined) => stripe.checkout.sessions.create({
         mode: "payment",
         integration_identifier: INTEGRATION,
-        ...(customer ? { customer } : { customer_creation: "always" as const }),
+        ...(known ? { customer: known } : { customer_creation: "always" as const }),
         line_items: [
           {
             quantity: crates,
@@ -96,6 +96,14 @@ export function stripePayments({ apiKey, webhookSecret, allowLive = false }: { a
         success_url: `${siteUrl}/?checkout=paid`,
         cancel_url: `${siteUrl}/?checkout=cancelled`,
       });
+      let session: Stripe.Checkout.Session;
+      try {
+        session = await open(customer);
+      } catch (error) {
+        // A customer saved under the other mode (test, before going live) is unknown here: start a new one.
+        if (!customer || !isMissingCustomer(error)) throw error;
+        session = await open(undefined);
+      }
       if (!session.url) throw new Error("Stripe opened a checkout with no page");
       return session.url;
     },
@@ -109,6 +117,12 @@ export function stripePayments({ apiKey, webhookSecret, allowLive = false }: { a
       return paymentNews(event);
     },
   };
+}
+
+/** Stripe's answer when a saved customer id does not exist under this key's mode. */
+export function isMissingCustomer(error: unknown): boolean {
+  const e = error as { type?: string; code?: string; param?: string } | null;
+  return e?.type === "StripeInvalidRequestError" && e.code === "resource_missing" && e.param === "customer";
 }
 
 /** The id of an expandable Stripe field, whether Stripe sent the id or the object. */

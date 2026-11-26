@@ -11,7 +11,7 @@ npx tsc --noEmit
 
 ## Stacks
 
-One environment per synth, chosen with `-c env=dev`. Only `dev` exists; `prod` is a commented row in `lib/config.ts` (0.5 ACU floor, retained data, two servers).
+One environment per synth, chosen with `-c env=dev`. Only `dev` exists, and since 26 November 2026 it **is production**: real players on thelongboil.com, live Stripe, retained data (deletion protection on RDS and the user pool, 7-day backups), no dev clock. The stacks kept the name `dev` because a new env name makes a new user pool, and every player's login is their `sub` in this one. The pre-cutover snapshot is `longboil-pre-prod-2026-11-26`.
 
 | Stack | Region | Holds |
 | --- | --- | --- |
@@ -53,7 +53,7 @@ The task definition sets the contract with `engine/packages/server`:
 - `PGHOST`, `PGPORT`, `PGDATABASE=long_boil`, `PGSSLMODE=require`; `PGUSER` and `PGPASSWORD` as ECS secrets from the database secret (`long-boil/<env>/postgres`)
 - `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`, `CORS_ORIGINS=https://<site domain>`, and `ADMIN_EMAILS` from the context
 
-Dev also sets `LONG_BOIL_DEV=1`: the dev clock, kept in the database and skippable by admins only, and one clock for the whole server. `LONG_BOIL_OPEN_TRADING` is never set. The ALB health check is `GET /api/health`; it must not query Postgres.
+Until the prod cutover, dev set `LONG_BOIL_DEV=1`: the dev clock, kept in the database and skippable by admins only. It is off now; the server keeps the offset it had built up in `dev_clock`, fixed, so players kept their game time. With `stripe=1` the task also gets `STRIPE_ALLOW_LIVE=1`. `LONG_BOIL_OPEN_TRADING` is never set. The ALB health check is `GET /api/health`; it must not query Postgres.
 
 ## Outputs
 
@@ -73,7 +73,8 @@ In this order, once the accounts exist (GDD section 11, "Accounts and environmen
    **Discord sign-in** (optional), the same way: in the Discord Developer Portal create an application, add the same `.../oauth2/idpresponse` redirect under OAuth2, then store its client secret as `long-boil/dev/discord-oauth`, field `clientSecret`. Discord publishes an OpenID Connect discovery document, so Cognito federates with it directly.
    **Stripe Checkout** (optional; sells Cog Crates, in test mode). In a Stripe sandbox, create a restricted key (`rk_test_...`) whose only permissions are Checkout Sessions: Write and Customers: Read, and a webhook endpoint at `https://<domain>/api/stripe/webhook` for the events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded` and `charge.dispute.created` (a full refund or a dispute inside the 72-hour lock revokes the crates; one after delivery is only logged). Store both:
    `aws secretsmanager create-secret --region us-west-2 --name long-boil/dev/stripe --secret-string '{"apiKey":"rk_test_...","webhookSecret":"whsec_..."}'`
-   then deploy with `-c stripe=1` (the repository variable `STRIPE=1`). Without the secret, a deploy with `stripe=1` cannot start the server. A live key is refused unless the server also has `STRIPE_ALLOW_LIVE=1`.
+   then deploy with `-c stripe=1` (the repository variable `STRIPE=1`). Without the secret, a deploy with `stripe=1` cannot start the server. A live key is refused unless the server also has `STRIPE_ALLOW_LIVE=1` (set from `allowLiveStripe` in `lib/config.ts`).
+   **Going live:** activate the Stripe account, then in live mode make the same restricted key (`rk_live_...`) and the same webhook with the same four events. Put both in the same secret (`aws secretsmanager put-secret-value --region us-west-2 --secret-id long-boil/dev/stripe --secret-string '{"apiKey":"rk_live_...","webhookSecret":"whsec_..."}'`), then restart the service (`aws ecs update-service --region us-west-2 --cluster long-boil-dev --service server --force-new-deployment`). The server log says `payments: Stripe Checkout, LIVE`. Customer ids saved in test mode are unknown to live mode; checkout then starts a new customer.
 4. **Domain** (optional). The hosted zone must already exist in Route 53 in this account.
    With a domain, sign-in also gets its own address, `auth.<domain>`, on a us-east-1 certificate of its own, made alongside the `<cognitoDomainPrefix>.auth...amazoncognito.com` one so Google and Discord show the game's address instead of Amazon's. To switch to it: add `https://auth.<domain>/oauth2/idpresponse` as a redirect URI on the Google OAuth client and on the Discord application (keep the old one until the switch is live), then set the repository variable `USE_AUTH_DOMAIN=1` (or `-c useAuthDomain=1`) and deploy, which rebuilds the client against the new address and removes the prefix domain. Remove the old `amazoncognito.com` redirect from Google and Discord afterwards. (Dev switched on 27 October 2026.)
 5. **Foundation and first image.**
@@ -85,7 +86,7 @@ In this order, once the accounts exist (GDD section 11, "Accounts and environmen
    ```
    Confirm the budget's subscription email and the daily spend email's SNS subscription.
 6. **Everything else**, with the same context: `npx cdk deploy --all -c githubRepo=... -c githubRepoIds=... -c alertEmail=...`
-7. **Switch the workflow on.** In GitHub's repository variables set `AWS_DEPLOY_ROLE_ARN` to the `GitHubDeployRoleArn` output, and set any of `ALERT_EMAIL`, `DOMAIN_NAME`, `HOSTED_ZONE_ID`, `HOSTED_ZONE_NAME`, `GOOGLE_CLIENT_ID`, `DISCORD_CLIENT_ID`, `STRIPE`, `ADMIN_EMAILS`, `COGNITO_DOMAIN_PREFIX` that step 6 used. From then on each push to `main` deploys dev (`.github/workflows/deploy-dev.yml`).
+7. **Switch the workflow on.** In GitHub's repository variables set `AWS_DEPLOY_ROLE_ARN` to the `GitHubDeployRoleArn` output, and set any of `ALERT_EMAIL`, `DOMAIN_NAME`, `HOSTED_ZONE_ID`, `HOSTED_ZONE_NAME`, `GOOGLE_CLIENT_ID`, `DISCORD_CLIENT_ID`, `STRIPE`, `ADMIN_EMAILS`, `COGNITO_DOMAIN_PREFIX` that step 6 used. From then on each push to `main` deploys (`.github/workflows/deploy.yml`).
 8. **CloudFront plan.** Dev stays on the free plan. Prod's flat-rate Pro plan (decision 2) is chosen in the console; CloudFormation does not set it.
 
 ## Not here yet

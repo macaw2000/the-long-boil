@@ -1,7 +1,8 @@
-name: deploy-dev
+name: deploy
 
-# Deploys main to dev with no hands (GDD section 11, rollout phase 0 exit
-# gate). Inert until the repository variable AWS_DEPLOY_ROLE_ARN is set to
+# Deploys main to production with no hands (the stacks keep the name "dev";
+# see infra/lib/config.ts). Was dev until 26 November 2026; GDD section 11.
+# Inert until the repository variable AWS_DEPLOY_ROLE_ARN is set to
 # the LongBoil-dev-Foundation stack's GitHubDeployRoleArn output; see
 # infra/README.md for the one-time steps before that.
 #

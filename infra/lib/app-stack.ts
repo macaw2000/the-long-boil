@@ -200,6 +200,7 @@ export class AppStack extends Stack {
         SITE_URL: siteUrl,
         ADMIN_EMAILS: settings.adminEmails,
         ...(settings.devTools ? { LONG_BOIL_DEV: "1" } : {}),
+        ...(settings.stripe && settings.allowLiveStripe ? { STRIPE_ALLOW_LIVE: "1" } : {}),
         // The Boiler reminder (work order 039) needs the domain's own address.
         ...(settings.domainName ? { REMINDER_FROM: `The Long Boil <reminders@${settings.domainName}>` } : {}),
       },

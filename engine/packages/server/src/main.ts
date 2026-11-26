@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { buildApi, devClock, devClockInDatabase } from "./api.js";
+import { buildApi, devClock, devClockInDatabase, fixedClockInDatabase } from "./api.js";
 import { cognitoAuth } from "./auth.js";
 import { stripePayments } from "./payments.js";
 import { loadContent } from "./content-loader.js";
@@ -27,6 +27,8 @@ const dev =
     : auth
       ? await devClockInDatabase(db)
       : devClock(join(import.meta.dirname, "../../../.dev-clock.json"));
+// Without LONG_BOIL_DEV, a deployed server keeps the dev clock's last offset, fixed: prod began as dev.
+const now = dev?.now ?? (auth ? await fixedClockInDatabase(db) : Date.now);
 // Stripe Checkout for Cog Crates (GDD section 8): both STRIPE_API_KEY and STRIPE_WEBHOOK_SECRET, or neither.
 const { STRIPE_API_KEY: apiKey, STRIPE_WEBHOOK_SECRET: webhookSecret } = process.env;
 if (Boolean(apiKey) !== Boolean(webhookSecret)) throw new Error("set both STRIPE_API_KEY and STRIPE_WEBHOOK_SECRET, or neither");
@@ -40,7 +42,8 @@ const app = buildApi({
   content,
   corsOrigins,
   ...(trading ? { trading } : {}),
-  ...(dev ? { devClock: dev.clock, now: dev.now } : {}),
+  now,
+  ...(dev ? { devClock: dev.clock } : {}),
   ...(auth ? { auth } : {}),
   ...(prefix ? { prefix } : {}),
   ...(payments ? { payments } : {}),
@@ -53,7 +56,7 @@ console.log(payments ? `payments: Stripe Checkout, ${payments.testMode ? "test m
 console.log(auth ? `sign-in: Cognito user pool ${userPoolId}, ${adminEmails.length} admin email(s)` : "sign-in: dev login (trusts any login)");
 // REMINDER_FROM: the address the Boiler reminder comes from (work order 039); without it, none are sent.
 const reminderFrom = process.env.REMINDER_FROM;
-if (reminderFrom && siteUrl) startReminders(db, content, sesMailer(reminderFrom, process.env.AWS_REGION ?? "us-west-2"), siteUrl, prefix ?? "", dev?.now ?? Date.now);
+if (reminderFrom && siteUrl) startReminders(db, content, sesMailer(reminderFrom, process.env.AWS_REGION ?? "us-west-2"), siteUrl, prefix ?? "", now);
 console.log(reminderFrom ? `reminders: from ${reminderFrom}` : "reminders: none (no REMINDER_FROM)");
 const port = Number(process.env.PORT ?? 3000);
 // HOST=0.0.0.0 in a container; the default keeps a dev server off the network.

@@ -20,11 +20,15 @@ interface EnvironmentShape {
   logRetentionDays: number;
   /** The dev clock (LONG_BOIL_DEV) for admins. Never in prod: a skip moves time for every player. */
   devTools: boolean;
+  /** STRIPE_ALLOW_LIVE=1: the server may take real money once the stripe secret holds a live key. */
+  allowLiveStripe: boolean;
 }
 
+// The stacks keep the name "dev", but since 26 November 2026 they are production:
+// one environment, real players, live Stripe. A new env name would mean a new
+// user pool, and every player's login is their sub in this one.
 const SHAPES: Record<string, EnvironmentShape> = {
-  dev: { databaseInstance: "t4g.micro", retainData: false, desiredCount: 1, logRetentionDays: 14, devTools: true },
-  // prod: { databaseInstance: "t4g.small", retainData: true, desiredCount: 2, logRetentionDays: 90, devTools: false },
+  dev: { databaseInstance: "t4g.micro", retainData: true, desiredCount: 1, logRetentionDays: 90, devTools: false, allowLiveStripe: true },
 };
 
 export interface Settings extends EnvironmentShape {

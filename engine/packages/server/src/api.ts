@@ -168,6 +168,17 @@ export async function devClockInDatabase(db: Db): Promise<{ clock: DevClock; now
   };
 }
 
+/**
+ * The clock for a deployed server without the dev tools: the wall clock plus
+ * whatever offset the dev clock had built up when the environment became prod,
+ * fixed for good. Players keep the game time they had; nobody can move it.
+ */
+export async function fixedClockInDatabase(db: Db): Promise<() => number> {
+  const row = await db.query<{ offset_ms: string }>("SELECT offset_ms FROM dev_clock");
+  const offset = Number(row.rows[0]?.offset_ms ?? 0);
+  return () => Date.now() + offset;
+}
+
 export function buildApi({
   db,
   content,
