@@ -5,5 +5,7 @@
   {"id": "fixture.cd-glob", "tool": "Bash", "input": {"command": "cd docs/canon && cat *"}, "want": "deny"},
   {"id": "fixture.repo-grep", "tool": "Bash", "input": {"command": "grep -rn x ."}, "want": "deny"},
   {"id": "fixture.slice", "tool": "Read", "input": {"file_path": "/repo/docs/canon/slices/reveals-layer1.md"}, "agent": "inspector", "want": "allow"},
-  {"id": "fixture.named-search", "tool": "Bash", "input": {"command": "rg x content"}, "want": "allow"}
+  {"id": "fixture.named-search", "tool": "Bash", "input": {"command": "rg x content"}, "want": "allow"},
+  {"id": "fixture.unreadable", "tool": "Bash", "stdin": "not json", "want": "deny", "closed": true},
+  {"id": "fixture.heredoc-range", "tool": "Bash", "input": {"command": "python3 - <<'EOF'\ny = xs[t-m]\nEOF"}, "want": "allow", "closed": false}
 ]

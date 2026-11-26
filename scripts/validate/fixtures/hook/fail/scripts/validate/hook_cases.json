@@ -3,5 +3,7 @@
   {"id": "fixture.wrong-deny", "tool": "Read", "input": {"file_path": "/repo/docs/canon/world.md"}, "agent": "inspector", "want": "deny"},
   {"id": "fixture.right", "tool": "Bash", "input": {"command": "rg x"}, "want": "deny"},
   {"id": "fixture.right", "tool": "Bash", "input": {"command": "rg x"}, "want": "deny"},
-  {"id": "fixture.bad-tool", "tool": "Write", "input": {}, "want": "deny"}
+  {"id": "fixture.bad-tool", "tool": "Write", "input": {}, "want": "deny"},
+  {"id": "fixture.unreadable-wanted-allow", "tool": "Bash", "stdin": "not json", "want": "allow"},
+  {"id": "fixture.judged-wanted-closed", "tool": "Bash", "input": {"command": "rg x"}, "want": "deny", "closed": true}
 ]

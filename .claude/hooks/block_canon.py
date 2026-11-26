@@ -26,6 +26,9 @@ How a call is caught:
 It reads the command, never the files, so a script or program that opens a
 file without naming it in the command is not caught; nor is a path built at
 run time, nor a file copied or archived elsewhere and read under another name.
+If it cannot judge a call (bad input, a pattern it cannot parse, more than
+eight seconds), it refuses with exit 2 rather than crash, since a crash may be
+read as allow.
 Tests: scripts/validate/hook_cases.json, run by scripts/validate/run.py.
 """
 import fnmatch
@@ -34,6 +37,7 @@ import json
 import os
 import re
 import shlex
+import signal
 import sys
 
 GDD = re.compile(r"(?<![\w-])gdd\.md\b", re.IGNORECASE)
@@ -104,7 +108,12 @@ def glob_re(pattern):
                 body = pattern[i + 1:j]
                 if body[:1] in ("!", "^"):
                     body = "^" + body[1:]
-                out.append("[" + body.replace("\\", "\\\\") + "]")
+                cls = "[" + body.replace("\\", "\\\\") + "]"
+                try:
+                    re.compile(cls)
+                except re.error:
+                    cls = "[^/]"  # unreadable class: any one character
+                out.append(cls)
                 i = j + 1
                 continue
         elif c == "{":
@@ -119,7 +128,10 @@ def glob_re(pattern):
             out.append(re.escape(c))
         i += 1
     out.append(")" * depth)
-    return re.compile("".join(out), re.S)
+    try:
+        return re.compile("".join(out), re.S)
+    except re.error:
+        return re.compile(".*", re.S)  # unreadable pattern: matches anything
 
 
 def wild(token):
@@ -568,4 +580,28 @@ def main():
             refuse("That canon file is above this agent's clearance.")
 
 
-main()
+def fail_closed(why):
+    """Any failure to judge a call refuses it. Exit 2 is Claude Code's blocking
+    exit whatever the settings say; any other non-zero exit lets the call through."""
+    try:
+        sys.stderr.write("The canon hook could not read this command (%s), so it refuses it."
+                         " Put a long script in a file with the Write tool and run the file.\n" % why)
+        sys.stderr.flush()
+    finally:
+        os._exit(2)
+
+
+def on_alarm(signum, frame):
+    raise TimeoutError("took too long")
+
+
+if __name__ == "__main__":
+    try:
+        if hasattr(signal, "SIGALRM"):
+            signal.signal(signal.SIGALRM, on_alarm)
+            signal.alarm(8)  # the hook's timeout in settings.json is 10 seconds
+        main()
+    except SystemExit:
+        raise
+    except BaseException as err:  # noqa: B036 - fail closed on anything
+        fail_closed(type(err).__name__)
