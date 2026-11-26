@@ -72,7 +72,7 @@
     {
       "id": "rations",
       "speaker": "Professor Brassbuckle",
-      "line": "Do not fret over Rations. You eat one by yourself when the bites add up. If you run out, no lasting harm: each time the rats lay you flat you lose a minute, then get up and fight on."
+      "line": "You eat a Ration by yourself when the bites add up. If you run out, no lasting harm: each time the rats lay you flat you lose a minute, then get up and fight on."
     },
     {
       "id": "first_haul",
@@ -92,7 +92,7 @@
     {
       "id": "opened_smithing",
       "speaker": "Professor Brassbuckle",
-      "line": "More Brass Ingots: Smithing smelts them from Copper. Start one, or dig Copper at Prospecting first."
+      "line": "More Brass Ingots: dig Copper at Prospecting first, then smelt it in Smithing."
     },
     {
       "id": "opened_cooking",
@@ -107,7 +107,7 @@
     {
       "id": "opened_guild",
       "speaker": "Professor Brassbuckle",
-      "line": "Even alone, a guild pays: your rat fights earn Guild Tokens, spent on looks. Found one free."
+      "line": "Founding a guild costs nothing, even alone. Your rat fights then earn Guild Tokens for looks, paid weekly."
     },
     {
       "id": "new_job",
