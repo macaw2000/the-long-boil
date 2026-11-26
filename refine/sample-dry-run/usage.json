@@ -1,0 +1,134 @@
+{
+  "outcome": "accepted",
+  "via": "dry-run",
+  "models": {
+    "generator": "claude-sonnet-5-5 (low effort)",
+    "evaluator": "claude-opus-5-5 (high effort)",
+    "refiner": "claude-opus-5-5 (high effort)"
+  },
+  "rounds": 2,
+  "agent_calls": 6,
+  "wall_seconds": 2.4,
+  "gate_runs": 0,
+  "gate_seconds": [],
+  "totals": {
+    "fresh_input": 0,
+    "cache_write": 0,
+    "cache_read": 0,
+    "output": 0,
+    "api_cost_usd": 0.0
+  },
+  "by_agent": {
+    "generator": {
+      "calls": 1,
+      "output": 0,
+      "api_cost_usd": 0.0,
+      "seconds": 0.0
+    },
+    "evaluator": {
+      "calls": 3,
+      "output": 0,
+      "api_cost_usd": 0.0,
+      "seconds": 0.0
+    },
+    "refiner": {
+      "calls": 2,
+      "output": 0,
+      "api_cost_usd": 0.0,
+      "seconds": 0.0
+    }
+  },
+  "calls": [
+    {
+      "at": "2026-11-26T17:33:52Z",
+      "agent": "generator",
+      "round": 0,
+      "model": "claude-sonnet-5-5",
+      "effort": "low",
+      "via": "dry-run",
+      "fresh_input": 0,
+      "cache_write": 0,
+      "cache_read": 0,
+      "cache_write_1h": 0,
+      "output": 0,
+      "seconds": 0.0,
+      "api_cost_usd": 0.0
+    },
+    {
+      "at": "2026-11-26T17:33:53Z",
+      "agent": "evaluator",
+      "round": 0,
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "via": "dry-run",
+      "fresh_input": 0,
+      "cache_write": 0,
+      "cache_read": 0,
+      "cache_write_1h": 0,
+      "output": 0,
+      "seconds": 0.0,
+      "api_cost_usd": 0.0
+    },
+    {
+      "at": "2026-11-26T17:33:53Z",
+      "agent": "refiner",
+      "round": 0,
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "via": "dry-run",
+      "fresh_input": 0,
+      "cache_write": 0,
+      "cache_read": 0,
+      "cache_write_1h": 0,
+      "output": 0,
+      "seconds": 0.0,
+      "api_cost_usd": 0.0
+    },
+    {
+      "at": "2026-11-26T17:33:54Z",
+      "agent": "evaluator",
+      "round": 1,
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "via": "dry-run",
+      "fresh_input": 0,
+      "cache_write": 0,
+      "cache_read": 0,
+      "cache_write_1h": 0,
+      "output": 0,
+      "seconds": 0.0,
+      "api_cost_usd": 0.0
+    },
+    {
+      "at": "2026-11-26T17:33:54Z",
+      "agent": "refiner",
+      "round": 1,
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "via": "dry-run",
+      "fresh_input": 0,
+      "cache_write": 0,
+      "cache_read": 0,
+      "cache_write_1h": 0,
+      "output": 0,
+      "seconds": 0.0,
+      "api_cost_usd": 0.0
+    },
+    {
+      "at": "2026-11-26T17:33:55Z",
+      "agent": "evaluator",
+      "round": 2,
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "via": "dry-run",
+      "fresh_input": 0,
+      "cache_write": 0,
+      "cache_read": 0,
+      "cache_write_1h": 0,
+      "output": 0,
+      "seconds": 0.0,
+      "api_cost_usd": 0.0
+    }
+  ],
+  "pricing": "API list prices from crew/pricing.py; the run itself was billed to dry-run"
+}

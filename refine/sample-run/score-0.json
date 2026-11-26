@@ -1,0 +1,104 @@
+{
+  "total": 89.5,
+  "accepted": false,
+  "under_floor": [],
+  "scores": [
+    {
+      "rule": "R1",
+      "score": 9,
+      "reason": "Everything is in present tense and speaks to you. One outcome sentence jumps a week ahead mid-scene and tells that later event in present tense, which takes you out of the scene's now.",
+      "evidence": "options[0].failure.text: \"The smell is brought up in a lecture the following week as an example of incomplete combustion.\"",
+      "fix": "Keep the moment in the scene's present, for example: \"By morning the smell has a place in Thursday's lecture on incomplete combustion.\" Or cut the time jump: \"Somebody notes the smell as an example of incomplete combustion.\"",
+      "by": "evaluator"
+    },
+    {
+      "rule": "R2",
+      "score": 8,
+      "reason": "Most images are specific: the spirit stove, the dented pot, gone nine, a bun at noon, the pressure table. A few phrases are generic or stock, and one is padding.",
+      "evidence": "options[0].label: \"whatever is in the cupboard\"; description: \"a row of hollow-eyed faces\"; options[2].success.text: \"smells for an hour of better days\"; options[0].success.text: \"Someone scrapes the pot with a spanner\"",
+      "fix": "Name what is in the cupboard (\"Make supper from the cupboard's half-loaf and a tin of something unlabelled\"). Replace \"hollow-eyed faces\" with a counted, trade-specific image (\"six first-years in scorched aprons\"). Change \"of better days\" to something particular (\"of a Sunday dinner\"). Make it \"a No. 4 spanner\".",
+      "by": "evaluator"
+    },
+    {
+      "rule": "R3",
+      "score": 8,
+      "reason": "The wit is dry and sits beside real hunger: \"solemnity usually reserved for pensions\" and \"look at you kindly, which is worse\". The burned sleeve is handled by its aftermath. But one tag explains the joke about the margin note.",
+      "evidence": "options[1].success.text: \"Somebody writes your name in the margin of a pressure table, for reasons of gratitude.\"",
+      "fix": "Cut the explaining tag: \"Somebody writes your name in the margin of a pressure table.\"",
+      "by": "evaluator"
+    },
+    {
+      "rule": "R4",
+      "score": 9,
+      "reason": "The register is period-plausible: gone nine, spirit stove, first-years, for the road. One clipped word sounds faintly modern in the outcome text, even though canon uses \"lab\" in its summaries.",
+      "evidence": "options[2].success.text: \"wrapped in a lab sheet\"",
+      "fix": "Change to \"wrapped in a page of laboratory notes\" or \"wrapped in a blotted indicator card\".",
+      "by": "evaluator"
+    },
+    {
+      "rule": "R5",
+      "score": 10,
+      "by": "code",
+      "reason": "The style validator passes: word limits and banned words.",
+      "evidence": "",
+      "fix": ""
+    },
+    {
+      "rule": "R6",
+      "score": 10,
+      "reason": "The scene does not touch the mystery at all. The gauges and the pressure table are ordinary bench equipment, and none is offered as a fragment of the mystery.",
+      "evidence": "",
+      "fix": "",
+      "by": "evaluator"
+    },
+    {
+      "rule": "R7",
+      "score": 10,
+      "reason": "Nothing above Layer 1, not even a hint. A boiler cooling and ticking on a test bench is ordinary engineering, not knocking or heat from below. There is no Whistle, no Haze and no Downpipe.",
+      "evidence": "",
+      "fix": "",
+      "by": "evaluator"
+    },
+    {
+      "rule": "R8",
+      "score": 7,
+      "reason": "world.md says first-years build the boilers and a qualified hand must test each one. The draft says the first-years are doing the testing, which goes against that detail and against the draft's own first sentence. Also, the stew wrapped as leftovers is booked as the existing Rustmoor ration item, so the text and the item do not match.",
+      "evidence": "description: \"each waiting for a qualified hand to test it before it is lit. The first-years are still testing.\"; options[0].success.text: \"Two portions are wrapped in the Gazette\" (changes: item.rustmoor.rustmoor_ration +2)",
+      "fix": "Replace \"The first-years are still testing.\" with \"The tester has not come down, and the first-years will not leave their boilers.\" In the success text, hand over actual rations: \"Two Rustmoor rations come out of somebody's satchel and are pressed into your hands for the road, with the solemnity usually reserved for pensions.\"",
+      "by": "evaluator"
+    },
+    {
+      "rule": "R9",
+      "score": 10,
+      "reason": "No named character appears. No unnamed figure takes over a canon character's job.",
+      "evidence": "",
+      "fix": "",
+      "by": "evaluator"
+    },
+    {
+      "rule": "R10",
+      "score": 8,
+      "reason": "Odds at difficulty 7 (0.6 × skill / 7): Cooking 3 gives 26%, 4 gives 34%, 5 gives 43%, 6 gives 51%, 7 gives 60% and 8 gives 69%. The average is about 47%, so it meets the brief's \"about half\". The barley option is a real trade of goods for Favour. The salt-pork option is weak: it spends 2 pork for 1 ration, while the free challenge offers 2 rations at even odds. Only a player who will not risk +1 Scald would take it.",
+      "evidence": "options[2].label: \"Fry two cuts of your salt pork, and take a ration from the bench's thanks.\"; options[2].success.changes: \"item.rustmoor.rustmoor_ration\": \"+1\"",
+      "fix": "Raise options[2].success.changes to \"item.rustmoor.rustmoor_ration\": \"+2\". It then becomes the sure, paid version of the challenge. Update the text to match: \"Two leave Rustmoor rations on the pot lid, wrapped in a page of laboratory notes, without a word.\"",
+      "by": "evaluator"
+    },
+    {
+      "rule": "R11",
+      "score": 10,
+      "reason": "Nothing assumes a relationship with Hester. \"The only person present who has been seen to cook\" is true for an apprentice, a relative or a stranger.",
+      "evidence": "",
+      "fix": "",
+      "by": "evaluator"
+    },
+    {
+      "rule": "R12",
+      "score": 10,
+      "by": "code",
+      "reason": "The game's validators pass (12 checks).",
+      "evidence": "",
+      "fix": ""
+    }
+  ],
+  "summary": "This is a solid, funny basement scene, but it falls short of acceptance: it scores 74.5 out of the 85 weight points scored here (R5 was not given), well below the 90 needed. R8 sits right at its floor of 7, and every other rule clears its floor.\n\n- **The main problem (R8):** world.md says a qualified hand tests the first-years' boilers, but the description says \"The first-years are still testing\", which also contradicts its own first sentence. The brief's wording repeats this error, but canon wins.\n- **The odds (R10):** worked with the GDD formula, difficulty 7 gives 26% at Cooking 3 up to 69% at Cooking 8, about 47% on average, so it meets the brief.\n- **Choice balance (R10):** the salt-pork option pays half what the free challenge pays, so it should give +2 rations.\n- **Smaller fixes:** cut \"for reasons of gratitude\", which explains its own joke (R3). Replace \"whatever is in the cupboard\", \"hollow-eyed faces\" and \"better days\" with specific images (R2). Keep the failure outcome in the scene's present rather than \"the following week\" (R1). Change \"lab sheet\" to a period term (R4).\n- **No problems:** nothing hints beyond Layer 1 (R7), the scene leaves the mystery alone (R6), and it reads true for all three origins (R11)."
+}

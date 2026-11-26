@@ -1,0 +1,151 @@
+{
+  "brief": "refine/briefs/polytechnic-basement-supper.md",
+  "id": "act1.polytechnic.basement_supper",
+  "accepted": true,
+  "final_iteration": 1,
+  "generator_notes": "One storylet, act1.polytechnic.basement_supper, 1 Nerve, 24h cooldown, Polytechnic, Act I. Difficulty 7: Cooking 3 gives 26%, 5 gives 43%, 8 gives about 69%, so roughly half across the 3-8 range. Barley and pork options are certain and spend 2 each. No new qualities, no invented canon, no flags or progress set. Validators not run, because I have no file tools. Nothing needed an uncleared fact.",
+  "history": [
+    {
+      "iteration": 0,
+      "total": 89.5,
+      "accepted": false,
+      "scores": {
+        "R1": 9,
+        "R2": 8,
+        "R3": 8,
+        "R4": 9,
+        "R5": 10,
+        "R6": 10,
+        "R7": 10,
+        "R8": 7,
+        "R9": 10,
+        "R10": 8,
+        "R11": 10,
+        "R12": 10
+      }
+    },
+    {
+      "iteration": 1,
+      "total": 93.5,
+      "accepted": true,
+      "scores": {
+        "R1": 9,
+        "R2": 9,
+        "R3": 8,
+        "R4": 10,
+        "R5": 10,
+        "R6": 9,
+        "R7": 10,
+        "R8": 9,
+        "R9": 10,
+        "R10": 9,
+        "R11": 10,
+        "R12": 10
+      }
+    }
+  ],
+  "final_scorecard": {
+    "total": 93.5,
+    "accepted": true,
+    "under_floor": [],
+    "scores": [
+      {
+        "rule": "R1",
+        "score": 9,
+        "reason": "Every sentence is in the present tense and nothing slips into third person. But one outcome never puts the Tinker in the scene at all: it is narration with no \"you\" in it.",
+        "evidence": "options[2].success.text: \"The pork spits across the stove, and the basement smells for an hour of a Sunday dinner. The first-years eat standing, still holding their gauges. Two of them leave a Rustmoor ration each on the pot lid, wrapped in a page of laboratory notes, without a word.\"",
+        "fix": "Put the Tinker in the last sentence: \"Two of them leave a Rustmoor ration each on the pot lid by your elbow, without a word.\"",
+        "by": "evaluator"
+      },
+      {
+        "rule": "R2",
+        "score": 9,
+        "reason": "The details are concrete and mostly specific to this game: spirit stove, dented pot, scorched aprons, an unlabelled tin, a pressure table. There are two small lapses. The cupboard in the label never appears in the description. The \"No. 4 spanner\" is the style guide's own example copied word for word, so it reads as ticking a box rather than as something seen.",
+        "evidence": "options[0].label: \"the cupboard's two onions\"; options[0].success.text: \"Someone scrapes the pot with a No. 4 spanner.\"",
+        "fix": "In the description, change \"A spirit stove sits at the end of the bench beside a dented pot\" to \"A spirit stove sits at the end of the bench beside a dented pot and a cupboard nobody has opened since term began\". Replace the spanner with a tool you thought of yourself that belongs on a boiler bench, e.g. \"Someone scrapes the pot with a gauge-glass brush.\"",
+        "by": "evaluator"
+      },
+      {
+        "rule": "R3",
+        "score": 8,
+        "reason": "The wit is dry and often lands (\"an example of incomplete combustion\", \"the only person present who has been seen to cook\"). But \"which is worse\" tells the reader how to take the moment instead of trusting it. The pensions simile is a shade broad. The grim side is thin: the only hardship is a missed supper.",
+        "evidence": "options[0].failure.text: \"look at you kindly, which is worse\"; options[0].success.text: \"with the solemnity usually reserved for pensions\"",
+        "fix": "Cut the tag so the line ends \"The first-years eat bread and look at you kindly.\" Change the pensions line to \"...pressed into your hands for the road, and nobody meets your eye.\" Add one aftermath image to the description, e.g. \"One place on the bench is empty, and its boiler wears a fresh brass patch.\"",
+        "by": "evaluator"
+      },
+      {
+        "rule": "R4",
+        "score": 10,
+        "reason": "\"It is gone nine\", \"incomplete combustion\", \"Sunday dinner\" and \"for the road\" are all period-plausible. There is no modern slang and no archaic costume.",
+        "evidence": "",
+        "fix": "",
+        "by": "evaluator"
+      },
+      {
+        "rule": "R5",
+        "score": 10,
+        "by": "code",
+        "reason": "The style validator passes: word limits and banned words.",
+        "evidence": "",
+        "fix": ""
+      },
+      {
+        "rule": "R6",
+        "score": 9,
+        "reason": "Nothing is explained. But a ration \"wrapped in a page of laboratory notes\" at the Polytechnic invites careful readers to see a Hester fragment. The brief rules out her laboratory, and the scene does not need it.",
+        "evidence": "options[2].success.text: \"wrapped in a page of laboratory notes\"",
+        "fix": "Make the paper the students' own and harmless: \"wrapped in a first-year's boiler test sheet\".",
+        "by": "evaluator"
+      },
+      {
+        "rule": "R7",
+        "score": 10,
+        "reason": "Nothing goes above Layer 1. There is no heat from below, no knocking (a boiler \"ticking as it cools\" is ordinary), no Whistle and no Haze.",
+        "evidence": "",
+        "fix": "",
+        "by": "evaluator"
+      },
+      {
+        "rule": "R8",
+        "score": 9,
+        "reason": "The scene is built on canon: the basement practical bench and the qualified hand who tests each boiler before it is lit. It uses only existing items and has no Crowns. Onions are new fresh produce in a city with no ground. That is small and arguably covered by barley being canon, but nothing in the scene draws on Kettleport's own food, like tea or the public urn.",
+        "evidence": "options[0].label: \"the cupboard's two onions and an unlabelled tin\"",
+        "fix": "Drop the onions for something canon already supports, e.g. \"Make supper from the cupboard's unlabelled tin and the bench's tea urn, and hope the pot forgives you.\"",
+        "by": "evaluator"
+      },
+      {
+        "rule": "R9",
+        "score": 10,
+        "reason": "No named character appears. The unseen tester is just a qualified hand, as canon says, and is not given any named character's job.",
+        "evidence": "",
+        "fix": "",
+        "by": "evaluator"
+      },
+      {
+        "rule": "R10",
+        "score": 9,
+        "reason": "Odds: P = 0.6 × skill / 7, so Cooking 3 to 8 gives 26%, 34%, 43%, 51%, 60% and 69%, a mean of about 47%. That is \"about half\", and no whole-number difficulty does better (6 gives a mean of 55%). The three options cost and risk different things. But option 3 pays exactly what option 1 pays on a success. That makes it just \"pay pork for certainty\", and the argument comes down to an exchange rate rather than a real choice.",
+        "evidence": "options[2].label: \"accept two rations in the bench's thanks\" alongside options[2].success.changes \"item.rustmoor.rustmoor_ration\": \"+2\", the same as options[0].success",
+        "fix": "Give the pork option a different reward that is still within the brief: change options[2].success.changes to \"item.rustmoor.salt_pork\": \"-2\", \"item.rustmoor.rustmoor_ration\": \"+1\", \"favour.polytechnic\": \"+1\" is not allowed (it is one or the other). So instead lower it to \"item.rustmoor.rustmoor_ration\": \"+1\" and relabel it \"Fry two cuts of your salt pork for a bench that will owe you.\" Now options 1 and 3 differ in what they pay as well as what they risk.",
+        "by": "evaluator"
+      },
+      {
+        "rule": "R11",
+        "score": 10,
+        "reason": "Nothing assumes the Tinker knew Hester, trained with her or is related to her. \"The only person present who has been seen to cook\" is true for every origin.",
+        "evidence": "",
+        "fix": "",
+        "by": "evaluator"
+      },
+      {
+        "rule": "R12",
+        "score": 10,
+        "by": "code",
+        "reason": "The game's validators pass (12 checks).",
+        "evidence": "",
+        "fix": ""
+      }
+    ],
+    "summary": "Every rule is at or above its floor. The weighted total over the ten rules scored here is 78.5 of 85 (92%). I can't compute the guide's out-of-100 total because only 85 points of weight are listed. R7 (reveals) is a clean 10. Lowest is R3 at 8: \\\"which is worse\\\" tells the reader how to feel, and the grim side is thin. A few other things each cost a point. R1: the pork outcome never mentions \\\"you\\\". R2: the cupboard in the label never appears in the description, and the No. 4 spanner is copied from the style guide. R6: \\\"laboratory notes\\\" at the Polytechnic could read as a Hester hint. R8: the onions are new produce. R10: the pork option pays exactly what the challenge pays on a success. Difficulty 7 gives 26–69% across Cooking 3 to 8 (mean about 47%), which meets the brief."
+  }
+}

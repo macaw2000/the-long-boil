@@ -54,6 +54,7 @@ Two rules protect the story. The canon bible (`docs/canon/`) splits the world by
 | A crew of 3+ agents producing game-ready output | [`crew/`](crew/README.md): the Scrivener, Inspector and Registrar as standalone Python, with the validators as a gate |
 | A content pipeline that reads the GDD, with a critic | [`crew/outputs/`](crew/outputs/README.md): three Tailoring storylets, now in the game, and what the critic caught |
 | A goal-oriented coding agent that builds a missing feature | [`agent/`](agent/README.md): it read the GDD, scanned the engine, ranked the gaps and built the Leaderboards |
+| A self-correcting Generator → Evaluator → Refiner loop that enforces the game's style | [`refine/`](refine/README.md): 12 rules drawn from the GDD, each scored 0 to 10 with a reason; a real run takes a Polytechnic Cooking storylet from 89.5 to 93.5 with no one stepping in |
 
 ## Repository
 
@@ -77,6 +78,7 @@ Two rules protect the story. The canon bible (`docs/canon/`) splits the world by
 | `scripts/art/` | Cuts Gemini sprite sheets into the game's icons |
 | [`.claude/agents/`](.claude/agents/) | The six agent definitions |
 | [`crew/`](crew/README.md) | The storylet crew as standalone code |
+| [`refine/`](refine/README.md) | The style loop: Generator, Evaluator and Refiner, scored against the house style |
 
 ## Running it locally
 
