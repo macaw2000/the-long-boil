@@ -438,10 +438,12 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
   const plainly = (id: string, plain: string, place: Place): Goal => ({ text: content.guide.find((candidate) => candidate.id === id)?.line ?? plain, place });
   // A place just opened: why to go there. The newest unvisited place that has a line, so a place
   // without one (Chat) never hides the rest. Tailoring has the armour line.
-  const placeGoal = (): Goal | null => {
+  const placeGoal = (skillsOnly = false): Goal | null => {
     const afterPrologue = (tinker.story.qualities["record.visits_since_prologue"] ?? 0) >= 1;
     const hasLine = (candidate: Place) =>
-      candidate === "skill:tailoring"
+      skillsOnly && !candidate.startsWith("skill:")
+        ? false
+        : candidate === "skill:tailoring"
         ? Object.keys(tinker.worn).length === 0
         : // Cogs wait for the Prologue's end, even for a player whose skipped guide opened the shop (decision 40).
           candidate in OPENED_LINES && (candidate !== "shop" || afterPrologue);
@@ -465,9 +467,9 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
   const progress = prologue(tinker);
   const fightingAlready = progress === 50 && tinker.queue[0]?.actionId.startsWith("monster.");
   if (awaitsAction(progress) && !fightingAlready && !guide.acknowledged.includes(actedMark(progress))) {
-    // At the register a place the story just opened asks for the action with its own line, so the line is
+    // At the register a skill the story just opened asks for the action with its own line, so the line is
     // not lost when Go marks the place seen; with none waiting, new_job says why a new job matters.
-    if (progress === 40) return placeGoal() ?? plainly("new_job", BETWEEN_SCENES[40]!.text, BETWEEN_SCENES[40]!.place);
+    if (progress === 40) return placeGoal(true) ?? plainly("new_job", BETWEEN_SCENES[40]!.text, BETWEEN_SCENES[40]!.place);
     return BETWEEN_SCENES[progress]!;
   }
   if (tinker.story.openScenes > 0 && tinker.story.nerve > 0) {
@@ -488,8 +490,10 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
     const skill = content.actions.find((action) => action.id === head.actionId)?.skill ?? FIGHT;
     return { text: `The bench has work for ${Math.round(queued / 360_000) / 10}h, the Boiler steam for ${Math.round(steamLeft / 360_000) / 10}h. Queue more so nothing sits idle.`, place: `skill:${skill}` };
   }
-  // Fewer Rations than a night of fights eats: say where more come from.
-  if (cooking && held(tinker, content.ration.item) < LOW_RATIONS) return { text: "Rations are running low: cook more at Cooking, with what the grocer's counter in the Exchange sells.", place: "exchange" };
+  // Fewer Rations than a night of fights eats. Before Cooking is visited its own line says it and sends the player
+  // there; after, the plain line waits behind new places, so a low crate never holds back every other place's line.
+  const low = cooking && held(tinker, content.ration.item) < LOW_RATIONS;
+  if (low && unseen.includes("skill:cooking")) return plainly("opened_cooking", "Rations are running low: cook more at Cooking.", "skill:cooking");
   // An unpaid bill comes before a new place while the window still buys; once the week's sale is used, after it.
   const unpaid = tinker.story.debts[0];
   const billLine = (): Goal => {
@@ -501,6 +505,7 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
   // A place just opened, when nothing else is due.
   const opening = placeGoal();
   if (opening) return opening;
+  if (low) return { text: "Rations are running low: cook more at Cooking, with what the grocer's counter in the Exchange sells.", place: "exchange" };
   // With the week's Rat Scrap sold, Bent Nails held still sell at the window toward the bill.
   if (unpaid && held(tinker, NAILS) > 0 && (nailsLeft ?? 0) > 0) {
     return { text: `The window still buys Bent Nails this week. (${tinker.crowns.toLocaleString()} of ${unpaid.crowns.toLocaleString()} Crowns.)`, place: "exchange" };
