@@ -12,7 +12,7 @@
 // piece at a time as the steps reach each place; skipping or finishing the
 // guide opens the rest.
 
-import { JOBS_CREDIT, SKILL_GATES } from "@long-boil/rules";
+import { SKILL_GATES } from "@long-boil/rules";
 import { Image, Pressable, Text, View } from "react-native";
 import type { Content, GuideProgress, RoadView, Tinker } from "./api";
 import { FIGHT } from "./jobs";
@@ -195,6 +195,9 @@ const JOBS_OPEN: Partial<Record<string, number>> = {
   "skill:scavenging": 50,
 };
 
+/** The places that open by work done. */
+export const OPENS_BY_WORK = Object.keys(JOBS_OPEN) as Feature[];
+
 /**
  * What the screen shows: while the guide runs, only what it has reached;
  * after it, the first day's places as they come; everything once the guide
@@ -227,6 +230,8 @@ export const ALL_OPEN = "all_open";
 /** Opened places that can be new, in the order they open. */
 const OPENING_ORDER: Place[] = ["story", `skill:${FIGHT}`, "guild", "exchange", "skill:tailoring", "skill:prospecting", "skill:smithing", "skill:cooking", "skill:scavenging", "chat", "shop"];
 
+const NAILS = "item.rustmoor.bent_nails";
+
 /** The one place that wears "new" is the last of these: the latest opened and not yet visited, so badges never pile up. */
 /** Opened places not yet visited, oldest first. */
 export function unseenPlaces(place: Place, seen: readonly string[], shown: (place: Place) => boolean): Place[] {
@@ -250,11 +255,13 @@ export function opensWhen(feature: string, jobsDone: number): string {
   if (gate) return gate.reason;
   if (GUIDE_OPENS[feature] !== undefined) return "Opens later in this visit";
   const jobs = JOBS_OPEN[feature];
-  if (jobs === undefined) return "Opens on your first visit after the Prologue";
+  // Readers did not know what "the Prologue" was; Story calls it Your First Day.
+  if (jobs === undefined) return "Opens on your first visit after Your First Day";
   const left = jobs - jobsDone;
   if (left <= 0) return "Opens when Brassbuckle has shown you round";
   // "Job" is the queue's word for a whole entry; what counts here is each go.
-  return `Opens after ${left} more ${left === 1 ? "thing" : "things"} made, gathered or beaten. A spell away counts for up to ${JOBS_CREDIT}.`;
+  // The cap on time away is said in the return ledger, where readers met it and understood it.
+  return `Opens after ${left} more ${left === 1 ? "thing" : "things"} made, gathered or beaten`;
 }
 
 /** Where a fresh workshop opens while the guide runs: the bench Brassbuckle points at. */
@@ -420,7 +427,7 @@ export interface Goal {
   speaker?: string;
 }
 
-export function nextGoal(tinker: Tinker, content: Content, now: number, name: (id: string) => string, guide: GuideState, saleLeft: number | null = null, unseen: readonly Place[] = [], cooking = true): Goal | null {
+export function nextGoal(tinker: Tinker, content: Content, now: number, name: (id: string) => string, guide: GuideState, saleLeft: number | null = null, unseen: readonly Place[] = [], cooking = true, nailsLeft: number | null = null): Goal | null {
   const steamLeft = new Date(tinker.steamUntil).getTime() - now;
   // The later sittings speak in Brassbuckle's words from the guide file, falling back to plain ones.
   const said = (id: string, plain: string, place: Place | null): Goal => {
@@ -429,6 +436,24 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
   };
   // Lines for a newly opened place are long, so they go without Brassbuckle's name in front.
   const plainly = (id: string, plain: string, place: Place): Goal => ({ text: content.guide.find((candidate) => candidate.id === id)?.line ?? plain, place });
+  // A place just opened: why to go there. The newest unvisited place that has a line, so a place
+  // without one (Chat) never hides the rest. Tailoring has the armour line.
+  const placeGoal = (): Goal | null => {
+    const afterPrologue = (tinker.story.qualities["record.visits_since_prologue"] ?? 0) >= 1;
+    const hasLine = (candidate: Place) =>
+      candidate === "skill:tailoring"
+        ? Object.keys(tinker.worn).length === 0
+        : // Cogs wait for the Prologue's end, even for a player whose skipped guide opened the shop (decision 40).
+          candidate in OPENED_LINES && (candidate !== "shop" || afterPrologue);
+    const newest = [...unseen].reverse().find(hasLine);
+    if (newest === "skill:tailoring") {
+      return plainly("first_armour", "Make something to wear.", held(tinker, SILK) >= WRAPS_SILK ? "skill:tailoring" : `skill:${FIGHT}`);
+    }
+    // Brassbuckle gives the reason in this one, so it carries the name.
+    if (newest === "exchange") return said("opened_exchange", "Exchange is open: see what you can do there.", newest);
+    if (newest) return plainly(OPENED_LINES[newest]!, `${titleCase(newest.replace("skill:", ""))} is open: see what you can do there.`, newest);
+    return null;
+  };
   const debt = tinker.story.debts.find((candidate) => tinker.crowns >= candidate.crowns);
   if (debt) return { text: `Pay ${debt.label}: you have the ${debt.crowns.toLocaleString()} Crowns.`, place: "exchange" };
   if (tinker.story.letters > 0) return prologue(tinker) < BILL_ANSWERED ? said("pips_bill", "A letter is waiting in Story.", "story") : { text: "A letter is waiting in Story.", place: "story" };
@@ -439,7 +464,12 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
   // In the third sitting, one action between each pair of scenes, so story and work alternate.
   const progress = prologue(tinker);
   const fightingAlready = progress === 50 && tinker.queue[0]?.actionId.startsWith("monster.");
-  if (awaitsAction(progress) && !fightingAlready && !guide.acknowledged.includes(actedMark(progress))) return progress === 40 ? plainly("new_job", BETWEEN_SCENES[40]!.text, BETWEEN_SCENES[40]!.place) : BETWEEN_SCENES[progress]!;
+  if (awaitsAction(progress) && !fightingAlready && !guide.acknowledged.includes(actedMark(progress))) {
+    // At the register a place the story just opened asks for the action with its own line, so the line is
+    // not lost when Go marks the place seen; with none waiting, new_job says why a new job matters.
+    if (progress === 40) return placeGoal() ?? plainly("new_job", BETWEEN_SCENES[40]!.text, BETWEEN_SCENES[40]!.place);
+    return BETWEEN_SCENES[progress]!;
+  }
   if (tinker.story.openScenes > 0 && tinker.story.nerve > 0) {
     return progress >= PLATE_FROM && progress < 100 ? said("brass_plate", "Scenes are open in Story.", "story") : { text: "Scenes are open in Story, and you have Nerve to play them.", place: "story" };
   }
@@ -468,21 +498,13 @@ export function nextGoal(tinker: Tinker, content: Content, now: number, name: (i
     return { ...line, text: `${line.text} (${tinker.crowns.toLocaleString()} of ${unpaid!.crowns.toLocaleString()} Crowns.)` };
   };
   if (unpaid && saleLeft !== 0) return billLine();
-  // A place just opened, when nothing else is due: why to go there. The newest unvisited place that has a line,
-  // so a place without one (Chat) never hides the rest. Tailoring has the armour line.
-  const afterPrologue = (tinker.story.qualities["record.visits_since_prologue"] ?? 0) >= 1;
-  const hasLine = (candidate: Place) =>
-    candidate === "skill:tailoring"
-      ? Object.keys(tinker.worn).length === 0
-      : // Cogs wait for the Prologue's end, even for a player whose skipped guide opened the shop (decision 40).
-        candidate in OPENED_LINES && (candidate !== "shop" || afterPrologue);
-  const newest = [...unseen].reverse().find(hasLine);
-  if (newest === "skill:tailoring") {
-    return plainly("first_armour", "Make something to wear.", held(tinker, SILK) >= WRAPS_SILK ? "skill:tailoring" : `skill:${FIGHT}`);
+  // A place just opened, when nothing else is due.
+  const opening = placeGoal();
+  if (opening) return opening;
+  // With the week's Rat Scrap sold, Bent Nails held still sell at the window toward the bill.
+  if (unpaid && held(tinker, NAILS) > 0 && (nailsLeft ?? 0) > 0) {
+    return { text: `The window still buys Bent Nails this week. (${tinker.crowns.toLocaleString()} of ${unpaid.crowns.toLocaleString()} Crowns.)`, place: "exchange" };
   }
-  // Brassbuckle gives their word in this one, so it carries the name.
-  if (newest === "exchange") return said("opened_exchange", "Exchange is open: see what you can do there.", newest);
-  if (newest) return plainly(OPENED_LINES[newest]!, `${titleCase(newest.replace("skill:", ""))} is open: see what you can do there.`, newest);
   if (unpaid) return billLine();
   // Nothing else told a player to train, and a skill gate could hold the story back for weeks (decision 17).
   const gate = tinker.story.nextGate;

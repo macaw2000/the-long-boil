@@ -14,13 +14,13 @@ import { Chat, ChatDock, channelOf, useChat, useWhispers, type ChatProps } from 
 import { Bills, Exchange } from "./Exchange";
 import { duration, namer, titleCase, tradeLine } from "./format";
 import { Glow } from "./Glow";
-import { actedMark, ALL_OPEN, unseenPlaces, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, queuedMs, rest, restLine, revealed, SendOff, type GuideAction, type GuideState, type Target } from "./Guide";
+import { actedMark, ALL_OPEN, OPENS_BY_WORK, unseenPlaces, awaitsAction, coach, currentStep, GoalBar, GUIDE_START, GuideCard, nextGoal, nudges, queuedMs, rest, restLine, revealed, SendOff, type GuideAction, type GuideState, type Target } from "./Guide";
 import { Guild } from "./Guild";
 import { GuildCard } from "./GuildCard";
 import { Inspect } from "./Inspect";
 import { drawnBodies } from "./looks";
 import { BodyPick, Wardrobe } from "./Wardrobe";
-import { skillOpen } from "@long-boil/rules";
+import { JOBS_CREDIT, skillOpen } from "@long-boil/rules";
 import { jobTitle, skillOf, startFirst } from "./jobs";
 import { CanisterDrop, Floaters, LevelUps, ScaldVignette, useFloaters, useLevelUps } from "./Juice";
 import { Leaderboards } from "./Leaderboards";
@@ -45,6 +45,7 @@ const LOOK_EVERY_MS = 5_000;
 const BOILER_MS = 12 * 3_600_000;
 
 const RAT_SCRAP = "item.rustmoor.rat_scrap";
+const BENT_NAILS = "item.rustmoor.bent_nails";
 
 /** The guide-state mark that Brassbuckle's line on Rations has been read. */
 const RATIONS_SEEN = "seen:rations";
@@ -423,11 +424,15 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
 
   // While a bill is unpaid the goal line needs to know if the week's Rat Scrap sale is used.
   const [saleLeft, setSaleLeft] = useState<number | null>(null);
+  const [nailsLeft, setNailsLeft] = useState<number | null>(null);
   const owing = (tinker?.story.debts.length ?? 0) > 0;
   useEffect(() => {
     if (!owing) return;
-    api.market(tinkerId).then((market) => setSaleLeft(market.collectorLeft[RAT_SCRAP] ?? null), () => undefined);
-  }, [owing, tinkerId, tinker?.crowns]);
+    api.market(tinkerId).then((market) => {
+      setSaleLeft(market.collectorLeft[RAT_SCRAP] ?? null);
+      setNailsLeft(market.collectorLeft[BENT_NAILS] ?? null);
+    }, () => undefined);
+  }, [owing, tinkerId, tinker?.crowns, tinker?.inventory.find((stack) => stack.item === BENT_NAILS)?.qty]);
 
   // Once the guide is over, finished or skipped, the whole screen stays open, even if it is replayed.
   // A Tinker past the Prologue from before the guide was kept on the server skips it.
@@ -502,9 +507,11 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     : new Set<Place>([...(lit as Set<Target>)].map(placeOf).filter((value): value is Place => value !== null && value !== place));
   const unseen = guide.seen ? unseenPlaces(place, guide.seen, shown) : [];
   const newest = unseen[unseen.length - 1] ?? null;
-  const goal = coaching ? null : nextGoal(tinker, content, now, name, guide, saleLeft, unseen, opened("skill:cooking"));
+  const goal = coaching ? null : nextGoal(tinker, content, now, name, guide, saleLeft, unseen, opened("skill:cooking"), nailsLeft);
   const resting = rest(tinker, content, now, name, nextVisitAt);
   const rationsLine = away ? rationsNote(away.ledger, content) : undefined;
+  // A place that opens by work and is still shut: the return ledger then says how much time away counted.
+  const stillShut = OPENS_BY_WORK.some((feature) => !opened(feature));
   const closeLedger = () => {
     if (rationsLine && !guide.acknowledged.includes(RATIONS_SEEN)) setGuide({ ...guide, acknowledged: [...guide.acknowledged, RATIONS_SEEN] });
     setAway(null);
@@ -780,7 +787,8 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
           {/* On a phone it heads the page instead, which scrolls under it, so the card never leaves the page a sliver. */}
           {!wide && guidance}
           {error && <Text style={[ui.text, { color: colors.scald }]}>{error}</Text>}
-          {away && <Ledger ledger={away.ledger} trades={away.trades} guild={away.guild} onGuildChat={readGuild} name={name} job={(id) => jobTitle(content, id, name)} note={guide.acknowledged.includes(RATIONS_SEEN) ? undefined : rationsLine} onClose={closeLedger} />}
+          {away && <Ledger ledger={away.ledger} trades={away.trades} guild={away.guild} onGuildChat={readGuild} name={name} job={(id) => jobTitle(content, id, name)} note={guide.acknowledged.includes(RATIONS_SEEN) ? undefined : rationsLine}
+              opening={stillShut ? `Up to ${JOBS_CREDIT} things done while you were away count toward opening new places; the rest open as you work here.` : undefined} onClose={closeLedger} />}
           {page}
           {recent.length > 0 && skillPlace !== null && (
             <View style={ui.panel}>

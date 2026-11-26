@@ -56,6 +56,7 @@ export function Ledger({
   name,
   job,
   note,
+  opening,
   onClose,
   onGuildChat,
 }: {
@@ -70,6 +71,8 @@ export function Ledger({
   job: (id: string) => string;
   /** A line from the guide, for the first time the ledger shows something new. */
   note?: string;
+  /** While places are still shut: how much of the time away counted toward opening them. */
+  opening?: string;
   onClose: () => void;
 }) {
   const span = ledger.from !== null && ledger.to !== null ? ledger.to - ledger.from : 0;
@@ -168,6 +171,7 @@ export function Ledger({
           {job(stall.actionId)} {STALL_REASONS[stall.reason] ?? stall.reason}.
         </Text>
       ))}
+      {opening && <Text style={[ui.muted, { lineHeight: 19 }]}>{opening}</Text>}
       {note && <Text style={[ui.muted, { fontStyle: "italic", lineHeight: 19 }]}>{note}</Text>}
       {ledger.boilerDryAt !== null && (
         <Text style={[ui.text, { color: colors.scald }]}>The Boiler ran dry, and the workshop stopped.</Text>
