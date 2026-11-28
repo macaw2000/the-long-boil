@@ -13,8 +13,9 @@
 // guide opens the rest.
 
 import { SKILL_GATES } from "@long-boil/rules";
+import { useEffect, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
-import type { Content, GuideProgress, RoadView, Tinker } from "./api";
+import { api, type Content, type GuideProgress, type RoadView, type Tinker } from "./api";
 import { FIGHT } from "./jobs";
 import type { Place } from "./SideNav";
 import { colors, fonts, ui } from "./theme";
@@ -186,13 +187,15 @@ const LATER_OPENS: Partial<Record<string, number>> = {
  * the Prologue, as readers saw no reason for them sooner. A job takes about a minute, so something is always a few jobs away (Jeremy,
  * 25 November 2026). Whichever comes first, this or the story, opens the place.
  */
+// Work order 045: with the Boiler running hot a job takes about nine seconds in the first sitting, so the counts
+// are about three times what they were (10 to 50): a new place still comes every few minutes, not all in five.
 const JOBS_OPEN: Partial<Record<string, number>> = {
-  exchange: 10,
-  "skill:tailoring": 18,
-  "skill:prospecting": 26,
-  "skill:smithing": 34,
-  "skill:cooking": 42,
-  "skill:scavenging": 50,
+  exchange: 20,
+  "skill:tailoring": 40,
+  "skill:prospecting": 65,
+  "skill:smithing": 90,
+  "skill:cooking": 120,
+  "skill:scavenging": 150,
 };
 
 /** The places that open by work done. */
@@ -206,9 +209,10 @@ export const OPENS_BY_WORK = Object.keys(JOBS_OPEN) as Feature[];
 export function revealed(step: Step | null, state: GuideState, prologueProgress: number, visitsSincePrologue = 0, jobsDone = 0): (feature: Feature) => boolean {
   // Everything opens at the visit after the plate: opening the Cog Shop and the rest the moment the Prologue ended felt like the story stopping.
   if (state.skipped || state.acknowledged.includes(ALL_OPEN) || visitsSincePrologue >= 1 || (prologueProgress >= 100 && state.acknowledged.length === 0)) return () => true;
+  // A place already visited never shuts again: the counts rose with work order 045, and nothing is taken from a Tinker.
   const worked = (feature: Feature) => {
     const jobs = JOBS_OPEN[feature];
-    return jobs !== undefined && jobsDone >= jobs;
+    return jobs !== undefined && (jobsDone >= jobs || Boolean(state.seen?.includes(feature)));
   };
   if (step === null || state.opened) {
     return (feature) => {
@@ -288,7 +292,10 @@ export interface Coaching {
 export function queuedMs(tinker: Tinker, content: Content): number {
   const each = (id: string) =>
     1000 * (content.actions.find((action) => action.id === id)?.seconds ?? content.monsters.find((monster) => monster.id === id)?.seconds_per_kill ?? 60);
-  const total = tinker.queue.reduce((sum, entry, index) => sum + (index === 0 && tinker.headMs ? tinker.headMs : each(entry.actionId)) * entry.remaining, 0);
+  // A hot go is a sixth of its time, but only while the player is here and the stock lasts (work order 045):
+  // the night's queue is judged at the usual pace, or a full night read as two hours.
+  const head = tinker.headMs && tinker.hot?.running ? tinker.headMs * tinker.hot.factor : tinker.headMs;
+  const total = tinker.queue.reduce((sum, entry, index) => sum + (index === 0 && head ? head : each(entry.actionId)) * entry.remaining, 0);
   return Math.max(0, total - tinker.progressMs);
 }
 
@@ -375,8 +382,9 @@ export function coach(step: Step, tinker: Tinker, context: GuideContext): Coachi
       return { hint: `Beat ${HAUL_RATS} Rust Rats. The next falls in about ${left}s.`, at: "bench", goal };
     }
     case "come_back": {
-      if (context.queuedMs >= NIGHT_MS) return { hint: "All set. Press Leave it running.", at: "card", action: { label: context.button ?? "Leave it running", kind: "acknowledge" } };
-      return fillNight(context);
+      const label = context.button ?? "Carry on";
+      // The night was queued at first_haul; a player who stays is not held here waiting to be told to leave (work order 048).
+      return { hint: `All set. Press ${label}.`, at: "card", action: { label, kind: "acknowledge" } };
     }
     default:
       return { hint: step.fallback, at: "card" };
@@ -656,6 +664,10 @@ export interface Rest {
   behind: { job: string; goes: number } | null;
   /** A letter has already come: the tube is not still to wait for. */
   letterIn: boolean;
+  /** Hot goes left: the bench runs quick while the player is here (work order 045). */
+  hotGoes: number;
+  /** Things to do here before the story goes on without leaving; null when staying does not open it (work order 048). */
+  stayLeft: number | null;
 }
 
 export function rest(tinker: Tinker, content: Content, now: number, name: (id: string) => string, nextVisitAt: string | null): Rest {
@@ -675,21 +687,46 @@ export function rest(tinker: Tinker, content: Content, now: number, name: (id: s
     goes: head?.remaining ?? 0,
     behind: next ? { job: title(next.actionId), goes: next.remaining } : null,
     letterIn: tinker.story.letters > 0,
+    hotGoes: tinker.hot.goes,
+    stayLeft: tinker.stayJobsLeft,
   };
 }
 
 /** The goal bar's line when nothing wants doing: a calm status and when it changes, never bare "All in hand". */
 export function restLine(at: Rest, now: number): string {
   const work = at.workUntil > now ? `All in hand. The bench has work until ${clock(at.workUntil)}.` : "All in hand.";
-  const story = at.storyAt === null ? "" : at.storyAt > now ? ` The story goes on when you are next back, after ${clock(at.storyAt)}.` : " The story goes on when you are next back.";
+  const stay = at.stayLeft !== null && at.stayLeft > 0 ? `after ${things(at.stayLeft)} done here, or ` : "";
+  const story = at.storyAt === null ? "" : at.storyAt > now ? ` The story goes on ${stay}when you are next back, after ${clock(at.storyAt)}.` : " The story goes on when you are next back.";
   return work + story;
 }
+
+const things = (count: number) => `${count} more ${count === 1 ? "thing" : "things"}`;
 
 /**
  * The end of the first sitting. "All in hand" read flat to every cold reader
  * and left nothing to come back for: the card says what the workshop will do
  * while the player is gone, when the story goes on, and that the tab can close.
+ * Work order 048: it no longer tells the player to go. It says what staying
+ * gives first (the hot steam, the story going on after a few more things done,
+ * the firsts), then what leaving comes back to.
  */
+/** At the send-off, the email reminder in a line, with its switch (work order 044); nothing for an account with no email. */
+function ReminderOffer() {
+  const [on, setOn] = useState<boolean | null>(null);
+  useEffect(() => {
+    api.me().then((me) => setOn(me.reminders), () => undefined);
+  }, []);
+  if (on === null) return null;
+  return (
+    <Pressable onPress={() => api.setReminders(!on).then((result) => setOn(result.reminders), () => undefined)} accessibilityRole="switch" accessibilityState={{ checked: on }}>
+      <Text style={[ui.muted, { fontSize: 12 }]}>
+        {on ? "We will email you if the Boiler runs dry while you are away, at most once every two days. " : "No email when the Boiler runs dry. "}
+        <Text style={{ textDecorationLine: "underline" }}>{on ? "Turn it off" : "Turn it on"}</Text>
+      </Text>
+    </Pressable>
+  );
+}
+
 export function SendOff({ at, now, onClose }: { at: Rest; now: number; onClose: () => void }) {
   const waiting = [
     at.job && at.goes > 0 ? `${at.goes.toLocaleString()} × ${at.job} on the bench, working until ${clock(at.workUntil)}${at.boilerFirst ? ", when the Boiler runs down" : ""}.` : null,
@@ -702,6 +739,11 @@ export function SendOff({ at, now, onClose }: { at: Rest; now: number; onClose: 
         ? `Whatever is in the tube. The story goes on after ${clock(at.storyAt)}.`
         : "Whatever is in the tube.",
   ].filter((line): line is string => line !== null);
+  const staying = [
+    at.hotGoes > 0 ? `The Boiler is still running hot: ${at.hotGoes.toLocaleString()} quick goes left, spent only while you are here.` : null,
+    at.stayLeft !== null && at.stayLeft > 0 && !at.letterIn ? `Make, gather or beat ${things(at.stayLeft)} and the tube delivers without waiting for you to come back.` : null,
+    "The Firsts list has small things to try, and each pays a few Crowns.",
+  ].filter((line): line is string => line !== null);
   return (
     <View style={[ui.panel, { borderColor: GOLD, borderWidth: 2, flexDirection: "row", gap: 12, alignItems: "flex-start", padding: 12 }]}>
       <Image
@@ -710,14 +752,21 @@ export function SendOff({ at, now, onClose }: { at: Rest; now: number; onClose: 
         accessibilityLabel="Professor Brassbuckle"
       />
       <View style={{ flex: 1, gap: 6 }}>
-        <Text style={{ color: GOLD, fontFamily: fonts.serif, fontSize: 17, fontWeight: "700", lineHeight: 23 }}>No. 9 is running. You can go.</Text>
-        <Text style={ui.muted}>Waiting for you when you come back:</Text>
+        <Text style={{ color: GOLD, fontFamily: fonts.serif, fontSize: 17, fontWeight: "700", lineHeight: 23 }}>No. 9 is running, whether you stay or go.</Text>
+        <Text style={ui.muted}>If you stay:</Text>
+        {staying.map((line) => (
+          <Text key={line} style={[ui.text, { lineHeight: 20 }]}>
+            • {line}
+          </Text>
+        ))}
+        <Text style={ui.muted}>If you go, waiting for you when you come back:</Text>
         {waiting.map((line) => (
           <Text key={line} style={[ui.text, { lineHeight: 20 }]}>
             • {line}
           </Text>
         ))}
-        <Text style={[ui.muted, { fontSize: 12 }]}>Close the tab whenever you like: the workshop does not need you watching. Stay, and the rats keep falling.</Text>
+        <Text style={[ui.muted, { fontSize: 12 }]}>Close the tab whenever you like: nothing here is lost by leaving, and the hot steam keeps for when you are back.</Text>
+        <ReminderOffer />
         <Pressable onPress={onClose} accessibilityRole="button" style={[ui.button, { alignSelf: "flex-start", paddingHorizontal: 16 }]}>
           <Text style={ui.buttonText}>Right</Text>
         </Pressable>

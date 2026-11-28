@@ -32,6 +32,35 @@ export const QUEUE_SLOTS = 2;
 export const BOILER_HOURS = 12;
 const HOUR_MS = 3_600_000;
 
+/**
+ * Hot steam (work order 045). A Boiler lit after a year cold runs hot: a
+ * Tinker holds a stock of hot goes, and a go that starts while the player is
+ * at the workshop spends one and takes a sixth of its time. The stock is
+ * topped up at each counted visit. "At the workshop" is the window a look or
+ * a check-in opens (stoke), which is an input like any other, so resolving a
+ * span in one call or in many still gives the same state: the offline queue
+ * never spends the stock, because nothing stokes it.
+ */
+export const HOT_STOCK = 300;
+export const HOT_TOP_UP = 30;
+export const HOT_FACTOR = 6;
+export const HOT_WINDOW_MS = 90_000;
+
+/**
+ * Fine work (work order 046): each level a Tinker holds above what a job
+ * needs adds FINE_PERCENT_PER_LEVEL to the chance that a go makes twice its
+ * output, to FINE_PERCENT_CAP. Gear is never doubled, nor a go that makes an input for a queued piece.
+ */
+export const FINE_PERCENT_PER_LEVEL = 2;
+export const FINE_PERCENT_CAP = 20;
+
+export function fineChance(level: number, levelRequired: number): number {
+  return Math.min(FINE_PERCENT_CAP, FINE_PERCENT_PER_LEVEL * Math.max(0, level - levelRequired)) / 100;
+}
+
+/** A drop this unlikely is worth a line of its own (work order 047). */
+export const RARE_CHANCE = 0.03;
+
 export interface QueueEntry {
   /** An action id, or a monster id to fight that many times (a boss: that many attempts). */
   actionId: string;
@@ -77,6 +106,14 @@ export interface TinkerState {
   headBoosted: boolean;
   /** The tool speed, in percent, the head go started with; it keeps it to the end, like the Boost. */
   headTool: number;
+  /** Hot goes still in stock (work order 045). */
+  hotGoes: number;
+  /** Epoch ms until which the player counts as at the workshop; a go starting before it may run hot. */
+  hotUntil: number;
+  /** Whether the head's current go runs hot. Fixed as the go starts, like the Boost. */
+  headHot: boolean;
+  /** Ordinary monsters this Tinker has beaten at least once: the first of each turns up its rarest find (work order 047). */
+  firstKills: string[];
 }
 
 type Drops = Record<string, number>;
@@ -90,6 +127,8 @@ export type GameEvent =
       xp: number;
       consumed: Record<string, number>;
       produced: Record<string, number>;
+      /** Fine work: this go made twice its output. */
+      fine?: boolean;
     }
   | {
       type: "monster_killed";
@@ -99,6 +138,9 @@ export type GameEvent =
       crowns: number;
       consumed: Record<string, number>;
       produced: Drops;
+      /** The unlikely drops among what fell, and whether this was the Tinker's first of this monster. */
+      rare?: string[];
+      first?: boolean;
     }
   | {
       type: "boss_attempted";
@@ -143,6 +185,7 @@ export function cloneState(state: TinkerState): TinkerState {
     queue: state.queue.map((entry) => ({ ...entry })),
     pity: Object.fromEntries(Object.entries(state.pity).map(([zone, p]) => [zone, { ...p }])),
     bossesBeaten: [...state.bossesBeaten],
+    firstKills: [...state.firstKills],
     worn: { ...state.worn },
     tools: { ...state.tools },
   };
@@ -206,15 +249,30 @@ function rollPage(state: TinkerState, content: Content, monster: Monster, drops:
   }
 }
 
-function rollTable(state: TinkerState, content: Content, table: DropTable | undefined, drops: Drops): number {
+function rollTable(state: TinkerState, content: Content, table: DropTable | undefined, drops: Drops, rare?: string[]): number {
   if (!table) return 0;
   const crowns = rollRange(state, table.crowns.min, table.crowns.max);
   const pages = new Set((content.zonePity.get(zoneOf(table.monster)) ?? []).map((page) => page.item));
   for (const entry of table.entries) {
     if (pages.has(entry.item)) continue;
-    if (random(state) < entry.chance) give(state, drops, entry.item, rollRange(state, entry.qty_min, entry.qty_max));
+    if (random(state) < entry.chance) {
+      give(state, drops, entry.item, rollRange(state, entry.qty_min, entry.qty_max));
+      if (rare && entry.chance <= RARE_CHANCE) rare.push(entry.item);
+    }
   }
   return crowns;
+}
+
+/** A table's least likely drop that is not a Ledger Page, ties to the first listed; undefined when every drop is certain. */
+function rarestFind(content: Content, table: DropTable | undefined): string | undefined {
+  if (!table) return undefined;
+  const pages = new Set((content.zonePity.get(zoneOf(table.monster)) ?? []).map((page) => page.item));
+  let rarest: { item: string; chance: number } | undefined;
+  for (const entry of table.entries) {
+    if (pages.has(entry.item) || entry.chance >= 1) continue;
+    if (!rarest || entry.chance < rarest.chance) rarest = entry;
+  }
+  return rarest?.item;
 }
 
 function eat(state: TinkerState, content: Content, rations: number): Record<string, number> {
@@ -269,13 +327,13 @@ function actionStep(state: TinkerState, content: Content, action: Action): Step 
   if (action.inputs.some((input) => (state.inventory[input.item] ?? 0) < input.qty)) {
     const source = makesGear(content, action) ? supplyAction(state, content, action) : undefined;
     if (!source) return { kind: "stall", reason: "inputs" };
-    return { ...goOf(state, content, source), supplies: true };
+    return { ...goOf(state, content, source, true), supplies: true };
   }
   return goOf(state, content, action);
 }
 
 /** One go of an action whose inputs are in stores. */
-function goOf(state: TinkerState, content: Content, action: Action): Extract<Step, { kind: "run" }> {
+function goOf(state: TinkerState, content: Content, action: Action, supplies = false): Extract<Step, { kind: "run" }> {
   return {
     kind: "run",
     skill: action.skill,
@@ -287,12 +345,16 @@ function goOf(state: TinkerState, content: Content, action: Action): Extract<Ste
         state.inventory[input.item] = (state.inventory[input.item] ?? 0) - input.qty;
         consumed[input.item] = input.qty;
       }
+      // The chance is read before the go's own XP lands, and no number is drawn when there is none.
+      const chance = supplies || makesGear(content, action) ? 0 : fineChance(levelFor(state.skillXp[action.skill] ?? 0, content), action.level_required);
+      const fine = chance > 0 && random(state) < chance;
       const produced: Record<string, number> = {};
       for (const output of action.outputs) {
-        state.inventory[output.item] = (state.inventory[output.item] ?? 0) + output.qty;
-        produced[output.item] = output.qty;
+        const qty = fine ? output.qty * 2 : output.qty;
+        state.inventory[output.item] = (state.inventory[output.item] ?? 0) + qty;
+        produced[output.item] = qty;
       }
-      events.push({ type: "action_completed", at, actionId: action.id, skill: action.skill, xp: action.xp, consumed, produced });
+      events.push({ type: "action_completed", at, actionId: action.id, skill: action.skill, xp: action.xp, consumed, produced, ...(fine ? { fine } : {}) });
       addXp(state, content, { [action.skill]: action.xp }, at, events);
       return events;
     },
@@ -352,11 +414,27 @@ function fightStep(state: TinkerState, content: Content, monster: Monster): Step
       const events: GameEvent[] = [];
       const consumed = eat(state, content, plan.rations);
       const produced: Drops = {};
-      const crowns = rollTable(state, content, content.drops.get(monster.id), produced);
+      const rare: string[] = [];
+      const table = content.drops.get(monster.id);
+      const rolled = rollTable(state, content, table, produced, rare);
+      // A kill made quicker by levels pays its Crowns at the same share as its XP (KillPlan.xpShare), so Crowns
+      // an hour hold where the economy has them and one night still does not pay Pip's bill (first-day decision 8).
+      // The share is a chance of the whole purse, drawn only when it is under 1, so the expected purse is exact.
+      const crowns = plan.xpShare < 1 && random(state) >= plan.xpShare ? 0 : rolled;
       state.crowns += crowns;
+      const first = !state.firstKills.includes(monster.id);
+      if (first) {
+        state.firstKills.push(monster.id);
+        // The first of each monster always turns up its rarest find, if this kill did not already.
+        const find = rarestFind(content, table);
+        if (find && !produced[find]) {
+          give(state, produced, find, 1);
+          rare.push(find);
+        }
+      }
       rollPage(state, content, monster, produced);
-      const xp = killXp(c, monster, weapon.style);
-      events.push({ type: "monster_killed", at, monsterId: monster.id, xp, crowns, consumed, produced });
+      const xp = killXp(c, monster, weapon.style, plan.xpShare);
+      events.push({ type: "monster_killed", at, monsterId: monster.id, xp, crowns, consumed, produced, ...(rare.length ? { rare } : {}), ...(first ? { first } : {}) });
       addXp(state, content, xp, at, events);
       return events;
     },
@@ -376,11 +454,42 @@ function stepFor(state: TinkerState, content: Content, id: string): Step {
  * (tools.json composition): (100 + tool)(100 + boost) in whole numbers,
  * rounded once, halves up, so offline resolution equals step-by-step replay.
  */
-function paced(ms: number, boosted: boolean, tool: number, content: Content): number {
+function paced(ms: number, boosted: boolean, tool: number, content: Content, hot = false): number {
   const boost = boosted && content.shop ? content.shop.boost.percent : 0;
-  if (boost === 0 && tool === 0) return ms;
-  const d = (100 + tool) * (100 + boost);
-  return Math.floor((ms * 20000 + d) / (2 * d));
+  let time = ms;
+  if (boost !== 0 || tool !== 0) {
+    const d = (100 + tool) * (100 + boost);
+    time = Math.floor((ms * 20000 + d) / (2 * d));
+  }
+  // Hot steam divides what the tool and the Boost leave, rounded once, halves up.
+  return hot ? Math.max(1, Math.floor((time * 2 + HOT_FACTOR) / (2 * HOT_FACTOR))) : time;
+}
+
+/** Whether a go starting at `at` runs hot: there is stock, and the player is at the workshop. */
+function hotAt(state: TinkerState, at: number): boolean {
+  return state.hotGoes > 0 && at < state.hotUntil;
+}
+
+/**
+ * The player is at the workshop (a look or a check-in): goes that start in
+ * the next HOT_WINDOW_MS may run hot. A go already under way joins in at the
+ * same share done, so arriving never means waiting out a cold go. Resolve first.
+ */
+export function stoke(state: TinkerState, now: number): TinkerState {
+  const next = cloneState(state);
+  next.hotUntil = now + HOT_WINDOW_MS;
+  if (next.hotGoes > 0 && !next.headHot && next.progressMs > 0) {
+    next.headHot = true;
+    next.progressMs = Math.floor(next.progressMs / HOT_FACTOR);
+  }
+  return next;
+}
+
+/** Adds hot goes to the stock, which never holds more than HOT_STOCK. */
+export function grantHot(state: TinkerState, goes: number): TinkerState {
+  const next = cloneState(state);
+  next.hotGoes = Math.min(HOT_STOCK, next.hotGoes + goes);
+  return next;
 }
 
 /** The speed, in percent, of the tool held for a go's skill; 0 for a fight or no tool. */
@@ -406,8 +515,8 @@ export function headMs(state: TinkerState, content: Content): number | null {
   const step = stepFor(state, content, head.actionId);
   if (step.kind !== "run") return null;
   return state.progressMs > 0
-    ? paced(step.ms, state.headBoosted, state.headTool, content)
-    : paced(step.ms, boostedAt(state, state.resolvedTo), toolSpeed(state, content, step.skill), content);
+    ? paced(step.ms, state.headBoosted, state.headTool, content, state.headHot)
+    : paced(step.ms, boostedAt(state, state.resolvedTo), toolSpeed(state, content, step.skill), content, hotAt(state, state.resolvedTo));
 }
 
 export type FightOutlook =
@@ -459,8 +568,9 @@ export function resolve(previous: TinkerState, content: Content, now: number): R
     if (state.progressMs === 0) {
       state.headBoosted = boostedAt(state, t);
       state.headTool = toolSpeed(state, content, step.skill);
+      state.headHot = hotAt(state, t);
     }
-    const needed = paced(step.ms, state.headBoosted, state.headTool, content) - state.progressMs;
+    const needed = Math.max(0, paced(step.ms, state.headBoosted, state.headTool, content, state.headHot) - state.progressMs);
     if (t + needed > workEnd) {
       state.progressMs += workEnd - t;
       t = workEnd;
@@ -469,6 +579,10 @@ export function resolve(previous: TinkerState, content: Content, now: number): R
 
     t += needed;
     state.progressMs = 0;
+    if (state.headHot) {
+      state.hotGoes = Math.max(0, state.hotGoes - 1);
+      state.headHot = false;
+    }
     events.push(...step.complete(t));
     // A go that made an input for the queued piece counts nothing off the entry.
     if (step.supplies) continue;
@@ -505,7 +619,10 @@ export function setQueue(state: TinkerState, queue: QueueEntry[], slots = QUEUE_
   const next = cloneState(state);
   const sameHead = next.queue[0]?.actionId === queue[0]?.actionId;
   next.queue = queue.map((entry) => ({ ...entry }));
-  if (!sameHead) next.progressMs = 0;
+  if (!sameHead) {
+    next.progressMs = 0;
+    next.headHot = false;
+  }
   return next;
 }
 
@@ -594,5 +711,9 @@ export function newTinker(inventory: Record<string, number>, crowns: number, now
     boostUntil: 0,
     headBoosted: false,
     headTool: 0,
+    hotGoes: HOT_STOCK,
+    hotUntil: 0,
+    headHot: false,
+    firstKills: [],
   };
 }

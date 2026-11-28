@@ -346,14 +346,17 @@ export interface LevelUp {
   level: number;
   /** What the level gave, in a line. */
   line: string;
+  /** The small line over the title: "LEVEL UP" unless something else is being announced, such as a rare find (work order 047). */
+  kicker?: string;
 }
 
 let levelUpId = 0;
 
 /** Levels just gained, each shown as a banner for a few seconds, a few at a time. */
-export function useLevelUps(): [LevelUp[], (skill: string, level: number, line: string) => void, (id: number) => void] {
+export function useLevelUps(): [LevelUp[], (skill: string, level: number, line: string, kicker?: string) => void, (id: number) => void] {
   const [ups, setUps] = useState<LevelUp[]>([]);
-  const add = (skill: string, level: number, line: string) => setUps((list) => [...list, { id: ++levelUpId, skill, level, line }]);
+  const add = (skill: string, level: number, line: string, kicker?: string) =>
+    setUps((list) => [...list, { id: ++levelUpId, skill, level, line, ...(kicker ? { kicker } : {}) }]);
   const remove = (id: number) => setUps((list) => list.filter((up) => up.id !== id));
   return [ups, add, remove];
 }
@@ -397,7 +400,7 @@ function LevelBanner({ up, onDone, icon, title }: { up: LevelUp; onDone: (id: nu
       <Sparks bursts={0} onMount>
         <View
           accessibilityRole="alert"
-          accessibilityLabel={`${title(up.skill)} reached level ${up.level}. ${up.line}`}
+          accessibilityLabel={up.kicker ? `${up.kicker}: ${title(up.skill)}. ${up.line}` : `${title(up.skill)} reached level ${up.level}. ${up.line}`}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -416,9 +419,10 @@ function LevelBanner({ up, onDone, icon, title }: { up: LevelUp; onDone: (id: nu
         >
           {icon(up.skill)}
           <View style={{ flexShrink: 1, gap: 2 }}>
-            <Text style={{ color: colors.verdigris, fontFamily: fonts.serif, fontSize: 11, letterSpacing: 1.5 }}>LEVEL UP</Text>
+            <Text style={{ color: colors.verdigris, fontFamily: fonts.serif, fontSize: 11, letterSpacing: 1.5 }}>{up.kicker ?? "LEVEL UP"}</Text>
             <Text style={{ color: "#f2c14e", fontFamily: fonts.serif, fontSize: 22, fontWeight: "700" }}>
-              {title(up.skill)} {up.level}
+              {title(up.skill)}
+              {up.kicker ? "" : ` ${up.level}`}
             </Text>
             <Text style={{ color: colors.ink, fontFamily: fonts.serif, fontSize: 13 }}>{up.line}</Text>
           </View>

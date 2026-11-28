@@ -27,8 +27,44 @@ function qualityName(name: string): string {
   return last.split("_").map(titleCase).join(" ");
 }
 
+/** The scenes set inside No. 9 itself: they show the workshop, not the street (work order 044). */
+const INSIDE_NO_9 = new Set(["prologue.sprocket_row.who_you_are", "prologue.sprocket_row.rats_in_the_workshop", "prologue.sprocket_row.the_first_haul"]);
+
+function sceneVignette(scene: { id: string; location: string }): number | undefined {
+  return INSIDE_NO_9.has(scene.id) ? (vignetteSource("workshop") ?? vignetteSource(scene.location)) : vignetteSource(scene.location);
+}
+
+/**
+ * What a choice changed, as the player would say it (work order 048): items,
+ * Needles and Favour, each with its sign. Flags, progress and records are the
+ * story's own bookkeeping and stay out of sight.
+ */
+export function changeLines(changes: Record<string, string | number> | undefined): { text: string; good: boolean }[] {
+  if (!changes) return [];
+  const lines: { text: string; good: boolean }[] = [];
+  for (const [quality, raw] of Object.entries(changes)) {
+    const [kind] = quality.split(".");
+    if (kind !== "item" && kind !== "needle" && kind !== "favour" && quality !== "crowns") continue;
+    const text = String(raw);
+    const relative = /^[+-]/.test(text);
+    const amount = Number(text);
+    if (!Number.isFinite(amount) || amount === 0) continue;
+    const signed = relative ? (amount > 0 ? `+${amount}` : `${amount}`) : `${amount}`;
+    if (kind === "item") lines.push({ text: `${signed} ${qualityName(quality)}`, good: amount > 0 });
+    else if (kind === "needle") lines.push({ text: `${qualityName(quality)} ${signed}`, good: amount < 0 });
+    else if (kind === "favour") lines.push({ text: `Favour with the ${qualityName(quality)} ${signed}`, good: amount > 0 });
+    else lines.push({ text: `${signed} Crowns`, good: amount > 0 });
+  }
+  return lines;
+}
+
 /** One line for every beat waiting only on visits: where, and from when a visit counts. */
-function nextVisitLine(scenes: { location: string; needs: [string, string, number][] }[], nextVisitAt: string | null): string {
+function nextVisitLine(scenes: { location: string; needs: [string, string, number][] }[], nextVisitAt: string | null, stayLeft: number | null = null): string {
+  // A player who stays need not leave for it (work order 048): say so first.
+  if (stayLeft !== null && stayLeft > 0) {
+    const after = nextVisitAt && new Date(nextVisitAt).getTime() > Date.now() ? new Date(nextVisitAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : null;
+    return `The story goes on after ${stayLeft} more ${stayLeft === 1 ? "thing" : "things"} made, gathered or beaten here, or when you are next back${after ? `, after ${after}` : ""}.`;
+  }
   // No place names: a reader met "More from Polytechnic" before the story had said what the Polytechnic is.
   const visits = Math.min(...scenes.flatMap((scene) => scene.needs.map(([, condition, value]) => Number(condition.replace(/[^0-9]/g, "")) - value)));
   if (visits > 1) return "The story goes on in a few visits' time.";
@@ -55,8 +91,11 @@ export function Story({
   onOutcome,
   guideAt = null,
   onGo,
+  stayLeft = null,
 }: {
   tinkerId: number;
+  /** Things still to do here before staying opens the next sitting; null when it would not (work order 048). */
+  stayLeft?: number | null;
   onOutcome: (outcome: Outcome) => void;
   /** The guide points at the letters or the open scenes. */
   guideAt?: "letters" | "scenes" | null;
@@ -151,6 +190,18 @@ export function Story({
             </View>
           )}
           <GlossedText text={played.text} style={[ui.text, { lineHeight: 21 }]} />
+          {changeLines(played.changes).length > 0 && (
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 8 }} accessibilityLabel="What changed">
+              {changeLines(played.changes).map((line) => (
+                <View
+                  key={line.text}
+                  style={{ borderWidth: 1, borderColor: line.good ? colors.verdigris : colors.scald, borderRadius: 4, paddingHorizontal: 8, paddingVertical: 3 }}
+                >
+                  <Text style={[ui.text, { color: line.good ? colors.verdigris : colors.scald, fontSize: 13 }]}>{line.text}</Text>
+                </View>
+              ))}
+            </View>
+          )}
           {played.note && (
             <Pressable onPress={() => setReading(true)} accessibilityRole="button" style={{ marginTop: 8, gap: 2 }}>
               <Text style={[ui.muted, { color: colors.brass }]}>Noted in your Commonplace Book</Text>
@@ -166,7 +217,7 @@ export function Story({
           arrived={arrived.label}
           arrivals={arrived.count}
           nextNerveAt={view.nextNerveAt}
-          visitLine={(needs) => nextVisitLine([{ location: "", needs }], view.nextVisitAt)}
+          visitLine={(needs) => nextVisitLine([{ location: "", needs }], view.nextVisitAt, stayLeft)}
           onGo={onGo}
         />
       )}
@@ -267,7 +318,7 @@ export function Story({
             </Text>
           ))}
           {/* Beats waiting only on another visit share one calm line with a time, not a list of requirements. */}
-          {visitOnly.length > 0 && <Text style={ui.muted}>{nextVisitLine(visitOnly, view.nextVisitAt)}</Text>}
+          {visitOnly.length > 0 && <Text style={ui.muted}>{nextVisitLine(visitOnly, view.nextVisitAt, stayLeft)}</Text>}
           {waiting.map((scene) => (
             <Text key={scene.id} style={ui.muted}>
               Something waits in {scene.location.split("_").map(titleCase).join(" ")}: needs{" "}
@@ -311,9 +362,10 @@ function Card({
       {onRoad && <Text style={[ui.muted, { color: GOLD }]}>▶ The story goes on here</Text>}
       <View style={{ flexDirection: "row", gap: 12 }}>
         {/* The 96x96 vignette of the scene's place (GDD section 7); a brass plate with its name where none is drawn. */}
-        {vignetteSource(scene.location) !== undefined ? (
+        {sceneVignette(scene) !== undefined ? (
           <Image
-            source={vignetteSource(scene.location)!}
+            source={sceneVignette(scene)!}
+            resizeMode="cover"
             style={{ width: 96, height: 96, borderRadius: 4, borderWidth: 1, borderColor: colors.brassDim }}
             accessibilityLabel={titleCase(scene.location.replace(/_/g, " "))}
           />

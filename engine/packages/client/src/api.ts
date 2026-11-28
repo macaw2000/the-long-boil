@@ -46,6 +46,8 @@ export interface Monster {
   level: number;
   boss: boolean;
   weakness: string;
+  /** XP a kill pays in all, before it is shared between the seven combat skills. */
+  xp: number;
   seconds_per_kill: number;
   hp: number;
 }
@@ -151,6 +153,12 @@ export interface Tinker {
   /** Held tools, by skill. */
   tools: Record<string, string>;
   bossesBeaten: string[];
+  /** Hot steam (work order 045): goes left, the full stock, how much faster a hot go runs, and whether the bench runs hot now. */
+  hot: { goes: number; stock: number; factor: number; running: boolean };
+  /** The first-hour goals and where each stands (work order 049). */
+  firsts: { id: string; title: string; crowns: number; status: "open" | "ready" | "claimed" }[];
+  /** Things still to do here before staying opens the next sitting; null when it would not (work order 048). */
+  stayJobsLeft: number | null;
   story: {
     nerve: number;
     nerveCap: number;
@@ -200,6 +208,12 @@ export interface Ledger {
   levelUps: { skill: string; level: number }[];
   stalls: { actionId: string; reason: string }[];
   boilerDryAt: number | null;
+  /** Unlikely drops that fell, by item (work order 047). */
+  finds: Record<string, number>;
+  /** Goes that came out as fine work, making twice their output (work order 046). */
+  fine: number;
+  /** Monsters beaten for the first time. */
+  firsts: string[];
 }
 
 export type TradeNote =
@@ -288,7 +302,7 @@ export interface LoadoutWeapon extends Weapon {
 
 export interface StoryOutcome extends Outcome {
   view: StoryView;
-  played: { scene: string; success: boolean; text: string; note: string | null; odds: number | null; roll: number | null } | null;
+  played: { scene: string; success: boolean; text: string; note: string | null; odds: number | null; roll: number | null; changes?: Record<string, string | number> } | null;
 }
 
 export interface MarketView {
@@ -625,6 +639,7 @@ export const api = {
   resetTinker: (id: number, name: string, newName?: string) => request<Outcome>("POST", `/tinkers/${id}/reset`, { name, newName }),
   checkIn: (id: number) => request<Outcome & { guildActivity: GuildActivity | null }>("POST", `/tinkers/${id}/check-in`),
   look: (id: number) => request<Outcome>("GET", `/tinkers/${id}`),
+  claimFirst: (id: number, first: string) => request<Outcome>("POST", `/tinkers/${id}/firsts/${first}/claim`),
   setQueue: (id: number, queue: QueueEntry[]) => request<Outcome>("PUT", `/tinkers/${id}/queue`, { queue }),
   equip: (id: number, item: string) => request<Outcome>("PUT", `/tinkers/${id}/weapon`, { item }),
   wear: (id: number, item: string) => request<Outcome>("PUT", `/tinkers/${id}/gear`, { item }),

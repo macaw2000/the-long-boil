@@ -9,6 +9,7 @@ import { Animated, Image, Text, View } from "react-native";
 import type { Content, Tinker } from "./api";
 import { useReducedMotion } from "./Juice";
 import { armedFrames, workFrames } from "./looks";
+import { play } from "./sound";
 import { backgrounds, characters, icons, skills, ui as uiIcons, vignettes } from "./sprites";
 import { colors, ui } from "./theme";
 
@@ -63,7 +64,7 @@ function Frame({ frames, tick, size, flip, style }: { frames: number[]; tick: nu
   );
 }
 
-type Puff = { id: number; x: number; y: number; kind: "spark" | "dust" | "glint" | "damage" | "tracer" | "bolt"; text?: string; toX?: number; toY?: number };
+type Puff = { id: number; x: number; y: number; kind: "spark" | "dust" | "glint" | "damage" | "tracer" | "bolt"; text?: string; toX?: number; toY?: number; big?: boolean };
 let puffId = 0;
 
 /**
@@ -139,9 +140,9 @@ function PuffView({ puff, onDone }: { puff: Puff; onDone: (id: number) => void }
           position: "absolute",
           left: puff.x,
           top: puff.y,
-          color: colors.steam,
+          color: puff.big ? "#f2c14e" : colors.steam,
           fontWeight: "900",
-          fontSize: 18,
+          fontSize: puff.big ? 28 : 18,
           textShadowColor: colors.soot,
           textShadowRadius: 3,
           opacity: t.interpolate({ inputRange: [0, 0.7, 1], outputRange: [1, 1, 0] }),
@@ -232,6 +233,11 @@ function SteamBurst() {
   );
 }
 
+/** Beats between blows in a fight (a beat is two frames at four a second): a blow about every second and a half. */
+const SWING_BEATS = 3;
+/** How often a blow is a telling one: bigger, gold, with a shake and its own sound. */
+const TELLING_CHANCE = 0.12;
+
 /** What the Tinker does with each skill's work. */
 const POSE: Record<string, string> = {
   smithing: "hammer",
@@ -321,15 +327,23 @@ export function Scene({
     const add = (puff: Omit<Puff, "id">) => setPuffs((list) => [...list.slice(-12), { ...puff, id: ++puffId }]);
     if (monster) {
       if (falling) return;
-      const dealt = Math.max(1, Math.round((progress - lastSwing.current) * monster.hp));
+      // A blow every SWING_BEATS beats, not every beat: at four frames a second a number every half-second
+      // read "-1" over and over (work order 044). The number is the share of the monster's health the
+      // bar lost since the last blow, with a little spread, and now and then a telling blow.
+      if (tick % (2 * SWING_BEATS) !== 1) return;
+      // A kill wraps the bar back to full; a blow just after counts what was lost either side of the wrap.
+      const lost = progress >= lastSwing.current ? progress - lastSwing.current : progress + (1 - lastSwing.current);
       lastSwing.current = progress;
+      const telling = Math.random() < TELLING_CHANCE;
+      const dealt = Math.max(1, Math.round(lost * monster.hp * (0.75 + Math.random() * 0.5) * (telling ? 1.8 : 1)));
       const x = monster.boss ? 200 : 190;
       // Each style lands its own way: a swing, a shot, or a bolt.
       if (style === "marksmanship") add({ x: 145, y: FLOOR - 64, kind: "tracer", toX: x });
       if (style === "aetherics") add({ x: 120, y: FLOOR - 102, kind: "bolt", toX: x, toY: FLOOR - 72 });
       add({ x, y: FLOOR - 70, kind: "spark" });
-      add({ x: x + 10, y: FLOOR - (monster.boss ? 150 : 110), kind: "damage", text: `-${dealt}` });
-      if (monster.boss) {
+      add({ x: x + 10, y: FLOOR - (monster.boss ? 150 : 110), kind: "damage", text: `-${dealt}`, big: telling });
+      play(telling ? "crit" : "hit");
+      if (monster.boss || telling) {
         shake.setValue(1);
         Animated.timing(shake, { toValue: 0, duration: 240, useNativeDriver: false }).start();
       }

@@ -158,6 +158,31 @@ export function SkillView({
 
       {scene}
 
+      {/* The picked job's panel, with its Start, sits above the tiles (work order 044): below twenty tiles it was under the fold. */}
+      {chosen !== null && (
+        <JobDetail
+          id={chosen}
+          content={content}
+          tinker={tinker}
+          planner={planner}
+          name={name}
+          count={count}
+          setCount={setCount}
+          startGuided={guideAt === "start"}
+          skillShown={skillShown}
+          onStart={(entry) => {
+            setChosen(null);
+            onStart(entry);
+          }}
+          onQueue={(entry) => {
+            setChosen(null);
+            onQueue(entry);
+          }}
+          onGrocer={onGrocer}
+          onSkill={onSkill}
+        />
+      )}
+
       <Glow active={queueLit && guideAt === null}>
         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
           {fight
@@ -175,7 +200,9 @@ export function SkillView({
                       ? `${Math.round(outlook.winChance * 100)}% to win`
                       : wants
                         ? `Level ${monster.level} · ${wants.short}`
-                        : `${seconds(outlook.seconds)} a kill`;
+                        : tinker.hot?.running
+                          ? `${seconds(Math.round(outlook.seconds / tinker.hot.factor))} a kill · hot`
+                          : `${seconds(outlook.seconds)} a kill`;
                 return (
                   <Tile
                     key={monster.id}
@@ -201,7 +228,8 @@ export function SkillView({
                     onPress={() => choose(action.id)}
                     picture={<ItemIcon item={action.outputs[0]?.item ?? "item.fallback"} size={40} />}
                     title={jobTitle(content, action.id, name)}
-                    line={locked ? `Level ${action.level_required}` : seconds(action.seconds)}
+                    // While the Boiler runs hot, a tile shows the time a go takes now (work order 045).
+                    line={locked ? `Level ${action.level_required}` : tinker.hot?.running ? `${seconds(Math.round(action.seconds / tinker.hot.factor))} · hot` : seconds(action.seconds)}
                   />
                 );
               })}
@@ -209,29 +237,6 @@ export function SkillView({
       </Glow>
       {beyond > 0 && passNamed && <FoundryPassNote count={beyond} />}
 
-      {chosen !== null && (
-        <JobDetail
-          id={chosen}
-          content={content}
-          tinker={tinker}
-          planner={planner}
-          name={name}
-          count={count}
-          setCount={setCount}
-          startGuided={guideAt === "start"}
-          skillShown={skillShown}
-          onStart={(entry) => {
-            setChosen(null);
-            onStart(entry);
-          }}
-          onQueue={(entry) => {
-            setChosen(null);
-            onQueue(entry);
-          }}
-          onGrocer={onGrocer}
-          onSkill={onSkill}
-        />
-      )}
     </View>
   );
 }
@@ -381,7 +386,7 @@ function JobDetail({
   /** Goes to a skill's page, for an input that skill gathers. */
   onSkill: (skill: string) => void;
 }) {
-  // Picking a tile opens this below the tiles, often below the fold: bring it, and its Start, into view.
+  // Picking a tile opens this above the tiles; on a phone that can still be off the screen, so bring it, and its Start, into view.
   const panel = useRef<View>(null);
   useEffect(() => {
     const element = panel.current as unknown as { scrollIntoView?: (options: object) => void } | null;
@@ -410,7 +415,8 @@ function JobDetail({
             <Stack key={output.item} item={output.item} qty={output.qty} name={name} />
           ))}
           <Text style={ui.muted}>
-            · {seconds(action.seconds)} · {action.xp} XP each
+            · {seconds(action.seconds)}
+            {tinker.hot?.running ? ` (${seconds(Math.round(action.seconds / tinker.hot.factor))} while hot)` : ""} · {action.xp} XP each
           </Text>
         </View>
       )}
@@ -488,6 +494,7 @@ function JobDetail({
       {valid && (
         <Text style={ui.muted}>
           {parsed.toLocaleString()} × {seconds(each)} = {duration(parsed * each * 1000)} of steam
+          {tinker.hot?.running ? `, less while the steam runs hot (${tinker.hot.goes.toLocaleString()} quick goes left)` : ""}
           {parsed * each > BOILER_SECONDS ? " (longer than one Boiler: it carries on after your next check-in)" : ""}
           {rationsNote(planner, content, id)}
         </Text>

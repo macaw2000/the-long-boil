@@ -11,6 +11,8 @@ import {
   newTinker,
   planBoss,
   planKill,
+  planCappedKill,
+  levelEdge,
   resolve,
   setQueue,
   type GameEvent,
@@ -133,10 +135,18 @@ describe("drops and Rations", () => {
     const { state: after, events } = resolve(state, content, 100 * 60_000);
     const kills = events.filter((event) => event.type === "monster_killed") as Extract<GameEvent, { type: "monster_killed" }>[];
     expect(kills).toHaveLength(100);
-    expect(kills.every((kill) => kill.crowns >= 1 && kill.crowns <= 2)).toBe(true);
+    // A purse is 1 or 2 Crowns; once a kill is quicker than its target, it is paid at that share on average,
+    // as a chance of the whole purse (work order 046), so some kills pay none.
+    expect(kills.every((kill) => kill.crowns >= 0 && kill.crowns <= 2)).toBe(true);
+    expect(kills[0]!.crowns).toBeGreaterThanOrEqual(1);
     expect(after.crowns).toBe(kills.reduce((sum, kill) => sum + kill.crowns, 0));
     expect(after.inventory["item.rustmoor.rat_scrap"]).toBe(100);
-    expect(after.skillXp.melee! - state.skillXp.melee!).toBeCloseTo(100 * content.monsters.get(RUNT)!.xp * 0.7, 6);
+    // Each kill pays the Runt's XP by its share: once Ada is above the Runt her kills are faster and pay less each,
+    // so XP an hour stays what it was (work order 046).
+    const paid = kills.reduce((sum, kill) => sum + kill.xp.melee!, 0);
+    expect(after.skillXp.melee! - state.skillXp.melee!).toBeCloseTo(paid, 6);
+    expect(kills[0]!.xp.melee).toBeCloseTo(content.monsters.get(RUNT)!.xp * 0.7, 6);
+    expect(paid).toBeLessThan(100 * content.monsters.get(RUNT)!.xp * 0.7);
     // At the reference, in its Rustmoor pieces (work order 032), a kill eats 0.413 Rations;
     // Ada levels up as she fights, so later kills are shorter and eat less.
     expect(plan(state, RUNT, true).rations).toBeCloseTo(0.413, 3);
@@ -158,7 +168,7 @@ describe("drops and Rations", () => {
 
   it("holds Ledger Pages through the Prologue, and pays the kills out after it", () => {
     let state = reference("melee", 40, 20, "item.rustmoor.steel_blade", 5000);
-    state = setQueue(state, [{ actionId: RUNT, remaining: 2000 }]);
+    state = setQueue(state, [{ actionId: RUNT, remaining: 5000 }]);
     state.steamUntil = Infinity;
     const { state: held } = resolve({ ...state, holdPages: true }, content, 1100 * 54_000);
     expect(held.inventory["item.rustmoor.ledger_page_drop_1"]).toBeUndefined();
@@ -266,5 +276,41 @@ describe("armour", () => {
   it("cannot be put on without holding it", () => {
     const state = reference("melee", 15, 5, "item.rustmoor.steel_blade", 0);
     expect(() => wear(state, dressed, COAT)).toThrow(/do not have/);
+  });
+});
+
+describe("strength you can see (work order 046)", () => {
+  const runt = content.monsters.get(RUNT)!;
+  const capped = (state: TinkerState) => planCappedKill(content, state.skillXp, fighterFor(state.skillXp, content.weapons.get(state.weapon!)!, content), runt, true)!;
+
+  it("gives no edge at the monster's own level, 4% a level above it, and never more than half", () => {
+    expect(levelEdge(1, 1)).toBe(1);
+    expect(levelEdge(4, 1)).toBeCloseTo(0.88, 9);
+    expect(levelEdge(60, 1)).toBe(0.5);
+    expect(levelEdge(3, 10)).toBe(1);
+  });
+
+  it("makes each Melee level a faster Runt, and pays XP by the same share so XP an hour does not move", () => {
+    const at1 = capped(reference("melee", 1, 1, "item.rustmoor.brass_spanner", 100));
+    const at4 = capped(reference("melee", 4, 1, "item.rustmoor.brass_spanner", 100));
+    const at30 = capped(reference("melee", 30, 10, "item.rustmoor.brass_spanner", 100));
+    expect(at1.xpShare).toBe(1);
+    expect(at4.seconds).toBeLessThan(at1.seconds - 5);
+    expect(at30.seconds).toBeCloseTo(27, 6);
+    for (const plan of [at4, at30]) expect(plan.xpShare / plan.seconds).toBeCloseTo(1 / runt.seconds_per_kill, 9);
+  });
+
+  it("pays Crowns an hour as it did at the monster's level, while items come faster", () => {
+    const night = (level: number) => {
+      const start = setQueue(reference("melee", level, Math.min(level, 10), "item.rustmoor.brass_spanner", 5000), [{ actionId: RUNT, remaining: 5000 }]);
+      const { state, events } = resolve(start, content, 12 * HOUR);
+      const kills = events.filter((event) => event.type === "monster_killed").length;
+      return { crowns: state.crowns, kills };
+    };
+    const slow = night(1);
+    const quick = night(20);
+    // About half again as many kills (the edge is at its floor of a half), but the Crowns stay within a tenth.
+    expect(quick.kills).toBeGreaterThan(slow.kills * 1.6);
+    expect(Math.abs(quick.crowns - slow.crowns) / slow.crowns).toBeLessThan(0.1);
   });
 });

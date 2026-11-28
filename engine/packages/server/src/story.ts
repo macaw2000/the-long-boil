@@ -86,7 +86,7 @@ function storyView(tinker: TinkerState, story: StoryState, content: GameContent,
 export interface StoryOutcome extends Outcome {
   view: StoryView;
   /** The outcome just played, for the result card; `roll` is the challenge's draw, for the odds dial. */
-  played: { scene: string; success: boolean; text: string; note: string | null; odds: number | null; roll: number | null } | null;
+  played: { scene: string; success: boolean; text: string; note: string | null; odds: number | null; roll: number | null; changes: rules.Changes } | null;
 }
 
 interface StoryStep {
@@ -152,6 +152,8 @@ export async function playStory(
         success: event.type === "scene_played" ? event.success : true,
         text: played.outcome.text,
         note: played.outcome.note ?? null,
+        // What the choice changed, for the result card to list (work order 048).
+        changes: played.outcome.changes,
         odds: event.type === "scene_played" && event.challenge ? event.challenge.odds : null,
         roll: event.type === "scene_played" && event.challenge ? event.challenge.roll : null,
       },

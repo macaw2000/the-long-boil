@@ -1407,4 +1407,6 @@ export const vignettes: Record<string, number> = {
   polytechnic: require("../assets/art/vignette_polytechnic.png"),
   rustmoor: require("../assets/art/vignette_rustmoor.png"),
   sprocket_row: require("../assets/art/vignette_sprocket_row.png"),
+  // No. 9 from inside, for the scenes set in the workshop (work order 044): the workshop backdrop, cropped by the card.
+  workshop: require("../assets/art/bg_workshop.png"),
 };

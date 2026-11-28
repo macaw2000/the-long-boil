@@ -147,6 +147,13 @@ function monsterSwing(c: CombatConstants, f: Fighter, m: Monster) {
 
 export interface KillPlan {
   seconds: number;
+  /**
+   * The share of a kill's XP, and of its Crowns on average, it pays: 1 unless
+   * levels above the monster cut the kill time (levelEdge), when it falls by
+   * the same ratio, so XP and Crowns an hour are what they were and only the
+   * items come faster.
+   */
+  xpShare: number;
   /** The kill time the fight itself takes, before the monster's target time floors it. */
   computed: number;
   rations: number;
@@ -162,11 +169,11 @@ export function planKill(c: CombatConstants, f: Fighter, m: Monster, heal: numbe
   if (haveRations && drag < 1) {
     const tFight = tPure / (1 - drag);
     const computed = c.BETWEEN_KILLS_S! + tFight;
-    return { seconds: Math.max(m.seconds_per_kill, computed), computed, rations: (monsterDps * tFight) / heal };
+    return { seconds: Math.max(m.seconds_per_kill, computed), xpShare: 1, computed, rations: (monsterDps * tFight) / heal };
   }
   const knockouts = (monsterDps * tPure) / maxHp(c, f);
   const seconds = c.BETWEEN_KILLS_S! + tPure + knockouts * (c.KNOCKOUT_RESPAWN_S! + tPure / 2);
-  return { seconds: Math.max(m.seconds_per_kill, seconds), computed: seconds, rations: 0 };
+  return { seconds: Math.max(m.seconds_per_kill, seconds), xpShare: 1, computed: seconds, rations: 0 };
 }
 
 /** Of several, the one with the most of a stat, ties to the lower item id. */
@@ -196,7 +203,8 @@ function referencePieces(content: Content, combat: number): Piece[] {
  * own levels call for, from any zone, cuts a kill below its target time, to at
  * most KILL_TIME_CAP_FRACTION of it. The reference is the fastest of the three
  * styles' +0 loadouts at the Tinker's own levels, so levels alone or an
- * off-style match never earn it.
+ * off-style match never earn the gear cap; levels above the monster earn
+ * levelEdge instead.
  */
 export function planCappedKill(
   content: Content,
@@ -208,20 +216,42 @@ export function planCappedKill(
   const c = content.combat;
   const heal = content.ration.heal;
   const own = planKill(c, fighter, m, heal, haveRations);
-  if (!own || content.killTimeCap >= 1) return own;
-  const pieces = referencePieces(content, combatLevel(skillXp, content));
-  let reference = Infinity;
-  for (const style of COMBAT_STYLES) {
-    const level = levelFor(skillXp[style] ?? 0, content);
-    const weapons = [...content.weapons.values()].filter((weapon) => weapon.style === style && weapon.level_required <= level);
-    const weapon = best(weapons, (candidate) => playerSwing(c, { ...fighter, styleLevel: level, weapon: candidate }, m).mean);
-    if (!weapon) continue;
-    const plan = planKill(c, { ...fighterFor(skillXp, weapon, content, undefined, pieces) }, m, heal, haveRations);
-    if (plan) reference = Math.min(reference, plan.computed);
+  if (!own) return own;
+  let gear = 1;
+  if (content.killTimeCap < 1) {
+    const pieces = referencePieces(content, combatLevel(skillXp, content));
+    let reference = Infinity;
+    for (const style of COMBAT_STYLES) {
+      const level = levelFor(skillXp[style] ?? 0, content);
+      const weapons = [...content.weapons.values()].filter((weapon) => weapon.style === style && weapon.level_required <= level);
+      const weapon = best(weapons, (candidate) => playerSwing(c, { ...fighter, styleLevel: level, weapon: candidate }, m).mean);
+      if (!weapon) continue;
+      const plan = planKill(c, { ...fighterFor(skillXp, weapon, content, undefined, pieces) }, m, heal, haveRations);
+      if (plan) reference = Math.min(reference, plan.computed);
+    }
+    if (Number.isFinite(reference)) gear = Math.max(content.killTimeCap, Math.min(1, own.computed / reference));
   }
-  if (!Number.isFinite(reference)) return own;
-  const ratio = Math.max(content.killTimeCap, Math.min(1, own.computed / reference));
-  return { ...own, seconds: Math.max(own.computed, m.seconds_per_kill * ratio) };
+  // What the kill took before work order 046: gear alone could beat the target time.
+  const before = Math.max(own.computed, m.seconds_per_kill * gear);
+  const edge = levelEdge(fighter.styleLevel, m.level);
+  const seconds = Math.max(own.computed, m.seconds_per_kill * Math.max(LEVEL_EDGE_FLOOR, gear * edge));
+  return { ...own, seconds, xpShare: seconds / before };
+}
+
+/**
+ * Strength a player can see (work order 046): each level of the weapon's
+ * style above a monster's level cuts its kill time by LEVEL_EDGE_PER_LEVEL,
+ * to no less than LEVEL_EDGE_FLOOR of its target time. The fight must still
+ * be won in that time (the computed kill time is the other floor). XP a kill
+ * falls by the same ratio (KillPlan.xpShare), so an easy monster never
+ * out-pays a harder one in XP: only its drops and Crowns come faster. A boss
+ * is outside it, as it is outside the gear cap.
+ */
+export const LEVEL_EDGE_PER_LEVEL = 0.04;
+export const LEVEL_EDGE_FLOOR = 0.5;
+
+export function levelEdge(styleLevel: number, monsterLevel: number): number {
+  return Math.max(LEVEL_EDGE_FLOOR, 1 - LEVEL_EDGE_PER_LEVEL * Math.max(0, styleLevel - monsterLevel));
 }
 
 function erf(x: number): number {
@@ -251,10 +281,10 @@ export function planBoss(c: CombatConstants, f: Fighter, m: Monster, heal: numbe
 }
 
 /** XP a kill pays each combat skill: the main share to the weapon's style, the rest split. */
-export function killXp(c: CombatConstants, m: Monster, style: string): Record<string, number> {
+export function killXp(c: CombatConstants, m: Monster, style: string, share = 1): Record<string, number> {
   const xp: Record<string, number> = {};
   for (const skill of COMBAT_SKILLS) {
-    xp[skill] = m.xp * (skill === style ? c.MAIN_COMBAT_SKILL_SHARE! : c.OTHER_COMBAT_SKILLS_SHARE_EACH!);
+    xp[skill] = m.xp * share * (skill === style ? c.MAIN_COMBAT_SKILL_SHARE! : c.OTHER_COMBAT_SKILLS_SHARE_EACH!);
   }
   return xp;
 }

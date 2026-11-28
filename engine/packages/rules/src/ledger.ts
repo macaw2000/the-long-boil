@@ -26,6 +26,12 @@ export interface Ledger {
   levelUps: { skill: string; level: number }[];
   stalls: { actionId: string; reason: string }[];
   boilerDryAt: number | null;
+  /** Unlikely drops that fell, by item, for the haul's first line (work order 047). */
+  finds: Record<string, number>;
+  /** Goes that came out as fine work, making twice their output (work order 046). */
+  fine: number;
+  /** Monsters beaten for the first time. */
+  firsts: string[];
 }
 
 function addAll(into: Record<string, number>, from: Record<string, number>) {
@@ -34,7 +40,7 @@ function addAll(into: Record<string, number>, from: Record<string, number>) {
 
 export function summarize(events: readonly GameEvent[]): Ledger {
   const lines = new Map<string, LedgerLine>();
-  const ledger: Ledger = { from: null, to: null, lines: [], crowns: 0, levelUps: [], stalls: [], boilerDryAt: null };
+  const ledger: Ledger = { from: null, to: null, lines: [], crowns: 0, levelUps: [], stalls: [], boilerDryAt: null, finds: {}, fine: 0, firsts: [] };
 
   const lineFor = (id: string) => {
     let line = lines.get(id);
@@ -55,6 +61,7 @@ export function summarize(events: readonly GameEvent[]): Ledger {
         addAll(line.xp, { [event.skill]: event.xp });
         addAll(line.consumed, event.consumed);
         addAll(line.produced, event.produced);
+        if (event.fine) ledger.fine += 1;
         break;
       }
       case "monster_killed":
@@ -67,6 +74,10 @@ export function summarize(events: readonly GameEvent[]): Ledger {
         ledger.crowns += event.crowns;
         addAll(line.consumed, event.consumed);
         addAll(line.produced, event.produced);
+        if (event.type === "monster_killed") {
+          for (const item of event.rare ?? []) ledger.finds[item] = (ledger.finds[item] ?? 0) + (event.produced[item] ?? 1);
+          if (event.first) ledger.firsts.push(event.monsterId);
+        }
         break;
       }
       case "level_up":

@@ -43,6 +43,8 @@ describe("a Tinker's first session", () => {
   });
 
   it("queues 50 spanners and finds them made after a 6-hour break", async () => {
+    // This and the next test measure the usual pace: the hot steam (work order 045) has tests of its own below.
+    await db.query("UPDATE tinkers SET hot_goes = 0 WHERE id = $1", [id]);
     const queued = await call("PUT", `/tinkers/${id}/queue`, {
       queue: [
         { actionId: "action.rustmoor.tinker_brass_spanner", remaining: 50 },
@@ -57,19 +59,24 @@ describe("a Tinker's first session", () => {
     expect(spanners.qty).toBe(50);
     // A spell away counts for a few jobs only, so it opens one place, not all of them.
     expect(body.tinker.jobsDone).toBe(8);
+    // Goes are counted by their XP: fine work (work order 046) doubles some of the Copper, never the XP.
+    const goes = Math.floor((6 * 3600 - 50 * 54) / 54);
+    expect(body.tinker.skills.find((skill: { skill: string }) => skill.skill === "prospecting").xp).toBe(goes * 8);
     const copper = body.tinker.inventory.find((stack: { item: string }) => stack.item === "item.rustmoor.copper");
-    expect(copper.qty).toBe(Math.floor((6 * 3600 - 50 * 54) / 54));
+    expect(copper.qty).toBeGreaterThanOrEqual(goes);
+    expect(copper.qty).toBeLessThan(goes * 1.25);
     expect(body.tinker.skills.find((skill: { skill: string }) => skill.skill === "tinkering")).toMatchObject({ xp: 400, level: 3 });
     expect(new Date(body.tinker.steamUntil).getTime()).toBe(clock + 12 * HOUR);
   });
 
   it("stops at the Boiler's 12 hours however long the break", async () => {
+    // The visit before topped the hot steam up; put it out again.
+    await db.query("UPDATE tinkers SET hot_goes = 0 WHERE id = $1", [id]);
     const before = (await call("POST", `/tinkers/${id}/check-in`)).body.tinker;
-    const copperBefore = before.inventory.find((stack: { item: string }) => stack.item === "item.rustmoor.copper").qty;
+    const xpOf = (tinker: { skills: { skill: string; xp: number }[] }) => tinker.skills.find((skill) => skill.skill === "prospecting")!.xp;
     clock += 48 * HOUR;
     const { body } = await call("POST", `/tinkers/${id}/check-in`);
-    const copperAfter = body.tinker.inventory.find((stack: { item: string }) => stack.item === "item.rustmoor.copper").qty;
-    expect(copperAfter - copperBefore).toBe(800);
+    expect(xpOf(body.tinker) - xpOf(before)).toBe(800 * 8);
     expect(body.events.some((event: { type: string }) => event.type === "boiler_dry")).toBe(true);
   });
 
@@ -163,11 +170,13 @@ describe("the rules the database enforces", () => {
   it("serialises concurrent check-ins on one Tinker", async () => {
     const { body } = await call("POST", "/tinkers", { login: "kit@example.com", name: "Kit" });
     const id = body.tinker.id;
+    await db.query("UPDATE tinkers SET hot_goes = 0 WHERE id = $1", [id]);
     await call("PUT", `/tinkers/${id}/queue`, { queue: [{ actionId: "action.rustmoor.prospect_copper", remaining: 500 }] });
     clock += 2 * HOUR;
     await Promise.all(Array.from({ length: 8 }, () => call("POST", `/tinkers/${id}/check-in`)));
-    const { rows } = await db.query("SELECT qty FROM inventory WHERE tinker_id = $1 AND item = 'item.rustmoor.copper'", [id]);
-    expect(Number(rows[0].qty)).toBe(Math.floor((2 * 3600) / 54));
+    // Counted by XP, which fine work never doubles.
+    const { rows } = await db.query("SELECT xp FROM skills WHERE tinker_id = $1 AND skill = 'prospecting'", [id]);
+    expect(Number(rows[0].xp)).toBe(Math.floor((2 * 3600) / 54) * 8);
   });
 });
 
@@ -188,12 +197,13 @@ describe("what the client reads", () => {
 
   it("shows work landing on a look without refilling the Boiler", async () => {
     const created = (await call("POST", "/tinkers", { login: "look@example.com", name: "Lou" })).body.tinker;
+    await db.query("UPDATE tinkers SET hot_goes = 0 WHERE id = $1", [created.id]);
     await call("PUT", `/tinkers/${created.id}/queue`, { queue: [{ actionId: "action.rustmoor.prospect_copper", remaining: 100 }] });
     clock += 10 * 60_000;
     const { status, body } = await call("GET", `/tinkers/${created.id}`);
     expect(status).toBe(200);
     expect(body.ledger.lines).toEqual([expect.objectContaining({ id: "action.rustmoor.prospect_copper", count: 11 })]);
-    expect(body.tinker.inventory).toContainEqual({ item: "item.rustmoor.copper", qty: 11, bound: false });
+    expect(body.tinker.inventory.find((stack: { item: string }) => stack.item === "item.rustmoor.copper").qty).toBeGreaterThanOrEqual(11);
     expect(body.tinker.steamUntil).toBe(created.steamUntil);
     expect((await call("GET", `/tinkers/${created.id}`)).body.events).toEqual([]);
   });
@@ -368,5 +378,66 @@ describe("the Cinderworks opens with the Foundry Pass (work order 033)", () => {
     expect((await call("PUT", `/tinkers/${id}/queue`, { queue: [goggles] })).status).toBe(200);
     await db.query("UPDATE qualities SET value = 70 WHERE tinker_id = $1 AND name = 'act1.progress'", [id]);
     expect((await call("PUT", `/tinkers/${id}/queue`, { queue: [goggles, goggles] })).status).toBe(200);
+  });
+});
+
+describe("the first hour (work orders 045, 048 and 049)", () => {
+  const SPANNER = "action.rustmoor.tinker_brass_spanner";
+  const fresh = async (name: string) => (await call("POST", "/tinkers", { login: `${name.toLowerCase()}@hot.test`, name })).body.tinker;
+
+  it("gives a new Tinker the full stock of hot steam, and runs the bench at six times speed while they look", async () => {
+    const created = await fresh("Ember");
+    expect(created.hot).toMatchObject({ goes: 300, stock: 300, factor: 6 });
+    const queued = (await call("PUT", `/tinkers/${created.id}/queue`, { queue: [{ actionId: SPANNER, remaining: 50 }] })).body.tinker;
+    expect(queued.headMs).toBe(9_000);
+    expect(queued.hot.running).toBe(true);
+    clock += 45_000;
+    const seen = (await call("GET", `/tinkers/${created.id}`)).body;
+    expect(seen.ledger.lines).toEqual([expect.objectContaining({ id: SPANNER, count: 5 })]);
+    expect(seen.tinker.hot.goes).toBe(295);
+  });
+
+  it("keeps the stock for a player who is away: only the minute and a half after they leave runs hot", async () => {
+    const created = await fresh("Cinder");
+    await call("PUT", `/tinkers/${created.id}/queue`, { queue: [{ actionId: "action.rustmoor.prospect_copper", remaining: 5000 }] });
+    clock += 6 * HOUR;
+    const back = (await call("POST", `/tinkers/${created.id}/check-in`)).body.tinker;
+    // Ten hot goes in that minute and a half, then the usual pace: the six hours away spent nothing more.
+    expect(back.skills.find((skill: { skill: string }) => skill.skill === "prospecting").xp).toBe((10 + Math.floor((6 * 3600 - 90) / 54)) * 8);
+    // An hour or more away is a visit, which tops the stock up, to no more than the full 300.
+    expect(back.hot.goes).toBe(300);
+  });
+
+  it("pays a first once, when it is done", async () => {
+    const created = await fresh("Flint");
+    const open = created.firsts.find((first: { id: string }) => first.id === "first_job");
+    expect(open.status).toBe("open");
+    expect((await call("POST", `/tinkers/${created.id}/firsts/first_job/claim`)).status).toBe(400);
+    await call("PUT", `/tinkers/${created.id}/queue`, { queue: [{ actionId: SPANNER, remaining: 5 }] });
+    clock += 20_000;
+    const done = (await call("GET", `/tinkers/${created.id}`)).body.tinker;
+    expect(done.firsts.find((first: { id: string }) => first.id === "first_job").status).toBe("ready");
+    const claimed = await call("POST", `/tinkers/${created.id}/firsts/first_job/claim`);
+    expect(claimed.status).toBe(200);
+    expect(claimed.body.tinker.crowns).toBe(done.crowns + 5);
+    expect(claimed.body.tinker.firsts.find((first: { id: string }) => first.id === "first_job").status).toBe("claimed");
+    expect((await call("POST", `/tinkers/${created.id}/firsts/first_job/claim`)).status).toBe(400);
+  });
+
+  it("lets a player who stays into the second sitting after thirty things done", async () => {
+    const created = await fresh("Stay");
+    await call("POST", `/tinkers/${created.id}/check-in`);
+    // The first sitting's three scenes are played: the Prologue stands at 9, on its first visit.
+    await db.query("INSERT INTO qualities (tinker_id, name, value) VALUES ($1, 'prologue.progress', 9) ON CONFLICT (tinker_id, name) DO UPDATE SET value = 9", [created.id]);
+    await call("PUT", `/tinkers/${created.id}/queue`, { queue: [{ actionId: SPANNER, remaining: 50 }] });
+    let seen = (await call("GET", `/tinkers/${created.id}`)).body.tinker;
+    expect(seen.stayJobsLeft).toBe(30);
+    for (let look = 0; look < 40 && seen.stayJobsLeft !== null; look++) {
+      clock += 9_000;
+      seen = (await call("GET", `/tinkers/${created.id}`)).body.tinker;
+    }
+    expect(seen.stayJobsLeft).toBeNull();
+    const visits = await db.query("SELECT value FROM qualities WHERE tinker_id = $1 AND name = 'record.check_ins'", [created.id]);
+    expect(Number(visits.rows[0].value)).toBe(2);
   });
 });

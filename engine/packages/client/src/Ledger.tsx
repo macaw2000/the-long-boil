@@ -79,10 +79,11 @@ export function Ledger({
   // Every skill's XP on one line was a wall to 12 of 12 cold readers: the levels show as chips, the XP on a press.
   const [detail, setDetail] = useState(false);
   const highest = new Map(ledger.levelUps.map((up) => [up.skill, up.level]));
-  const haul = ledger.lines.some((line) => Object.keys(line.produced).length > 0 || line.crowns > 0) || highest.size > 0;
+  const haul = Object.keys(ledger.finds ?? {}).length > 0 || ledger.lines.some((line) => Object.keys(line.produced).length > 0 || line.crowns > 0) || highest.size > 0;
   // The haul lands with a sound; Collect answers with sparks, then puts the ledger away.
   useEffect(() => {
-    if (haul) play("clink");
+    if (Object.keys(ledger.finds ?? {}).length > 0) play("find");
+    else if (haul) play("clink");
     // Once, as the ledger opens.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -101,6 +102,25 @@ export function Ledger({
         <Text style={[ui.heading, { fontSize: 20 }]}>While You Were Away</Text>
         {span > 0 && <Text style={ui.muted}>{duration(span)} of work</Text>}
       </View>
+      {/* Luck first (work order 047): the rare finds lead the haul, with the firsts and the fine work beside them. */}
+      {Object.keys(ledger.finds ?? {}).length > 0 && (
+        <View style={{ gap: 6, padding: 8, borderRadius: 6, borderWidth: 1, borderColor: GOLD, backgroundColor: "rgba(242, 193, 78, 0.08)" }}>
+          <Text style={[ui.text, { color: GOLD, fontWeight: "700" }]}>
+            {Object.keys(ledger.finds).length === 1 ? "A rare find" : "Rare finds"}
+            {ledger.firsts?.length ? ` · your first ${ledger.firsts.map(name).join(", ")}` : ""}
+          </Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+            {Object.entries(ledger.finds).map(([item, qty]) => (
+              <Chip key={item} picture={<ItemIcon item={item} size={26} />} qty={qty} label={name(item)} />
+            ))}
+          </View>
+        </View>
+      )}
+      {(ledger.fine ?? 0) > 0 && (
+        <Text style={[ui.text, { color: colors.verdigris }]}>
+          Fine work {ledger.fine.toLocaleString()} {ledger.fine === 1 ? "time" : "times"}: the bench made twice over.
+        </Text>
+      )}
       {ledger.lines.map((line) => {
         const fight = line.id.startsWith("monster.");
         const xp = Object.entries(line.xp)

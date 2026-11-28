@@ -94,7 +94,8 @@ describe("a guild's week", () => {
     await call("POST", `/tinkers/${lead}/check-in`);
     const row = (await contracts(lead)).contracts.find((c: { kind: string }) => c.kind === "prospecting");
     expect(row.mine).toBeGreaterThan(2.9 * 3600);
-    expect(row.mine).toBeLessThan(3.1 * 3600);
+    // The minute and a half after the check-in before runs hot (work order 045), which is worth a few minutes more.
+    expect(row.mine).toBeLessThan(3.2 * 3600);
     // A second look counts nothing again.
     await call("POST", `/tinkers/${lead}/check-in`);
     expect((await contracts(lead)).contracts.find((c: { kind: string }) => c.kind === "prospecting").mine).toBe(row.mine);

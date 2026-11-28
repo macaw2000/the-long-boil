@@ -29,6 +29,28 @@
           "prologue.progress": 8
         }
       }
+    },
+    {
+      "label": "Go in up to the shoulder after the second rat, for whatever it has already carried off. Your Tinkering sets the odds.",
+      "challenge": {
+        "quality": "tinkering",
+        "difficulty": 2
+      },
+      "success": {
+        "text": "A bench teaches you what a thing is by the feel of it, and the thing under the boards is a nest: silk, wire, and a year of what the rats have carried out of this workshop with nobody to stop them. You come up with both fists full of scrap and a rat's considered opinion of you, delivered at speed and from a safe distance. Below, the scratching goes down, and down, and joins a great deal more of it. They will be back tonight. Better to go down and meet them first.",
+        "changes": {
+          "item.rustmoor.rat_scrap": "+8",
+          "prologue.progress": 8
+        }
+      },
+      "failure": {
+        "text": "The rat finds your hand before your hand finds anything. You come up with a bite across three knuckles, one piece of scrap that was very likely holding the floor together, and a new respect for the dark. Professor Brassbuckle, who has not got up, says that there is iodine in the tea caddy, and that it stings. It does. Below, the scratching goes down, and down, and joins a great deal more of it. Better to go down and meet them with something in your hand.",
+        "changes": {
+          "needle.scald": "+1",
+          "item.rustmoor.rat_scrap": "+1",
+          "prologue.progress": 8
+        }
+      }
     }
   ]
 }

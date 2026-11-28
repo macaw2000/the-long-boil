@@ -58,7 +58,7 @@ import { readCommonplace } from "./commonplace.js";
 import { BadSignature, MAX_CRATES, type Payments } from "./payments.js";
 import { buyUpgrade, grantCrates, openCrates, readShop, rememberStripeCustomer, revokeCrates, stripeCustomerOf } from "./shop.js";
 import { devSetStory, discardLetter, payDebt, playStory, readStory } from "./story.js";
-import { BadRequest, NotFound, checkIn, createTinker, equip, resetTinker, wear, fightOutlooks, listTinkers, loadout, look, readGuide, saveGuide, setQueue, type GuideProgress } from "./tinkers.js";
+import { BadRequest, NotFound, checkIn, claimFirst, createTinker, equip, resetTinker, wear, fightOutlooks, listTinkers, loadout, look, readGuide, saveGuide, setQueue, type GuideProgress } from "./tinkers.js";
 
 export interface ApiOptions {
   db: Db;
@@ -411,6 +411,11 @@ export function buildApi({
       },
     },
     async (request) => resetTinker(db, content, Number(request.params.id), request.body.name, now(), request.body.newName),
+  );
+
+  // Claims a first-hour goal that is done (work order 049).
+  app.post<{ Params: { id: string; first: string } }>("/tinkers/:id/firsts/:first/claim", async (request) =>
+    claimFirst(db, content, Number(request.params.id), request.params.first, now()),
   );
 
   // A check-in also says what the guild talked about since the Tinker was last present (its resolved_to before this).

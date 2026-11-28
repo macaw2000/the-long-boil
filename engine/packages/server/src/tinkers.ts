@@ -45,6 +45,12 @@ export interface TinkerView {
   worn: Record<string, string>;
   tools: Record<string, string>;
   bossesBeaten: string[];
+  /** Hot steam (work order 045): goes left in stock, the full stock, and how much faster a hot go runs. */
+  hot: { goes: number; stock: number; factor: number; running: boolean };
+  /** The first-hour goals and where each stands (work order 049). */
+  firsts: rules.FirstView[];
+  /** Things still to do here before staying opens the next sitting; null when it would not (work order 048). */
+  stayJobsLeft: number | null;
   story: StorySummary;
   /** Work Orders waiting on the desk, as last brought up to date; for the tab's badge. */
   workOrders: number;
@@ -103,7 +109,7 @@ export async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
   const row = (
     await tx.query(
       `SELECT progress_ms, resolved_to, steam_until, last_seq, crowns, weapon, armour, worn, tools, head_tool, rng, ration_debt, pity, bosses_beaten,
-         boost_until, head_boosted, queue_slots, boiler_hours
+         boost_until, head_boosted, queue_slots, boiler_hours, hot_goes, hot_until, head_hot, first_kills
        FROM tinkers WHERE id = $1 FOR UPDATE`,
       [tinkerId],
     )
@@ -144,6 +150,10 @@ export async function lockAndLoad(tx: Tx, tinkerId: number): Promise<Loaded> {
       bossesBeaten: row.bosses_beaten,
       boostUntil: row.boost_until.getTime(),
       headBoosted: row.head_boosted,
+      hotGoes: Number(row.hot_goes),
+      hotUntil: row.hot_until.getTime(),
+      headHot: row.head_hot,
+      firstKills: row.first_kills,
     },
     stacks,
     lastSeq: Number(row.last_seq),
@@ -208,7 +218,7 @@ export async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state:
   await tx.query(
     `UPDATE tinkers SET progress_ms = $2, resolved_to = $3, steam_until = $4, last_seq = $5, content_version = $6,
        crowns = $7, weapon = $8, rng = $9, ration_debt = $10, pity = $11, bosses_beaten = $12, head_boosted = $13,
-       armour = $14, worn = $15, tools = $16, head_tool = $17
+       armour = $14, worn = $15, tools = $16, head_tool = $17, hot_goes = $18, hot_until = $19, head_hot = $20, first_kills = $21
      WHERE id = $1`,
     [
       tinkerId,
@@ -228,6 +238,10 @@ export async function saveState(tx: Tx, tinkerId: number, loaded: Loaded, state:
       JSON.stringify(state.worn),
       JSON.stringify(state.tools),
       state.headTool,
+      state.hotGoes,
+      new Date(state.hotUntil),
+      state.headHot,
+      JSON.stringify(state.firstKills),
     ],
   );
 }
@@ -314,8 +328,11 @@ export interface Advanced {
  * state for the operation that follows. Only opening the workshop passes
  * `visit`, so only it can count toward record.check_ins (Jeremy, 22 October
  * 2026: a long first sitting must not roll into Act I through the Exchange).
+ * `present` says the player is at the workshop (a look, a check-in or a
+ * change to the bench): it opens the hot-steam window (work order 045), and
+ * lets things done while staying count toward the next sitting (work order 048).
  */
-export async function advance(tx: Tx, content: GameContent, tinkerId: number, now: number, refill: boolean, visit = false): Promise<Advanced> {
+export async function advance(tx: Tx, content: GameContent, tinkerId: number, now: number, refill: boolean, visit = false, present = false): Promise<Advanced> {
   const trades = await settle(tx, content, tinkerId, now);
   await deliverCrates(tx, content, tinkerId, now);
   const loaded = await lockAndLoad(tx, tinkerId);
@@ -324,10 +341,16 @@ export async function advance(tx: Tx, content: GameContent, tinkerId: number, no
   const working = { ...loaded.state, holdPages: (storyBefore.qualities["prologue.progress"] ?? 0) < 100 };
   const resolved = refill ? rules.checkIn(working, content.rules, now, loaded.boilerHours) : rules.resolve(working, content.rules, now);
   // A workshop open may count as a visit first, so a scene gated on visits opens as the player arrives.
-  const counted = visit ? rules.countCheckIn(storyBefore, now) : { story: storyBefore, event: null };
+  const visited = visit ? rules.countCheckIn(storyBefore, now) : { story: storyBefore, event: null };
+  const jobs = rules.jobsCounted(resolved.events);
+  // A player who stays is not made to leave: enough done since the sitting's last scene counts as the next visit.
+  const counted = present && !visited.event ? rules.countStay(visited.story, jobs, now) : visited;
   const refreshed = rules.refreshStory(counted.story, resolved.state, content.rules, now);
   if (counted.event) refreshed.events.unshift(counted.event);
-  const state = { ...resolved.state, rng: refreshed.tinker.rng };
+  let state: TinkerState = { ...resolved.state, rng: refreshed.tinker.rng };
+  // Each visit an hour or more after the last tops the hot steam up; staying does not.
+  if (visited.event) state = rules.grantHot(state, rules.HOT_TOP_UP);
+  if (present) state = rules.stoke(state, now);
   const version = content.rules.version;
   const entries: LogEntry[] = [
     ...fromRules(resolved.events),
@@ -337,7 +360,6 @@ export async function advance(tx: Tx, content: GameContent, tinkerId: number, no
   entries.push(...(await collectTokens(tx, tinkerId, now)), ...(await countGuildWork(tx, content, tinkerId, resolved.events, now)));
   const seq = await appendEvents(tx, tinkerId, loaded.lastSeq, entries, version);
   await saveState(tx, tinkerId, loaded, state, seq, version);
-  const jobs = rules.jobsCounted(resolved.events);
   if (jobs > 0) await tx.query("UPDATE tinkers SET jobs_done = jobs_done + $2 WHERE id = $1", [tinkerId, jobs]);
   await saveStory(tx, tinkerId, storyBefore, refreshed.story);
   return { loaded, state, story: refreshed.story, storyBefore, events: resolved.events, storyEvents: refreshed.events, trades, seq };
@@ -359,9 +381,11 @@ function waitingOrders(desk: rules.WorkOrderState, now: number): number {
 
 export async function view(tx: Tx, tinkerId: number, content: GameContent, now = Date.now()): Promise<TinkerView> {
   const row = (
-    await tx.query("SELECT id, name, crowns, cogs, progress_ms, steam_until, resolved_to, work_orders, jobs_done, body, outfit, backdrop FROM tinkers WHERE id = $1", [tinkerId])
+    await tx.query("SELECT id, name, crowns, cogs, progress_ms, steam_until, resolved_to, work_orders, jobs_done, body, outfit, backdrop, firsts FROM tinkers WHERE id = $1", [tinkerId])
   ).rows[0];
   const loaded = await lockAndLoad(tx, tinkerId);
+  const storyNow = await loadStory(tx, tinkerId);
+  const firsts = rules.firstsFor(await firstsContext(tx, tinkerId, content, loaded.state, storyNow, Number(row.jobs_done)), row.firsts as string[]);
   const boostUntil = loaded.state.boostUntil;
   return {
     id: Number(row.id),
@@ -388,10 +412,44 @@ export async function view(tx: Tx, tinkerId: number, content: GameContent, now =
     worn: loaded.state.worn,
     tools: loaded.state.tools,
     bossesBeaten: loaded.state.bossesBeaten,
-    story: summarizeStory(await loadStory(tx, tinkerId), loaded.state, content, now),
+    hot: {
+      goes: loaded.state.hotGoes,
+      stock: rules.HOT_STOCK,
+      factor: rules.HOT_FACTOR,
+      running: loaded.state.progressMs > 0 ? loaded.state.headHot : loaded.state.hotGoes > 0 && now < loaded.state.hotUntil,
+    },
+    firsts,
+    stayJobsLeft: rules.stayJobsLeft(storyNow),
+    story: summarizeStory(storyNow, loaded.state, content, now),
     workOrders: waitingOrders(row.work_orders as rules.WorkOrderState, now),
     look: { ...wearing(content, row), picked: row.body !== null },
   };
+}
+
+/** What the firsts are judged from: the state, the story's qualities, the jobs counted, and whether the Tinker is in a guild. */
+async function firstsContext(tx: Tx, tinkerId: number, content: GameContent, state: TinkerState, story: StoryState, jobsDone: number): Promise<rules.FirstsContext> {
+  const inGuild = Boolean((await tx.query("SELECT 1 FROM guild_members WHERE tinker_id = $1", [tinkerId])).rowCount);
+  return { state, content: content.rules, jobsDone, qualities: story.qualities, inGuild };
+}
+
+/** Claims a first that is done: pays its Crowns and marks it, once (work order 049). */
+export async function claimFirst(db: Db, content: GameContent, tinkerId: number, first: string, now: number): Promise<Outcome> {
+  return withTransaction(db, async (tx) => {
+    const advanced = await advance(tx, content, tinkerId, now, true, false, true);
+    const row = (await tx.query("SELECT jobs_done, firsts FROM tinkers WHERE id = $1", [tinkerId])).rows[0];
+    const claimed = row.firsts as string[];
+    let crowns: number;
+    try {
+      crowns = rules.claimFirst(await firstsContext(tx, tinkerId, content, advanced.state, advanced.story, Number(row.jobs_done)), claimed, first);
+    } catch (error) {
+      throw new BadRequest((error as Error).message);
+    }
+    const version = content.rules.version;
+    const seq = await appendEvents(tx, tinkerId, advanced.seq, [{ type: "first_claimed", at: now, payload: { first, crowns } }], version);
+    await saveState(tx, tinkerId, await lockAndLoad(tx, tinkerId), { ...advanced.state, crowns: advanced.state.crowns + crowns }, seq, version);
+    await tx.query("UPDATE tinkers SET firsts = $2 WHERE id = $1", [tinkerId, JSON.stringify([...claimed, first])]);
+    return outcome(await view(tx, tinkerId, content, now), advanced.events, advanced.trades, advanced.storyEvents);
+  });
 }
 
 /** What a Tinker's row says it wears, with the first body for one who has not picked. */
@@ -442,6 +500,7 @@ export async function resetTinker(db: Db, content: GameContent, tinkerId: number
          weapon = NULL, armour = NULL, worn = '{}', tools = '{}', head_tool = 0, ration_debt = 0, pity = '{}', bosses_beaten = '[]',
          nerve = $6, nerve_at = $7, post_at = $8, hand = '[]', needle_at = '{}', check_in_at = NULL,
          answered = '[]', played_at = '{}', work_orders = DEFAULT, guide = NULL, jobs_done = 0, head_boosted = false, name = $9,
+         hot_goes = DEFAULT, hot_until = DEFAULT, head_hot = false, first_kills = '[]', firsts = '[]',
          outfit = CASE WHEN outfit = ANY($10::text[]) THEN outfit END, backdrop = CASE WHEN backdrop = ANY($10::text[]) THEN backdrop END
        WHERE id = $1`,
       [
@@ -530,7 +589,7 @@ export async function createTinker(db: Db, content: GameContent, login: string, 
 /** A check-in, made when the workshop opens: resolves everything up to now, refills the Boiler, and may count a visit. */
 export async function checkIn(db: Db, content: GameContent, tinkerId: number, now: number): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
-    const advanced = await advance(tx, content, tinkerId, now, true, true);
+    const advanced = await advance(tx, content, tinkerId, now, true, true, true);
     return outcome(await view(tx, tinkerId, content, now), advanced.events, advanced.trades, advanced.storyEvents);
   });
 }
@@ -541,7 +600,7 @@ export async function checkIn(db: Db, content: GameContent, tinkerId: number, no
  */
 export async function look(db: Db, content: GameContent, tinkerId: number, now: number): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
-    const advanced = await advance(tx, content, tinkerId, now, false);
+    const advanced = await advance(tx, content, tinkerId, now, false, false, true);
     return outcome(await view(tx, tinkerId, content, now), advanced.events, advanced.trades, advanced.storyEvents);
   });
 }
@@ -608,7 +667,7 @@ async function atCheckIn(
   entry: LogEntry,
 ): Promise<Outcome> {
   return withTransaction(db, async (tx) => {
-    const advanced = await advance(tx, content, tinkerId, now, true);
+    const advanced = await advance(tx, content, tinkerId, now, true, false, true);
     let changed: TinkerState;
     try {
       changed = change(advanced.state, advanced.loaded);

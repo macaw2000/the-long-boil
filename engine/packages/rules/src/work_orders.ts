@@ -68,6 +68,14 @@ function skillLevel(skillXp: Record<string, number>, skill: string, content: Con
  * or buy at the grocer's counter, or dropped by a monster it can fight.
  * Bosses and first-kill drops do not count.
  */
+/**
+ * A drop this likely or more counts as a way to come by an item (work order
+ * 047). The chance drops added then (Odd Spoons at 1%, a Clock Movement at
+ * 0.6%) must not make an order from a higher band look fillable, when only
+ * luck would fill it.
+ */
+export const DEPENDABLE_DROP = 0.05;
+
 export function canObtain(item: string, skillXp: Record<string, number>, content: Content, seen: Set<string> = new Set()): boolean {
   if (content.grocer.has(item)) return true;
   if (seen.has(item)) return false;
@@ -81,7 +89,7 @@ export function canObtain(item: string, skillXp: Record<string, number>, content
   for (const table of content.drops.values()) {
     const monster = content.monsters.get(table.monster);
     if (!monster || monster.boss || monster.level > fighting) continue;
-    if (table.entries.some((entry) => entry.item === item && entry.chance > 0)) return true;
+    if (table.entries.some((entry) => entry.item === item && entry.chance >= DEPENDABLE_DROP)) return true;
   }
   return false;
 }

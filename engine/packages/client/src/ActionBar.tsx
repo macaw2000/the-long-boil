@@ -9,11 +9,12 @@ import { api, type Content, type QueueEntry, type Tinker } from "./api";
 import { duration, seconds, titleCase } from "./format";
 import type { GlossaryTerm } from "./glossary";
 import { jobTitle } from "./jobs";
+import { levelLine } from "./levels";
 import { Glow } from "./Glow";
 import { Badge, CountUp, Gauge, SteamTube } from "./Juice";
 import { ItemIcon, UiIcon } from "./Sprite";
 import { MonsterPicture } from "./SkillView";
-import { useSound } from "./sound";
+import { useAmbient, useSound } from "./sound";
 import { Term } from "./Term";
 import { colors, ui } from "./theme";
 
@@ -99,9 +100,10 @@ export function ActionBar({
                 {headSeconds > 0 && <SteamTube fraction={Math.min(1, elapsedMs / (headSeconds * 1000))} working={working} />}
                 <Text style={[ui.muted, { fontSize: 11 }]}>
                   {working
-                    ? `${seconds(Math.max(0, headSeconds - elapsedMs / 1000))} to the next`
+                    ? `${seconds(Math.max(0, headSeconds - elapsedMs / 1000))} to the next${tinker.hot.running ? " · running hot" : ""}`
                     : "Stopped: the Boiler is dry. Check in to raise steam."}
                 </Text>
+                {working && <SkillProgress content={content} tinker={tinker} entry={head} name={name} />}
               </>
             ) : (
               <Text style={[ui.text, { color: colors.copper }]}>The bench is idle. Choose a job from a skill.</Text>
@@ -162,6 +164,17 @@ export function ActionBar({
             </View>
           </Term>
         </Glow>
+        {!cold && tinker.hot.goes > 0 && (
+          <View
+            accessibilityLabel={`Hot steam: ${tinker.hot.goes} quick goes left. While you are here, each go takes a sixth of its time.`}
+            // @ts-expect-error title is the web tooltip
+            title={`Hot steam: while you are here, each go takes a sixth of its time. ${tinker.hot.goes} left; more each time you come back.`}
+          >
+            <Stat label="Hot steam">
+              <Text style={[ui.number, { color: tinker.hot.running ? "#f2c14e" : colors.muted }]}>{tinker.hot.goes}</Text>
+            </Stat>
+          </View>
+        )}
         {boostLeft > 0 && (
           <Pressable onPress={onShop} accessibilityRole="button" accessibilityLabel={`Boiler Boost, ${duration(boostLeft)} left`}>
             <Stat label="Boost">
@@ -228,6 +241,36 @@ export function ActionBar({
   );
 }
 
+/** The skill the job at work trains: its level, a thin bar to the next, how many goes that is, and what comes after. */
+function SkillProgress({ content, tinker, entry, name }: { content: Content; tinker: Tinker; entry: QueueEntry; name: (id: string) => string }) {
+  const action = content.actions.find((candidate) => candidate.id === entry.actionId);
+  const monster = action ? undefined : content.monsters.find((candidate) => candidate.id === entry.actionId);
+  const skill = action?.skill ?? content.weapons.find((weapon) => weapon.item === tinker.weapon)?.style;
+  if (!skill) return null;
+  const held = tinker.skills.find((candidate) => candidate.skill === skill);
+  const level = held?.level ?? 1;
+  const xp = held?.xp ?? 0;
+  const from = content.totalXp[level] ?? 0;
+  const to = content.totalXp[level + 1];
+  if (to === undefined) return null;
+  // A kill pays most of its XP to the weapon's style; the rest is spread over the other six.
+  const each = action ? action.xp : (monster?.xp ?? 0) * 0.7;
+  const goes = each > 0 ? Math.max(1, Math.ceil((to - xp) / each)) : null;
+  const next = levelLine(skill, level, content, tinker, name);
+  return (
+    <View style={{ gap: 2 }}>
+      <View style={{ height: 4, borderRadius: 2, backgroundColor: "rgba(217, 210, 195, 0.1)", overflow: "hidden" }}>
+        <View style={{ width: `${Math.max(0, Math.min(1, (xp - from) / (to - from))) * 100}%`, height: "100%", backgroundColor: colors.verdigris }} />
+      </View>
+      <Text style={[ui.muted, { fontSize: 11 }]} numberOfLines={1}>
+        {titleCase(skill)} {level}
+        {goes !== null ? ` · level ${level + 1} in ${goes.toLocaleString()} ${goes === 1 ? "go" : "goes"}` : ""}
+        {next.startsWith("Next:") ? ` · ${next}` : ""}
+      </Text>
+    </View>
+  );
+}
+
 /** A reading on the bar: its icon where one is drawn, then its name over its value. */
 function Stat({ label, icon, children }: { label: string; icon?: string; children: ReactNode }) {
   return (
@@ -264,6 +307,7 @@ export function JobPicture({ content, id, size }: { content: Content; id: string
 /** The workshop's sounds, on unless turned off; the browser remembers (sound.ts). */
 function SoundSwitch() {
   const sound = useSound();
+  useAmbient(sound.on);
   if (!sound.available) return null;
   return (
     <Pressable onPress={sound.toggle} accessibilityRole="switch" accessibilityState={{ checked: sound.on }} accessibilityLabel="Sound" style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>

@@ -4,8 +4,9 @@
 // "not for use", so the name line says so. The chosen item's flavour shows
 // beneath, and for a Ration how it is used, since nothing is eaten by hand.
 
-import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Animated, Pressable, Text, View } from "react-native";
+import { useReducedMotion } from "./Juice";
 import type { Content, Tinker } from "./api";
 import { ItemIcon, UiIcon } from "./Sprite";
 import { colors, ui } from "./theme";
@@ -14,6 +15,35 @@ function short(qty: number): string {
   if (qty >= 1_000_000) return `${Math.floor(qty / 100_000) / 10}M`;
   if (qty >= 10_000) return `${Math.floor(qty / 1_000)}k`;
   return qty.toLocaleString();
+}
+
+/**
+ * A tile that answers when its count rises (work order 044): a quick swell and
+ * a green rim, so a thing made or dropped is seen to arrive, not just counted.
+ */
+function Pulse({ qty, children }: { qty: number; children: ReactNode }) {
+  const reduced = useReducedMotion();
+  const was = useRef(qty);
+  const bump = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    const rose = qty > was.current;
+    was.current = qty;
+    if (!rose || reduced) return;
+    bump.setValue(1);
+    Animated.timing(bump, { toValue: 0, duration: 520, useNativeDriver: false }).start();
+  }, [qty, reduced, bump]);
+  return (
+    <Animated.View
+      style={{
+        borderRadius: 7,
+        borderWidth: 2,
+        borderColor: bump.interpolate({ inputRange: [0, 1], outputRange: ["rgba(90, 160, 140, 0)", "rgba(90, 190, 160, 0.95)"] }),
+        transform: [{ scale: bump.interpolate({ inputRange: [0, 1], outputRange: [1, 1.14] }) }],
+      }}
+    >
+      {children}
+    </Animated.View>
+  );
 }
 
 export function Stores({ content, tinker, name }: { content: Content; tinker: Tinker; name: (id: string) => string }) {
@@ -25,12 +55,12 @@ export function Stores({ content, tinker, name }: { content: Content; tinker: Ti
     <View style={[ui.panel, { gap: 10 }]}>
       <Text style={ui.heading}>Stores</Text>
       {tinker.inventory.length === 0 && <Text style={ui.muted}>Empty shelves.</Text>}
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 2 }}>
         {tinker.inventory.map((stack) => {
           const key = `${stack.item}-${stack.bound}`;
           return (
+            <Pulse key={key} qty={stack.qty}>
             <Pressable
-              key={key}
               onHoverIn={() => setShown(key)}
               onHoverOut={() => setShown((value) => (value === key ? null : value))}
               onPress={() => setShown((value) => (value === key ? null : key))}
@@ -55,6 +85,7 @@ export function Stores({ content, tinker, name }: { content: Content; tinker: Ti
                 </View>
               )}
             </Pressable>
+            </Pulse>
           );
         })}
       </View>

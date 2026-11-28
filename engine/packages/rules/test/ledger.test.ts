@@ -49,6 +49,6 @@ describe("the While You Were Away ledger", () => {
   });
 
   it("is empty for no events", () => {
-    expect(summarize([])).toEqual({ from: null, to: null, lines: [], crowns: 0, levelUps: [], stalls: [], boilerDryAt: null });
+    expect(summarize([])).toEqual({ from: null, to: null, lines: [], crowns: 0, levelUps: [], stalls: [], boilerDryAt: null, finds: {}, fine: 0, firsts: [] });
   });
 });

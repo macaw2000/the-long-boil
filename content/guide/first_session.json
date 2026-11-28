@@ -21,7 +21,7 @@
     {
       "id": "first_spanner",
       "speaker": "Professor Brassbuckle",
-      "line": "Each spanner takes a little while, and goes into your Stores. Watching does not make it faster, but nobody has ever managed not to watch the first."
+      "line": "The Boiler runs hot after a year cold: while you are here, the bench goes at six times its pace, until the hot steam is spent. Each spanner goes into your Stores."
     },
     {
       "id": "rats_in_the_workshop",
@@ -41,13 +41,13 @@
     {
       "id": "come_back",
       "speaker": "Professor Brassbuckle",
-      "line": "The keys are yours now. The bench works on while you are away, and the Boiler fills again each time you come back. That brass tube over the bench has started to rattle: something is on its way.",
-      "button": "Leave it running"
+      "line": "The keys are yours now. The bench works on whether you stay or go, and the Boiler fills again each time you come back. That brass tube has started to rattle: something is on its way.",
+      "button": "Carry on"
     },
     {
       "id": "pips_bill",
       "speaker": "Professor Brassbuckle",
-      "line": "The brass tube brought something while you were away. Letters keep until you answer them, but this one will not improve with age."
+      "line": "The brass tube has brought something at last. Letters keep until you answer them, but this one will not improve with age."
     },
     {
       "id": "pay_bill",
@@ -77,7 +77,7 @@
     {
       "id": "first_haul",
       "speaker": "Professor Brassbuckle",
-      "line": "One rat proves nothing; any fool may be lucky once. Set the night's rats going, then beat three and bring up what they drop. They fall whether you watch or not; I have never known watching to help."
+      "line": "One rat proves nothing; any fool may be lucky once. Set the night's rats going, then beat three and bring up what they drop. They fall faster while the steam is hot and you are here."
     },
     {
       "id": "opened_exchange",

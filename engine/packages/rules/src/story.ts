@@ -614,6 +614,7 @@ export function countCheckIn(previous: StoryState, now: number): { story: StoryS
   const story = cloneStory(previous);
   story.checkInAt = now;
   story.qualities[CHECK_INS] = (story.qualities[CHECK_INS] ?? 0) + 1;
+  if (story.qualities[STAY_JOBS]) story.qualities[STAY_JOBS] = 0;
   const qualities: Record<string, number> = { [CHECK_INS]: story.qualities[CHECK_INS] };
   if ((story.qualities["prologue.progress"] ?? 0) >= 100) {
     // A Tinker who finished the one-visit Prologue before work order 037 never chose an origin; its visits since are all but the first.
@@ -621,6 +622,42 @@ export function countCheckIn(previous: StoryState, now: number): { story: StoryS
     story.qualities[VISITS_SINCE_PROLOGUE] = qualities[VISITS_SINCE_PROLOGUE] = before + 1;
   }
   return { story, event: { type: "check_in_counted", at: now, qualities } };
+}
+
+/**
+ * Staying counts too (work order 048). The Prologue's three sittings are
+ * paced by counted visits, an hour apart, which sent away the player who
+ * wanted to stay. Once a sitting's scenes are played, things made, gathered
+ * or beaten while the player is at the workshop add up, and
+ * STAY_JOBS_FOR_SITTING of them count as the next visit. A player who leaves
+ * still gets the sittings an hour apart, as before.
+ */
+export const STAY_JOBS = "record.stay_jobs";
+export const STAY_JOBS_FOR_SITTING = 30;
+/** prologue.progress at the end of the first and second sittings' scenes, by record.check_ins. */
+const SITTING_ENDS: Record<number, number> = { 1: 9, 2: 30 };
+
+/** Things still to do before staying opens the next sitting; null when staying does not open one now. */
+export function stayJobsLeft(story: StoryState): number | null {
+  const ends = SITTING_ENDS[story.qualities[CHECK_INS] ?? 0];
+  const progress = story.qualities["prologue.progress"] ?? 0;
+  if (ends === undefined || progress < ends || progress >= 100) return null;
+  return Math.max(0, STAY_JOBS_FOR_SITTING - (story.qualities[STAY_JOBS] ?? 0));
+}
+
+/** Adds jobs done while the player is at the workshop, and counts a visit when they have stayed long enough. */
+export function countStay(previous: StoryState, jobs: number, now: number): { story: StoryState; event: StoryEvent | null } {
+  if (jobs <= 0 || stayJobsLeft(previous) === null) return { story: previous, event: null };
+  const story = cloneStory(previous);
+  const stayed = (story.qualities[STAY_JOBS] ?? 0) + jobs;
+  if (stayed < STAY_JOBS_FOR_SITTING) {
+    story.qualities[STAY_JOBS] = stayed;
+    return { story, event: null };
+  }
+  story.qualities[STAY_JOBS] = 0;
+  story.checkInAt = now;
+  story.qualities[CHECK_INS] = (story.qualities[CHECK_INS] ?? 0) + 1;
+  return { story, event: { type: "check_in_counted", at: now, qualities: { [CHECK_INS]: story.qualities[CHECK_INS] } } };
 }
 
 export interface Debt {

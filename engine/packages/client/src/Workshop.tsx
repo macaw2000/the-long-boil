@@ -37,6 +37,7 @@ import { SkillIcon, SkillView } from "./SkillView";
 import { play } from "./sound";
 import { ItemIcon, Scene, zoneOf } from "./Sprite";
 import { Stores } from "./Stores";
+import { Firsts } from "./Firsts";
 import { Story } from "./Story";
 import { colors, ui } from "./theme";
 import { WorkOrders } from "./WorkOrders";
@@ -236,16 +237,35 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
       })
       .catch((reason: Error) => setError(reason.message));
 
+  // What luck brought while the player watched (work orders 046 and 047): a rare find is a banner with its own
+  // sound, the first of a monster says so, and fine work rises with the rest. Coming back, the haul shows them instead.
+  const announce = useCallback(
+    (ledger: LedgerData) => {
+      const finds = Object.entries(ledger.finds ?? {});
+      const first = ledger.firsts?.[0];
+      for (const [item, qty] of finds) {
+        const flavour = content.items.find((candidate) => candidate.id === item)?.flavour;
+        const line = first ? `Your first ${name(first)} turned it up.` : (flavour ?? "A rare find.");
+        addLevelUp(item, qty, line, first ? "FIRST OF ITS KIND" : "RARE FIND");
+      }
+      if (finds.length) setTimeout(() => play("find"), 120);
+      if ((ledger.fine ?? 0) > 0) addFloater(`Fine work: twice over${ledger.fine > 1 ? ` ×${ledger.fine}` : ""}`, colors.verdigris);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [content, name],
+  );
+
   const lookAgain = useCallback(
     () =>
       api
         .look(tinkerId)
         .then((outcome) => {
           apply(outcome);
+          announce(outcome.ledger);
           noteRecent(outcome.ledger, outcome.trades);
         })
         .catch((reason: Error) => setError(reason.message)),
-    [tinkerId, apply, noteRecent],
+    [tinkerId, apply, announce, noteRecent],
   );
 
   // The server says when something changed (a fill, another session's action);
@@ -462,6 +482,8 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const step = currentStep(tinker, guide);
   // While the guide runs, the screen opens only what it has reached (the nav greys the rest); the place the player is on is always open.
   const opened = revealed(step, guide, tinker.story.qualities["prologue.progress"] ?? 0, tinker.story.qualities["record.visits_since_prologue"] ?? 0, tinker.jobsDone);
+  // The Firsts list comes in at the end of the first sitting's guide, with the Guild, so it is never one more thing on a screen that teaches (work order 049).
+  const firstsOpen = opened("guild");
   // A skill the story has not opened yet (rules SKILL_GATES) stays locked even after the guide.
   // A guild or an invitation opens the Guild tab whatever the guide has reached, and being in a guild opens chat, where it talks.
   const social = (feature: string) =>
@@ -631,7 +653,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     ) : place === "shop" ? (
       <Shop content={content} tinker={tinker} now={now} returned={checkoutReturn} onOutcome={apply} />
     ) : place === "story" ? (
-      <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} guideAt={at === "letters" || at === "scenes" ? at : null} onGo={setPlace} />
+      <Story key={storyKey} tinkerId={tinkerId} onOutcome={apply} guideAt={at === "letters" || at === "scenes" ? at : null} onGo={setPlace} stayLeft={tinker.stayJobsLeft} />
     ) : place === "guild" ? (
       <View style={{ gap: 12 }}>
         {/* A phone's bar has no room for another tab, so the boards are reached from here. */}
@@ -654,6 +676,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
     ) : place === "stores" ? (
       <View style={{ gap: 12 }}>
         <Stores content={content} tinker={tinker} name={name} />
+        {firstsOpen && <Firsts tinker={tinker} onOutcome={apply} />}
         {loadout}
       </View>
     ) : (
@@ -782,7 +805,12 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         {wide && <View style={{ paddingHorizontal: 16, paddingTop: 16, maxWidth: 900, width: "100%", alignSelf: "center" }}>{guidance}</View>}
         {/* Level-ups show over the top of the page, under the pinned guide, so neither hides the other's words. */}
         <View style={{ zIndex: 30 }}>
-          <LevelUps ups={levelUps} onDone={removeLevelUp} icon={(skill) => <SkillIcon skill={skill} size={40} />} title={titleCase} />
+          <LevelUps
+            ups={levelUps}
+            onDone={removeLevelUp}
+            icon={(skill) => (skill.startsWith("item.") ? <ItemIcon item={skill} size={40} /> : <SkillIcon skill={skill} size={40} />)}
+            title={(skill) => (skill.startsWith("item.") ? name(skill) : titleCase(skill))}
+          />
         </View>
         <ScrollView ref={pageScroll} style={{ flex: 1 }} contentContainerStyle={{ padding: 16, gap: 12, maxWidth: 900, width: "100%", alignSelf: "center" }}>
           {/* On a phone it heads the page instead, which scrolls under it, so the card never leaves the page a sliver. */}
@@ -806,6 +834,7 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
         {wide && place !== "stores" && (
           <ScrollView style={{ width: 330, flexGrow: 0 }} contentContainerStyle={{ padding: 16, paddingLeft: 0, gap: 12 }}>
             <Stores content={content} tinker={tinker} name={name} />
+            {firstsOpen && <Firsts tinker={tinker} onOutcome={apply} />}
             {loadout}
           </ScrollView>
         )}
