@@ -52,6 +52,23 @@ const BENT_NAILS = "item.rustmoor.bent_nails";
 const RATIONS_SEEN = "seen:rations";
 
 /** Her line on Rations, on a ledger that shows one eaten: it says nothing that needs doing, so it stays off the goal bar. */
+/** A line of "Just now": a job or fight that adds up while it repeats, or a one-off line. */
+interface RecentLine {
+  /** The action or monster id; null for a level, a trade or a stall, which never merge. */
+  key: string | null;
+  label: string;
+  fight: boolean;
+  count: number;
+  crowns: number;
+}
+
+function recentText(line: RecentLine): string {
+  if (line.key === null) return line.label;
+  return line.fight
+    ? `${line.count.toLocaleString()} × ${line.label}${line.crowns ? `, ${line.crowns.toLocaleString()} Crowns` : ""}`
+    : `${line.label} × ${line.count.toLocaleString()}`;
+}
+
 function rationsNote(ledger: LedgerData, content: Content): string | undefined {
   const ate = ledger.lines.some((line) => line.consumed[content.ration.item]);
   return ate ? content.guide.find((entry) => entry.id === "rations")?.line : undefined;
@@ -92,7 +109,9 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
   const [place, setPlace] = useState<Place>(checkoutReturn ? "shop" : guide.skipped ? "skill:prospecting" : GUIDE_START);
   // The job tile picked on a skill page, held here so the guide can point past it to Start.
   const [chosen, setChosen] = useState<string | null>(null);
-  const [recent, setRecent] = useState<string[]>([]);
+  // "Just now": the newest first. A job or fight that lands again adds to its own line ("Brass Spanner × 8")
+  // instead of a new one: with the Boiler running hot a spanner lands every nine seconds, and the panel filled with copies.
+  const [recent, setRecent] = useState<RecentLine[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [now, setNow] = useState(gameNow());
   // Dev only: the story controls, and a key that remounts the Story tab after them.
@@ -161,19 +180,32 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
 
   const noteRecent = useCallback(
     (ledger: LedgerData, trades: TradeNote[]) => {
-      const lines = ledger.lines.map((line) =>
-        line.id.startsWith("monster.")
-          ? `${line.count} × ${name(line.id)}${line.crowns ? `, ${line.crowns} Crowns` : ""}`
-          : `${jobTitle(content, line.id, name)} × ${line.count}`,
-      );
-      const ups = ledger.levelUps.map((up) => `${titleCase(up.skill)} reached ${up.level}`);
-      const fills = trades.map((note) => tradeLine(note, name));
+      const lines: RecentLine[] = ledger.lines.map((line) => ({
+        key: line.id,
+        label: line.id.startsWith("monster.") ? name(line.id) : jobTitle(content, line.id, name),
+        fight: line.id.startsWith("monster."),
+        count: line.count,
+        crowns: line.crowns,
+      }));
+      const said = (text: string): RecentLine => ({ key: null, label: text, fight: false, count: 0, crowns: 0 });
+      const ups = ledger.levelUps.map((up) => said(`${titleCase(up.skill)} reached ${up.level}`));
+      const fills = trades.map((note) => said(tradeLine(note, name)));
       // A job that cannot run is taken off the queue; say so, or it seems to vanish.
-      const stalls = ledger.stalls.map(
-        (stall) => `${jobTitle(content, stall.actionId, name)} was taken off the queue: it ${STALL_REASONS[stall.reason] ?? stall.reason}.`,
+      const stalls = ledger.stalls.map((stall) =>
+        said(`${jobTitle(content, stall.actionId, name)} was taken off the queue: it ${STALL_REASONS[stall.reason] ?? stall.reason}.`),
       );
       if (stalls.length || lines.length || ups.length || fills.length) {
-        setRecent((previous) => [...stalls, ...fills, ...ups, ...lines, ...previous].slice(0, 8));
+        setRecent((previous) => {
+          let rest = [...previous];
+          const merged = lines.map((line) => {
+            // The same job or fight already on the panel: fold its count into this line, which goes to the top.
+            const earlier = rest.find((entry) => entry.key === line.key);
+            if (!earlier) return line;
+            rest = rest.filter((entry) => entry !== earlier);
+            return { ...line, count: line.count + earlier.count, crowns: line.crowns + earlier.crowns };
+          });
+          return [...stalls, ...fills, ...ups, ...merged, ...rest].slice(0, 8);
+        });
       }
     },
     [name],
@@ -823,8 +855,8 @@ export function Workshop({ content, tinkerId, admin, onLeave }: { content: Conte
             <View style={ui.panel}>
               <Text style={ui.heading}>Just now</Text>
               {recent.map((line, index) => (
-                <Text key={index} style={[ui.muted, index === 0 && { color: colors.ink }]}>
-                  {line}
+                <Text key={line.key ?? `said-${index}`} style={[ui.muted, index === 0 && { color: colors.ink }]}>
+                  {recentText(line)}
                 </Text>
               ))}
             </View>
