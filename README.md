@@ -6,7 +6,7 @@ Kettleport has ridden a column of steam above a boiling sea for 312 years, and n
 
 Each check-in has two halves. In the idle half you collect what your Tinker made, craft it up a chain or sell it on the Brass Exchange, gear up, and queue the next 12 hours. In the story half you read the letters the Pneumatic Post delivered, then spend Nerve on storylets: short scenes whose options open as your skills rise.
 
-**Play the dev build:** https://thelongboil.com (sign in with Google or Discord).
+**Play it:** https://thelongboil.com (sign in with Google or Discord).
 
 This is my capstone project for ELVTR's Multi-Agent AI for Game Development course. One developer, six Claude agents, and AWS.
 
@@ -21,9 +21,9 @@ The Prologue and Act I are playable end to end. A new Tinker trains skills, figh
 | Gear and tools | Seven gear slots and a tool for each gathering and crafting skill. Smithing's metal ladder and, since work order 032, Tailoring's cloth ladder from day one. |
 | Story | 52 storylets, 8 Pneumatic Post letters and 5 Ledger Pages across the Prologue and Act I. Nerve, the four Needles, Favour with eight factions, and an Ambition chosen at the end of Act I. |
 | The city | The Brass Exchange (an order book, collectors and the grocer), live updates over WebSocket, chat, guilds, and Work Orders |
-| Money | The Cog Shop: Gilded Cogs, Cog Crates and four time savers, with Stripe Checkout in test mode |
+| Money | The Cog Shop: Gilded Cogs, Cog Crates and four time savers, sold through Stripe Checkout |
 | Admin | A console for running the playtest: sign-ups, who's active and online, revenue, a story funnel, every player and purchase, chat removal, and chat or full bans |
-| Infrastructure | Cognito sign-in, and AWS through CDK: ECS on Fargate, RDS PostgreSQL, CloudFront. Pushing to `main` deploys dev. |
+| Infrastructure | Cognito sign-in, and AWS through CDK: ECS on Fargate, RDS PostgreSQL, CloudFront. Pushing to `main` deploys production. |
 
 **Next:** the rest of milestone 13 (the Cinderworks' own gear and tool ladder), then Act II. The plan is [`docs/build-plan.md`](docs/build-plan.md).
 
@@ -72,7 +72,7 @@ Two rules protect the story. The canon bible (`docs/canon/`) splits the world by
 | `engine/packages/rules` | The game rules: pure TypeScript, deterministic, no I/O |
 | `engine/packages/server` | The server: HTTP and WebSocket on Node, with an event log in Postgres |
 | `engine/packages/client` | The client: Expo (React Native) for the web, and later phones |
-| [`infra/`](infra/README.md) | The AWS CDK app for the dev environment |
+| [`infra/`](infra/README.md) | The AWS CDK app for production (its stacks keep the name `dev`) |
 | `scripts/validate/` | The validators: 13 checks, each with fixtures that must pass and fail |
 | `scripts/sim/` | The assayer's simulators, which play a Tinker through Act I at 2, 3 and 4 check-ins a day |
 | `scripts/art/` | Cuts Gemini sprite sheets into the game's icons |

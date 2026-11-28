@@ -6,6 +6,8 @@ import { Annotations, CfnOutput, Duration, RemovalPolicy, SecretValue, Stack, ty
 import * as acm from "aws-cdk-lib/aws-certificatemanager";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
+import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
+import * as cloudwatchActions from "aws-cdk-lib/aws-cloudwatch-actions";
 import * as cognito from "aws-cdk-lib/aws-cognito";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as ecr from "aws-cdk-lib/aws-ecr";
@@ -19,6 +21,8 @@ import * as targets from "aws-cdk-lib/aws-route53-targets";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as ses from "aws-cdk-lib/aws-ses";
+import * as sns from "aws-cdk-lib/aws-sns";
+import * as subscriptions from "aws-cdk-lib/aws-sns-subscriptions";
 import type { Construct } from "constructs";
 import { deployRoleName, REGION, type Settings } from "./config.js";
 
@@ -235,7 +239,7 @@ export class AppStack extends Stack {
       open: false,
       defaultAction: elbv2.ListenerAction.fixedResponse(403, { contentType: "text/plain", messageBody: "Forbidden" }),
     });
-    listener.addTargets("Server", {
+    const targetGroup = listener.addTargets("Server", {
       priority: 1,
       conditions: [elbv2.ListenerCondition.httpHeader(ORIGIN_HEADER, [originHeaderValue])],
       port: SERVER_PORT,
@@ -245,6 +249,62 @@ export class AppStack extends Stack {
       healthCheck: { path: `${API_PREFIX}/health`, healthyHttpCodes: "200", interval: Duration.seconds(30) },
       deregistrationDelay: Duration.seconds(30),
     });
+
+    // --- Health alarms -----------------------------------------------------
+    // Emailed to alertEmail when the game is down or failing, and again when it recovers.
+    if (settings.alertEmail) {
+      const topic = new sns.Topic(this, "HealthTopic", { displayName: "The Long Boil health" });
+      topic.addSubscription(new subscriptions.EmailSubscription(settings.alertEmail));
+      const notify = new cloudwatchActions.SnsAction(topic);
+      const alarm = (id: string, description: string, props: Omit<cloudwatch.AlarmProps, "alarmDescription" | "alarmName">) => {
+        const made = new cloudwatch.Alarm(this, id, { ...props, alarmName: `long-boil-${id}`, alarmDescription: description });
+        made.addAlarmAction(notify);
+        made.addOkAction(notify);
+        return made;
+      };
+      const minutes = (count: number) => ({ period: Duration.minutes(1), evaluationPeriods: count, datapointsToAlarm: count });
+
+      // No healthy server behind the load balancer: the game is down. Missing data counts as down.
+      alarm("server-down", "No healthy game server behind the load balancer for 3 minutes: thelongboil.com is down.", {
+        metric: targetGroup.metrics.healthyHostCount({ statistic: "Minimum", period: Duration.minutes(1) }),
+        threshold: 1,
+        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+        treatMissingData: cloudwatch.TreatMissingData.BREACHING,
+        ...minutes(3),
+      });
+      // The server answering with errors.
+      alarm("server-errors", "The game server returned 10 or more 5xx errors a minute for 5 minutes.", {
+        metric: targetGroup.metrics.httpCodeTarget(elbv2.HttpCodeTarget.TARGET_5XX_COUNT, { statistic: "Sum", period: Duration.minutes(1) }),
+        threshold: 10,
+        comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+        treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+        ...minutes(5),
+      });
+      // The load balancer itself failing requests (no target to send them to, timeouts).
+      alarm("load-balancer-errors", "The load balancer returned 10 or more 5xx errors a minute for 5 minutes.", {
+        metric: alb.metrics.httpCodeElb(elbv2.HttpCodeElb.ELB_5XX_COUNT, { statistic: "Sum", period: Duration.minutes(1) }),
+        threshold: 10,
+        comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+        treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+        ...minutes(5),
+      });
+      alarm("database-cpu", "The database ran above 80% CPU for 15 minutes.", {
+        metric: database.metricCPUUtilization({ period: Duration.minutes(5) }),
+        threshold: 80,
+        comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+        evaluationPeriods: 3,
+        datapointsToAlarm: 3,
+      });
+      alarm("database-storage", "The database has less than 2 GB of free storage.", {
+        metric: database.metricFreeStorageSpace({ period: Duration.minutes(5) }),
+        threshold: 2 * 1024 ** 3,
+        comparisonOperator: cloudwatch.ComparisonOperator.LESS_THAN_THRESHOLD,
+        evaluationPeriods: 2,
+        datapointsToAlarm: 2,
+      });
+    } else {
+      Annotations.of(this).addWarning("No health alarms: pass -c alertEmail=you@example.com to be emailed when the game is down.");
+    }
 
     // --- DNS ---------------------------------------------------------------
     if (settings.domainName && settings.hostedZoneId) {
@@ -476,7 +536,8 @@ export class AppStack extends Stack {
     if (discord) providers.push(cognito.UserPoolClientIdentityProvider.custom("Discord"));
 
     // Trailing slashes on purpose: the client redirects to the site root.
-    const urls = [`${siteUrl}/`, "http://localhost:8081/"];
+    // Production only: local play uses the dev login, never this pool.
+    const urls = [`${siteUrl}/`];
     // A public client (no secret) for the PWA: authorization code with PKCE,
     // which Cognito enforces whenever the client sends a code challenge.
     const client = pool.addClient("WebClient", {

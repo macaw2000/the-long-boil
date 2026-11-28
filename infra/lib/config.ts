@@ -28,7 +28,7 @@ interface EnvironmentShape {
 // one environment, real players, live Stripe. A new env name would mean a new
 // user pool, and every player's login is their sub in this one.
 const SHAPES: Record<string, EnvironmentShape> = {
-  dev: { databaseInstance: "t4g.micro", retainData: true, desiredCount: 1, logRetentionDays: 90, devTools: false, allowLiveStripe: true },
+  dev: { databaseInstance: "t4g.micro", retainData: true, desiredCount: 1, logRetentionDays: 14, devTools: false, allowLiveStripe: true },
 };
 
 export interface Settings extends EnvironmentShape {
