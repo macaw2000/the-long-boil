@@ -65,6 +65,15 @@ export class BadSignature extends Error {}
 const INTEGRATION = "long-boil-cog-crate-qhvbmzrd";
 
 /**
+ * Stripe's product tax code for a Cog Crate: "Video Games - streamed - non
+ * subscription - with limited rights". Live mode uses Managed Payments, which
+ * refuses a checkout whose product has no eligible tax code. Swap for
+ * txcd_10000000 (general electronically supplied services) if an accountant
+ * prefers it (Jeremy, 27 November 2026).
+ */
+const COG_CRATE_TAX_CODE = "txcd_10201003";
+
+/**
  * Stripe with an API key and the webhook's signing secret. The key should be
  * a restricted key (rk_) that may only write Checkout Sessions and read
  * Customers. A live key is refused unless `allowLive` (STRIPE_ALLOW_LIVE=1),
@@ -87,7 +96,7 @@ export function stripePayments({ apiKey, webhookSecret, allowLive = false }: { a
             price_data: {
               currency: "usd",
               unit_amount: priceCents,
-              product_data: { name: "Cog Crate", description: `${cogsPerCrate} Gilded Cogs for The Long Boil, delivered to your workshop${lockHours > 0 ? ` after ${lockHours} hours` : ""}.` },
+              product_data: { name: "Cog Crate", tax_code: COG_CRATE_TAX_CODE, description: `${cogsPerCrate} Gilded Cogs for The Long Boil, delivered to your workshop${lockHours > 0 ? ` after ${lockHours} hours` : ""}.` },
             },
           },
         ],
